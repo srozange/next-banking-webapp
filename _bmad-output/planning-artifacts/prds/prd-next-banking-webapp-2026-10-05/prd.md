@@ -2809,8 +2809,6 @@ Chaque contrôle est exécuté par un outil, jamais évalué par un agent. Les s
   - Une commande de remise à zéro le rétablit.
   - Il sert au développement local, aux tests de bout en bout et au rejeu du golden master.
 
-### 7.3 Sécurité
-
 - **NFR-PAR-05 — Rejeu déterministe** (décision du 2026-10-05, à appliquer à l'étape G2).
   - Le rejeu du golden master se fait avec une **horloge fixée** et un **état de données réinitialisé** : le même code donne toujours le même résultat, quels que soient l'heure du rejeu et les rejeux précédents.
   - Mise en œuvre retenue, côté nouvelle application (l'outil de rejeu `replay-golden-master.py` n'a ni contrôle d'horloge ni remise à zéro ; il ne sait que vérifier ou recréer une donnée par scénario) :
@@ -2818,6 +2816,9 @@ Chaque contrôle est exécuté par un outil, jamais évalué par un agent. Les s
     - la commande de remise à zéro (NFR-PAR-04) est lancée avant le rejeu complet, et avant chaque scénario qui écrit (`writes: true`), dont SC-003-04 ;
     - l'heure de référence du profil de rejeu se situe entre 06:00 et 23:00 (par exemple 10:00, Europe/Paris), en jour ouvré.
   - Si cette mise en œuvre n'est pas retenue en architecture, **SC-003-04 est déclaré en écart permanent** à l'étape G2 (exclusion justifiée : résultat dépendant de l'heure et de l'historique).
+
+### 7.3 Sécurité
+
 - **NFR-SEC-01** : les mots de passe sont stockés et vérifiés par une fonction de hachage à sens unique sûre (FR de FEAT-001, BUG-002).
 - **NFR-SEC-02** : à l'authentification, la session existante est invalidée et une nouvelle session est créée avant de stocker le contexte d'authentification. Aucune fixation de session n'est possible (BUG-003, BUG-092).
 - **NFR-SEC-03** : toute action ou lecture portant sur une ressource d'un client (compte, document, virement programmé, bénéficiaire) vérifie que la ressource appartient à l'utilisateur authentifié. Le contrôle d'accès par rôle est appliqué dans les services, indépendamment du filtrage des requêtes (BUG-013, BUG-027, BUG-047, BUG-058, BUG-093).
