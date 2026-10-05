@@ -48,9 +48,17 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
   - *À ajouter dans la fiche de l'étape 5 du pilote :* un téléchargement initial des bases Trivy et NVD (`update-only`), et dire **qui** les rafraîchit ensuite (par exemple une commande `scripts/gates/cve-update.sh` lancée avant la boucle).
 - Déport vers retro : rien de pertinent. La sécurité des dépendances ne dépend pas du corpus.
 
+### 2026-10-05 · Étape 6 · Préparation du PRD
+
+- **Le corpus se contredit sur BUG-084 (fraude contrôlée après le virement, JIRA-9200 et JIRA-9202).** Dans le tableau de `LEGACY-BUGS.md:129`, le comportement attendu est « fixé par le métier » et le bug est « validé par le métier ». Mais la note de revue `LEGACY-BUGS.md:225` dit « Proposition Claude, à relire par l'expert. Dépend de la question bloquante FEAT-027 (le contrôle fraude doit-il bloquer le virement ?) ». Et cette question bloquante n'apparaît pas dans `GAPS.md`, qui n'a que deux `[TODO important]` sur des enums de fraude. Résultat : le brief reprend BUG-084 comme tranché, et `bmad-prd` ne posera pas la question.
+  - *À déporter vers le skill qui produit `LEGACY-BUGS.md` et `GAPS.md` (léger) :* toute note « dépend de la question bloquante X » doit créer une ligne `[TODO bloquant]` dans `GAPS.md`, et le statut ne doit pas être « validé par le métier » tant que X n'est pas tranché. Un contrôle de cohérence de quelques lignes dans le script de vérification du corpus suffit.
+- **Le pilote n'a pas de variante « fast path » du prompt PRD.** L'utilisateur a écrit la sienne (PRD rédigé seul, `[ASSUMPTION]`, un seul lot de questions). Sans garde-fou, elle perd l'ancrage sur le corpus et l'exigence de parité du golden master.
+  - *À ajouter dans `pilote-bmad/reference/prompts-bmad.md` :* une variante « fast path, avec corpus », qui garde les quatre paragraphes obligatoires et un format pour les questions ouvertes bloquantes (`[EN ATTENTE BD-n]`).
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
 |---|---|---|---|
 | Ajout de `docs/quality-gates.md` dans `persistent_facts` (étape 3) | `retro-forward-bmad` | supprime le conflit à la relance | faible : une entrée conditionnelle |
 | Préservation des entrées étrangères à la relance | `retro-forward-bmad` | rend les surcharges de tiers durables | faible : une fusion de tableaux |
+| Note « dépend de la question bloquante X » sans ligne correspondante dans `GAPS.md` | skill du corpus (vérification de cohérence) | la question remonte d'elle-même dans `bmad-prd` | faible : une règle de cohérence |
