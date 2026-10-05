@@ -27,6 +27,17 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - Le hook `rtk` réécrit `grep` en `rtk grep`, qui ne connaît pas `-h`. La commande du skill (`grep -h '^\*\*Moment' …/etape-*.md`) affiche donc l'aide de rtk au lieu du résultat. Contournement : `command grep` ou `sed`. Le hook a aussi bloqué le premier appel de `status.sh` en mode auto (une relance a suffi).
   - *À corriger dans `pilote-bmad/SKILL.md` :* utiliser `command grep` ou une boucle `sed`.
 
+### 2026-10-05 · Étape 4 · Scripts de contrôle
+
+- Les cinq scripts sont copiés et ont réussi le niveau statique : `bash -n`, outils présents, options confirmées dans l'aide. Trivy 0.74.0 confirme toutes ses options, dont `--ignore-unfixed` qui n'est pas déprécié. `help:describe` confirme `dependency-check-maven:aggregate` (avec `failBuildOnCVSS`, `autoUpdate`, `ossIndexAnalyzerEnabled`, `nodeAuditAnalyzerEnabled`, `nvdApiServerId`), `pitest-maven:mutationCoverage` (avec `mutationThreshold`, `historyInputFile`, `withHistory`) et la propriété Surefire `failIfNoTests`.
+- `check-gates-exist.sh` sur le dépôt sans code : code 1, 12 `KO` lisibles, aucune erreur shell. **Limite :** sans service, la boucle par service (lecture du POM effectif, motifs XML) n'est jamais exécutée. Le test statique ne dit donc rien des motifs XML, qui restent le principal risque (étape 9).
+- **Base Trivy absente** (`~/.cache/trivy` n'existe pas). `cve.sh` utilise `--skip-db-update` et `--skip-java-db-update`, donc il échouera tant que les bases n'auront pas été téléchargées une fois.
+  - *À ajouter dans une fiche du pilote (étape 5 ou avant la story 1.6) :* `trivy fs --download-db-only` et `--download-java-db-only`, à confirmer dans l'aide.
+- **`${CLAUDE_SKILL_DIR}` n'est pas défini** dans le shell de l'outil Bash. Les commandes des fiches (`cp "${CLAUDE_SKILL_DIR}"/…`) ne fonctionnent pas telles quelles, j'ai dû utiliser le chemin absolu.
+  - *À corriger dans les fiches du pilote :* écrire le chemin résolu, ou demander de le substituer.
+- Le shell de l'outil est zsh : une expression `[ =]` dans un motif `grep` non quoté a été interprétée par zsh (« bad math expression »). C'est un incident mineur de ma part, sans impact sur les scripts (ils ont un shebang bash).
+- Déport vers retro : rien de pertinent à cette étape. Les contrôles qualité sont indépendants du corpus.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |

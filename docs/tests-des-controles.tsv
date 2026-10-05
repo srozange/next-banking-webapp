@@ -1,0 +1,6 @@
+date	script	sha256	niveau	resultat	commit	note
+2026-10-05	scripts/gates/check-gates-exist.sh	cf96555b49584623	statique	OK	4e503a3	bash -n OK ; outils présents ; exécuté sur dépôt sans code : code 1, 12 KO lisibles + 1 OK (cve.sh exécutable), aucune erreur shell 
+2026-10-05	scripts/gates/build.sh	09b4300c8388356d	statique	OK	4e503a3	bash -n OK ; mvn et npm présents ; surefire:test confirme la propriété failIfNoTests (help:describe) ; options depcruise/vitest non vérifiables tant que frontend/ n'existe pas 
+2026-10-05	scripts/gates/cve.sh	1c763474560a6738	statique	OK	4e503a3	bash -n OK ; trivy 0.74.0 et jq présents ; trivy fs --help confirme --scanners --severity --skip-db-update --skip-java-db-update --quiet --exit-code --format --output --ignore-unfixed ; dependency-check-maven:aggregate existe (help:describe) ; base Trivy pas encore téléchargée (~/.cache/trivy absent) 
+2026-10-05	scripts/gates/mutation.sh	d648254de652b3ba	statique	OK	4e503a3	bash -n OK ; pitest-maven:mutationCoverage existe avec mutationThreshold, historyInputFile, withHistory (help:describe) ; stryker non vérifiable sans frontend/ 
+2026-10-05	scripts/gates/canary-arch.sh	fceca048652aa44d	statique	OK	4e503a3	bash -n OK ; mvn présent ; non exécutable avant la story 1.2 (aucun service) 
