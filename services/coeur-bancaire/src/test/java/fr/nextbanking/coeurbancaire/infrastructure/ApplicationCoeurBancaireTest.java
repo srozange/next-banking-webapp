@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootTest(classes = ApplicationCoeurBancaire.class)
 class ApplicationCoeurBancaireTest {
@@ -46,5 +47,18 @@ class ApplicationCoeurBancaireTest {
         // Argument de ligne de commande : prime sur application.properties.
         assertThatThrownBy(() -> application.run("--nb.fuseau=Mars/Olympus"))
                 .hasStackTraceContaining("nb.fuseau n'est pas un fuseau valide : Mars/Olympus");
+    }
+
+    @Test
+    void main_demarre_le_service() {
+        ApplicationCoeurBancaire.main(new String[] {
+            "--spring.main.web-application-type=none",
+            "--spring.main.sources=" + ContexteDemarre.class.getName()
+        });
+
+        try (ConfigurableApplicationContext contexte = ContexteDemarre.retirer()) {
+            assertThat(contexte).isNotNull();
+            assertThat(contexte.isActive()).isTrue();
+        }
     }
 }

@@ -4,14 +4,32 @@ import { describe, expect, it } from 'vitest';
  * Le temps métier ne se lit jamais dans le navigateur depuis src/domain et src/application :
  * il arrive par un port. Interdits : Date.now(), new Date() sans argument, Temporal.Now.
  */
-const sources = import.meta.glob<string>(
-  [
-    './domain/**/*.{ts,tsx}',
-    './application/**/*.{ts,tsx}',
-    '!./**/*.test.{ts,tsx}',
-  ],
-  { query: '?raw', import: 'default', eager: true },
-);
+
+// Lecture par le système de fichiers, pas par import.meta.glob('?raw') : un module « ?raw » serait compté
+// par la couverture v8 comme le fichier source lui-même, chargé et vide, et masquerait un fichier non testé.
+interface SystemeDeFichiers {
+  readdirSync(chemin: URL, options: { recursive: true }): string[];
+  readFileSync(chemin: URL, encodage: 'utf-8'): string;
+}
+const fs = (
+  globalThis as unknown as { process: { getBuiltinModule(id: 'node:fs'): SystemeDeFichiers } }
+).process.getBuiltinModule('node:fs');
+
+function lireSources(...couches: string[]): Record<string, string> {
+  const resultat: Record<string, string> = {};
+  for (const couche of couches) {
+    const dossier = new URL(`./${couche}/`, import.meta.url);
+    for (const chemin of fs.readdirSync(dossier, { recursive: true })) {
+      const relatif = chemin.split('\\').join('/');
+      if (/\.tsx?$/.test(relatif) && !/\.test\.tsx?$/.test(relatif)) {
+        resultat[`./${couche}/${relatif}`] = fs.readFileSync(new URL(relatif, dossier), 'utf-8');
+      }
+    }
+  }
+  return resultat;
+}
+
+const sources = lireSources('domain', 'application');
 
 const LECTURES_INTERDITES: ReadonlyArray<{ libelle: string; motif: RegExp }> = [
   { libelle: 'Date.now()', motif: /\bDate\s*\.\s*now\s*\(/ },
