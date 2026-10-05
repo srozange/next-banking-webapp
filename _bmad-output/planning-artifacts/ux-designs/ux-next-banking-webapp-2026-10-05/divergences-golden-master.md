@@ -81,3 +81,7 @@ Un seul scénario peut encore diverger, par un changement de comportement voulu,
 - **Scénarios HTTP à re-mapper** : les 5 scénarios HTTP visent les chemins `.xhtml` du legacy. SC-001-03 poste un formulaire JSF (`loginForm:*`, jetons tirés de `login.xhtml`). La route cible, la forme de la requête et le statut attendu (200 avec le message dans le corps, ou statut de refus de l'API) sont des décisions d'architecture de l'étape G2, pas des écarts décidés.
 - **Données et adaptateurs** : le rejeu suppose la base remise au jeu de démonstration (soldes, bénéficiaire FR76*** de SC-013-01, portefeuille de sophie, watchlist BNP.PA et AI.PA) et les adaptateurs simulés AlphaVantage et Powens (A-G-09).
 - **Casse CSS** : les lignes attendues en capitales (« MES COMPTES DEMO BANK », « TOTAL CLIENTS »…) supposent le même `text-transform` que le legacy (EXPERIENCE, Voice and Tone).
+
+## Décision du 2026-10-05 : rejeu déterministe
+
+Un scénario dont le résultat dépend de l'heure du rejeu, de l'intervalle avec le virement précédent ou du nombre d'opérations du jour n'est pas acceptable comme contrôle. Le rejeu se fait avec une horloge fixée et des données réinitialisées : voir NFR-PAR-05 du PRD. Faisabilité : l'outil de rejeu ne contrôle ni l'horloge ni les données ; c'est la nouvelle application qui le permet, avec un port Horloge et un profil de rejeu (horloge réglée au démarrage, puis qui avance normalement), plus la commande de remise à zéro. À défaut, SC-003-04 est déclaré en écart permanent à l'étape G2.

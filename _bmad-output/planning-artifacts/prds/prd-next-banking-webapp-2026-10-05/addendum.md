@@ -59,6 +59,8 @@ Les bugs du legacy décidés « ne pas corriger » ne sont ni des exigences ni d
   - jeu de données de référence et son chargement (NFR-PAR-04).
 - Rejeu : une seule fois, développement terminé (NFR-PAR-01).
 
+- **Rejeu déterministe (NFR-PAR-05)** : à décider en architecture et à l'étape G2. Il faut un port Horloge dans le domaine et un profil de rejeu avec une horloge réglée au démarrage sur une heure fixe de journée (pas figée), plus la commande de remise à zéro avant le rejeu et avant chaque scénario qui écrit. L'outil de rejeu ne fournit ni l'un ni l'autre : c'est à la nouvelle application et à l'orchestration du rejeu de les fournir. Sinon, SC-003-04 passe en écart permanent.
+
 ## A.6 Traçabilité de `docs/quality-gates.md` vers le PRD
 
 Chaque ligne de `docs/quality-gates.md` et l'endroit où elle est reprise :
