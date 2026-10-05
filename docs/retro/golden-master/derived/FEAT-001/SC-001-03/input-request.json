@@ -1,0 +1,12 @@
+{
+  "method": "POST",
+  "path": "/api/identite-clients/connexion",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "identifiant": "retro-compte-inexistant",
+    "motDePasse": "retro-mauvais-mot-de-passe"
+  },
+  "follow_redirects": false
+}

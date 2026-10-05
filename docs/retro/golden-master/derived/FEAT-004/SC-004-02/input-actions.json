@@ -1,0 +1,49 @@
+{
+  "start_url": "/virements-programmes",
+  "role": "CLIENT",
+  "actions": [
+    {
+      "type": "select",
+      "selector": "[data-testid='vp-compte-debiteur']",
+      "value": "1"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='vp-montant']",
+      "value": "50"
+    },
+    {
+      "type": "select",
+      "selector": "[data-testid='vp-frequence']",
+      "value": "MENSUEL"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='vp-numero-beneficiaire']",
+      "value": "FR76-0001-0002"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='vp-libelle-beneficiaire']",
+      "value": "[retro] test virprog"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='vp-date-premiere-execution']",
+      "value": "2027-01-01"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='vp-motif']",
+      "value": "[retro] virement programm gm"
+    },
+    {
+      "type": "click",
+      "selector": "[data-testid='vp-creer']"
+    },
+    {
+      "type": "wait_for",
+      "text": "cree avec succes"
+    }
+  ]
+}

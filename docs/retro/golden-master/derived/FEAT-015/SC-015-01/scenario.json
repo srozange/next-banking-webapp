@@ -1,0 +1,38 @@
+{
+  "id": "SC-015-01",
+  "feature_id": "FEAT-015",
+  "feature_name": "Espace Conseiller — Portefeuille clients",
+  "description": "Le conseiller voit son portefeuille avec les KPIs (clients, encours total, prêts en attente)",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CONSEILLER"
+  ],
+  "rg_ids": [
+    "RG-015-003",
+    "RG-015-004",
+    "RG-015-006",
+    "RG-015-007"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-015-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/conseiller-workspace.xhtml",
+      "role": "CONSEILLER"
+    },
+    "rationale": "Route /espace-conseiller. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

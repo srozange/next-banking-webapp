@@ -1,0 +1,33 @@
+{
+  "id": "SC-011-01",
+  "feature_id": "FEAT-011",
+  "feature_name": "Catalogue produits bancaires",
+  "description": "La page produits affiche le catalogue avec produits d'épargne, crédit et investissement",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-011-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/produits.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /produits. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

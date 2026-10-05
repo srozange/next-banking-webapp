@@ -1,0 +1,10 @@
+{
+  "start_url": "/documents",
+  "role": "CLIENT",
+  "actions": [
+    {
+      "type": "wait_for",
+      "text": "Telecharger PDF"
+    }
+  ]
+}

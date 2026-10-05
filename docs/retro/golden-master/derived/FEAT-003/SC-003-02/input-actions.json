@@ -1,0 +1,34 @@
+{
+  "start_url": "/virement",
+  "role": "CLIENT",
+  "actions": [
+    {
+      "type": "select",
+      "selector": "[data-testid='virement-compte-source']",
+      "value": "1"
+    },
+    {
+      "type": "select",
+      "selector": "[data-testid='virement-compte-destinataire']",
+      "value": "1"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='virement-montant']",
+      "value": "100"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='virement-motif']",
+      "value": "[retro] test comptes identiques"
+    },
+    {
+      "type": "click",
+      "selector": "[data-testid='virement-executer']"
+    },
+    {
+      "type": "wait_for",
+      "text": "compte source et destination"
+    }
+  ]
+}

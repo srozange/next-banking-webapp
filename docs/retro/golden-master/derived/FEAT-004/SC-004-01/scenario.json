@@ -1,0 +1,36 @@
+{
+  "id": "SC-004-01",
+  "feature_id": "FEAT-004",
+  "feature_name": "Virements programmés",
+  "description": "La page virements programmés charge avec le formulaire de création et la liste des virements du client",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-004-002",
+    "RG-004-003"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-004-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/virement-programme.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /virements-programmes. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

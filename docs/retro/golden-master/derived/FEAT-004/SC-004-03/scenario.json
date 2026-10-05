@@ -1,0 +1,33 @@
+{
+  "id": "SC-004-03",
+  "feature_id": "FEAT-004",
+  "feature_name": "Virements programmés",
+  "description": "Soumettre le formulaire vide affiche 'Veuillez selectionner un compte source'",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-004-010"
+  ],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-004-03",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/virement-programme.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /virements-programmes, 1 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

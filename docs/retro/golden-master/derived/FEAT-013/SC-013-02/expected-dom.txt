@@ -1,0 +1,7 @@
+Bénéficiaire ajouté avec succès
+[retro] test beneficiaire
+Retro Test SA
+FR35***9010
+HSBCFRPPXXX
+HSBC France
+✓ SEPA

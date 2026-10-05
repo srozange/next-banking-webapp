@@ -1,0 +1,37 @@
+{
+  "id": "SC-017-01",
+  "feature_id": "FEAT-017",
+  "feature_name": "Téléchargement documents PDF",
+  "description": "Un accès sans session au endpoint /docs/download est redirigé vers la page de connexion (HTTP 302)",
+  "capture_adapter": "http",
+  "replay_adapter": "http",
+  "expected_outputs": [
+    "http_response"
+  ],
+  "roles": [],
+  "rg_ids": [
+    "RG-017-001",
+    "RG-017-002"
+  ],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "mode": "status+json_subset",
+    "json_subset": null
+  },
+  "derived_from": {
+    "id": "SC-017-01",
+    "decision": "map",
+    "legacy": {
+      "method": "GET",
+      "path": "/banking-legacy/docs/download?type=RIB&accountId=1",
+      "content_type": null,
+      "fields": [],
+      "query_params": [
+        "type",
+        "accountId"
+      ]
+    },
+    "rationale": "Téléchargement sans jeton : 401 de l'API documents au lieu du 302 (AD-17) ; le front renvoie vers /login."
+  }
+}

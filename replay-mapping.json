@@ -1,0 +1,1107 @@
+{
+  "schema": 1,
+  "target_base_url": "http://localhost:8080/",
+  "auth": null,
+  "routes": {
+    "/dashboard.xhtml": "/tableau-de-bord",
+    "/virement.xhtml": "/virement",
+    "/virement-programme.xhtml": "/virements-programmes",
+    "/releve.xhtml": "/releve",
+    "/budget.xhtml": "/budget",
+    "/pret.xhtml": "/prets",
+    "/documents.xhtml": "/documents",
+    "/bourse.xhtml": "/bourse",
+    "/conseiller.xhtml": "/mon-conseiller",
+    "/produits.xhtml": "/produits",
+    "/comptes-tiers.xhtml": "/comptes-tiers",
+    "/beneficiaires.xhtml": "/beneficiaires",
+    "/conseiller-workspace.xhtml": "/espace-conseiller",
+    "/admin.xhtml": "/administration"
+  },
+  "browser": {
+    "base_url": null,
+    "storage_state_dir": ".auth",
+    "accounts": [
+      {
+        "role": "ADMIN",
+        "login": "admin",
+        "password_env": "RETRO_ADMIN_PASSWORD"
+      },
+      {
+        "role": "CONSEILLER",
+        "login": "sophie",
+        "password_env": "RETRO_CONSEILLER_PASSWORD"
+      },
+      {
+        "role": "CLIENT",
+        "login": "user1",
+        "password_env": "RETRO_CLIENT_PASSWORD"
+      }
+    ]
+  },
+  "_doc": "decision : keep | map | drop. keep = requête et réponse legacy inchangées ; map = target.method/path + expected.mode (status+json_subset) requis ; drop = rationale. Les scénarios legacy_bug (bug « corriger » ou « ne pas corriger » du registre) restent en drop. expected.mode : exact | status+json_subset (status requis). target.body_format : json | form | null (= format legacy). target.field_map : {champ_legacy: champ_cible | null (supprimé)}. target.body (facultatif) : corps cible qui remplace le corps legacy (null = sans corps), incompatible avec field_map. target.form_tokens_from (facultatif) : page cible des jetons de formulaire ; sur map, ceux du legacy sont retirés. auth : null/\"none\" ou en-tête \"Nom: valeur\" ({token} <- REPLAY_TOKEN). Scénario d'écran (class dom_text) : decision map | drop (keep refusé). map = route de départ (target.start_url, sinon routes[legacy.start_page]) ; target.selector_map : {sélecteur_legacy: sélecteur_cible | null (action retirée, rationale exigée)}, une clé par sélecteur de legacy.selectors ; expected.mode : exact | contains | contains-ci | null (= mode legacy) ; expected.text_map : {ligne_ou_texte_legacy: texte_cible | null (ligne retirée)}, les autres lignes sont reprises telles quelles. routes : {page_legacy: route_cible}. browser (sessions navigateur des scénarios d'écran) : base_url (null = target_base_url), storage_state_dir (relatif au répertoire du rejeu, ignoré par git), accounts ({role, login, password_env}). Retirer \"proposed\": true pour confirmer une proposition.",
+  "scenarios": [
+    {
+      "id": "SC-001-01",
+      "feature_id": "FEAT-001",
+      "class": "unknown",
+      "legacy_bugs": [],
+      "legacy": {
+        "method": "GET",
+        "path": "/banking-legacy/login.xhtml",
+        "content_type": null,
+        "fields": [],
+        "query_params": []
+      },
+      "decision": "map",
+      "target": {
+        "method": "GET",
+        "path": "/login",
+        "body_format": null,
+        "field_map": {}
+      },
+      "expected": {
+        "mode": "status+json_subset",
+        "status": 200,
+        "json_subset": null
+      },
+      "rationale": "Page de connexion publique servie par le conteneur web (index.html de la SPA) : 200."
+    },
+    {
+      "id": "SC-001-02",
+      "feature_id": "FEAT-001",
+      "class": "ui_html",
+      "legacy_bugs": [],
+      "legacy": {
+        "method": "GET",
+        "path": "/banking-legacy/dashboard.xhtml",
+        "content_type": null,
+        "fields": [],
+        "query_params": []
+      },
+      "decision": "map",
+      "target": {
+        "method": "GET",
+        "path": "/api/coeur-bancaire/tableau-de-bord",
+        "body_format": null,
+        "field_map": {}
+      },
+      "expected": {
+        "mode": "status+json_subset",
+        "status": 401,
+        "json_subset": null
+      },
+      "rationale": "SPA à jeton en localStorage : pas de 302 serveur (AD-17) ; le refus sans jeton de l'API du tableau de bord (401) fait foi, la redirection vers /login est faite par le front."
+    },
+    {
+      "id": "SC-001-03",
+      "feature_id": "FEAT-001",
+      "class": "unknown",
+      "legacy_bugs": [],
+      "legacy": {
+        "method": "POST",
+        "path": "/banking-legacy/login.xhtml",
+        "content_type": "application/x-www-form-urlencoded",
+        "fields": [
+          "loginForm",
+          "loginForm:username",
+          "loginForm:password",
+          "loginForm:j_idt11"
+        ],
+        "query_params": []
+      },
+      "decision": "map",
+      "target": {
+        "method": "POST",
+        "path": "/api/identite-clients/connexion",
+        "body_format": "json",
+        "field_map": {
+          "loginForm": null,
+          "loginForm:username": "identifiant",
+          "loginForm:password": "motDePasse",
+          "loginForm:j_idt11": null
+        }
+      },
+      "expected": {
+        "mode": "status+json_subset",
+        "status": 401,
+        "json_subset": {
+          "message": "Identifiants incorrects"
+        }
+      },
+      "rationale": "Connexion refusée par l'API JSON : 401 et enveloppe d'erreur AD-17 {message} ; status+body_contains (200) du legacy non dérivable en map."
+    },
+    {
+      "id": "SC-001-04",
+      "feature_id": "FEAT-001",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/dashboard.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Tableau de bord",
+          "Bonjour, Jean Dupont",
+          "MES COMPTES DEMO BANK"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/tableau-de-bord",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /tableau-de-bord. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements » (après le contenu comparé)."
+    },
+    {
+      "id": "SC-001-05",
+      "feature_id": "FEAT-001",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/dashboard.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "a:has-text('Deconnexion')"
+        ],
+        "wait_texts": [
+          "Identifiant"
+        ],
+        "expected_lines": [
+          "Identifiant",
+          "Mot de passe",
+          "Espace client"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/tableau-de-bord",
+        "selector_map": {
+          "a:has-text('Deconnexion')": "[data-testid='nav-deconnexion']"
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /tableau-de-bord, 1 sélecteur(s) data-testid (table EXPERIENCE.md). Déconnexion par nav-deconnexion puis écran /login ; rejoué dans un lancement séparé (§7.3). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-002-01",
+      "feature_id": "FEAT-002",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/dashboard.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Tableau de bord",
+          "MES COMPTES DEMO BANK",
+          "SOLDE TOTAL DEMO BANK",
+          "ACTIVITE RECENTE",
+          "Dernieres operations",
+          "DATE DESCRIPTION TYPE MONTANT SOLDE APRES",
+          "DEBIT"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/tableau-de-bord",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /tableau-de-bord. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements »."
+    },
+    {
+      "id": "SC-002-02",
+      "feature_id": "FEAT-002",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/dashboard.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Centre de notifications"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/tableau-de-bord",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /tableau-de-bord. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements »."
+    },
+    {
+      "id": "SC-003-01",
+      "feature_id": "FEAT-003",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/virement.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Effectuer un virement",
+          "Compte source",
+          "Compte destinataire",
+          "Montant",
+          "Motif",
+          "COURANT",
+          "EPARGNE"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/virement",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /virement. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements »."
+    },
+    {
+      "id": "SC-003-02",
+      "feature_id": "FEAT-003",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/virement.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "#virementForm\\:source",
+          "#virementForm\\:target",
+          "#virementForm\\:amount",
+          "#virementForm\\:motif",
+          "input[name='virementForm:j_idt23']"
+        ],
+        "wait_texts": [
+          "compte source et destination"
+        ],
+        "expected_lines": [
+          "Le compte source et destination doivent être différents"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/virement",
+        "selector_map": {
+          "#virementForm\\:source": "[data-testid='virement-compte-source']",
+          "#virementForm\\:target": "[data-testid='virement-compte-destinataire']",
+          "#virementForm\\:amount": "[data-testid='virement-montant']",
+          "#virementForm\\:motif": "[data-testid='virement-motif']",
+          "input[name='virementForm:j_idt23']": "[data-testid='virement-executer']"
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /virement, 5 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements »."
+    },
+    {
+      "id": "SC-003-03",
+      "feature_id": "FEAT-003",
+      "class": "legacy_bug",
+      "legacy_bugs": [
+        {
+          "id": "BUG-011",
+          "decision": "corriger"
+        }
+      ],
+      "legacy": {
+        "start_page": "/virement.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "#virementForm\\:source",
+          "#virementForm\\:target",
+          "#virementForm\\:amount",
+          "#virementForm\\:motif",
+          "input[name='virementForm:j_idt23']"
+        ],
+        "wait_texts": [
+          "Solde insuffisant"
+        ],
+        "expected_lines": [
+          "Erreur lors du virement : java.lang.IllegalStateException: Solde insuffisant"
+        ]
+      },
+      "decision": "drop",
+      "target": {
+        "start_url": null,
+        "selector_map": {
+          "#virementForm\\:source": null,
+          "#virementForm\\:target": null,
+          "#virementForm\\:amount": null,
+          "#virementForm\\:motif": null,
+          "input[name='virementForm:j_idt23']": null
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "BUG-011 — corrigé dans le forward, validé par les tests de la nouvelle application"
+    },
+    {
+      "id": "SC-003-04",
+      "feature_id": "FEAT-003",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/virement.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "#virementForm\\:source",
+          "#virementForm\\:target",
+          "#virementForm\\:amount",
+          "#virementForm\\:motif",
+          "input[name='virementForm:j_idt23']"
+        ],
+        "wait_texts": [
+          "CONFIRMATION"
+        ],
+        "expected_lines": [
+          "Tableau de bord",
+          "CONFIRMATION",
+          "[retro] virement doré 100EUR",
+          "DEBIT",
+          "COURANT",
+          "EPARGNE"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/virement",
+        "selector_map": {
+          "#virementForm\\:source": "[data-testid='virement-compte-source']",
+          "#virementForm\\:target": "[data-testid='virement-compte-destinataire']",
+          "#virementForm\\:amount": "[data-testid='virement-montant']",
+          "#virementForm\\:motif": "[data-testid='virement-motif']",
+          "input[name='virementForm:j_idt23']": "[data-testid='virement-executer']"
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /virement, 5 sélecteur(s) data-testid (table EXPERIENCE.md). Rejoué selon NFR-PAR-05 : horloge réglée et données réinitialisées. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements »."
+    },
+    {
+      "id": "SC-004-01",
+      "feature_id": "FEAT-004",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/virement-programme.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "NOUVEAU VIREMENT PROGRAMME",
+          "COMPTE DEBITEUR",
+          "MONTANT (EUR)",
+          "FREQUENCE",
+          "Hebdomadaire",
+          "Mensuel",
+          "IBAN / N COMPTE BENEFICIAIRE"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/virements-programmes",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /virements-programmes. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-004-02",
+      "feature_id": "FEAT-004",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/virement-programme.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "#vpForm\\:srcAcc",
+          "#vpForm\\:montant",
+          "#vpForm\\:freq",
+          "#vpForm\\:targetNum",
+          "#vpForm\\:targetLabel",
+          "#vpForm\\:dateExec",
+          "#vpForm\\:motif",
+          "input[name='vpForm:j_idt29']"
+        ],
+        "wait_texts": [
+          "cree avec succes"
+        ],
+        "expected_lines": [
+          "Virement programme cree avec succes",
+          "MES VIREMENTS PROGRAMMES"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/virements-programmes",
+        "selector_map": {
+          "#vpForm\\:srcAcc": "[data-testid='vp-compte-debiteur']",
+          "#vpForm\\:montant": "[data-testid='vp-montant']",
+          "#vpForm\\:freq": "[data-testid='vp-frequence']",
+          "#vpForm\\:targetNum": "[data-testid='vp-numero-beneficiaire']",
+          "#vpForm\\:targetLabel": "[data-testid='vp-libelle-beneficiaire']",
+          "#vpForm\\:dateExec": "[data-testid='vp-date-premiere-execution']",
+          "#vpForm\\:motif": "[data-testid='vp-motif']",
+          "input[name='vpForm:j_idt29']": "[data-testid='vp-creer']"
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /virements-programmes, 8 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-004-03",
+      "feature_id": "FEAT-004",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/virement-programme.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "input[type='submit'][value='Creer le virement programme']"
+        ],
+        "wait_texts": [
+          "Veuillez selectionner un compte source"
+        ],
+        "expected_lines": [
+          "Veuillez selectionner un compte source"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/virements-programmes",
+        "selector_map": {
+          "input[type='submit'][value='Creer le virement programme']": "[data-testid='vp-creer']"
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /virements-programmes, 1 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-005-01",
+      "feature_id": "FEAT-005",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/releve.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Relevé de compte",
+          "COURANT",
+          "FR76-0001-0001",
+          "DATE DESCRIPTION TYPE MONTANT SOLDE APRÈS",
+          "DEBIT"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/releve",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /releve. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-006-01",
+      "feature_id": "FEAT-006",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/budget.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "TOTAL DEPENSES",
+          "TOTAL REVENUS",
+          "REPARTITION PAR CATEGORIE",
+          "PLAFONDS BUDGETAIRES"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/budget",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /budget. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-007-01",
+      "feature_id": "FEAT-007",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/pret.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "SIMULATEUR DE PRET",
+          "DEMANDE DE PRET",
+          "MES EMPRUNTS",
+          "TYPE DE PRET",
+          "Immobilier",
+          "Automobile"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/prets",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /prets. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-007-02",
+      "feature_id": "FEAT-007",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/pret.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "#simForm\\:simMontant",
+          "#simForm\\:simTaux",
+          "#simForm\\:simDuree",
+          "input[type='submit'][value='Calculer']"
+        ],
+        "wait_texts": [
+          "Mensualite"
+        ],
+        "expected_lines": [
+          "MENSUALITE",
+          "293.02 EUR",
+          "COUT TOTAL",
+          "10,548.72 EUR",
+          "TOTAL INTERETS",
+          "548.72 EUR",
+          "echeancier complet (36 echeances)"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/prets",
+        "selector_map": {
+          "#simForm\\:simMontant": "[data-testid='pret-sim-montant']",
+          "#simForm\\:simTaux": "[data-testid='pret-sim-taux']",
+          "#simForm\\:simDuree": "[data-testid='pret-sim-duree']",
+          "input[type='submit'][value='Calculer']": "[data-testid='pret-sim-calculer']"
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /prets, 4 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-008-01",
+      "feature_id": "FEAT-008",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/documents.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "DOCUMENTS FISCAUX",
+          "Imprime Fiscal Unique (IFU)",
+          "RIB",
+          "Attestation de solde",
+          "Releves mensuels",
+          "Telecharger PDF"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/documents",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /documents. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, mention « (nouvel onglet) »."
+    },
+    {
+      "id": "SC-009-01",
+      "feature_id": "FEAT-009",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/bourse.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Valeur",
+          "BNP.PA",
+          "AI.PA",
+          "VARIATION SUR LA PÉRIODE",
+          "PERFORMANCE %"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/bourse",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /bourse. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-010-01",
+      "feature_id": "FEAT-010",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/conseiller.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Sophie — Conseillère Demo Bank",
+          "Bonjour Jean !"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/mon-conseiller",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /mon-conseiller. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-010-02",
+      "feature_id": "FEAT-010",
+      "class": "legacy_bug",
+      "legacy_bugs": [
+        {
+          "id": "BUG-038",
+          "decision": "corriger"
+        }
+      ],
+      "legacy": {
+        "start_page": "/conseiller.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "#chatForm\\:userInput",
+          "input[id='chatForm:sendBtn']",
+          ".msg.user"
+        ],
+        "wait_texts": [],
+        "expected_lines": [
+          "Quel est mon solde courant ?",
+          "Je suis momentanement indisponible"
+        ]
+      },
+      "decision": "drop",
+      "target": {
+        "start_url": null,
+        "selector_map": {
+          "#chatForm\\:userInput": null,
+          "input[id='chatForm:sendBtn']": null,
+          ".msg.user": null
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "BUG-038 — corrigé dans le forward, validé par les tests de la nouvelle application"
+    },
+    {
+      "id": "SC-011-01",
+      "feature_id": "FEAT-011",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/produits.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "CATALOGUE DES PRODUITS",
+          "PRODUITS D EPARGNE",
+          "CEL - Compte Epargne Logement",
+          "Livret A"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/produits",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /produits. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-012-01",
+      "feature_id": "FEAT-012",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/comptes-tiers.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Agregez vos comptes bancaires",
+          "BNP Paribas",
+          "Credit Agricole",
+          "OAuth2 PSD2"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/comptes-tiers",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /comptes-tiers. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-013-01",
+      "feature_id": "FEAT-013",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/beneficiaires.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "AJOUTER UN BENEFICIAIRE",
+          "MES BENEFICIAIRES ENREGISTRES",
+          "LIBELLE TITULAIRE IBAN BIC BANQUE ZONE SEPA ACTION",
+          "✓ SEPA",
+          "FR76***"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/beneficiaires",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /beneficiaires. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-013-02",
+      "feature_id": "FEAT-013",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/beneficiaires.xhtml",
+        "role": "CLIENT",
+        "selectors": [
+          "#addForm\\:newLabel",
+          "#addForm\\:newHolderName",
+          "#addForm\\:newIban",
+          "input[value=\"Verifier l'IBAN\"]",
+          "#addForm\\:newBic",
+          "#addForm\\:newBank",
+          "input[value='Ajouter le beneficiaire']",
+          ".alert-info"
+        ],
+        "wait_texts": [
+          "IBAN valide"
+        ],
+        "expected_lines": [
+          "Bénéficiaire ajouté avec succès",
+          "[retro] test beneficiaire",
+          "Retro Test SA",
+          "FR35***9010",
+          "HSBCFRPPXXX",
+          "HSBC France",
+          "✓ SEPA"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/beneficiaires",
+        "selector_map": {
+          "#addForm\\:newLabel": "[data-testid='beneficiaires-libelle']",
+          "#addForm\\:newHolderName": "[data-testid='beneficiaires-titulaire']",
+          "#addForm\\:newIban": "[data-testid='beneficiaires-iban']",
+          "input[value=\"Verifier l'IBAN\"]": "[data-testid='beneficiaires-verifier-iban']",
+          "#addForm\\:newBic": "[data-testid='beneficiaires-bic']",
+          "#addForm\\:newBank": "[data-testid='beneficiaires-banque']",
+          "input[value='Ajouter le beneficiaire']": "[data-testid='beneficiaires-ajouter']",
+          ".alert-info": "[data-testid='beneficiaires-message-info']"
+        }
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /beneficiaires, 8 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-014-01",
+      "feature_id": "FEAT-014",
+      "class": "ui_html",
+      "legacy_bugs": [],
+      "legacy": {
+        "method": "GET",
+        "path": "/banking-legacy/powens-callback.xhtml",
+        "content_type": null,
+        "fields": [],
+        "query_params": []
+      },
+      "decision": "map",
+      "target": {
+        "method": "GET",
+        "path": "/api/open-banking-conseiller/powens/retour",
+        "body_format": null,
+        "field_map": {}
+      },
+      "expected": {
+        "mode": "status+json_subset",
+        "status": 302,
+        "json_subset": null
+      },
+      "rationale": "Retour Powens public sur son chemin exact (FR-030-01) : redirection 302 vers /comptes-tiers conservée (seule exception AD-17)."
+    },
+    {
+      "id": "SC-015-01",
+      "feature_id": "FEAT-015",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/conseiller-workspace.xhtml",
+        "role": "CONSEILLER",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "MES CLIENTS",
+          "ENCOURS TOTAL",
+          "PRETS EN ATTENTE",
+          "Jean Dupont",
+          "@user1",
+          "Marie Lebrun",
+          "@user2"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/espace-conseiller",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /espace-conseiller. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+    },
+    {
+      "id": "SC-015-02",
+      "feature_id": "FEAT-015",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/conseiller-workspace.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Tableau de bord",
+          "MES COMPTES DEMO BANK"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/espace-conseiller",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /espace-conseiller. CLIENT redirigé sans message vers /tableau-de-bord par le routeur du front. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements » (tableau de bord après redirection)."
+    },
+    {
+      "id": "SC-016-01",
+      "feature_id": "FEAT-016",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/admin.xhtml",
+        "role": "ADMIN",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "TOTAL CLIENTS",
+          "CONSEILLERS",
+          "PRETS EN ATTENTE",
+          "Pipeline Prets",
+          "Gestion des clients",
+          "Jean Dupont",
+          "user1"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/administration",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /administration. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Virements suspendus — En attente de revue » (après « Gestion des clients »)."
+    },
+    {
+      "id": "SC-016-02",
+      "feature_id": "FEAT-016",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/admin.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [],
+        "expected_lines": [
+          "Tableau de bord",
+          "MES COMPTES DEMO BANK"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/administration",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /administration. CLIENT redirigé sans message vers /tableau-de-bord par le routeur du front. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements » (tableau de bord après redirection)."
+    },
+    {
+      "id": "SC-017-01",
+      "feature_id": "FEAT-017",
+      "class": "ui_html",
+      "legacy_bugs": [],
+      "legacy": {
+        "method": "GET",
+        "path": "/banking-legacy/docs/download?type=RIB&accountId=1",
+        "content_type": null,
+        "fields": [],
+        "query_params": [
+          "type",
+          "accountId"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "method": "GET",
+        "path": "/api/documents/telechargement?type=RIB&compteId=1",
+        "body_format": null,
+        "field_map": {}
+      },
+      "expected": {
+        "mode": "status+json_subset",
+        "status": 401,
+        "json_subset": null
+      },
+      "rationale": "Téléchargement sans jeton : 401 de l'API documents au lieu du 302 (AD-17) ; le front renvoie vers /login."
+    },
+    {
+      "id": "SC-017-02",
+      "feature_id": "FEAT-017",
+      "class": "dom_text",
+      "legacy_bugs": [],
+      "legacy": {
+        "start_page": "/documents.xhtml",
+        "role": "CLIENT",
+        "selectors": [],
+        "wait_texts": [
+          "Telecharger PDF"
+        ],
+        "expected_lines": [
+          "RIB",
+          "Releve d Identite Bancaire",
+          "Telecharger PDF",
+          "ATTESTATION",
+          "Attestation de solde"
+        ]
+      },
+      "decision": "map",
+      "target": {
+        "start_url": "/documents",
+        "selector_map": {}
+      },
+      "expected": {
+        "mode": null,
+        "text_map": {}
+      },
+      "rationale": "Route /documents. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, mention « (nouvel onglet) »."
+    }
+  ]
+}

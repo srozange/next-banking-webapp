@@ -1,0 +1,7 @@
+TOTAL CLIENTS
+CONSEILLERS
+PRETS EN ATTENTE
+Pipeline Prets
+Gestion des clients
+Jean Dupont
+user1

@@ -1,0 +1,39 @@
+{
+  "id": "SC-005-01",
+  "feature_id": "FEAT-005",
+  "feature_name": "Relevé de compte",
+  "description": "Le relevé de compte charge avec les transactions du premier compte, ordonnées par date décroissante",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-005-003",
+    "RG-005-007",
+    "RG-005-012",
+    "RG-005-013",
+    "RG-005-014"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-005-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/releve.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /releve. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

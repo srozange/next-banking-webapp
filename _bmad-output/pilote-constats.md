@@ -74,6 +74,13 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - **Une décision métier est prise en table ronde (`bmad-party-mode`, transcript `_bmad-output/party-rg-027-003-script.md`)**, puis intégrée par `bmad-prd`. Le pilote ne prévoit pas ce cas : le party mode n'y sert qu'à la vidéo client.
   - *À ajouter dans la fiche de l'étape 6 :* une table ronde peut trancher une question ouverte bloquante du PRD. Son transcript devient alors une entrée du PRD, à réconcilier à la finalisation.
 
+### 2026-10-05 · Étape 6 · `status.sh` pendant `bmad-architecture`
+
+- **`status.sh` compte `bmad-architecture` comme joué dès que `ARCHITECTURE-SPINE.md` existe**, alors que le fichier n'est encore que le modèle copié par le skill. Il annonce donc l'étape 6 à 2 sur 5, propose `bmad-project-context` comme prochain skill, et lève l'alerte « la spine ne mentionne pas ArchUnit, JaCoCo… » sur un brouillon vide.
+  - *À corriger dans `pilote-bmad/status.sh` :* ne compter un artefact BMAD comme fait que si sa frontmatter porte `status: final`. Un brouillon donne l'état « en cours », sans alerte de contenu. Il faut faire de même pour le PRD et l'UX.
+- **Le découpage en services n'est fixé ni par `quality-gates.md` ni par les fiches du pilote.** La story 1.4 (flux témoin A → Kafka → B) suppose deux services, sans dire lesquels. Une passerelle placée sous `services/` hérite des contrôles par service (`check-gates-exist.sh` exige un `*ArchitectureTest` par module).
+  - *À ajouter dans `pilote-bmad/reference/prompts-bmad.md` (prompt d'architecture) :* un point « découpage en services et place d'une éventuelle passerelle ou BFF (sous `services/` avec un hexagone et ArchUnit, ou hors `services/`) ».
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |

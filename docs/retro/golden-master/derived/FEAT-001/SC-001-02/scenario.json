@@ -1,0 +1,35 @@
+{
+  "id": "SC-001-02",
+  "feature_id": "FEAT-001",
+  "feature_name": "Connexion",
+  "description": "Tout accès non authentifié à une page protégée redirige vers login.xhtml (HTTP 302)",
+  "capture_adapter": "http",
+  "replay_adapter": "http",
+  "expected_outputs": [
+    "http_response"
+  ],
+  "roles": [],
+  "rg_ids": [
+    "RG-001-001"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "mode": "status+json_subset",
+    "json_subset": null
+  },
+  "derived_from": {
+    "id": "SC-001-02",
+    "decision": "map",
+    "legacy": {
+      "method": "GET",
+      "path": "/banking-legacy/dashboard.xhtml",
+      "content_type": null,
+      "fields": [],
+      "query_params": []
+    },
+    "rationale": "SPA à jeton en localStorage : pas de 302 serveur (AD-17) ; le refus sans jeton de l'API du tableau de bord (401) fait foi, la redirection vers /login est faite par le front."
+  }
+}

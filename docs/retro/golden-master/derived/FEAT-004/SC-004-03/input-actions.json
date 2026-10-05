@@ -1,0 +1,14 @@
+{
+  "start_url": "/virements-programmes",
+  "role": "CLIENT",
+  "actions": [
+    {
+      "type": "click",
+      "selector": "[data-testid='vp-creer']"
+    },
+    {
+      "type": "wait_for",
+      "text": "Veuillez selectionner un compte source"
+    }
+  ]
+}

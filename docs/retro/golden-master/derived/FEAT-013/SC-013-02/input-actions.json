@@ -1,0 +1,47 @@
+{
+  "start_url": "/beneficiaires",
+  "role": "CLIENT",
+  "actions": [
+    {
+      "type": "fill",
+      "selector": "[data-testid='beneficiaires-libelle']",
+      "value": "[retro] test beneficiaire"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='beneficiaires-titulaire']",
+      "value": "Retro Test SA"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='beneficiaires-iban']",
+      "value": "FR3530004000000123456789010"
+    },
+    {
+      "type": "click",
+      "selector": "[data-testid='beneficiaires-verifier-iban']"
+    },
+    {
+      "type": "wait_for",
+      "text": "IBAN valide"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='beneficiaires-bic']",
+      "value": "HSBCFRPPXXX"
+    },
+    {
+      "type": "fill",
+      "selector": "[data-testid='beneficiaires-banque']",
+      "value": "HSBC France"
+    },
+    {
+      "type": "click",
+      "selector": "[data-testid='beneficiaires-ajouter']"
+    },
+    {
+      "type": "wait_for",
+      "selector": "[data-testid='beneficiaires-message-info']"
+    }
+  ]
+}

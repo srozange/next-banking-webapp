@@ -1,0 +1,38 @@
+{
+  "id": "SC-016-01",
+  "feature_id": "FEAT-016",
+  "feature_name": "Administration — Gestion globale",
+  "description": "L'ADMIN accède à la page d'administration avec les KPIs (clients, conseillers, prêts) et la liste des clients",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "ADMIN"
+  ],
+  "rg_ids": [
+    "RG-016-003",
+    "RG-016-004",
+    "RG-016-005",
+    "RG-016-006"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-016-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/admin.xhtml",
+      "role": "ADMIN"
+    },
+    "rationale": "Route /administration. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Virements suspendus — En attente de revue » (après « Gestion des clients »)."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "method": "GET",
+  "path": "/api/documents/telechargement?type=RIB&compteId=1",
+  "headers": {},
+  "follow_redirects": false
+}

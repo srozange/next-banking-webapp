@@ -1,0 +1,37 @@
+{
+  "id": "SC-008-01",
+  "feature_id": "FEAT-008",
+  "feature_name": "Documents (relevés, attestations, IFU)",
+  "description": "La page documents affiche les liens de téléchargement IFU, RIB, attestation et relevés mensuels",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-008-003",
+    "RG-008-005",
+    "RG-008-006"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-008-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/documents.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /documents. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, mention « (nouvel onglet) »."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "start_url": "/tableau-de-bord",
+  "role": "CLIENT",
+  "actions": [
+    {
+      "type": "click",
+      "selector": "[data-testid='nav-deconnexion']"
+    },
+    {
+      "type": "wait_for",
+      "text": "Identifiant"
+    }
+  ]
+}

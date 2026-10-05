@@ -1,0 +1,7 @@
+Effectuer un virement
+Compte source
+Compte destinataire
+Montant
+Motif
+COURANT
+EPARGNE

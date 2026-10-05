@@ -1,0 +1,33 @@
+{
+  "id": "SC-014-01",
+  "feature_id": "FEAT-014",
+  "feature_name": "Callback OAuth Powens",
+  "description": "La page de callback Powens est accessible sans authentification et redirige vers comptes-tiers.xhtml quand les paramètres sont absents",
+  "capture_adapter": "http",
+  "replay_adapter": "http",
+  "expected_outputs": [
+    "http_response"
+  ],
+  "roles": [],
+  "rg_ids": [
+    "RG-014-001"
+  ],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "mode": "status+json_subset",
+    "json_subset": null
+  },
+  "derived_from": {
+    "id": "SC-014-01",
+    "decision": "map",
+    "legacy": {
+      "method": "GET",
+      "path": "/banking-legacy/powens-callback.xhtml",
+      "content_type": null,
+      "fields": [],
+      "query_params": []
+    },
+    "rationale": "Retour Powens public sur son chemin exact (FR-030-01) : redirection 302 vers /comptes-tiers conservée (seule exception AD-17)."
+  }
+}

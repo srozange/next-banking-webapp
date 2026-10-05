@@ -1,0 +1,34 @@
+{
+  "id": "SC-004-02",
+  "feature_id": "FEAT-004",
+  "feature_name": "Virements programmés",
+  "description": "Créer un virement programmé mensuel avec données valides affiche 'Virement programme cree avec succes'",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-004-023",
+    "RG-004-024"
+  ],
+  "tags": [],
+  "writes": true,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-004-02",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/virement-programme.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /virements-programmes, 8 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

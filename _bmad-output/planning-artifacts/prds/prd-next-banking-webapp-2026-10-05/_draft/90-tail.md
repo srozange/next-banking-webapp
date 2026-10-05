@@ -125,6 +125,7 @@ Les temps du legacy sont une référence mesurée, pas une cible (brief). Cibles
   - contrôle des soldes faibles et des seuils toutes les 30 minutes ;
   - nouveau traitement, sans équivalent legacy : rejet automatique des virements suspendus arrivés à leur heure butoir (FR-027-17), à une fréquence fixée dans la décision d'architecture ; l'heure butoir fait foi quel que soit le moment du passage (décision B5).
 - **NFR-BATCH-02** : chaque exécution d'un traitement planifié est enregistrée dans un journal d'exécution (heure, résultat).
+  - **Exception, décision du 2026-10-05 (finalisation de l'architecture) :** le rejet automatique des virements suspendus à l'heure butoir (FR-027-17) tourne toutes les minutes. Il n'écrit une entrée dans le journal d'exécution que lorsqu'il rejette au moins un virement, ou lorsque son exécution échoue. Une exécution sans rejet et sans erreur n'écrit rien. Raison : un traitement lancé toutes les minutes saturerait l'écran d'administration, limité aux 50 dernières entrées. Chaque virement rejeté garde son entrée d'audit individuelle (TRANSFER_AUTO_REJECT, FEAT-026).
 - **NFR-BATCH-03** : le fuseau horaire des traitements est configuré explicitement. [ASSUMPTION A-G-07 : Europe/Paris ; le legacy ne le configure pas (`docs/retro/GAPS.md`, BATCH.md)]
 
 ### 7.7 Observabilité

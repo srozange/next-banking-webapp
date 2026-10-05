@@ -1,0 +1,33 @@
+{
+  "id": "SC-016-02",
+  "feature_id": "FEAT-016",
+  "feature_name": "Administration — Gestion globale",
+  "description": "Un CLIENT accédant à admin.xhtml est redirigé vers dashboard.xhtml (RBAC - accès refusé sans message d'erreur)",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-016-002"
+  ],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-016-02",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/admin.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /administration. CLIENT redirigé sans message vers /tableau-de-bord par le routeur du front. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement, section « Suivi de mes virements » (tableau de bord après redirection)."
+  }
+}

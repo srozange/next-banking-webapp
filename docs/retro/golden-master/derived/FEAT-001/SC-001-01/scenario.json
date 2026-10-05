@@ -1,0 +1,35 @@
+{
+  "id": "SC-001-01",
+  "feature_id": "FEAT-001",
+  "feature_name": "Connexion",
+  "description": "La page de connexion est accessible sans authentification (HTTP 200)",
+  "capture_adapter": "http",
+  "replay_adapter": "http",
+  "expected_outputs": [
+    "http_response"
+  ],
+  "roles": [],
+  "rg_ids": [
+    "RG-001-002"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "mode": "status+json_subset",
+    "json_subset": null
+  },
+  "derived_from": {
+    "id": "SC-001-01",
+    "decision": "map",
+    "legacy": {
+      "method": "GET",
+      "path": "/banking-legacy/login.xhtml",
+      "content_type": null,
+      "fields": [],
+      "query_params": []
+    },
+    "rationale": "Page de connexion publique servie par le conteneur web (index.html de la SPA) : 200."
+  }
+}

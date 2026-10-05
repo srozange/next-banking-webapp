@@ -1,0 +1,33 @@
+{
+  "id": "SC-009-01",
+  "feature_id": "FEAT-009",
+  "feature_name": "Bourse et watchlist",
+  "description": "La page bourse charge la watchlist et affiche les données de marché AlphaVantage pour le premier symbole",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-009-001"
+  ],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-009-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/bourse.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /bourse. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "target_base_url": "http://localhost:8080/",
+  "adapters": {
+    "http": {
+      "base_url": "http://localhost:8080/"
+    },
+    "playwright": {
+      "base_url": "http://localhost:8080/",
+      "storage_state_dir": ".auth",
+      "accounts": [
+        {
+          "role": "ADMIN",
+          "login": "admin",
+          "password_env": "RETRO_ADMIN_PASSWORD"
+        },
+        {
+          "role": "CONSEILLER",
+          "login": "sophie",
+          "password_env": "RETRO_CONSEILLER_PASSWORD"
+        },
+        {
+          "role": "CLIENT",
+          "login": "user1",
+          "password_env": "RETRO_CLIENT_PASSWORD"
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "http_response": {
+      "ignore_fields": [
+        "Date",
+        "Set-Cookie"
+      ],
+      "mode": "exact"
+    },
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "_note": "Généré par derive-golden-master.py — ne pas éditer, modifier replay-mapping.json puis relancer derive."
+}

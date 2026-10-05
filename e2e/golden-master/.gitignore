@@ -1,0 +1,5 @@
+# Généré par export-golden-master-tests.py — ne pas éditer.
+.auth/
+report/
+results.json
+test-results/

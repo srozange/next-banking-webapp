@@ -1,0 +1,6 @@
+{
+  "method": "GET",
+  "path": "/api/open-banking-conseiller/powens/retour",
+  "headers": {},
+  "follow_redirects": false
+}

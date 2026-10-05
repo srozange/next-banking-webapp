@@ -1,0 +1,37 @@
+{
+  "id": "SC-013-01",
+  "feature_id": "FEAT-013",
+  "feature_name": "Gestion des bénéficiaires externes",
+  "description": "La page bénéficiaires affiche la liste des bénéficiaires actifs avec IBAN masqué et badge zone SEPA",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-013-003",
+    "RG-013-007",
+    "RG-013-010"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-013-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/beneficiaires.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /beneficiaires. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

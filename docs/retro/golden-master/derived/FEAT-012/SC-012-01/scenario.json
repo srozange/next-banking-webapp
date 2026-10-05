@@ -1,0 +1,31 @@
+{
+  "id": "SC-012-01",
+  "feature_id": "FEAT-012",
+  "feature_name": "Comptes Tiers — Open Banking Powens",
+  "description": "La page comptes tiers charge l'interface de connexion Open Banking avec la liste des banques partenaires",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-012-01",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/comptes-tiers.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /comptes-tiers. Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}

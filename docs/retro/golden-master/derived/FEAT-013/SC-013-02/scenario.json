@@ -1,0 +1,35 @@
+{
+  "id": "SC-013-02",
+  "feature_id": "FEAT-013",
+  "feature_name": "Bénéficiaires",
+  "description": "Ajouter un bénéficiaire avec IBAN MOD-97 valide affiche 'Bénéficiaire ajouté avec succès' et l'entrée dans la liste",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": [
+    "dom_text"
+  ],
+  "roles": [
+    "CLIENT"
+  ],
+  "rg_ids": [
+    "RG-013-004",
+    "RG-013-005",
+    "RG-013-006"
+  ],
+  "tags": [],
+  "writes": true,
+  "compare": {
+    "dom_text": {
+      "mode": "contains"
+    }
+  },
+  "derived_from": {
+    "id": "SC-013-02",
+    "decision": "map",
+    "legacy": {
+      "start_page": "/beneficiaires.xhtml",
+      "role": "CLIENT"
+    },
+    "rationale": "Route /beneficiaires, 8 sélecteur(s) data-testid (table EXPERIENCE.md). Ajouts C1 (entrée groupée « textes ajoutés », sans effet en mode contains) : lien d'évitement."
+  }
+}
