@@ -13,7 +13,7 @@ inputDocuments:
 
 # PRD : next-banking-webapp (rénovation)
 
-*Brouillon complet en mode Fast path, non finalisé. Les suppositions sont marquées `[ASSUMPTION]` et indexées en §10. La décision sur la règle RG-027-003 (contrôle de fraude d'un virement) a été prise le 2026-10-05 (§9, décisions D1 à D12) ; les exigences qui en découlent et s'écartent du corpus sont marquées `[ÉVOLUTION — décision RG-027-003 …]`, et celles livrées après le socle `[STORY SUIVANTE]`. Les décisions de finalisation B1 à B5, prises au gate de relecture (§9), sont marquées `[ÉVOLUTION — décision de finalisation Bn]`.*
+*Brouillon complet en mode Fast path, non finalisé. Les suppositions sont marquées `[ASSUMPTION]` et indexées en §10. La décision sur la règle RG-027-003 (contrôle de fraude d'un virement) a été prise le 2026-10-05 (§9, décisions D1 à D12) ; les exigences qui en découlent et s'écartent du corpus sont marquées `[ÉVOLUTION — décision RG-027-003 …]`, et celles livrées après le socle `[STORY SUIVANTE]`. Les décisions de finalisation B1 à B7, prises au gate de relecture (§9), sont marquées `[ÉVOLUTION — décision de finalisation Bn]` ; B1 a été révisée (textes legacy conservés pour la démonstration).*
 
 ## 0. Objet du document
 
@@ -31,7 +31,8 @@ Ce PRD décrit la rénovation de l'application bancaire existante (le « legacy 
 
 La banque dispose d'une application en ligne fonctionnelle mais sans documentation, bâtie sur une pile Java EE vieillissante, sans API, sans conteneurisation ni intégration continue, et qui porte 50 comportements défectueux que le métier a décidé de corriger. La rénovation livre à ses trois populations (clients, conseillers, administrateurs) **la parité, plus les évolutions décidées** : le même service que le legacy, prouvé par le rejeu du golden master, et la correction de ces 50 bugs, chacune démontrée par un test. Les évolutions décidées, qui s'écartent du legacy sans qu'un bug les couvre, sont :
 - la décision RG-027-003 sur le contrôle de fraude d'un virement (§9, D1 à D12) : suspension avant débit, revue par l'administrateur, cumul glissant, reprise préremplie après un refus ;
-- les décisions de finalisation B1 à B5 (§9) : textes « transaction importante », contrôle de fraude des virements programmés, plafond des alertes de solde faible, passage des alertes en REVIEWED, heure butoir qui fait foi ;
+- les décisions de finalisation B1 à B7 (§9) : textes legacy « en attente » conservés pour la démonstration (B1 révisée), contrôle de fraude des virements programmés, plafond des alertes de solde faible, passage des alertes en REVIEWED, heure butoir qui fait foi, rejet sans débit d'une libération sur solde insuffisant, rejet sans débit d'un virement libéré dont le solde est devenu insuffisant au débit ;
+- après la démonstration, la reformulation des textes de transaction importante (FR-003-29, B1 révisée) ;
 - le signal d'échecs de connexion répétés (FR-027-11) ;
 - le bouton « Rafraîchir » des comptes tiers (A-012-5) ;
 - l'exemption d'authentification des écrans publics sur leur chemin exact (A-030-1).
@@ -83,9 +84,9 @@ La portée de cette version est un **démonstrateur réaliste** : le comportemen
 - **Contrôle de fraude** : évaluation d'un virement selon des signaux (LARGE_AMOUNT, ROUND_AMOUNT, RAPID_SUCCESSION, HIGH_FREQUENCY, heure inhabituelle…), chacun avec un score de risque.
 - **Seuil de score** : 75 par défaut. Un score cumulé strictement supérieur suspend le virement (FR-027-02).
 - **Seuil de fraude** : 10 000 € par défaut. Un virement d'un montant supérieur ou égal est suspendu (FR-027-02) et sa notification est FRAUDE.
-- **Seuil d'alerte** : 5 000 € par défaut. Un virement exécuté d'un montant supérieur ou égal reçoit la notification ALERTE « transaction importante » au lieu de CONFIRMATION (FR-002-10).
+- **Seuil d'alerte** : 5 000 € par défaut. Un virement exécuté d'un montant supérieur ou égal reçoit la notification ALERTE au lieu de CONFIRMATION (FR-002-10).
 - **Seuil de mise en attente** : 5 000 € par défaut, même valeur que le seuil d'alerte mais effet distinct : un virement exécuté d'un montant supérieur ou égal est enregistré au statut PENDING (FR-003-10). Les deux seuils sont deux paramètres séparés (NFR-SEC-08) et ne doivent pas être fusionnés.
-- **PENDING** : valeur technique du statut enregistré d'un virement exécuté et débité dont le montant atteint le seuil de mise en attente ; elle n'est pas affichée « en attente » (décision B1). Ce n'est pas l'état SUSPENDU.
+- **PENDING** : valeur technique du statut enregistré d'un virement exécuté et débité dont le montant atteint le seuil de mise en attente ; pour la démonstration, elle reste annoncée « en attente » avec les textes legacy (BUG-009 conservé provisoirement, décision B1 révisée, corrigé par FR-003-29). Ce n'est pas l'état SUSPENDU.
 - **Cumul glissant** : total des virements émis par un client sur les 24 heures glissantes, nouveau virement inclus ; au-delà du plafond (10 000 € par défaut), le virement est suspendu (FR-027-18).
 - **Alerte de fraude** : enregistrement consultable par l'administrateur, produit par le contrôle de fraude en temps réel. Le traitement nocturne de détection de fraude (FEAT-019) ne crée pas d'alerte, il journalise son résultat (RG-019-007).
 - **Virement suspendu** : virement que le contrôle de fraude a arrêté avant tout débit, en attente de la revue de l'administrateur, qui le libère ou le rejette avant l'heure butoir.
@@ -266,14 +267,14 @@ Critère d'acceptation (test) : un utilisateur qui a des notifications, lues et 
 
 Source : RG-002-018, RG-002-019, RG-002-020, BUG-006
 
-#### FR-002-10 : Une seule notification par virement traité [ÉVOLUTION — décision RG-027-003 D1, D2, D3] [ÉVOLUTION — décision de finalisation B1]
+#### FR-002-10 : Une seule notification par virement traité [ÉVOLUTION — décision RG-027-003 D1, D2, D3]
 
 Lorsqu'un virement soumis depuis l'écran de virement (FEAT-003) est traité, le système produit exactement une notification pour l'émetteur, de type CONFIRMATION, ALERTE ou FRAUDE, jamais une combinaison de ces types. Cette notification unique est produite au moment de la décision du contrôle de fraude (FR-027-02), et non par le traitement asynchrone du virement (FR-023-01, FR-023-03). Le type suit d'abord l'issue du contrôle, puis le montant, avec le seuil d'alerte (5 000 EUR par défaut) et le seuil de fraude (10 000 EUR par défaut) de configuration :
 - virement suspendu (score cumulé strictement supérieur à 75, ou montant supérieur ou égal au seuil de fraude, ou dépassement du cumul glissant de FR-027-18) : FRAUDE, avec l'avis de suspension de FR-027-04 ;
 - virement exécuté d'un montant strictement inférieur au seuil d'alerte : CONFIRMATION, « Virement de {montant} EUR vers le compte {numCompte} confirme », ou « Virement de {montant} EUR vers le compte {numCompte} confirme (motif : {motif}) » si un motif est saisi ;
-- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. » (texte de FR-003-10, décision B1).
+- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {montant} EUR en attente de validation - transaction importante, verification en cours. » (texte legacy conservé pour la démonstration, FR-003-10, décision B1 révisée).
 
-Cette règle s'écarte de RG-002-021 et RG-002-022, qui fixaient le type par le seul montant : un virement suspendu pour son score (D2) reçoit FRAUDE quel que soit son montant, et l'ALERTE ne concerne plus que les virements exécutés de 5 000 EUR à 9 999,99 EUR. RG-002-023 est conservée : un montant supérieur ou égal au seuil de fraude donne FRAUDE, le virement étant désormais suspendu (D1). Le texte ALERTE legacy (« en attente de validation - transaction importante, verification en cours ») n'est pas repris (décision B1).
+Cette règle s'écarte de RG-002-021 et RG-002-022, qui fixaient le type par le seul montant : un virement suspendu pour son score (D2) reçoit FRAUDE quel que soit son montant, et l'ALERTE ne concerne plus que les virements exécutés de 5 000 EUR à 9 999,99 EUR. RG-002-023 est conservée : un montant supérieur ou égal au seuil de fraude donne FRAUDE, le virement étant désormais suspendu (D1).
 
 Un virement refusé pour erreur du contrôle ne produit aucune notification : le refus est affiché à l'écran (FR-003-27). [ASSUMPTION A-003-8 : aucune notification pour un refus pour erreur du contrôle, non décidé en table ronde] Un virement libéré passe ensuite par le traitement asynchrone (FR-023-01), mais sans nouvelle notification : la libération, le rejet ou le rejet automatique d'un virement suspendu ne produisent aucune notification ; le client voit le nouvel état du virement (FR-027-16). La règle lui est annoncée dans l'unique notification de suspension (FR-027-04). C'est une décision du décideur, prise lors de la finalisation du 2026-10-05. Les notifications des virements programmés suivent FR-021-10, FR-004-12 et FR-021-04. Cette exigence remplace le comportement legacy RG-002-024 (plusieurs notifications possibles pour un même virement).
 
@@ -302,7 +303,7 @@ Source : RG-002-027, RG-002-028
 
 ### FEAT-003 — Effectuer un virement
 
-**Description :** Le formulaire de virement permet à un utilisateur authentifié de virer un montant d'un de ses comptes vers un autre de ses comptes. L'écran est ouvert à tous les rôles, mais seuls les comptes de l'utilisateur connecté sont proposés : un CONSEILLER ou un ADMIN, sans compte propre, voit des listes vides et ne peut rien virer. Le virement est soumis sans étape de confirmation. Une fois exécuté : débit et crédit simultanés, deux opérations au relevé, statut SUCCESS ou PENDING selon le seuil de mise en attente (affiché comme « transaction importante », décision B1), journal d'audit, notification dans l'application, puis retour au tableau de bord. Chaque virement passe par le contrôle de fraude en temps réel (FEAT-027) avant sa validation finale : il est exécuté, suspendu avant tout débit en attente de la revue de l'administrateur, ou refusé si le contrôle tombe en erreur (décision RG-027-003, D1 à D12). Cas limites marquants : comptes non sélectionnés ou identiques, montant nul ou négatif, solde insuffisant (désormais un message clair), virement de 5 000 € et plus (exécuté, « transaction importante »), de 10 000 € et plus (suspendu avant tout débit, notification FRAUDE). Scénarios golden master : SC-003-01, SC-003-02, SC-003-03, SC-003-04.
+**Description :** Le formulaire de virement permet à un utilisateur authentifié de virer un montant d'un de ses comptes vers un autre de ses comptes. L'écran est ouvert à tous les rôles, mais seuls les comptes de l'utilisateur connecté sont proposés : un CONSEILLER ou un ADMIN, sans compte propre, voit des listes vides et ne peut rien virer. Le virement est soumis sans étape de confirmation. Une fois exécuté : débit et crédit simultanés, deux opérations au relevé, statut SUCCESS ou PENDING selon le seuil de mise en attente (textes legacy « en attente » conservés pour la démonstration, décision B1 révisée), journal d'audit, notification dans l'application, puis retour au tableau de bord. Chaque virement passe par le contrôle de fraude en temps réel (FEAT-027) avant sa validation finale : il est exécuté, suspendu avant tout débit en attente de la revue de l'administrateur, ou refusé si le contrôle tombe en erreur (décision RG-027-003, D1 à D12). Cas limites marquants : comptes non sélectionnés ou identiques, montant nul ou négatif, solde insuffisant (désormais un message clair), virement de 5 000 € et plus (exécuté et débité, mais annoncé « en attente de validation » comme dans le legacy, BUG-009 conservé provisoirement), de 10 000 € et plus (suspendu avant tout débit, notification FRAUDE). Scénarios golden master : SC-003-01, SC-003-02, SC-003-03, SC-003-04.
 
 **Exigences fonctionnelles :**
 
@@ -358,23 +359,23 @@ Source : RG-003-009
 
 #### FR-003-09 : Débit, crédit et opérations au relevé [ÉVOLUTION — décision RG-027-003 D1, D3]
 
-Un virement n'est débité et crédité qu'au moment de son exécution : immédiatement si le contrôle de fraude le laisse passer (FR-027-02), ou après sa libération par l'administrateur (FR-016-19). L'exécution débite le compte source et crédite le compte destinataire du montant, de façon atomique (les deux ou aucun). Elle enregistre une opération DEBIT sur le compte source (« Virement vers {compte destinataire} - {motif} ») et une opération CREDIT sur le compte destinataire (« Virement depuis {compte source} - {motif} »), chacune avec le solde après opération, ainsi que le virement lui-même avec son horodatage ; un virement au statut PENDING porte en plus, en tête de ces descriptions, la mention « [TRANSACTION IMPORTANTE] » (FR-003-10, décision B1), à la place de la mention legacy « [EN ATTENTE] ». Un virement suspendu, rejeté ou refusé pour erreur du contrôle ne modifie aucun solde et n'enregistre aucune opération au relevé. Cette exigence remplace RG-003-010 et RG-003-011 (débit et crédit dès la soumission) : un virement suspendu n'est débité qu'à sa libération.
+Un virement n'est débité et crédité qu'au moment de son exécution : immédiatement si le contrôle de fraude le laisse passer (FR-027-02), ou après sa libération par l'administrateur (FR-016-19). L'exécution débite le compte source et crédite le compte destinataire du montant, de façon atomique (les deux ou aucun). Elle enregistre une opération DEBIT sur le compte source (« Virement vers {compte destinataire} - {motif} ») et une opération CREDIT sur le compte destinataire (« Virement depuis {compte source} - {motif} »), chacune avec le solde après opération, ainsi que le virement lui-même avec son horodatage ; un virement au statut PENDING porte en plus, en tête de ces descriptions, la mention legacy « [EN ATTENTE] » (FR-003-10, décision B1 révisée). Un virement suspendu, rejeté ou refusé pour erreur du contrôle ne modifie aucun solde et n'enregistre aucune opération au relevé. Cette exigence remplace RG-003-010 et RG-003-011 (débit et crédit dès la soumission) : un virement suspendu n'est débité qu'à sa libération.
 
 Critère d'acceptation (test) : un virement exécuté produit exactement un débit, un crédit et deux opérations ; un virement suspendu, rejeté ou refusé pour erreur laisse les deux soldes inchangés et n'ajoute aucune opération.
 
 Source : RG-003-010, RG-003-011, RG-003-012, RG-003-013, RG-027-003
 
-#### FR-003-10 : Virements importants exécutés (statut PENDING) [ÉVOLUTION — décision RG-027-003 D1, D2] [ÉVOLUTION — décision de finalisation B1]
+#### FR-003-10 : Virements importants exécutés (statut PENDING) [ÉVOLUTION — décision RG-027-003 D1, D2] [décision de finalisation B1 révisée : BUG-009 conservé provisoirement]
 
 Un virement exécuté d'un montant supérieur ou égal au seuil de mise en attente (configuration de déploiement, 5 000 € par défaut) prend le statut PENDING ; un virement exécuté d'un montant strictement inférieur prend le statut SUCCESS. PENDING est un statut d'affichage de l'état EXÉCUTÉ (FR-027-16) : le virement est exécuté et débité immédiatement, et n'attend aucune revue (décision D2). Seul un virement à l'état SUSPENDU attend une revue, avant tout débit (FR-027-02). Écart à RG-003-014 : un virement de 10 000 € ou plus, ou de score cumulé strictement supérieur à 75, n'est pas PENDING mais SUSPENDU sans débit (décisions D1, D2).
 
-Les textes affichés pour un virement PENDING disent « transaction importante », sans « en attente » ni « vérification » (décision B1, correction de BUG-009) :
-- notification ALERTE : « Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. » ;
-- mention en tête des descriptions des opérations au relevé (FR-003-09) : « [TRANSACTION IMPORTANTE] », à la place de « [EN ATTENTE] ».
+Les textes affichés pour un virement PENDING sont ceux du legacy, sans reformulation (décision B1 révisée) :
+- notification ALERTE : « Virement de {montant} EUR en attente de validation - transaction importante, verification en cours. » ;
+- mention en tête des descriptions des opérations au relevé (FR-003-09) : « [EN ATTENTE] ».
 
-[ASSUMPTION A-003-10 : formulation exacte de ces deux textes, sans accents dans le style du legacy, proposée au gate et non arbitrée mot à mot ; le statut enregistré garde la valeur technique PENDING, qui n'est affichée au client sous aucune forme « en attente »] L'écart de texte avec le golden master est voulu (décision B1) : un scénario qui capture « [EN ATTENTE] » ou l'ancien texte ALERTE est traité à l'étape G2. Cette exigence remplace le comportement legacy RG-003-014 (virement présenté « en attente » alors qu'il est débité, BUG-009).
+L'incohérence entre le texte et le débit visée par BUG-009 (un virement annoncé « en attente de validation » alors qu'il est déjà débité) est conservée provisoirement pour la démonstration ; raison : parité de texte avec le golden master pour la démonstration. La reformulation des textes est portée par FR-003-29, livrée après la démonstration (risque R-4, §9).
 
-Critère d'acceptation (test) : un virement de 5 000,00 € de score cumulé inférieur ou égal à 75 prend le statut PENDING, débite le compte source, produit la notification ALERTE au texte « … execute - transaction importante. » ci-dessus et des opérations dont la description commence par « [TRANSACTION IMPORTANTE] » ; aucun texte affiché ne contient « en attente » ni « verification » ; un virement de 4 999,99 € prend le statut SUCCESS ; un virement de 10 000,00 € est à l'état SUSPENDU et ne débite rien.
+Critère d'acceptation (test) : un virement de 5 000,00 € de score cumulé inférieur ou égal à 75 prend le statut PENDING, débite le compte source, produit la notification ALERTE au texte legacy ci-dessus et des opérations dont la description commence par « [EN ATTENTE] » ; un virement de 4 999,99 € prend le statut SUCCESS ; un virement de 10 000,00 € est à l'état SUSPENDU et ne débite rien.
 
 Source : RG-003-014, RG-003-015, BUG-009, RG-027-003
 
@@ -396,9 +397,9 @@ Seul un virement exécuté, immédiatement ou après libération, est remis au t
 
 Source : RG-003-018, RG-027-003
 
-#### FR-003-14 : Notification selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2] [ÉVOLUTION — décision de finalisation B1]
+#### FR-003-14 : Notification selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2]
 
-L'utilisateur connecté reçoit dans l'application une seule notification par virement, produite au moment de la décision du contrôle de fraude et choisie selon l'issue du contrôle puis le montant, avec les textes et les seuils de FR-002-10 : FRAUDE pour un virement suspendu, CONFIRMATION pour un virement exécuté sous le seuil d'alerte (5 000 € par défaut), ALERTE « transaction importante » pour un virement exécuté à partir de ce seuil (FR-003-10). Un virement d'un montant supérieur ou égal au seuil de fraude (10 000 € par défaut) est toujours suspendu (FR-023-04). Un virement libéré puis exécuté ne reçoit pas de nouvelle notification, et un virement refusé pour erreur du contrôle n'en reçoit aucune (FR-003-27). Cette exigence remplace RG-003-019 et RG-003-021 pour un virement suspendu sur score : il reçoit FRAUDE quel que soit son montant (D2).
+L'utilisateur connecté reçoit dans l'application une seule notification par virement, produite au moment de la décision du contrôle de fraude et choisie selon l'issue du contrôle puis le montant, avec les textes et les seuils de FR-002-10 : FRAUDE pour un virement suspendu, CONFIRMATION pour un virement exécuté sous le seuil d'alerte (5 000 € par défaut), ALERTE (texte legacy « en attente de validation - transaction importante, verification en cours », FR-003-10) pour un virement exécuté à partir de ce seuil. Un virement d'un montant supérieur ou égal au seuil de fraude (10 000 € par défaut) est toujours suspendu (FR-023-04). Un virement libéré puis exécuté ne reçoit pas de nouvelle notification, et un virement refusé pour erreur du contrôle n'en reçoit aucune (FR-003-27). Cette exigence remplace RG-003-019 et RG-003-021 pour un virement suspendu sur score : il reçoit FRAUDE quel que soit son montant (D2).
 
 Source : RG-003-019, RG-003-021, RG-003-022, RG-027-003
 
@@ -490,8 +491,20 @@ Après un refus pour erreur du contrôle (FR-003-27), le client peut refaire son
 
 Source : RG-027-003
 
+#### FR-003-29 : Reformulation des textes de transaction importante [STORY SUIVANTE : après la démonstration]
+
+Après la démonstration, les textes affichés pour un virement PENDING, exécuté et débité, disent « transaction importante », sans « en attente » ni « verification » (décision B1 initiale, reportée par la décision B1 révisée) :
+- notification ALERTE : « Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. » ;
+- mention en tête des descriptions des opérations au relevé (FR-003-09) : « [TRANSACTION IMPORTANTE] », à la place de « [EN ATTENTE] » ; le relevé (FR-005-07) affiche alors le badge « Transaction importante » et garde l'affichage de « [EN ATTENTE] » pour les opérations déjà en base.
+
+Ces textes, sans accents dans le style du legacy, ont été proposés au gate ; leur formulation est confirmée à la préparation de la story. Le statut enregistré garde la valeur technique PENDING. Cette story corrige BUG-009 (texte « en attente » pour un virement débité) ; l'écart de texte avec le golden master, voulu, est traité à l'étape G2 au moment de sa livraison. D'ici là, FR-003-10 s'applique avec les textes legacy.
+
+Critère d'acceptation (test) : un virement de 5 000,00 € de score cumulé inférieur ou égal à 75 produit la notification ALERTE « … execute - transaction importante. » et des opérations dont la description commence par « [TRANSACTION IMPORTANTE] » ; aucun texte affiché pour ce virement ne contient « en attente » ni « verification ».
+
+Source : RG-003-014, BUG-009
+
 **Notes :**
-- RG-003-007, RG-003-014 et RG-003-027 (Suspect, dette legacy) sont couvertes par les FR de correction FR-003-06 (BUG-008, BUG-011), FR-003-10 (BUG-009, décision de finalisation B1 : textes « transaction importante ») et FR-003-18 (BUG-010) ; leur comportement legacy n'est pas reproduit.
+- RG-003-007, RG-003-014 et RG-003-027 (Suspect, dette legacy) sont couvertes par les FR de correction FR-003-06 (BUG-008, BUG-011), FR-003-10 et FR-003-29 (BUG-009, conservé provisoirement pour la démonstration et corrigé après elle, décision de finalisation B1 révisée) et FR-003-18 (BUG-010) ; leur comportement legacy n'est pas reproduit, sauf les textes « en attente » de BUG-009 jusqu'à FR-003-29.
 - SC-003-03 capture le message technique legacy de solde insuffisant ; corrigé par FR-003-06 (BUG-011), son texte attendu change.
 - Le motif dans la notification de confirmation est porté par l'exigence fusionnée FR-003-26 (RG-003-020 + RG-023-007).
 - Les deux bandeaux techniques du legacy au-dessus du formulaire (pile technique de gestion du virement, publication sur une file nommée) et les messages de champ obligatoire du legacy, qui exposent des identifiants de composants internes, ne sont pas repris (NFR-SEC-04). [ASSUMPTION A-003-6 : ces textes sont exclus du golden master ; un champ obligatoire vide reçoit un message sans détail technique]
@@ -627,7 +640,7 @@ Source : RG-004-065
 
 ### FEAT-005 — Relevé de compte
 
-**Description :** L'écran « Relevé de compte » permet à tout utilisateur authentifié (CLIENT, et CONSEILLER ou ADMIN pour leurs propres comptes) de consulter, compte par compte, toutes les opérations d'un de ses comptes, de la plus récente à la plus ancienne. Le premier compte est sélectionné d'office ; changer de compte rafraîchit le solde et les opérations sans recharger toute la page. Les opérations des virements importants (libellé préfixé « [TRANSACTION IMPORTANTE] », ou « [EN ATTENTE] » pour une opération enregistrée avant la rénovation) sont signalées par un badge et une ligne surlignée (décision de finalisation B1). Les cas limites marquants sont l'utilisateur sans compte (sélecteur vide, aucune opération), le compte sans opération et l'absence de limite au nombre d'opérations affichées. Scénarios golden master : SC-005-01.
+**Description :** L'écran « Relevé de compte » permet à tout utilisateur authentifié (CLIENT, et CONSEILLER ou ADMIN pour leurs propres comptes) de consulter, compte par compte, toutes les opérations d'un de ses comptes, de la plus récente à la plus ancienne. Le premier compte est sélectionné d'office ; changer de compte rafraîchit le solde et les opérations sans recharger toute la page. Les opérations en attente (libellé préfixé « [EN ATTENTE] », texte legacy conservé pour la démonstration, décision de finalisation B1 révisée) sont signalées par un badge et une ligne surlignée. Les cas limites marquants sont l'utilisateur sans compte (sélecteur vide, aucune opération), le compte sans opération et l'absence de limite au nombre d'opérations affichées. Scénarios golden master : SC-005-01.
 
 **Exigences fonctionnelles :**
 
@@ -671,11 +684,11 @@ Si le compte n'a aucune opération, le système affiche « Aucune transaction po
 
 Source : RG-005-011, RG-005-012, RG-005-013, RG-005-014, RG-005-015, RG-005-016
 
-#### FR-005-07 : Opérations des virements importants [ÉVOLUTION — décision de finalisation B1]
+#### FR-005-07 : Opérations en attente
 
-Si le libellé d'une opération commence par « [TRANSACTION IMPORTANTE] » suivi d'une espace (25 caractères), mention posée par FR-003-09 et FR-003-10, le système affiche le badge « Transaction importante » avant le libellé, retire ces 25 caractères du libellé affiché et affiche la ligne sur fond jaune. Une opération dont le libellé commence par l'ancienne mention « [EN ATTENTE] » suivie d'une espace (13 caractères) garde l'affichage legacy de RG-005-017 : badge « En attente », 13 caractères retirés, ligne sur fond jaune. [ASSUMPTION A-005-2 : le relevé reconnaît les deux préfixes ; l'ancien ne peut venir que d'opérations déjà en base (données de référence ou jeux de test repris du legacy), aucune nouvelle opération ne le portant plus ; le texte du badge « Transaction importante » est proposé au gate et non arbitré] Cette exigence modifie RG-005-017, qui ne reconnaissait que « [EN ATTENTE] » : la nouvelle mention de FR-003-10 remplace le texte trompeur visé par BUG-009.
+Si le libellé d'une opération commence par « [EN ATTENTE] » suivi d'une espace (13 caractères), mention posée par FR-003-09 et FR-003-10, le système affiche le badge « En attente » avant le libellé, retire ces 13 caractères du libellé affiché et affiche la ligne sur fond jaune. Les textes legacy sont conservés pour la démonstration (décision de finalisation B1 révisée) ; la reconnaissance de la nouvelle mention de FR-003-29 arrive avec cette story, après la démonstration.
 
-Critère d'acceptation (test) : une opération « [TRANSACTION IMPORTANTE] Virement vers X - loyer » s'affiche avec le badge « Transaction importante », le libellé « Virement vers X - loyer » et un fond jaune ; une opération « [EN ATTENTE] Virement vers X » s'affiche avec le badge « En attente » et le libellé « Virement vers X » ; une opération sans préfixe n'a ni badge ni fond jaune.
+Critère d'acceptation (test) : une opération « [EN ATTENTE] Virement vers X » s'affiche avec le badge « En attente », le libellé « Virement vers X » et un fond jaune ; une opération sans préfixe n'a ni badge ni fond jaune.
 
 Source : RG-005-017
 
@@ -1677,15 +1690,17 @@ La section « Catalogue produits bancaires », en lecture seule, affiche les pro
 
 Source : RG-016-037
 
-#### FR-016-19 : Revue des virements suspendus [ÉVOLUTION — décision RG-027-003 D6, D7] [ÉVOLUTION — décision de finalisation B4, B5]
+#### FR-016-19 : Revue des virements suspendus [ÉVOLUTION — décision RG-027-003 D6, D7] [ÉVOLUTION — décision de finalisation B4, B5, B6, B7]
 
-L'administrateur, et lui seul, dispose d'une file des virements suspendus, immédiats ou issus d'une échéance de virement programmé (FR-021-10). Pour chaque virement, elle affiche le client, le montant, le compte destinataire, le motif de la suspension (signaux et score cumulé, montant supérieur ou égal au seuil de fraude, ou dépassement du cumul glissant) et l'heure butoir de revue. [ASSUMPTION A-016-3 : file triée par heure butoir la plus proche, colonnes proposées en table ronde (Sally), non arbitrées] Il peut libérer ou rejeter un virement suspendu, avec un motif obligatoire ; son identité, la décision, le motif et l'heure sont enregistrés au journal d'audit (FR-026-02). La libération refait le contrôle du solde avant l'exécution (FR-027-16). Aucun autre rôle (CONSEILLER, CLIENT) ne peut libérer ni rejeter un virement.
+L'administrateur, et lui seul, dispose d'une file des virements suspendus, immédiats ou issus d'une échéance de virement programmé (FR-021-10). Pour chaque virement, elle affiche le client, le montant, le compte destinataire, le motif de la suspension (signaux et score cumulé, montant supérieur ou égal au seuil de fraude, ou dépassement du cumul glissant) et l'heure butoir de revue. [ASSUMPTION A-016-3 : file triée par heure butoir la plus proche, colonnes proposées en table ronde (Sally), non arbitrées] Il peut libérer ou rejeter un virement suspendu, avec un motif obligatoire ; son identité, la décision, le motif et l'heure sont enregistrés au journal d'audit (FR-026-02). À l'instant de la libération, le système contrôle le solde du compte source (décision de finalisation B6, FR-027-16) : si le solde est insuffisant, la libération est refusée immédiatement et le virement passe à l'état REJETÉ, sans aucun débit ; sinon, le virement passe à l'état LIBÉRÉ et est remis au traitement asynchrone des virements (FR-023-01, correction A1 du gate), qui effectue ensuite le débit et le crédit et le passe à l'état EXÉCUTÉ. Aucun autre rôle (CONSEILLER, CLIENT) ne peut libérer ni rejeter un virement.
 
-L'heure butoir fait foi (décision de finalisation B5, FR-027-17) : la libération n'est acceptée que strictement avant l'heure butoir. À l'heure butoir ou après, elle est refusée et le virement est traité comme rejeté (REJETÉ, sans débit), que le traitement planifié du rejet automatique soit passé ou non. [ASSUMPTION A-016-6 : un rejet demandé à l'heure butoir ou après est lui aussi sans objet : le virement est rejeté par expiration (FR-027-17) et non par l'administrateur ; dans les deux cas, l'administrateur voit « Heure butoir depassee : le virement est rejete. »]
+Si le solde est devenu insuffisant entre la libération et le débit asynchrone, le virement est rejeté sans aucun débit (décision de finalisation B7, FR-027-16). L'administrateur voit ce rejet dans l'historique des virements traités de la section de revue, avec son motif en clair, « solde insuffisant au moment du débit », distinct d'un rejet par l'administrateur et d'un rejet à l'heure butoir. [ASSUMPTION A-016-7 : l'historique des virements traités liste, sous la file, les virements libérés ou rejetés avec leur état et le motif de leur issue ; il n'apparaît que s'il contient au moins un virement ; sa profondeur, son titre et ses colonnes ne sont pas fixés]
+
+L'heure butoir fait foi (décision de finalisation B5, FR-027-17) : la libération n'est acceptée que strictement avant l'heure butoir. À l'heure butoir ou après, elle est refusée et le virement est traité comme rejeté (REJETÉ, sans débit), que le traitement planifié du rejet automatique soit passé ou non. [ASSUMPTION A-016-6 : un rejet demandé à l'heure butoir ou après est lui aussi sans objet : le virement est rejeté par expiration (FR-027-17) et non par l'administrateur ; dans les deux cas, l'administrateur voit « Heure butoir dépassée : le virement est rejeté. »]
 
 Libérer ou rejeter un virement suspendu passe ses alertes de fraude au statut REVIEWED dans la même action, avec l'identifiant de l'administrateur comme auteur de la revue et l'heure de la décision (décision de finalisation B4 ; voir FR-016-15, FR-027-13 et FR-027-14). [ASSUMPTION A-016-5 : seules les alertes encore OPEN de ce virement passent à REVIEWED ; une alerte déjà CONFIRMED ou FALSE_POSITIVE garde son statut ; un virement suspendu par le seul montant ou par le cumul, sans alerte, n'en modifie aucune]
 
-Critère d'acceptation (test) : un CONSEILLER ou un CLIENT qui tente de libérer ou de rejeter est refusé ; une libération ou un rejet sans motif est refusé ; une libération avec un solde suffisant exécute le virement (débit, crédit, état EXÉCUTÉ) ; un rejet passe le virement à l'état REJETÉ sans débit ; après une libération comme après un rejet, les alertes OPEN du virement sont au statut REVIEWED avec l'identifiant de l'administrateur, dans la même action ; une libération à l'heure butoir moins 1 seconde est acceptée ; une libération à l'heure butoir est refusée et le virement est REJETÉ, même si le traitement planifié n'est pas encore passé ; chaque décision ajoute une entrée d'audit avec l'identité de l'administrateur et le motif.
+Critère d'acceptation (test) : un CONSEILLER ou un CLIENT qui tente de libérer ou de rejeter est refusé ; une libération ou un rejet sans motif est refusé ; une libération avec un solde suffisant passe le virement à l'état LIBÉRÉ sans débit immédiat, puis le traitement asynchrone le débite, le crédite et le passe à l'état EXÉCUTÉ ; une libération avec un solde devenu insuffisant est refusée, le virement passe à l'état REJETÉ, aucun débit n'est effectué et ses alertes OPEN passent au statut REVIEWED ; un rejet passe le virement à l'état REJETÉ sans débit ; après une libération comme après un rejet, les alertes OPEN du virement sont au statut REVIEWED avec l'identifiant de l'administrateur, dans la même action ; une libération à l'heure butoir moins 1 seconde est acceptée ; une libération à l'heure butoir est refusée et le virement est REJETÉ, même si le traitement planifié n'est pas encore passé ; chaque décision ajoute une entrée d'audit avec l'identité de l'administrateur et le motif ; une libération acceptée suivie d'un solde devenu insuffisant avant le débit asynchrone fait apparaître le virement dans l'historique des virements traités, à l'état REJETÉ, avec le motif « solde insuffisant au moment du débit ».
 
 Source : RG-023-009, RG-027-003, BUG-076
 
@@ -2044,13 +2059,13 @@ Source : RG-022-011, BUG-072
 
 ### FEAT-023 — Traitement asynchrone des virements
 
-**Description :** Traitement en arrière-plan, sans écran propre, qui prend le relais d'un virement exécuté depuis l'écran de virement (FEAT-003), immédiatement ou après sa libération par l'administrateur. Dans le legacy, ce traitement produisait la notification du virement, dont le type dépendait du seul montant. Désormais, la notification unique de chaque virement est produite au moment de la décision du contrôle de fraude, selon l'issue du contrôle puis le montant (CONFIRMATION, ALERTE « transaction importante » ou FRAUDE, FR-023-03) ; un virement libéré passe par ce traitement sans nouvelle notification. Les notifications de chaque utilisateur sont plafonnées (20 par défaut). Cas limites marquants : remise impossible au traitement (désormais la validation du virement échoue et le client est informé), virement d'un montant supérieur ou égal au seuil de fraude, suspendu avant tout débit (décision RG-027-003, D2). Scénarios golden master : aucun.
+**Description :** Traitement en arrière-plan, sans écran propre, qui prend le relais d'un virement exécuté depuis l'écran de virement (FEAT-003), immédiatement ou après sa libération par l'administrateur. Dans le legacy, ce traitement produisait la notification du virement, dont le type dépendait du seul montant. Désormais, la notification unique de chaque virement est produite au moment de la décision du contrôle de fraude, selon l'issue du contrôle puis le montant (CONFIRMATION, ALERTE ou FRAUDE, FR-023-03) ; un virement libéré passe par ce traitement sans nouvelle notification. Les notifications de chaque utilisateur sont plafonnées (20 par défaut). Cas limites marquants : remise impossible au traitement (désormais la validation du virement échoue et le client est informé), virement d'un montant supérieur ou égal au seuil de fraude, suspendu avant tout débit (décision RG-027-003, D2). Scénarios golden master : aucun.
 
 **Exigences fonctionnelles :**
 
 #### FR-023-01 : Remise du virement au traitement asynchrone [ÉVOLUTION — décision RG-027-003 D1, D5]
 
-Une fois le virement exécuté (contrôle de fraude passé, ou libération par l'administrateur), et son identifiant attribué, le système le remet au traitement asynchrone des virements, avec son identifiant, son montant, son émetteur, le numéro du compte destinataire et son motif. Un virement suspendu, rejeté ou refusé pour erreur du contrôle n'est pas remis à ce traitement. La remise ne produit aucune notification : la notification unique du virement, y compris la notification FRAUDE d'un virement suspendu (FR-027-04), est produite au moment de la décision du contrôle de fraude (FR-023-03, FR-002-10) ; un virement exécuté après libération est remis à ce traitement sans nouvelle notification. Voir FR-003-13.
+Une fois le virement exécuté (contrôle de fraude passé) ou libéré par l'administrateur (état LIBÉRÉ, solde contrôlé à la libération, FR-016-19), et son identifiant attribué, le système le remet au traitement asynchrone des virements, avec son identifiant, son montant, son émetteur, le numéro du compte destinataire et son motif. Un virement suspendu, rejeté ou refusé pour erreur du contrôle n'est pas remis à ce traitement. La remise ne produit aucune notification : la notification unique du virement, y compris la notification FRAUDE d'un virement suspendu (FR-027-04), est produite au moment de la décision du contrôle de fraude (FR-023-03, FR-002-10) ; un virement libéré est remis à ce traitement sans nouvelle notification ; le traitement effectue alors son débit et son crédit et le passe à l'état EXÉCUTÉ (FR-027-16, décision de finalisation B6) ; si le solde du compte source est devenu insuffisant au moment de ce débit, le traitement n'effectue aucun débit ni crédit et passe le virement à l'état REJETÉ, sans notification (FR-027-16, décision de finalisation B7). Voir FR-003-13.
 
 Source : RG-023-001, RG-027-003
 
@@ -2062,14 +2077,14 @@ Critère d'acceptation (test) : avec l'enregistrement de la remise rendu impossi
 
 Source : RG-023-002, BUG-073
 
-#### FR-023-03 : Notification selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2] [ÉVOLUTION — décision de finalisation B1]
+#### FR-023-03 : Notification selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2]
 
 L'émetteur reçoit une seule notification par virement (FR-002-10). Elle est produite au moment de la décision du contrôle de fraude (événement de décision, addendum A.7), et non par la remise au traitement asynchrone de FR-023-01. Elle est choisie selon l'issue du contrôle puis le montant, avec le seuil d'alerte (5 000 € par défaut) et le seuil de fraude (10 000 € par défaut) de la configuration de déploiement :
 - virement suspendu : FRAUDE, avec l'avis de suspension de FR-027-04 ;
 - virement exécuté d'un montant strictement inférieur au seuil d'alerte : CONFIRMATION, « Virement de {amount} EUR vers le compte {targetAccountNumber} confirme » (avec le motif selon FR-003-26) ;
-- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {amount} EUR vers le compte {targetAccountNumber} execute - transaction importante. » (FR-003-10, décision B1).
+- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {amount} EUR en attente de validation - transaction importante, verification en cours. » (texte legacy conservé pour la démonstration, FR-003-10, décision B1 révisée).
 
-Un virement exécuté après libération passe par le traitement asynchrone (FR-023-01), mais ne produit aucune notification (FR-002-10). Cette règle modifie RG-023-004 : FRAUDE suit la suspension (score cumulé strictement supérieur à 75 ou montant supérieur ou égal au seuil de fraude) et non le seul montant ; son texte legacy « Virement de {amount} EUR bloque pour verification (seuil anti-fraude : …) … » est remplacé par l'avis de FR-027-04. Elle modifie RG-023-005 : l'ALERTE ne concerne plus que les virements exécutés de 5 000 € à 9 999,99 €, avec le texte de la décision B1. Même règle que FR-003-14 et FR-025-01.
+Un virement exécuté après libération passe par le traitement asynchrone (FR-023-01), mais ne produit aucune notification (FR-002-10). Cette règle modifie RG-023-004 : FRAUDE suit la suspension (score cumulé strictement supérieur à 75 ou montant supérieur ou égal au seuil de fraude) et non le seul montant ; son texte legacy « Virement de {amount} EUR bloque pour verification (seuil anti-fraude : …) … » est remplacé par l'avis de FR-027-04. Elle modifie RG-023-005 : l'ALERTE ne concerne plus que les virements exécutés de 5 000 € à 9 999,99 €, avec son texte legacy. Même règle que FR-003-14 et FR-025-01.
 
 Critère d'acceptation (test) : chaque virement exécuté ou suspendu ajoute une notification dès la décision du contrôle, avant toute remise au traitement asynchrone ; la libération d'un virement suspendu, suivie de son traitement asynchrone, n'en ajoute aucune.
 
@@ -2177,14 +2192,14 @@ Source : RG-024-019
 
 **Exigences fonctionnelles :**
 
-#### FR-025-01 : Notification de virement selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2] [ÉVOLUTION — décision de finalisation B1]
+#### FR-025-01 : Notification de virement selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2]
 
 Au moment de la décision du contrôle de fraude (FR-027-02), le système ajoute à l'émetteur une seule notification par virement (FR-002-10), choisie selon l'issue du contrôle puis le montant, avec le seuil d'alerte (5 000 € par défaut) et le seuil de fraude (10 000 € par défaut) de la configuration de déploiement :
 - virement suspendu : FRAUDE, avec l'avis de suspension de FR-027-04 ;
 - virement exécuté d'un montant strictement inférieur au seuil d'alerte : CONFIRMATION, « Virement de {amount} EUR vers le compte {targetAccountNumber} confirme », avec le montant et le numéro du compte destinataire ;
-- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {amount} EUR vers le compte {targetAccountNumber} execute - transaction importante. » (FR-003-10, décision B1).
+- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {amount} EUR en attente de validation - transaction importante, verification en cours. » (texte legacy conservé pour la démonstration, FR-003-10, décision B1 révisée).
 
-Un virement exécuté après libération, puis remis au traitement asynchrone (FR-023-01), ne produit aucune nouvelle notification (FR-002-10). Cette règle modifie RG-025-003 : FRAUDE suit la suspension et non le seul montant, et le texte legacy MSG-025-001 (« blocked for fraud verification ») est remplacé par l'avis de FR-027-04. Elle modifie RG-025-002 : l'ALERTE ne concerne plus que les virements exécutés de 5 000 € à 9 999,99 €, avec le texte de la décision B1. Même règle que FR-003-14 et FR-023-03.
+Un virement exécuté après libération, puis remis au traitement asynchrone (FR-023-01), ne produit aucune nouvelle notification (FR-002-10). Cette règle modifie RG-025-003 : FRAUDE suit la suspension et non le seul montant, et le texte legacy MSG-025-001 (« blocked for fraud verification ») est remplacé par l'avis de FR-027-04. Elle modifie RG-025-002 : l'ALERTE ne concerne plus que les virements exécutés de 5 000 € à 9 999,99 €, avec son texte legacy. Même règle que FR-003-14 et FR-023-03.
 
 Source : RG-025-001, RG-025-002, RG-025-003, RG-027-003
 
@@ -2241,7 +2256,7 @@ Source : RG-025-011, BUG-079, RG-022-004, RG-022-005, RG-022-010, BUG-071
 
 ### FEAT-026 — Audit trail
 
-**Description :** L'audit trail est une fonction transverse sans écran : il enregistre les actions significatives des utilisateurs CLIENT, CONSEILLER et ADMIN (connexion, échec de connexion, déconnexion, actions d'administration sur les clients, les prêts et les virements suspendus, virements), ainsi que le rejet automatique d'un virement suspendu. Chaque entrée porte l'utilisateur, un code d'action, un détail, l'adresse IP d'origine et un horodatage serveur. Une entrée est conservée même si l'opération qui l'a déclenchée échoue. Le journal est en écriture seule : l'application n'offre aucun écran ni aucune fonction pour le consulter. Scénarios golden master : aucun.
+**Description :** L'audit trail est une fonction transverse sans écran : il enregistre les actions significatives des utilisateurs CLIENT, CONSEILLER et ADMIN (connexion, échec de connexion, déconnexion, actions d'administration sur les clients, les prêts et les virements suspendus, virements), ainsi que le rejet automatique d'un virement suspendu et le rejet d'un virement libéré dont le solde est devenu insuffisant au moment du débit. Chaque entrée porte l'utilisateur, un code d'action, un détail, l'adresse IP d'origine et un horodatage serveur. Une entrée est conservée même si l'opération qui l'a déclenchée échoue. Le journal est en écriture seule : l'application n'offre aucun écran ni aucune fonction pour le consulter. Scénarios golden master : aucun.
 
 **Exigences fonctionnelles :**
 
@@ -2263,24 +2278,25 @@ Le système enregistre une entrée d'audit portant l'identifiant de l'administra
 - à l'activation d'un client : action « ADMIN_ACTIVATE », détail « Activation client id={customerId} » ;
 - à l'approbation d'une demande de prêt : action « ADMIN_LOAN_APPROVE », détail « Approbation prêt id={loanId} » ;
 - au refus d'une demande de prêt : action « ADMIN_LOAN_REFUSE », détail « Refus prêt id={loanId} » ;
-- à la libération d'un virement suspendu (FR-016-19) : action « ADMIN_TRANSFER_RELEASE », détail « Liberation virement id={transferId} - Motif: {motif} - Issue: {EXECUTE|REJETE} », l'issue étant REJETE si le solde est devenu insuffisant (FR-027-16) ;
+- à la libération d'un virement suspendu (FR-016-19) : action « ADMIN_TRANSFER_RELEASE », détail « Liberation virement id={transferId} - Motif: {motif} - Issue: {EXECUTE|REJETE} », l'issue étant REJETE si le solde est insuffisant à la libération (FR-027-16, décision de finalisation B6) ; une libération acceptée (EXECUTE) puis rejetée au débit asynchrone est tracée ensuite par TRANSFER_REJECT_INSUFFICIENT_FUNDS (FR-026-03, décision de finalisation B7) ;
 - au rejet d'un virement suspendu (FR-016-19) : action « ADMIN_TRANSFER_REJECT », détail « Rejet virement id={transferId} - Motif: {motif} ».
 
 Les deux derniers codes sont ajoutés par la décision RG-027-003 (D6). [ASSUMPTION A-026-1 : noms des codes d'audit des virements et contenu de leur détail, choisis par cohérence avec les codes existants ; ni le corpus ni la table ronde ne les fixent]
 
 Source : RG-026-004, RG-026-005, RG-026-006, RG-026-007
 
-#### FR-026-03 : Audit des virements [ÉVOLUTION — décision RG-027-003 D5, D8]
+#### FR-026-03 : Audit des virements [ÉVOLUTION — décision RG-027-003 D5, D8] [ÉVOLUTION — décision de finalisation B7]
 
 Le système audite un virement à chacune de ses étapes :
 - à la soumission, quelle que soit l'issue du contrôle de fraude : identifiant de l'émetteur, action « VIREMENT », détail « Montant: {amount} - Motif: {motif} - Issue: {EXECUTE|SUSPENDU|REFUSE_ERREUR_CONTROLE} » (montant et motif du virement, issue de FR-027-02) ;
 - au passage à l'état EXÉCUTÉ, à la soumission ou après libération : identifiant de l'émetteur, action « TRANSFER_EXECUTED », détail « Montant: {amount} - Motif: {motif} » (FR-003-11) ;
 - à la libération et au rejet par l'administrateur : FR-026-02 ;
-- au rejet automatique à l'heure butoir (FR-027-17) : utilisateur « SYSTEM », action « TRANSFER_AUTO_REJECT », détail « Rejet automatique virement id={transferId} ».
+- au rejet automatique à l'heure butoir (FR-027-17) : utilisateur « SYSTEM », action « TRANSFER_AUTO_REJECT », détail « Rejet automatique virement id={transferId} » ;
+- au rejet d'un virement libéré dont le solde est devenu insuffisant au moment du débit asynchrone (FR-027-16, décision de finalisation B7) : utilisateur « SYSTEM », action « TRANSFER_REJECT_INSUFFICIENT_FUNDS », détail « Rejet virement id={transferId} - Motif: solde insuffisant au debit » ; ce code est distinct du rejet par l'administrateur (ADMIN_TRANSFER_REJECT) et du rejet automatique à l'échéance (TRANSFER_AUTO_REJECT) (A-026-1).
 
-Un virement immédiatement exécuté produit donc deux entrées (VIREMENT, TRANSFER_EXECUTED) ; un virement suspendu puis libéré en produit trois (VIREMENT, ADMIN_TRANSFER_RELEASE, TRANSFER_EXECUTED) ; un virement suspendu puis rejeté en produit deux (VIREMENT, puis ADMIN_TRANSFER_REJECT ou TRANSFER_AUTO_REJECT) ; un virement refusé pour erreur du contrôle en produit une. Une échéance de virement programmé (FR-021-10) produit les mêmes entrées au nom du titulaire du virement programmé (A-026-1). Le détail de RG-026-008 est complété par l'issue du contrôle.
+Un virement immédiatement exécuté produit donc deux entrées (VIREMENT, TRANSFER_EXECUTED) ; un virement suspendu puis libéré en produit trois (VIREMENT, ADMIN_TRANSFER_RELEASE, TRANSFER_EXECUTED) ; un virement suspendu, libéré, puis rejeté au débit pour solde insuffisant en produit trois (VIREMENT, ADMIN_TRANSFER_RELEASE, TRANSFER_REJECT_INSUFFICIENT_FUNDS) ; un virement suspendu puis rejeté en produit deux (VIREMENT, puis ADMIN_TRANSFER_REJECT ou TRANSFER_AUTO_REJECT) ; un virement refusé pour erreur du contrôle en produit une. Une échéance de virement programmé (FR-021-10) produit les mêmes entrées au nom du titulaire du virement programmé (A-026-1). Le détail de RG-026-008 est complété par l'issue du contrôle.
 
-Critère d'acceptation (test) : pour chacun des cinq parcours ci-dessus, le journal contient exactement les entrées attendues, dans l'ordre, avec les codes et l'utilisateur indiqués.
+Critère d'acceptation (test) : pour chacun des six parcours ci-dessus, le journal contient exactement les entrées attendues, dans l'ordre, avec les codes et l'utilisateur indiqués.
 
 Source : RG-026-008, RG-027-003
 
@@ -2292,7 +2308,7 @@ Source : RG-026-009
 
 #### FR-026-05 : Adresse IP d'origine pour toute action auditée
 
-Lorsqu'une action déclenchée par une requête d'un utilisateur est auditée, quelle qu'elle soit (LOGIN, LOGIN_FAILED, LOGOUT, ADMIN_DEACTIVATE, ADMIN_ACTIVATE, ADMIN_LOAN_APPROVE, ADMIN_LOAN_REFUSE, ADMIN_TRANSFER_RELEASE, ADMIN_TRANSFER_REJECT, VIREMENT, TRANSFER_EXECUTED), le système enregistre l'adresse IP d'origine de cette requête dans l'entrée, résolue selon FR-001-13. Les entrées produites par un traitement planifié (TRANSFER_AUTO_REJECT, entrées d'une échéance de virement programmé) n'ont pas d'adresse IP d'origine. Cette exigence remplace le comportement legacy RG-026-010 (adresse enregistrée seulement pour LOGIN et LOGIN_FAILED).
+Lorsqu'une action déclenchée par une requête d'un utilisateur est auditée, quelle qu'elle soit (LOGIN, LOGIN_FAILED, LOGOUT, ADMIN_DEACTIVATE, ADMIN_ACTIVATE, ADMIN_LOAN_APPROVE, ADMIN_LOAN_REFUSE, ADMIN_TRANSFER_RELEASE, ADMIN_TRANSFER_REJECT, VIREMENT, TRANSFER_EXECUTED), le système enregistre l'adresse IP d'origine de cette requête dans l'entrée, résolue selon FR-001-13. Les entrées produites par un traitement planifié ou par le traitement asynchrone des virements (TRANSFER_AUTO_REJECT, TRANSFER_REJECT_INSUFFICIENT_FUNDS, entrées d'une échéance de virement programmé) n'ont pas d'adresse IP d'origine. Cette exigence remplace le comportement legacy RG-026-010 (adresse enregistrée seulement pour LOGIN et LOGIN_FAILED).
 
 Critère d'acceptation (test) : pour chacun des onze codes d'action déclenchés par un utilisateur, une action déclenchée depuis une adresse IP connue produit une entrée d'audit dont l'adresse IP est renseignée et égale à cette adresse.
 
@@ -2307,7 +2323,7 @@ Source : RG-026-011
 **Notes :**
 - RG-026-010 (Suspect, dette legacy) est couverte par la FR de correction FR-026-05 ; son comportement legacy n'est pas reproduit.
 - Les entrées LOGIN, LOGIN_FAILED et LOGOUT sont aussi décrites dans FEAT-001 (RG-001-013 à RG-001-015, FR-001-12), sans fusion décidée ; les deux descriptions concordent (mêmes codes d'action et détails).
-- Les traitements système (sans utilisateur) ne sont pas audités par cette fonctionnalité, le corpus ne décrivant que les actions des utilisateurs, sauf le rejet automatique d'un virement suspendu (FR-027-17) et les échéances de virement programmé soumises au contrôle de fraude (FR-021-10), audités selon FR-026-03.
+- Les traitements système (sans utilisateur) ne sont pas audités par cette fonctionnalité, le corpus ne décrivant que les actions des utilisateurs, sauf le rejet automatique d'un virement suspendu (FR-027-17), le rejet d'un virement libéré au débit pour solde insuffisant (FR-027-16, B7) et les échéances de virement programmé soumises au contrôle de fraude (FR-021-10), audités selon FR-026-03.
 
 ### FEAT-027 — Détection de fraude en temps réel
 
@@ -2342,7 +2358,7 @@ Source : RG-027-002
 
 #### FR-027-04 : Avis au client d'un virement suspendu [ÉVOLUTION — décision RG-027-003 D2, D6, D7]
 
-Quand un virement est suspendu, le client en est informé par l'unique notification du virement (type FRAUDE, FR-002-10) et à l'écran : le virement est en cours de vérification, rien n'a été débité, et une réponse sera donnée avant une heure butoir précise (date et heure), égale à l'heure de soumission plus 24 heures (FR-027-17). La notification dit aussi qu'à défaut de décision à cette heure, le virement est rejeté sans aucun débit ; le client lit ainsi la règle dans cette notification unique, puis voit l'état changer à l'écran (décision de finalisation du 2026-10-05). Le texte n'évoque ni la fraude ni les signaux levés. [ASSUMPTION A-027-4 : texte « Votre virement de {montant} EUR vers le compte {numCompte} est en cours de verification. Rien n'a ete debite. Vous aurez notre reponse avant le {date} a {heure}. Sans decision a cette heure, il sera rejete sans aucun debit. », proposé en table ronde (Sally) puis complété par la règle d'expiration ; formulation exacte non arbitrée ; il remplace le texte FRAUDE legacy de RG-025-003 et RG-003-022 (MSG-025-001 : « Virement de {amount} EUR bloque pour verification (seuil anti-fraude : {seuilFraudeEur} EUR). Contactez votre conseiller si vous n etes pas a l origine de cette operation. »), qui annonçait un conseiller et un blocage sans heure butoir, ainsi que l'avertissement] Cette exigence remplace le message legacy de RG-027-013 (« Attention : {N} alerte(s) fraude détectée(s) sur ce virement. Votre conseiller a été notifié. »), qui annonçait à tort un conseiller (FR-016-19). Le plafond de notifications s'applique à cet avis (FR-025-04, A-025-3) ; l'heure butoir reste affichée à l'écran (A-027-10).
+Quand un virement est suspendu, le client en est informé par l'unique notification du virement (type FRAUDE, FR-002-10) et à l'écran : le virement est en cours de vérification, rien n'a été débité, et une réponse sera donnée avant une heure butoir précise (date et heure), égale à l'heure de soumission plus 24 heures (FR-027-17). La notification dit aussi qu'à défaut de décision à cette heure, le virement est rejeté sans aucun débit ; le client lit ainsi la règle dans cette notification unique, puis voit l'état changer à l'écran (décision de finalisation du 2026-10-05). Le texte n'évoque ni la fraude ni les signaux levés. [ASSUMPTION A-027-4 : texte « Votre virement de {montant} EUR vers le compte {numCompte} est en cours de vérification. Rien n'a été débité. Vous aurez notre réponse avant le {date} à {heure}. Sans décision à cette heure, il sera rejeté sans aucun débit. », écrit avec une orthographe correcte, accents compris (décision du décideur : texte nouveau, qu'aucun scénario du golden master ne compare), proposé en table ronde (Sally) puis complété par la règle d'expiration ; formulation exacte non arbitrée ; il remplace le texte FRAUDE legacy de RG-025-003 et RG-003-022 (MSG-025-001 : « Virement de {amount} EUR bloque pour verification (seuil anti-fraude : {seuilFraudeEur} EUR). Contactez votre conseiller si vous n etes pas a l origine de cette operation. »), qui annonçait un conseiller et un blocage sans heure butoir, ainsi que l'avertissement] Cette exigence remplace le message legacy de RG-027-013 (« Attention : {N} alerte(s) fraude détectée(s) sur ce virement. Votre conseiller a été notifié. »), qui annonçait à tort un conseiller (FR-016-19). Le plafond de notifications s'applique à cet avis (FR-025-04, A-025-3) ; l'heure butoir reste affichée à l'écran (A-027-10).
 
 Critère d'acceptation (test) : un virement suspendu à 10 h 15 le 5 annonce une réponse avant 10 h 15 le 6 ; la notification annonce le rejet sans débit à défaut de décision ; le texte ne contient ni « fraude » ni le nom d'un signal.
 
@@ -2418,18 +2434,18 @@ Critère d'acceptation (test) : après un virement vers l'IBAN FR763000600001123
 
 Source : RG-027-018, BUG-086
 
-#### FR-027-16 : États d'un virement [ÉVOLUTION — décision RG-027-003 D5]
+#### FR-027-16 : États d'un virement [ÉVOLUTION — décision RG-027-003 D5] [ÉVOLUTION — décision de finalisation B6] [ÉVOLUTION — décision de finalisation B7]
 
 Un virement est dans l'un de cinq états :
 - **EXÉCUTÉ** : débité et crédité, avec le statut d'affichage SUCCESS ou PENDING de FR-003-10 ;
 - **SUSPENDU** : aucun débit, en attente de la revue de l'administrateur ;
-- **LIBÉRÉ** : libéré par l'administrateur ; le système refait le contrôle du solde, puis passe le virement à EXÉCUTÉ, ou à REJETÉ si le solde est devenu insuffisant [ASSUMPTION A-027-6 : issue d'une libération sur solde insuffisant, non tranchée en table ronde] ;
-- **REJETÉ** : rejeté par l'administrateur ou à l'expiration de la revue ; aucun débit ;
+- **LIBÉRÉ** : libéré par l'administrateur, pas encore débité. Le solde est contrôlé à l'instant de la libération (FR-016-19) : s'il est insuffisant, la libération est refusée immédiatement et le virement passe directement de SUSPENDU à REJETÉ, sans aucun débit [ÉVOLUTION — décision de finalisation B6] ; s'il est suffisant, le virement passe à LIBÉRÉ, puis le traitement asynchrone des virements (FR-023-01, correction A1 du gate) effectue le débit et le crédit et le passe à EXÉCUTÉ ; si le solde est devenu insuffisant entre la libération et ce débit, le traitement asynchrone n'effectue aucun débit ni crédit et fait passer le virement de LIBÉRÉ à REJETÉ, avec le motif « solde insuffisant au débit » [ÉVOLUTION — décision de finalisation B7] ;
+- **REJETÉ** : rejeté par l'administrateur, à l'expiration de la revue, à la libération sur solde insuffisant (B6) ou au débit asynchrone sur solde insuffisant (B7) ; aucun débit ;
 - **REFUSÉ_ERREUR_CONTRÔLE** : refusé parce que le contrôle de fraude est tombé en erreur ; aucun débit.
 
-Transitions permises : à la soumission, vers EXÉCUTÉ, SUSPENDU ou REFUSÉ_ERREUR_CONTRÔLE ; de SUSPENDU vers LIBÉRÉ ou REJETÉ ; de LIBÉRÉ vers EXÉCUTÉ ou REJETÉ. EXÉCUTÉ, REJETÉ et REFUSÉ_ERREUR_CONTRÔLE sont terminaux ; toute autre transition est refusée. Le client voit l'état de ses virements suspendus, libérés ou rejetés, sans nouvelle notification (décision de finalisation du 2026-10-05). [ASSUMPTION A-027-10 : l'état est visible sur l'écran de virement et le tableau de bord]
+Transitions permises : à la soumission, vers EXÉCUTÉ, SUSPENDU ou REFUSÉ_ERREUR_CONTRÔLE ; de SUSPENDU vers LIBÉRÉ ou REJETÉ ; de LIBÉRÉ vers EXÉCUTÉ, ou vers REJETÉ avec le motif « solde insuffisant au débit » (décision de finalisation B7). EXÉCUTÉ, REJETÉ et REFUSÉ_ERREUR_CONTRÔLE sont terminaux ; toute autre transition est refusée. Le client voit l'état de ses virements suspendus, libérés ou rejetés, sans nouvelle notification (décision de finalisation du 2026-10-05, FR-002-10) ; un virement rejeté au débit (B7) lui apparaît « rejeté, non débité », comme tout virement rejeté, sans nouvelle notification. Ce rejet est tracé au journal d'audit avec un code distinct (FR-026-03) et son motif est visible de l'administrateur (FR-016-19). [ASSUMPTION A-027-10 : l'état est visible sur l'écran de virement et le tableau de bord]
 
-Critère d'acceptation (test) : chaque transition permise est acceptée, chaque transition interdite est refusée, et aucun solde ne change hors du passage à EXÉCUTÉ.
+Critère d'acceptation (test) : chaque transition permise est acceptée, chaque transition interdite est refusée, et aucun solde ne change hors du passage à EXÉCUTÉ ; la libération d'un virement suspendu dont le solde est devenu insuffisant est refusée, le virement passe à REJETÉ et aucun débit n'est effectué ; une libération acceptée (solde suffisant), suivie d'une réduction du solde du compte source sous le montant du virement avant le débit asynchrone, aboutit à l'état REJETÉ avec le motif « solde insuffisant au débit », sans aucun débit ni crédit, sans aucune notification, avec une entrée d'audit TRANSFER_REJECT_INSUFFICIENT_FUNDS (décision de finalisation B7).
 
 Source : RG-027-003, BUG-084
 
@@ -2723,7 +2739,7 @@ Source : RG-030-014, BUG-092
 - **Notifications hors de l'application** : ni e-mail, ni SMS, ni push (décision de cadrage).
 - **Engagement réglementaire de production** (DSP2, RGPD, durée légale de conservation de l'audit) : hors de cette version, qui est un démonstrateur (décision de cadrage). Les exigences de sécurité d'une vraie banque restent dues (§7.3).
 - **Environnements autres que le local** : seul le lancement local par `compose.yaml` est dans le périmètre. Aucun hébergement cible n'est spécifié (décision de cadrage).
-- **Évolutions fonctionnelles au-delà de « parité, plus les évolutions décidées »** : aucune. Le périmètre est la parité, plus les 50 bugs à corriger, plus les évolutions décidées listées en §1 et §6.1 : décision sur le contrôle de fraude d'un virement, D1 à D12 de §9 (suspension, revue, cumul, reprise), décisions de finalisation B1 à B5, signal d'échecs de connexion (FR-027-11), bouton « Rafraîchir » (A-012-5) et exemption d'authentification par chemin exact (A-030-1).
+- **Évolutions fonctionnelles au-delà de « parité, plus les évolutions décidées »** : aucune. Le périmètre est la parité, plus les 50 bugs à corriger, plus les évolutions décidées listées en §1 et §6.1 : décision sur le contrôle de fraude d'un virement, D1 à D12 de §9 (suspension, revue, cumul, reprise), décisions de finalisation B1 à B7 (dont la reformulation FR-003-29, après la démonstration), signal d'échecs de connexion (FR-027-11), bouton « Rafraîchir » (A-012-5) et exemption d'authentification par chemin exact (A-030-1).
 - **Bugs conservés** : les bugs du legacy décidés « ne pas corriger » ne sont ni des exigences ni des tests. Ils sont listés dans `docs/retro/00-global/LEGACY-BUGS.md`.
 
 ## 6. Périmètre de la version
@@ -2732,11 +2748,11 @@ Source : RG-030-014, BUG-092
 
 - Les 30 fonctionnalités FEAT-001 à FEAT-030 (§4) : la parité avec le legacy, plus les évolutions décidées :
   - la décision RG-027-003 (suspension, revue, cumul, reprise ; détail ci-dessous) ;
-  - les décisions de finalisation B1 à B5 (§9) ;
+  - les décisions de finalisation B1 à B7 (§9) ;
   - le signal d'échecs de connexion répétés (FR-027-11) ;
   - le bouton « Rafraîchir » des comptes tiers (A-012-5) ;
   - l'exemption d'authentification par chemin exact (A-030-1).
-- La correction des 50 bugs à corriger, chacune couverte par un test.
+- La correction des 50 bugs à corriger, chacune couverte par un test ; BUG-009 est conservé provisoirement pour la démonstration et corrigé par la story FR-003-29, livrée après elle (décision B1 révisée, risque R-4).
 - Les contrôles de `docs/quality-gates.md`, livrés et verts avant toute story fonctionnelle (NFR-QG-00).
 - Les adaptateurs simulés des trois fournisseurs externes.
 - Le golden master dérivé et son rejeu final.
@@ -2744,6 +2760,7 @@ Source : RG-030-014, BUG-092
   1. le socle RG-027-003 : contrôle synchrone avant la validation, suspension avant débit, refus en cas d'erreur, états du virement, revue par l'administrateur, échéance et rejet automatique, écran de refus (décisions D1 à D9) ;
   2. le cumul glissant des virements d'un client (FR-027-18, décision D10), dans la story qui suit immédiatement le socle ;
   3. la reprise préremplie après un refus (FR-003-28, décision D12).
+- La reformulation des textes de transaction importante (FR-003-29, décision B1 révisée), story livrée après la démonstration et après les stories ci-dessus ; d'ici là, les textes legacy de FR-003-10 s'appliquent.
 
 ### 6.2 Hors périmètre de la version
 
@@ -2779,7 +2796,12 @@ Chaque contrôle est exécuté par un outil, jamais évalué par un agent. Les s
   - Le golden master du legacy, dérivé pour la nouvelle application, rejoue sans échec avant la bascule.
   - Il se rejoue une seule fois, développement terminé, pas entre les stories ni les epics.
   - Tous les scénarios retenus à l'étape G2 doivent passer, 31 au plus : 33 scénarios capturés, moins SC-003-03 et SC-010-02, qui reproduisent des bugs à corriger. Contrat : `docs/retro/golden-master-contract.md`.
-  - Trois scénarios applicables, SC-003-01, SC-003-02 et SC-003-04, divergent volontairement du legacy (contrôle de fraude avant la validation, suspension, refus en cas d'erreur : décision RG-027-003). Leur décision de rejeu, reprise avec une exception documentée ou exclusion justifiée, est prise à l'étape G2 pendant l'architecture. C'est elle qui fixe le nombre final de scénarios rejoués.
+  - **Un seul scénario divergent prévu : SC-003-04**, et seulement sous condition (prévision validée par le décideur le 2026-10-05). La table ronde et l'addendum A.7 annonçaient trois scénarios divergents, SC-003-01, SC-003-02 et SC-003-04 ; cette annonce avait été faite sans lire les fichiers des scénarios. Leur lecture (`divergences-golden-master.md` de la spec UX) montre que SC-003-01 et SC-003-02 ne divergent pas :
+    - SC-003-01 ne fait que charger le formulaire de virement : aucune soumission, donc aucun contrôle de fraude ;
+    - SC-003-02 soumet deux comptes identiques : le virement est rejeté avant le contrôle de fraude (FR-003-07), avec le message legacy inchangé (FR-003-03) ;
+    - de plus, les scénarios d'écran comparent en mode « contient » (un texte ajouté ne fait pas échouer un scénario), et les libellés du legacy sont conservés : wording intouchable (NFR-UI-01), textes PENDING et ALERTE gardés pour la démonstration (décision de finalisation B1 révisée).
+  - **Condition de divergence de SC-003-04** (virement de 100 EUR du compte COURANT vers le compte EPARGNE, puis tableau de bord). En conditions normales, le score cumulé du contrôle de fraude vaut 35 (NEW_BENEFICIARY : le compte destinataire n'est pas enregistré comme bénéficiaire) : le virement est exécuté et rien ne diverge. Le scénario ne diverge que si le score dépasse 75, c'est-à-dire si le rejeu a lieu avant 06:00 ou après 23:00, heure du serveur (UNUSUAL_HOURS, +45), ou moins de 30 secondes après un autre virement du client (RAPID_SUCCESSION, +55), ou après plus de 8 opérations du jour (HIGH_FREQUENCY, +50) : le virement est alors suspendu (FR-027-02), sans redirection vers le tableau de bord. Exception documentée à l'étape G2 : rejeu entre 06:00 et 23:00, heure du serveur, base remise à zéro avant le rejeu (NFR-PAR-04), aucun virement du client dans les 30 secondes précédentes.
+  - **Ce décompte est une prévision**, à confirmer au premier rejeu réel du golden master. Si le rejeu montre d'autres écarts, ils passent par l'étape G2 et ne sont pas traités comme des régressions tant qu'ils découlent des décisions D1 à D12 (§9). La décision de rejeu de l'étape G2, prise pendant l'architecture, fixe le nombre final de scénarios rejoués.
 - **NFR-PAR-02 — Bugs corrigés prouvés.** Chacun des 50 bugs à corriger est couvert par un test automatisé qui vérifie le comportement attendu (critère d'acceptation de la FR qui le cite).
 - **NFR-PAR-03 — Règles couvertes.** Chaque règle de gestion reprise est couverte par au moins une exigence de ce PRD et par au moins un test.
 - **NFR-PAR-04 — Données de référence.**
@@ -2842,7 +2864,7 @@ Les temps du legacy sont une référence mesurée, pas une cible (brief). Cibles
 ## 8. Indicateurs de succès
 
 **Principaux**
-- **SM-1** : rejeu du golden master. Tous les scénarios retenus à l'étape G2, 31 au plus, passent au rejeu final. Valide NFR-PAR-01 et l'ensemble du §4.
+- **SM-1** : rejeu du golden master. Tous les scénarios retenus à l'étape G2, 31 au plus, passent au rejeu final, SC-003-04 compris, rejoué dans les conditions de son exception documentée (NFR-PAR-01). Un écart imprévu qui découle des décisions D1 à D12 passe par l'étape G2 et ne compte pas comme une régression. Valide NFR-PAR-01 et l'ensemble du §4.
 - **SM-2** : couverture des règles. 100 % des règles de gestion reprises sont citées par une FR (mesure : `docs/retro/tools/check-prd-coverage.py`) et couvertes par un test. Valide NFR-PAR-03.
 - **SM-3** : bugs corrigés. 50 sur 50 bugs à corriger ont un test vert du comportement attendu. Valide NFR-PAR-02.
 
@@ -2879,23 +2901,26 @@ L'ancienne question bloquante QO-1, points (a) et (b), est tranchée par le déc
 
 *Note : le corpus était incohérent sur ce point. `docs/retro/00-global/LEGACY-BUGS.md` présente BUG-084 comme « validé par le métier », mais sa note dit qu'il dépend de la question bloquante FEAT-027, absente de `docs/retro/GAPS.md`. Le code legacy laissait la question en « TODO » (JIRA-9202). La décision ci-dessus tranche cette question. D1 renverse en outre la mention de résolution portée par le corpus sous RG-027-003 (`docs/retro/features/FEAT-027/RG.md`), selon laquelle la détection « ne bloque pas le virement : elle le signale » : désormais, un virement suspect est suspendu.*
 
-### Décisions de finalisation B1 à B5 (gate de relecture du 2026-10-05)
+### Décisions de finalisation B1 à B7 (gate de relecture du 2026-10-05)
 
-Prises par le décideur après les revues du PRD. Les exigences qui en découlent sont marquées `[ÉVOLUTION — décision de finalisation Bn]`.
+Prises par le décideur après les revues du PRD. Les exigences qui en découlent sont marquées `[ÉVOLUTION — décision de finalisation Bn]` (B1 révisée : `[décision de finalisation B1 révisée …]`).
 
 | # | Décision | Exigences |
 |---|---|---|
-| B1 | BUG-009 : les textes d'un virement important exécuté (statut PENDING, de 5 000 € à 9 999,99 €) disent « transaction importante », sans « en attente » ni « vérification ». Le virement reste exécuté et débité (D2). L'écart de texte avec le golden master est voulu. | FR-003-10, FR-003-09, FR-002-10, FR-003-14, FR-023-03, FR-025-01, FR-005-07 |
+| B1 (révisée le 2026-10-05) | BUG-009 : pour la démonstration, les textes PENDING et ALERTE du legacy sont gardés sans reformulation (notification ALERTE « Virement de {montant} EUR en attente de validation - transaction importante, verification en cours. », mention « [EN ATTENTE] » au relevé) ; le statut PENDING s'applique toujours à partir de 5 000 €, virement exécuté et débité (D2). BUG-009 est conservé provisoirement, raison : parité de texte avec le golden master pour la démonstration (risque R-4). La reformulation décidée initialement (textes « transaction importante », sans « en attente » ni « verification ») devient une story après la démonstration. | FR-003-10, FR-003-29, FR-003-09, FR-002-10, FR-003-14, FR-023-03, FR-025-01, FR-005-07 |
 | B2 | Un virement programmé passe par le même contrôle de fraude et la même règle de suspension qu'un virement immédiat, au moment de l'exécution de chaque échéance. | FR-021-10, FR-027-02 |
 | B3 | Solde faible : au plus 20 alertes par compte et par jour (BUG-071), une seule règle pour FEAT-022 et FEAT-025, type ACCOUNT_BALANCE du corpus. | FR-022-04, FR-025-08 |
 | B4 | Libérer ou rejeter un virement suspendu passe ses alertes de fraude au statut REVIEWED, dans la même action. | FR-016-19, FR-016-15, FR-027-13, FR-027-14 |
 | B5 | L'heure butoir fait foi : libération acceptée strictement avant l'heure butoir ; à l'heure butoir ou après, refusée et virement rejeté, que le traitement planifié soit passé ou non. | FR-027-17, FR-016-19 |
+| B6 | Libération d'un virement suspendu dont le solde est devenu insuffisant : la libération est refusée et le virement passe à l'état REJETÉ, sans aucun débit. Le solde est contrôlé à l'instant de la libération ; si le solde suffit, le virement passe à LIBÉRÉ et le traitement asynchrone effectue ensuite le débit et le passe à EXÉCUTÉ. | FR-016-19, FR-027-16, FR-023-01, FR-026-02 |
+| B7 (2026-10-05, extension de B6) | Si le solde est devenu insuffisant entre la libération et le débit asynchrone, le virement est rejeté sans aucun débit : transition LIBÉRÉ → REJETÉ, motif « solde insuffisant au débit ». Ce rejet est tracé au journal d'audit avec un code distinct du rejet par l'administrateur et du rejet automatique à l'échéance (TRANSFER_REJECT_INSUFFICIENT_FUNDS, acteur SYSTEM). Le client voit l'état « rejeté, non débité », sans nouvelle notification ; l'administrateur voit le motif dans l'historique des virements traités. | FR-027-16, FR-023-01, FR-026-03, FR-026-05, FR-016-19, FR-002-10 |
 
 ### Risques connus
 
 - **R-1 — Découpage d'un virement sous les seuils.** Tant que le cumul glissant (FR-027-18) n'est pas livré, un client peut émettre plusieurs virements sous les seuils de score et de montant, sans suspension. Ce risque est accepté pour la durée du socle seulement (décision D11).
 - **R-2 — Rejet automatique la nuit et le week-end.** L'échéance de 24 heures calendaires peut rejeter un virement suspendu sans revue humaine si personne n'est disponible. C'est accepté pour le démonstrateur, et à revoir si le projet en sort (décision D8).
 - **R-3 — Montants non masqués dans les journaux.** Seuls les IBAN sont masqués (NFR-SEC-05). Les montants restent en clair dans les journaux du serveur. Accepté pour le démonstrateur, à revoir si le projet en sort (décision de finalisation du 2026-10-05).
+- **R-4 — BUG-009 conservé provisoirement.** Un virement de 5 000 à 10 000 € est débité tout en étant annoncé « en attente de validation » ; corrigé par FR-003-29 après la démonstration (décision B1 révisée).
 
 ### Autres questions ouvertes (non bloquantes)
 
@@ -2915,7 +2940,7 @@ Prises par le décideur après les revues du PRD. Les exigences qui en découlen
 Points relevés par les revues ou laissés ouverts par §9, qui ne bloquent ni l'architecture ni le découpage en epics. Chacun a un propriétaire et une condition de reprise.
 
 - RP-01 — Journal des traitements de l'administration saturé : depuis la correction de BUG-072, le contrôle des soldes faibles écrit 48 entrées par jour, et FR-016-17 n'affiche que les 50 plus récentes ; les traitements nocturnes peuvent en disparaître. Choisir entre pagination, filtre par traitement ou nombre d'entrées, et ajouter un critère d'acceptation à FR-016-17 — propriétaire : PM — reprise : avant la story de FR-016-17.
-- RP-02 — Classement de certaines suppositions de §10 : A-027-6 et A-027-7 (règles métier sur des virements de clients), ainsi que A-003-3, A-021-5, A-019-1 et A-027-10, pourraient relever du risque élevé selon le critère de §10 — propriétaire : PM — reprise : avant la story du socle RG-027-003.
+- RP-02 — Classement de certaines suppositions de §10 : A-027-7 (règle métier sur des virements de clients), ainsi que A-003-3, A-021-5, A-019-1 et A-027-10, pourraient relever du risque élevé selon le critère de §10 — propriétaire : PM — reprise : avant la story du socle RG-027-003.
 - RP-03 — Signaux de fraude décrits deux fois, dans FEAT-003 (FR-003-17 à FR-003-25) et dans FEAT-027 (FR-027-03, FR-027-05 à FR-027-10), avec la mention « Même règle que » : garder la règle complète dans FEAT-027 et un renvoi dans FEAT-003, en gardant les RG-003 en ligne Source — propriétaire : PM — reprise : au découpage en stories du contrôle de fraude ; d'ici là, une story qui touche un signal modifie les deux FR.
 - RP-04 — Volumétrie de `import.sql` détaillée dans l'addendum A.8 sans exigence qui l'utilise, hormis NFR-PAR-04 : acceptable en l'état, à réduire éventuellement à un renvoi vers le corpus — propriétaire : PM — reprise : à la prochaine révision du PRD.
 - RP-05 — Exigences non fonctionnelles d'une banque en ligne absentes de §7 : accessibilité, navigateurs pris en charge, adaptation mobile, verrouillage du compte après des échecs de connexion (FR-027-11 ne lève qu'une alerte), politique de mot de passe. Les ajouter à §7.3 et §7.8, ou les déclarer non-objectifs du démonstrateur — propriétaire : PM — reprise : avant la story d'authentification (FEAT-001) pour le verrouillage et le mot de passe ; hors démonstrateur pour le reste.
@@ -2941,7 +2966,7 @@ Chaque `[ASSUMPTION]` du document, classée de la plus risquée à la moins risq
 - **A-014-1** (FEAT-014, FEAT-012, FEAT-028) : un retour du fournisseur d'open banking qui ne porte qu'un `code` est traité comme incomplet, tant que le parcours n'est pas confirmé auprès de Powens. Écart à RG-014-004, RG-012-011 et RG-028-009 (chargement avec le code, non repris), et élargissement de la condition de RG-012-008. — propriétaire : métier, après confirmation auprès de Powens ; reprise : avant la story FEAT-014, ou au premier branchement réel de Powens.
 - **A-021-6** (FEAT-021) : pendant la suspension d'une échéance de virement programmé, la date de prochaine exécution avance comme après une exécution ; le nombre d'exécutions ne change qu'à l'exécution après libération ; une échéance rejetée n'est pas rattrapée. — propriétaire : métier ; reprise : avant la story de FR-021-10.
 - **A-021-7** (FEAT-021, FEAT-002) : une échéance programmée exécutée ne produit aucune notification (comme le legacy), seule une échéance suspendue en produit une (FRAUDE) ; une échéance refusée pour erreur du contrôle reste due et est retentée au passage suivant, sans notification. — propriétaire : métier ; reprise : avant la story de FR-021-10.
-- **A-016-6** (FEAT-016, FEAT-027) : à l'heure butoir ou après, un rejet demandé par l'administrateur est aussi sans objet (rejet par expiration) ; l'administrateur voit « Heure butoir depassee : le virement est rejete. ». — propriétaire : métier ; reprise : avant la story de FR-016-19.
+- **A-016-6** (FEAT-016, FEAT-027) : à l'heure butoir ou après, un rejet demandé par l'administrateur est aussi sans objet (rejet par expiration) ; l'administrateur voit « Heure butoir dépassée : le virement est rejeté. » (texte nouveau, orthographe correcte, accents compris). — propriétaire : métier ; reprise : avant la story de FR-016-19.
 
 ### Risque moyen
 
@@ -2959,16 +2984,13 @@ Chaque `[ASSUMPTION]` du document, classée de la plus risquée à la moins risq
   - A-001-3, A-002-4, A-003-6, A-011-2, A-018-3 : bandeaux et mentions techniques supprimés ; — propriétaire : métier ; reprise : à l'étape G2.
   - A-007-2 : « En attente » plutôt que « En cours » ; — propriétaire : métier ; reprise : à l'étape G2.
   - A-002-2 : format des montants, deux rendus dans le corpus. — propriétaire : métier ; reprise : à l'étape G2.
-- **A-003-10** (FEAT-003, FEAT-002, FEAT-023, FEAT-025) : formulation exacte des textes « transaction importante » de la décision B1 (notification ALERTE « Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. », mention « [TRANSACTION IMPORTANTE] » au relevé) ; le statut enregistré garde la valeur technique PENDING, non affichée comme « en attente ». Écart attendu au golden master. — propriétaire : métier ; reprise : avant la story de FR-003-10, au plus tard à l'étape G2.
-- **A-005-2** (FEAT-005) : le relevé reconnaît la nouvelle mention « [TRANSACTION IMPORTANTE] » (badge « Transaction importante ») et garde l'affichage legacy de l'ancienne mention « [EN ATTENTE] » pour les opérations déjà en base. — propriétaire : métier ; reprise : avant la story FEAT-005.
 - **A-016-4** (FEAT-016, FEAT-027) : l'auteur de la revue d'une alerte est enregistré par son identifiant (RG-027-015, RG-027-016) et affiché par son nom complet (RG-016-030, RG-016-031). — propriétaire : métier ; reprise : avant la story de FR-016-15.
 - **A-016-5** (FEAT-016) : à la libération ou au rejet d'un virement suspendu, seules ses alertes encore OPEN passent à REVIEWED ; les alertes déjà classées gardent leur statut. — propriétaire : métier ; reprise : avant la story de FR-016-19.
-- **A-026-1** (FEAT-026) : noms et détails des codes d'audit des virements (VIREMENT avec l'issue, TRANSFER_EXECUTED, ADMIN_TRANSFER_RELEASE, ADMIN_TRANSFER_REJECT, TRANSFER_AUTO_REJECT) ; les échéances programmées sont auditées au nom du titulaire, sans adresse IP. — propriétaire : architecte ; reprise : à l'architecture (codes d'audit), avant la story FEAT-026.
+- **A-026-1** (FEAT-026) : noms et détails des codes d'audit des virements (VIREMENT avec l'issue, TRANSFER_EXECUTED, ADMIN_TRANSFER_RELEASE, ADMIN_TRANSFER_REJECT, TRANSFER_AUTO_REJECT, TRANSFER_REJECT_INSUFFICIENT_FUNDS, ce dernier pour le rejet au débit de la décision B7, acteur SYSTEM) ; les échéances programmées sont auditées au nom du titulaire, sans adresse IP. — propriétaire : architecte ; reprise : à l'architecture (codes d'audit), avant la story FEAT-026.
 - **A-010-4** (FEAT-010) : la clé Azure OpenAI n'a aucune valeur par défaut dans le code (NFR-SEC-06), écart à RG-010-013 ; sans clé, aucun appel réel. — propriétaire : architecte ; reprise : à l'architecture (configuration des secrets).
 - **A-010-3** (FEAT-010) : les actions rapides du chat sont masquées pour la conversation en cours et réaffichées par « Nouvelle conversation », écart à RG-010-007 (Confirmé), qui dit « session ». — propriétaire : métier ; reprise : avant la story FEAT-010.
-- **A-027-4** (FEAT-027) : texte de l'avis de suspension (notification FRAUDE), proposé en table ronde et non arbitré. Il remplace les textes legacy, d'où un écart attendu au golden master. — propriétaire : métier ; reprise : avant la story du socle RG-027-003, au plus tard à l'étape G2.
+- **A-027-4** (FEAT-027) : texte de l'avis de suspension (notification FRAUDE), proposé en table ronde et non arbitré mot à mot ; il s'écrit avec une orthographe correcte, accents compris (décision du décideur ; aucun scénario du golden master ne compare ce texte). Il remplace les textes legacy, d'où un écart attendu au golden master. — propriétaire : métier ; reprise : avant la story du socle RG-027-003, au plus tard à l'étape G2.
 - **A-027-10** (FEAT-027) : le client voit l'état de ses virements suspendus, libérés ou rejetés sur l'écran de virement et le tableau de bord. — propriétaire : métier ; reprise : avant la story du socle RG-027-003.
-- **A-027-6** (FEAT-027) : un virement libéré dont le solde est devenu insuffisant passe à REJETÉ. — propriétaire : métier ; reprise : avant la story du socle RG-027-003.
 - **A-027-7** (FEAT-027) : le cumul glissant compte les virements exécutés et suspendus, pas les rejetés ni les refusés. — propriétaire : métier ; reprise : avant la story de FR-027-18.
 - **A-025-3** (FEAT-025, FEAT-027) : le plafond de notifications s'applique aussi à l'avis de suspension d'un virement, qui peut être supprimé ; l'état et l'heure butoir restent visibles à l'écran. — propriétaire : métier ; reprise : avant la story du socle RG-027-003.
 - **A-027-11** (FEAT-003, FEAT-027) : HIGH_FREQUENCY compte les opérations au relevé des comptes du client, débits et crédits confondus. — propriétaire : métier ; reprise : avant la story du contrôle de fraude (signaux).
@@ -3027,5 +3049,6 @@ Chaque `[ASSUMPTION]` du document, classée de la plus risquée à la moins risq
 - **A-018-4** (FEAT-018) : les nuits sans intérêts dus, le traitement enregistre une entrée SUCCESS avec 0 enregistrement. — propriétaire : équipe de dev ; reprise : pendant la story FEAT-018.
 - **A-027-12** (FEAT-027, FEAT-001) : les échecs de connexion d'un compte désactivé comptent pour MULTIPLE_FAILED_AUTH. — propriétaire : métier ; reprise : avant la story de FR-027-11.
 - **A-016-3** (FEAT-016) : la file de revue est triée par heure butoir, avec les colonnes proposées en table ronde. — propriétaire : métier (UX) ; reprise : avant la story de FR-016-19.
+- **A-016-7** (FEAT-016) : l'historique des virements traités (où l'administrateur voit le motif du rejet au débit, décision B7) liste sous la file les virements libérés ou rejetés, avec leur état et le motif de leur issue ; affiché seulement s'il n'est pas vide ; profondeur, titre et colonnes non fixés. — propriétaire : métier (UX) ; reprise : avant la story de FR-016-19.
 
-*Les décisions D1 à D12 sur RG-027-003 et les décisions de finalisation B1 à B5 (§9) sont des décisions du décideur, pas des suppositions : elles ne figurent pas dans cet index. A-003-7 (textes PENDING conservés), A-025-2 (une seule alerte de solde faible), A-027-8 (première action enregistrée) et A-023-2 (annulation après échec de remise) ont été retirées au gate : les trois premières sont remplacées par les décisions B1, B3 et B5, la dernière par A-023-3. Au tri de finalisation, l'ancienne A-027-9 a été scindée en A-027-9 (trace d'audit du rejet automatique) et A-003-11 (champs de la reprise préremplie).*
+*Les décisions D1 à D12 sur RG-027-003 et les décisions de finalisation B1 à B7 (§9) sont des décisions du décideur, pas des suppositions : elles ne figurent pas dans cet index. A-003-7 (textes PENDING conservés), A-025-2 (une seule alerte de solde faible), A-027-8 (première action enregistrée) et A-023-2 (annulation après échec de remise) ont été retirées au gate : les trois premières sont remplacées par les décisions B1, B3 et B5, la dernière par A-023-3. Après la finalisation, A-027-6 (issue d'une libération sur solde insuffisant) a été remplacée par la décision B6, et A-003-10 et A-005-2 (formulation des textes « transaction importante » et badge du relevé) ont été retirées avec la décision B1 révisée : les textes legacy sont conservés pour la démonstration, et la reformulation devient la story FR-003-29. Au tri de finalisation, l'ancienne A-027-9 a été scindée en A-027-9 (trace d'audit du rejet automatique) et A-003-11 (champs de la reprise préremplie).*

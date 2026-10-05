@@ -1,6 +1,6 @@
 ### FEAT-003 — Effectuer un virement
 
-**Description :** Le formulaire de virement permet à un utilisateur authentifié de virer un montant d'un de ses comptes vers un autre de ses comptes. L'écran est ouvert à tous les rôles, mais seuls les comptes de l'utilisateur connecté sont proposés : un CONSEILLER ou un ADMIN, sans compte propre, voit des listes vides et ne peut rien virer. Le virement est soumis sans étape de confirmation. Une fois exécuté : débit et crédit simultanés, deux opérations au relevé, statut SUCCESS ou PENDING selon le seuil de mise en attente (affiché comme « transaction importante », décision B1), journal d'audit, notification dans l'application, puis retour au tableau de bord. Chaque virement passe par le contrôle de fraude en temps réel (FEAT-027) avant sa validation finale : il est exécuté, suspendu avant tout débit en attente de la revue de l'administrateur, ou refusé si le contrôle tombe en erreur (décision RG-027-003, D1 à D12). Cas limites marquants : comptes non sélectionnés ou identiques, montant nul ou négatif, solde insuffisant (désormais un message clair), virement de 5 000 € et plus (exécuté, « transaction importante »), de 10 000 € et plus (suspendu avant tout débit, notification FRAUDE). Scénarios golden master : SC-003-01, SC-003-02, SC-003-03, SC-003-04.
+**Description :** Le formulaire de virement permet à un utilisateur authentifié de virer un montant d'un de ses comptes vers un autre de ses comptes. L'écran est ouvert à tous les rôles, mais seuls les comptes de l'utilisateur connecté sont proposés : un CONSEILLER ou un ADMIN, sans compte propre, voit des listes vides et ne peut rien virer. Le virement est soumis sans étape de confirmation. Une fois exécuté : débit et crédit simultanés, deux opérations au relevé, statut SUCCESS ou PENDING selon le seuil de mise en attente (textes legacy « en attente » conservés pour la démonstration, décision B1 révisée), journal d'audit, notification dans l'application, puis retour au tableau de bord. Chaque virement passe par le contrôle de fraude en temps réel (FEAT-027) avant sa validation finale : il est exécuté, suspendu avant tout débit en attente de la revue de l'administrateur, ou refusé si le contrôle tombe en erreur (décision RG-027-003, D1 à D12). Cas limites marquants : comptes non sélectionnés ou identiques, montant nul ou négatif, solde insuffisant (désormais un message clair), virement de 5 000 € et plus (exécuté et débité, mais annoncé « en attente de validation » comme dans le legacy, BUG-009 conservé provisoirement), de 10 000 € et plus (suspendu avant tout débit, notification FRAUDE). Scénarios golden master : SC-003-01, SC-003-02, SC-003-03, SC-003-04.
 
 **Exigences fonctionnelles :**
 
@@ -56,23 +56,23 @@ Source : RG-003-009
 
 #### FR-003-09 : Débit, crédit et opérations au relevé [ÉVOLUTION — décision RG-027-003 D1, D3]
 
-Un virement n'est débité et crédité qu'au moment de son exécution : immédiatement si le contrôle de fraude le laisse passer (FR-027-02), ou après sa libération par l'administrateur (FR-016-19). L'exécution débite le compte source et crédite le compte destinataire du montant, de façon atomique (les deux ou aucun). Elle enregistre une opération DEBIT sur le compte source (« Virement vers {compte destinataire} - {motif} ») et une opération CREDIT sur le compte destinataire (« Virement depuis {compte source} - {motif} »), chacune avec le solde après opération, ainsi que le virement lui-même avec son horodatage ; un virement au statut PENDING porte en plus, en tête de ces descriptions, la mention « [TRANSACTION IMPORTANTE] » (FR-003-10, décision B1), à la place de la mention legacy « [EN ATTENTE] ». Un virement suspendu, rejeté ou refusé pour erreur du contrôle ne modifie aucun solde et n'enregistre aucune opération au relevé. Cette exigence remplace RG-003-010 et RG-003-011 (débit et crédit dès la soumission) : un virement suspendu n'est débité qu'à sa libération.
+Un virement n'est débité et crédité qu'au moment de son exécution : immédiatement si le contrôle de fraude le laisse passer (FR-027-02), ou après sa libération par l'administrateur (FR-016-19). L'exécution débite le compte source et crédite le compte destinataire du montant, de façon atomique (les deux ou aucun). Elle enregistre une opération DEBIT sur le compte source (« Virement vers {compte destinataire} - {motif} ») et une opération CREDIT sur le compte destinataire (« Virement depuis {compte source} - {motif} »), chacune avec le solde après opération, ainsi que le virement lui-même avec son horodatage ; un virement au statut PENDING porte en plus, en tête de ces descriptions, la mention legacy « [EN ATTENTE] » (FR-003-10, décision B1 révisée). Un virement suspendu, rejeté ou refusé pour erreur du contrôle ne modifie aucun solde et n'enregistre aucune opération au relevé. Cette exigence remplace RG-003-010 et RG-003-011 (débit et crédit dès la soumission) : un virement suspendu n'est débité qu'à sa libération.
 
 Critère d'acceptation (test) : un virement exécuté produit exactement un débit, un crédit et deux opérations ; un virement suspendu, rejeté ou refusé pour erreur laisse les deux soldes inchangés et n'ajoute aucune opération.
 
 Source : RG-003-010, RG-003-011, RG-003-012, RG-003-013, RG-027-003
 
-#### FR-003-10 : Virements importants exécutés (statut PENDING) [ÉVOLUTION — décision RG-027-003 D1, D2] [ÉVOLUTION — décision de finalisation B1]
+#### FR-003-10 : Virements importants exécutés (statut PENDING) [ÉVOLUTION — décision RG-027-003 D1, D2] [décision de finalisation B1 révisée : BUG-009 conservé provisoirement]
 
 Un virement exécuté d'un montant supérieur ou égal au seuil de mise en attente (configuration de déploiement, 5 000 € par défaut) prend le statut PENDING ; un virement exécuté d'un montant strictement inférieur prend le statut SUCCESS. PENDING est un statut d'affichage de l'état EXÉCUTÉ (FR-027-16) : le virement est exécuté et débité immédiatement, et n'attend aucune revue (décision D2). Seul un virement à l'état SUSPENDU attend une revue, avant tout débit (FR-027-02). Écart à RG-003-014 : un virement de 10 000 € ou plus, ou de score cumulé strictement supérieur à 75, n'est pas PENDING mais SUSPENDU sans débit (décisions D1, D2).
 
-Les textes affichés pour un virement PENDING disent « transaction importante », sans « en attente » ni « vérification » (décision B1, correction de BUG-009) :
-- notification ALERTE : « Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. » ;
-- mention en tête des descriptions des opérations au relevé (FR-003-09) : « [TRANSACTION IMPORTANTE] », à la place de « [EN ATTENTE] ».
+Les textes affichés pour un virement PENDING sont ceux du legacy, sans reformulation (décision B1 révisée) :
+- notification ALERTE : « Virement de {montant} EUR en attente de validation - transaction importante, verification en cours. » ;
+- mention en tête des descriptions des opérations au relevé (FR-003-09) : « [EN ATTENTE] ».
 
-[ASSUMPTION A-003-10 : formulation exacte de ces deux textes, sans accents dans le style du legacy, proposée au gate et non arbitrée mot à mot ; le statut enregistré garde la valeur technique PENDING, qui n'est affichée au client sous aucune forme « en attente »] L'écart de texte avec le golden master est voulu (décision B1) : un scénario qui capture « [EN ATTENTE] » ou l'ancien texte ALERTE est traité à l'étape G2. Cette exigence remplace le comportement legacy RG-003-014 (virement présenté « en attente » alors qu'il est débité, BUG-009).
+L'incohérence entre le texte et le débit visée par BUG-009 (un virement annoncé « en attente de validation » alors qu'il est déjà débité) est conservée provisoirement pour la démonstration ; raison : parité de texte avec le golden master pour la démonstration. La reformulation des textes est portée par FR-003-29, livrée après la démonstration (risque R-4, §9).
 
-Critère d'acceptation (test) : un virement de 5 000,00 € de score cumulé inférieur ou égal à 75 prend le statut PENDING, débite le compte source, produit la notification ALERTE au texte « … execute - transaction importante. » ci-dessus et des opérations dont la description commence par « [TRANSACTION IMPORTANTE] » ; aucun texte affiché ne contient « en attente » ni « verification » ; un virement de 4 999,99 € prend le statut SUCCESS ; un virement de 10 000,00 € est à l'état SUSPENDU et ne débite rien.
+Critère d'acceptation (test) : un virement de 5 000,00 € de score cumulé inférieur ou égal à 75 prend le statut PENDING, débite le compte source, produit la notification ALERTE au texte legacy ci-dessus et des opérations dont la description commence par « [EN ATTENTE] » ; un virement de 4 999,99 € prend le statut SUCCESS ; un virement de 10 000,00 € est à l'état SUSPENDU et ne débite rien.
 
 Source : RG-003-014, RG-003-015, BUG-009, RG-027-003
 
@@ -94,9 +94,9 @@ Seul un virement exécuté, immédiatement ou après libération, est remis au t
 
 Source : RG-003-018, RG-027-003
 
-#### FR-003-14 : Notification selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2] [ÉVOLUTION — décision de finalisation B1]
+#### FR-003-14 : Notification selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2]
 
-L'utilisateur connecté reçoit dans l'application une seule notification par virement, produite au moment de la décision du contrôle de fraude et choisie selon l'issue du contrôle puis le montant, avec les textes et les seuils de FR-002-10 : FRAUDE pour un virement suspendu, CONFIRMATION pour un virement exécuté sous le seuil d'alerte (5 000 € par défaut), ALERTE « transaction importante » pour un virement exécuté à partir de ce seuil (FR-003-10). Un virement d'un montant supérieur ou égal au seuil de fraude (10 000 € par défaut) est toujours suspendu (FR-023-04). Un virement libéré puis exécuté ne reçoit pas de nouvelle notification, et un virement refusé pour erreur du contrôle n'en reçoit aucune (FR-003-27). Cette exigence remplace RG-003-019 et RG-003-021 pour un virement suspendu sur score : il reçoit FRAUDE quel que soit son montant (D2).
+L'utilisateur connecté reçoit dans l'application une seule notification par virement, produite au moment de la décision du contrôle de fraude et choisie selon l'issue du contrôle puis le montant, avec les textes et les seuils de FR-002-10 : FRAUDE pour un virement suspendu, CONFIRMATION pour un virement exécuté sous le seuil d'alerte (5 000 € par défaut), ALERTE (texte legacy « en attente de validation - transaction importante, verification en cours », FR-003-10) pour un virement exécuté à partir de ce seuil. Un virement d'un montant supérieur ou égal au seuil de fraude (10 000 € par défaut) est toujours suspendu (FR-023-04). Un virement libéré puis exécuté ne reçoit pas de nouvelle notification, et un virement refusé pour erreur du contrôle n'en reçoit aucune (FR-003-27). Cette exigence remplace RG-003-019 et RG-003-021 pour un virement suspendu sur score : il reçoit FRAUDE quel que soit son montant (D2).
 
 Source : RG-003-019, RG-003-021, RG-003-022, RG-027-003
 
@@ -188,8 +188,20 @@ Après un refus pour erreur du contrôle (FR-003-27), le client peut refaire son
 
 Source : RG-027-003
 
+#### FR-003-29 : Reformulation des textes de transaction importante [STORY SUIVANTE : après la démonstration]
+
+Après la démonstration, les textes affichés pour un virement PENDING, exécuté et débité, disent « transaction importante », sans « en attente » ni « verification » (décision B1 initiale, reportée par la décision B1 révisée) :
+- notification ALERTE : « Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. » ;
+- mention en tête des descriptions des opérations au relevé (FR-003-09) : « [TRANSACTION IMPORTANTE] », à la place de « [EN ATTENTE] » ; le relevé (FR-005-07) affiche alors le badge « Transaction importante » et garde l'affichage de « [EN ATTENTE] » pour les opérations déjà en base.
+
+Ces textes, sans accents dans le style du legacy, ont été proposés au gate ; leur formulation est confirmée à la préparation de la story. Le statut enregistré garde la valeur technique PENDING. Cette story corrige BUG-009 (texte « en attente » pour un virement débité) ; l'écart de texte avec le golden master, voulu, est traité à l'étape G2 au moment de sa livraison. D'ici là, FR-003-10 s'applique avec les textes legacy.
+
+Critère d'acceptation (test) : un virement de 5 000,00 € de score cumulé inférieur ou égal à 75 produit la notification ALERTE « … execute - transaction importante. » et des opérations dont la description commence par « [TRANSACTION IMPORTANTE] » ; aucun texte affiché pour ce virement ne contient « en attente » ni « verification ».
+
+Source : RG-003-014, BUG-009
+
 **Notes :**
-- RG-003-007, RG-003-014 et RG-003-027 (Suspect, dette legacy) sont couvertes par les FR de correction FR-003-06 (BUG-008, BUG-011), FR-003-10 (BUG-009, décision de finalisation B1 : textes « transaction importante ») et FR-003-18 (BUG-010) ; leur comportement legacy n'est pas reproduit.
+- RG-003-007, RG-003-014 et RG-003-027 (Suspect, dette legacy) sont couvertes par les FR de correction FR-003-06 (BUG-008, BUG-011), FR-003-10 et FR-003-29 (BUG-009, conservé provisoirement pour la démonstration et corrigé après elle, décision de finalisation B1 révisée) et FR-003-18 (BUG-010) ; leur comportement legacy n'est pas reproduit, sauf les textes « en attente » de BUG-009 jusqu'à FR-003-29.
 - SC-003-03 capture le message technique legacy de solde insuffisant ; corrigé par FR-003-06 (BUG-011), son texte attendu change.
 - Le motif dans la notification de confirmation est porté par l'exigence fusionnée FR-003-26 (RG-003-020 + RG-023-007).
 - Les deux bandeaux techniques du legacy au-dessus du formulaire (pile technique de gestion du virement, publication sur une file nommée) et les messages de champ obligatoire du legacy, qui exposent des identifiants de composants internes, ne sont pas repris (NFR-SEC-04). [ASSUMPTION A-003-6 : ces textes sont exclus du golden master ; un champ obligatoire vide reçoit un message sans détail technique]

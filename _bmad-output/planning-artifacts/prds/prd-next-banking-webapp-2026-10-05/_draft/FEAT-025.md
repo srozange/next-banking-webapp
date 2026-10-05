@@ -4,14 +4,14 @@
 
 **Exigences fonctionnelles :**
 
-#### FR-025-01 : Notification de virement selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2] [ÉVOLUTION — décision de finalisation B1]
+#### FR-025-01 : Notification de virement selon l'issue du contrôle et le montant [ÉVOLUTION — décision RG-027-003 D1, D2]
 
 Au moment de la décision du contrôle de fraude (FR-027-02), le système ajoute à l'émetteur une seule notification par virement (FR-002-10), choisie selon l'issue du contrôle puis le montant, avec le seuil d'alerte (5 000 € par défaut) et le seuil de fraude (10 000 € par défaut) de la configuration de déploiement :
 - virement suspendu : FRAUDE, avec l'avis de suspension de FR-027-04 ;
 - virement exécuté d'un montant strictement inférieur au seuil d'alerte : CONFIRMATION, « Virement de {amount} EUR vers le compte {targetAccountNumber} confirme », avec le montant et le numéro du compte destinataire ;
-- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {amount} EUR vers le compte {targetAccountNumber} execute - transaction importante. » (FR-003-10, décision B1).
+- virement exécuté d'un montant supérieur ou égal au seuil d'alerte : ALERTE, « Virement de {amount} EUR en attente de validation - transaction importante, verification en cours. » (texte legacy conservé pour la démonstration, FR-003-10, décision B1 révisée).
 
-Un virement exécuté après libération, puis remis au traitement asynchrone (FR-023-01), ne produit aucune nouvelle notification (FR-002-10). Cette règle modifie RG-025-003 : FRAUDE suit la suspension et non le seul montant, et le texte legacy MSG-025-001 (« blocked for fraud verification ») est remplacé par l'avis de FR-027-04. Elle modifie RG-025-002 : l'ALERTE ne concerne plus que les virements exécutés de 5 000 € à 9 999,99 €, avec le texte de la décision B1. Même règle que FR-003-14 et FR-023-03.
+Un virement exécuté après libération, puis remis au traitement asynchrone (FR-023-01), ne produit aucune nouvelle notification (FR-002-10). Cette règle modifie RG-025-003 : FRAUDE suit la suspension et non le seul montant, et le texte legacy MSG-025-001 (« blocked for fraud verification ») est remplacé par l'avis de FR-027-04. Elle modifie RG-025-002 : l'ALERTE ne concerne plus que les virements exécutés de 5 000 € à 9 999,99 €, avec son texte legacy. Même règle que FR-003-14 et FR-023-03.
 
 Source : RG-025-001, RG-025-002, RG-025-003, RG-027-003
 

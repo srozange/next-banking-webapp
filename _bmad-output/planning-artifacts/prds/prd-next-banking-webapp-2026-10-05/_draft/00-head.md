@@ -13,7 +13,7 @@ inputDocuments:
 
 # PRD : next-banking-webapp (rénovation)
 
-*Brouillon complet en mode Fast path, non finalisé. Les suppositions sont marquées `[ASSUMPTION]` et indexées en §10. La décision sur la règle RG-027-003 (contrôle de fraude d'un virement) a été prise le 2026-10-05 (§9, décisions D1 à D12) ; les exigences qui en découlent et s'écartent du corpus sont marquées `[ÉVOLUTION — décision RG-027-003 …]`, et celles livrées après le socle `[STORY SUIVANTE]`. Les décisions de finalisation B1 à B5, prises au gate de relecture (§9), sont marquées `[ÉVOLUTION — décision de finalisation Bn]`.*
+*Brouillon complet en mode Fast path, non finalisé. Les suppositions sont marquées `[ASSUMPTION]` et indexées en §10. La décision sur la règle RG-027-003 (contrôle de fraude d'un virement) a été prise le 2026-10-05 (§9, décisions D1 à D12) ; les exigences qui en découlent et s'écartent du corpus sont marquées `[ÉVOLUTION — décision RG-027-003 …]`, et celles livrées après le socle `[STORY SUIVANTE]`. Les décisions de finalisation B1 à B7, prises au gate de relecture (§9), sont marquées `[ÉVOLUTION — décision de finalisation Bn]` ; B1 a été révisée (textes legacy conservés pour la démonstration).*
 
 ## 0. Objet du document
 
@@ -31,7 +31,8 @@ Ce PRD décrit la rénovation de l'application bancaire existante (le « legacy 
 
 La banque dispose d'une application en ligne fonctionnelle mais sans documentation, bâtie sur une pile Java EE vieillissante, sans API, sans conteneurisation ni intégration continue, et qui porte 50 comportements défectueux que le métier a décidé de corriger. La rénovation livre à ses trois populations (clients, conseillers, administrateurs) **la parité, plus les évolutions décidées** : le même service que le legacy, prouvé par le rejeu du golden master, et la correction de ces 50 bugs, chacune démontrée par un test. Les évolutions décidées, qui s'écartent du legacy sans qu'un bug les couvre, sont :
 - la décision RG-027-003 sur le contrôle de fraude d'un virement (§9, D1 à D12) : suspension avant débit, revue par l'administrateur, cumul glissant, reprise préremplie après un refus ;
-- les décisions de finalisation B1 à B5 (§9) : textes « transaction importante », contrôle de fraude des virements programmés, plafond des alertes de solde faible, passage des alertes en REVIEWED, heure butoir qui fait foi ;
+- les décisions de finalisation B1 à B7 (§9) : textes legacy « en attente » conservés pour la démonstration (B1 révisée), contrôle de fraude des virements programmés, plafond des alertes de solde faible, passage des alertes en REVIEWED, heure butoir qui fait foi, rejet sans débit d'une libération sur solde insuffisant, rejet sans débit d'un virement libéré dont le solde est devenu insuffisant au débit ;
+- après la démonstration, la reformulation des textes de transaction importante (FR-003-29, B1 révisée) ;
 - le signal d'échecs de connexion répétés (FR-027-11) ;
 - le bouton « Rafraîchir » des comptes tiers (A-012-5) ;
 - l'exemption d'authentification des écrans publics sur leur chemin exact (A-030-1).
@@ -83,9 +84,9 @@ La portée de cette version est un **démonstrateur réaliste** : le comportemen
 - **Contrôle de fraude** : évaluation d'un virement selon des signaux (LARGE_AMOUNT, ROUND_AMOUNT, RAPID_SUCCESSION, HIGH_FREQUENCY, heure inhabituelle…), chacun avec un score de risque.
 - **Seuil de score** : 75 par défaut. Un score cumulé strictement supérieur suspend le virement (FR-027-02).
 - **Seuil de fraude** : 10 000 € par défaut. Un virement d'un montant supérieur ou égal est suspendu (FR-027-02) et sa notification est FRAUDE.
-- **Seuil d'alerte** : 5 000 € par défaut. Un virement exécuté d'un montant supérieur ou égal reçoit la notification ALERTE « transaction importante » au lieu de CONFIRMATION (FR-002-10).
+- **Seuil d'alerte** : 5 000 € par défaut. Un virement exécuté d'un montant supérieur ou égal reçoit la notification ALERTE au lieu de CONFIRMATION (FR-002-10).
 - **Seuil de mise en attente** : 5 000 € par défaut, même valeur que le seuil d'alerte mais effet distinct : un virement exécuté d'un montant supérieur ou égal est enregistré au statut PENDING (FR-003-10). Les deux seuils sont deux paramètres séparés (NFR-SEC-08) et ne doivent pas être fusionnés.
-- **PENDING** : valeur technique du statut enregistré d'un virement exécuté et débité dont le montant atteint le seuil de mise en attente ; elle n'est pas affichée « en attente » (décision B1). Ce n'est pas l'état SUSPENDU.
+- **PENDING** : valeur technique du statut enregistré d'un virement exécuté et débité dont le montant atteint le seuil de mise en attente ; pour la démonstration, elle reste annoncée « en attente » avec les textes legacy (BUG-009 conservé provisoirement, décision B1 révisée, corrigé par FR-003-29). Ce n'est pas l'état SUSPENDU.
 - **Cumul glissant** : total des virements émis par un client sur les 24 heures glissantes, nouveau virement inclus ; au-delà du plafond (10 000 € par défaut), le virement est suspendu (FR-027-18).
 - **Alerte de fraude** : enregistrement consultable par l'administrateur, produit par le contrôle de fraude en temps réel. Le traitement nocturne de détection de fraude (FEAT-019) ne crée pas d'alerte, il journalise son résultat (RG-019-007).
 - **Virement suspendu** : virement que le contrôle de fraude a arrêté avant tout débit, en attente de la revue de l'administrateur, qui le libère ou le rejette avant l'heure butoir.

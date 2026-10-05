@@ -7,7 +7,7 @@
 - **Notifications hors de l'application** : ni e-mail, ni SMS, ni push (décision de cadrage).
 - **Engagement réglementaire de production** (DSP2, RGPD, durée légale de conservation de l'audit) : hors de cette version, qui est un démonstrateur (décision de cadrage). Les exigences de sécurité d'une vraie banque restent dues (§7.3).
 - **Environnements autres que le local** : seul le lancement local par `compose.yaml` est dans le périmètre. Aucun hébergement cible n'est spécifié (décision de cadrage).
-- **Évolutions fonctionnelles au-delà de « parité, plus les évolutions décidées »** : aucune. Le périmètre est la parité, plus les 50 bugs à corriger, plus les évolutions décidées listées en §1 et §6.1 : décision sur le contrôle de fraude d'un virement, D1 à D12 de §9 (suspension, revue, cumul, reprise), décisions de finalisation B1 à B5, signal d'échecs de connexion (FR-027-11), bouton « Rafraîchir » (A-012-5) et exemption d'authentification par chemin exact (A-030-1).
+- **Évolutions fonctionnelles au-delà de « parité, plus les évolutions décidées »** : aucune. Le périmètre est la parité, plus les 50 bugs à corriger, plus les évolutions décidées listées en §1 et §6.1 : décision sur le contrôle de fraude d'un virement, D1 à D12 de §9 (suspension, revue, cumul, reprise), décisions de finalisation B1 à B7 (dont la reformulation FR-003-29, après la démonstration), signal d'échecs de connexion (FR-027-11), bouton « Rafraîchir » (A-012-5) et exemption d'authentification par chemin exact (A-030-1).
 - **Bugs conservés** : les bugs du legacy décidés « ne pas corriger » ne sont ni des exigences ni des tests. Ils sont listés dans `docs/retro/00-global/LEGACY-BUGS.md`.
 
 ## 6. Périmètre de la version
@@ -16,11 +16,11 @@
 
 - Les 30 fonctionnalités FEAT-001 à FEAT-030 (§4) : la parité avec le legacy, plus les évolutions décidées :
   - la décision RG-027-003 (suspension, revue, cumul, reprise ; détail ci-dessous) ;
-  - les décisions de finalisation B1 à B5 (§9) ;
+  - les décisions de finalisation B1 à B7 (§9) ;
   - le signal d'échecs de connexion répétés (FR-027-11) ;
   - le bouton « Rafraîchir » des comptes tiers (A-012-5) ;
   - l'exemption d'authentification par chemin exact (A-030-1).
-- La correction des 50 bugs à corriger, chacune couverte par un test.
+- La correction des 50 bugs à corriger, chacune couverte par un test ; BUG-009 est conservé provisoirement pour la démonstration et corrigé par la story FR-003-29, livrée après elle (décision B1 révisée, risque R-4).
 - Les contrôles de `docs/quality-gates.md`, livrés et verts avant toute story fonctionnelle (NFR-QG-00).
 - Les adaptateurs simulés des trois fournisseurs externes.
 - Le golden master dérivé et son rejeu final.
@@ -28,6 +28,7 @@
   1. le socle RG-027-003 : contrôle synchrone avant la validation, suspension avant débit, refus en cas d'erreur, états du virement, revue par l'administrateur, échéance et rejet automatique, écran de refus (décisions D1 à D9) ;
   2. le cumul glissant des virements d'un client (FR-027-18, décision D10), dans la story qui suit immédiatement le socle ;
   3. la reprise préremplie après un refus (FR-003-28, décision D12).
+- La reformulation des textes de transaction importante (FR-003-29, décision B1 révisée), story livrée après la démonstration et après les stories ci-dessus ; d'ici là, les textes legacy de FR-003-10 s'appliquent.
 
 ### 6.2 Hors périmètre de la version
 
@@ -63,7 +64,12 @@ Chaque contrôle est exécuté par un outil, jamais évalué par un agent. Les s
   - Le golden master du legacy, dérivé pour la nouvelle application, rejoue sans échec avant la bascule.
   - Il se rejoue une seule fois, développement terminé, pas entre les stories ni les epics.
   - Tous les scénarios retenus à l'étape G2 doivent passer, 31 au plus : 33 scénarios capturés, moins SC-003-03 et SC-010-02, qui reproduisent des bugs à corriger. Contrat : `docs/retro/golden-master-contract.md`.
-  - Trois scénarios applicables, SC-003-01, SC-003-02 et SC-003-04, divergent volontairement du legacy (contrôle de fraude avant la validation, suspension, refus en cas d'erreur : décision RG-027-003). Leur décision de rejeu, reprise avec une exception documentée ou exclusion justifiée, est prise à l'étape G2 pendant l'architecture. C'est elle qui fixe le nombre final de scénarios rejoués.
+  - **Un seul scénario divergent prévu : SC-003-04**, et seulement sous condition (prévision validée par le décideur le 2026-10-05). La table ronde et l'addendum A.7 annonçaient trois scénarios divergents, SC-003-01, SC-003-02 et SC-003-04 ; cette annonce avait été faite sans lire les fichiers des scénarios. Leur lecture (`divergences-golden-master.md` de la spec UX) montre que SC-003-01 et SC-003-02 ne divergent pas :
+    - SC-003-01 ne fait que charger le formulaire de virement : aucune soumission, donc aucun contrôle de fraude ;
+    - SC-003-02 soumet deux comptes identiques : le virement est rejeté avant le contrôle de fraude (FR-003-07), avec le message legacy inchangé (FR-003-03) ;
+    - de plus, les scénarios d'écran comparent en mode « contient » (un texte ajouté ne fait pas échouer un scénario), et les libellés du legacy sont conservés : wording intouchable (NFR-UI-01), textes PENDING et ALERTE gardés pour la démonstration (décision de finalisation B1 révisée).
+  - **Condition de divergence de SC-003-04** (virement de 100 EUR du compte COURANT vers le compte EPARGNE, puis tableau de bord). En conditions normales, le score cumulé du contrôle de fraude vaut 35 (NEW_BENEFICIARY : le compte destinataire n'est pas enregistré comme bénéficiaire) : le virement est exécuté et rien ne diverge. Le scénario ne diverge que si le score dépasse 75, c'est-à-dire si le rejeu a lieu avant 06:00 ou après 23:00, heure du serveur (UNUSUAL_HOURS, +45), ou moins de 30 secondes après un autre virement du client (RAPID_SUCCESSION, +55), ou après plus de 8 opérations du jour (HIGH_FREQUENCY, +50) : le virement est alors suspendu (FR-027-02), sans redirection vers le tableau de bord. Exception documentée à l'étape G2 : rejeu entre 06:00 et 23:00, heure du serveur, base remise à zéro avant le rejeu (NFR-PAR-04), aucun virement du client dans les 30 secondes précédentes.
+  - **Ce décompte est une prévision**, à confirmer au premier rejeu réel du golden master. Si le rejeu montre d'autres écarts, ils passent par l'étape G2 et ne sont pas traités comme des régressions tant qu'ils découlent des décisions D1 à D12 (§9). La décision de rejeu de l'étape G2, prise pendant l'architecture, fixe le nombre final de scénarios rejoués.
 - **NFR-PAR-02 — Bugs corrigés prouvés.** Chacun des 50 bugs à corriger est couvert par un test automatisé qui vérifie le comportement attendu (critère d'acceptation de la FR qui le cite).
 - **NFR-PAR-03 — Règles couvertes.** Chaque règle de gestion reprise est couverte par au moins une exigence de ce PRD et par au moins un test.
 - **NFR-PAR-04 — Données de référence.**
@@ -126,7 +132,7 @@ Les temps du legacy sont une référence mesurée, pas une cible (brief). Cibles
 ## 8. Indicateurs de succès
 
 **Principaux**
-- **SM-1** : rejeu du golden master. Tous les scénarios retenus à l'étape G2, 31 au plus, passent au rejeu final. Valide NFR-PAR-01 et l'ensemble du §4.
+- **SM-1** : rejeu du golden master. Tous les scénarios retenus à l'étape G2, 31 au plus, passent au rejeu final, SC-003-04 compris, rejoué dans les conditions de son exception documentée (NFR-PAR-01). Un écart imprévu qui découle des décisions D1 à D12 passe par l'étape G2 et ne compte pas comme une régression. Valide NFR-PAR-01 et l'ensemble du §4.
 - **SM-2** : couverture des règles. 100 % des règles de gestion reprises sont citées par une FR (mesure : `docs/retro/tools/check-prd-coverage.py`) et couvertes par un test. Valide NFR-PAR-03.
 - **SM-3** : bugs corrigés. 50 sur 50 bugs à corriger ont un test vert du comportement attendu. Valide NFR-PAR-02.
 
@@ -163,23 +169,26 @@ L'ancienne question bloquante QO-1, points (a) et (b), est tranchée par le déc
 
 *Note : le corpus était incohérent sur ce point. `docs/retro/00-global/LEGACY-BUGS.md` présente BUG-084 comme « validé par le métier », mais sa note dit qu'il dépend de la question bloquante FEAT-027, absente de `docs/retro/GAPS.md`. Le code legacy laissait la question en « TODO » (JIRA-9202). La décision ci-dessus tranche cette question. D1 renverse en outre la mention de résolution portée par le corpus sous RG-027-003 (`docs/retro/features/FEAT-027/RG.md`), selon laquelle la détection « ne bloque pas le virement : elle le signale » : désormais, un virement suspect est suspendu.*
 
-### Décisions de finalisation B1 à B5 (gate de relecture du 2026-10-05)
+### Décisions de finalisation B1 à B7 (gate de relecture du 2026-10-05)
 
-Prises par le décideur après les revues du PRD. Les exigences qui en découlent sont marquées `[ÉVOLUTION — décision de finalisation Bn]`.
+Prises par le décideur après les revues du PRD. Les exigences qui en découlent sont marquées `[ÉVOLUTION — décision de finalisation Bn]` (B1 révisée : `[décision de finalisation B1 révisée …]`).
 
 | # | Décision | Exigences |
 |---|---|---|
-| B1 | BUG-009 : les textes d'un virement important exécuté (statut PENDING, de 5 000 € à 9 999,99 €) disent « transaction importante », sans « en attente » ni « vérification ». Le virement reste exécuté et débité (D2). L'écart de texte avec le golden master est voulu. | FR-003-10, FR-003-09, FR-002-10, FR-003-14, FR-023-03, FR-025-01, FR-005-07 |
+| B1 (révisée le 2026-10-05) | BUG-009 : pour la démonstration, les textes PENDING et ALERTE du legacy sont gardés sans reformulation (notification ALERTE « Virement de {montant} EUR en attente de validation - transaction importante, verification en cours. », mention « [EN ATTENTE] » au relevé) ; le statut PENDING s'applique toujours à partir de 5 000 €, virement exécuté et débité (D2). BUG-009 est conservé provisoirement, raison : parité de texte avec le golden master pour la démonstration (risque R-4). La reformulation décidée initialement (textes « transaction importante », sans « en attente » ni « verification ») devient une story après la démonstration. | FR-003-10, FR-003-29, FR-003-09, FR-002-10, FR-003-14, FR-023-03, FR-025-01, FR-005-07 |
 | B2 | Un virement programmé passe par le même contrôle de fraude et la même règle de suspension qu'un virement immédiat, au moment de l'exécution de chaque échéance. | FR-021-10, FR-027-02 |
 | B3 | Solde faible : au plus 20 alertes par compte et par jour (BUG-071), une seule règle pour FEAT-022 et FEAT-025, type ACCOUNT_BALANCE du corpus. | FR-022-04, FR-025-08 |
 | B4 | Libérer ou rejeter un virement suspendu passe ses alertes de fraude au statut REVIEWED, dans la même action. | FR-016-19, FR-016-15, FR-027-13, FR-027-14 |
 | B5 | L'heure butoir fait foi : libération acceptée strictement avant l'heure butoir ; à l'heure butoir ou après, refusée et virement rejeté, que le traitement planifié soit passé ou non. | FR-027-17, FR-016-19 |
+| B6 | Libération d'un virement suspendu dont le solde est devenu insuffisant : la libération est refusée et le virement passe à l'état REJETÉ, sans aucun débit. Le solde est contrôlé à l'instant de la libération ; si le solde suffit, le virement passe à LIBÉRÉ et le traitement asynchrone effectue ensuite le débit et le passe à EXÉCUTÉ. | FR-016-19, FR-027-16, FR-023-01, FR-026-02 |
+| B7 (2026-10-05, extension de B6) | Si le solde est devenu insuffisant entre la libération et le débit asynchrone, le virement est rejeté sans aucun débit : transition LIBÉRÉ → REJETÉ, motif « solde insuffisant au débit ». Ce rejet est tracé au journal d'audit avec un code distinct du rejet par l'administrateur et du rejet automatique à l'échéance (TRANSFER_REJECT_INSUFFICIENT_FUNDS, acteur SYSTEM). Le client voit l'état « rejeté, non débité », sans nouvelle notification ; l'administrateur voit le motif dans l'historique des virements traités. | FR-027-16, FR-023-01, FR-026-03, FR-026-05, FR-016-19, FR-002-10 |
 
 ### Risques connus
 
 - **R-1 — Découpage d'un virement sous les seuils.** Tant que le cumul glissant (FR-027-18) n'est pas livré, un client peut émettre plusieurs virements sous les seuils de score et de montant, sans suspension. Ce risque est accepté pour la durée du socle seulement (décision D11).
 - **R-2 — Rejet automatique la nuit et le week-end.** L'échéance de 24 heures calendaires peut rejeter un virement suspendu sans revue humaine si personne n'est disponible. C'est accepté pour le démonstrateur, et à revoir si le projet en sort (décision D8).
 - **R-3 — Montants non masqués dans les journaux.** Seuls les IBAN sont masqués (NFR-SEC-05). Les montants restent en clair dans les journaux du serveur. Accepté pour le démonstrateur, à revoir si le projet en sort (décision de finalisation du 2026-10-05).
+- **R-4 — BUG-009 conservé provisoirement.** Un virement de 5 000 à 10 000 € est débité tout en étant annoncé « en attente de validation » ; corrigé par FR-003-29 après la démonstration (décision B1 révisée).
 
 ### Autres questions ouvertes (non bloquantes)
 
@@ -199,7 +208,7 @@ Prises par le décideur après les revues du PRD. Les exigences qui en découlen
 Points relevés par les revues ou laissés ouverts par §9, qui ne bloquent ni l'architecture ni le découpage en epics. Chacun a un propriétaire et une condition de reprise.
 
 - RP-01 — Journal des traitements de l'administration saturé : depuis la correction de BUG-072, le contrôle des soldes faibles écrit 48 entrées par jour, et FR-016-17 n'affiche que les 50 plus récentes ; les traitements nocturnes peuvent en disparaître. Choisir entre pagination, filtre par traitement ou nombre d'entrées, et ajouter un critère d'acceptation à FR-016-17 — propriétaire : PM — reprise : avant la story de FR-016-17.
-- RP-02 — Classement de certaines suppositions de §10 : A-027-6 et A-027-7 (règles métier sur des virements de clients), ainsi que A-003-3, A-021-5, A-019-1 et A-027-10, pourraient relever du risque élevé selon le critère de §10 — propriétaire : PM — reprise : avant la story du socle RG-027-003.
+- RP-02 — Classement de certaines suppositions de §10 : A-027-7 (règle métier sur des virements de clients), ainsi que A-003-3, A-021-5, A-019-1 et A-027-10, pourraient relever du risque élevé selon le critère de §10 — propriétaire : PM — reprise : avant la story du socle RG-027-003.
 - RP-03 — Signaux de fraude décrits deux fois, dans FEAT-003 (FR-003-17 à FR-003-25) et dans FEAT-027 (FR-027-03, FR-027-05 à FR-027-10), avec la mention « Même règle que » : garder la règle complète dans FEAT-027 et un renvoi dans FEAT-003, en gardant les RG-003 en ligne Source — propriétaire : PM — reprise : au découpage en stories du contrôle de fraude ; d'ici là, une story qui touche un signal modifie les deux FR.
 - RP-04 — Volumétrie de `import.sql` détaillée dans l'addendum A.8 sans exigence qui l'utilise, hormis NFR-PAR-04 : acceptable en l'état, à réduire éventuellement à un renvoi vers le corpus — propriétaire : PM — reprise : à la prochaine révision du PRD.
 - RP-05 — Exigences non fonctionnelles d'une banque en ligne absentes de §7 : accessibilité, navigateurs pris en charge, adaptation mobile, verrouillage du compte après des échecs de connexion (FR-027-11 ne lève qu'une alerte), politique de mot de passe. Les ajouter à §7.3 et §7.8, ou les déclarer non-objectifs du démonstrateur — propriétaire : PM — reprise : avant la story d'authentification (FEAT-001) pour le verrouillage et le mot de passe ; hors démonstrateur pour le reste.

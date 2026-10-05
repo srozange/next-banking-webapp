@@ -1,6 +1,6 @@
 ### FEAT-005 — Relevé de compte
 
-**Description :** L'écran « Relevé de compte » permet à tout utilisateur authentifié (CLIENT, et CONSEILLER ou ADMIN pour leurs propres comptes) de consulter, compte par compte, toutes les opérations d'un de ses comptes, de la plus récente à la plus ancienne. Le premier compte est sélectionné d'office ; changer de compte rafraîchit le solde et les opérations sans recharger toute la page. Les opérations des virements importants (libellé préfixé « [TRANSACTION IMPORTANTE] », ou « [EN ATTENTE] » pour une opération enregistrée avant la rénovation) sont signalées par un badge et une ligne surlignée (décision de finalisation B1). Les cas limites marquants sont l'utilisateur sans compte (sélecteur vide, aucune opération), le compte sans opération et l'absence de limite au nombre d'opérations affichées. Scénarios golden master : SC-005-01.
+**Description :** L'écran « Relevé de compte » permet à tout utilisateur authentifié (CLIENT, et CONSEILLER ou ADMIN pour leurs propres comptes) de consulter, compte par compte, toutes les opérations d'un de ses comptes, de la plus récente à la plus ancienne. Le premier compte est sélectionné d'office ; changer de compte rafraîchit le solde et les opérations sans recharger toute la page. Les opérations en attente (libellé préfixé « [EN ATTENTE] », texte legacy conservé pour la démonstration, décision de finalisation B1 révisée) sont signalées par un badge et une ligne surlignée. Les cas limites marquants sont l'utilisateur sans compte (sélecteur vide, aucune opération), le compte sans opération et l'absence de limite au nombre d'opérations affichées. Scénarios golden master : SC-005-01.
 
 **Exigences fonctionnelles :**
 
@@ -44,11 +44,11 @@ Si le compte n'a aucune opération, le système affiche « Aucune transaction po
 
 Source : RG-005-011, RG-005-012, RG-005-013, RG-005-014, RG-005-015, RG-005-016
 
-#### FR-005-07 : Opérations des virements importants [ÉVOLUTION — décision de finalisation B1]
+#### FR-005-07 : Opérations en attente
 
-Si le libellé d'une opération commence par « [TRANSACTION IMPORTANTE] » suivi d'une espace (25 caractères), mention posée par FR-003-09 et FR-003-10, le système affiche le badge « Transaction importante » avant le libellé, retire ces 25 caractères du libellé affiché et affiche la ligne sur fond jaune. Une opération dont le libellé commence par l'ancienne mention « [EN ATTENTE] » suivie d'une espace (13 caractères) garde l'affichage legacy de RG-005-017 : badge « En attente », 13 caractères retirés, ligne sur fond jaune. [ASSUMPTION A-005-2 : le relevé reconnaît les deux préfixes ; l'ancien ne peut venir que d'opérations déjà en base (données de référence ou jeux de test repris du legacy), aucune nouvelle opération ne le portant plus ; le texte du badge « Transaction importante » est proposé au gate et non arbitré] Cette exigence modifie RG-005-017, qui ne reconnaissait que « [EN ATTENTE] » : la nouvelle mention de FR-003-10 remplace le texte trompeur visé par BUG-009.
+Si le libellé d'une opération commence par « [EN ATTENTE] » suivi d'une espace (13 caractères), mention posée par FR-003-09 et FR-003-10, le système affiche le badge « En attente » avant le libellé, retire ces 13 caractères du libellé affiché et affiche la ligne sur fond jaune. Les textes legacy sont conservés pour la démonstration (décision de finalisation B1 révisée) ; la reconnaissance de la nouvelle mention de FR-003-29 arrive avec cette story, après la démonstration.
 
-Critère d'acceptation (test) : une opération « [TRANSACTION IMPORTANTE] Virement vers X - loyer » s'affiche avec le badge « Transaction importante », le libellé « Virement vers X - loyer » et un fond jaune ; une opération « [EN ATTENTE] Virement vers X » s'affiche avec le badge « En attente » et le libellé « Virement vers X » ; une opération sans préfixe n'a ni badge ni fond jaune.
+Critère d'acceptation (test) : une opération « [EN ATTENTE] Virement vers X » s'affiche avec le badge « En attente », le libellé « Virement vers X » et un fond jaune ; une opération sans préfixe n'a ni badge ni fond jaune.
 
 Source : RG-005-017
 

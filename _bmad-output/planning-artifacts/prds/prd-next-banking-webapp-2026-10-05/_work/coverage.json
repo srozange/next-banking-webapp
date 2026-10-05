@@ -1,7 +1,7 @@
 {
   "prd": "_bmad-output/planning-artifacts/prds/prd-next-banking-webapp-2026-10-05/prd.md",
   "addendum": "_bmad-output/planning-artifacts/prds/prd-next-banking-webapp-2026-10-05/addendum.md",
-  "frs": 332,
+  "frs": 333,
   "rules": {
     "expected": 161,
     "covered": 161,
