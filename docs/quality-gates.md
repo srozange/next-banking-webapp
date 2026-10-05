@@ -24,6 +24,9 @@
 - Couverture back : JaCoCo check en phase verify. 100 % lignes et branches sur domain et application,
   80 % sur adapter et infrastructure. Bloquant.
 - Couverture front : Vitest coverage.thresholds par glob, mêmes seuils. Bloquant.
+- Types front : tsc --noEmit sur frontend/ (tsconfig.json en mode strict), exécuté par scripts/gates/build.sh. Bloquant.
+- Build back : scripts/gates/build.sh part d'un build propre (mvn clean verify -DfailIfNoTests=true),
+  pour qu'un module sans test ou un test supprimé ne soit jamais masqué par des classes déjà compilées. Bloquant.
 - Mutation back : PIT dans le profil Maven mutation, sur domain et application, mutationThreshold 85,
   historique activé. À la demande.
 - Mutation front : StrykerJS sur src/domain et src/application, thresholds break 85 / high 90,

@@ -159,6 +159,14 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - La revue a relevé des listes d'interdits plus courtes que les contournements possibles (références de méthode `Instant::now` corrigées ; `nanoTime`, `ZoneId.systemDefault`, `RestOperations`, `HttpURLConnection`, imports non résolus de depcruise reportés) : décisions d'architecture à prendre avant l'empreinte, listées dans `deferred-work.md`.
 - Les stories restent en `review` (statut de fin de `bmad-build`) : `status.sh` garde l'étape 7 à « à faire » tant que l'humain ne les passe pas à `done`.
 
+### 2026-10-05 · Correctif de `build.sh` et de `docs/quality-gates.md` (copie par le propriétaire)
+
+- Versions préparées par l'agent dans un dossier non suivi, copiées par le propriétaire : `clean verify` (un module sans test n'est plus masqué par `target/`) et `npx tsc --noEmit` (types du front) ; deux lignes « Types front » et « Build back » dans `docs/quality-gates.md`.
+- Tests rejoués sur la version installée et consignés : réel OK ; négatifs OK (depcruise ×2, ArchUnit, module sans test, erreur de type TS2322).
+  - *À reporter dans `pilote-bmad/fichiers/scripts/gates/build.sh`, `fichiers/quality-gates.md` et `reference/tests-scripts.md` :* les deux ajouts et les deux négatifs correspondants.
+- Le mode opératoire « l'agent prépare, l'humain copie » marche bien pour les fichiers protégés avant l'empreinte : il garde la règle « jamais modifier un contrôle » intacte pour l'agent.
+  - *À ajouter dans `pilote-bmad` (règles) :* quand un script protégé a tort, préparer la version corrigée dans un dossier non suivi, la tester en l'exécutant depuis ce dossier, puis donner la commande `cp` à l'humain.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
