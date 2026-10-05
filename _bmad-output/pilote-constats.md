@@ -38,6 +38,16 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - Le shell de l'outil est zsh : une expression `[ =]` dans un motif `grep` non quoté a été interprétée par zsh (« bad math expression »). C'est un incident mineur de ma part, sans impact sur les scripts (ils ont un shebang bash).
 - Déport vers retro : rien de pertinent à cette étape. Les contrôles qualité sont indépendants du corpus.
 
+### 2026-10-05 · Étape 5 · Exceptions CVE et clé NVD
+
+- Formats confirmés dans les docs officielles : en-tête `dependency-suppression.1.4.xsd` (version actuelle), expiration `until="AAAA-MM-JJZ"` ; dans `.trivyignore`, `CVE-… exp:AAAA-MM-JJ`.
+- Point 13 de `non-verifie.md` (champ du `<server>` lu par `nvdApiServerId`) : **résolu**. L'aide de `dependency-check-maven` 13.0.0 dit que le `password` du serveur porte la clé.
+  - *À reporter dans `pilote-bmad/reference/non-verifie.md`.*
+- Clé NVD contrôlée sans être lue ni affichée : présence de `<id>nvd</id>` dans `<servers>`, mot de passe non vide de 36 caractères (format UUID). Preuve fonctionnelle : `mvn dependency-check:update-only -DnvdApiServerId=nvd` lancé sur un POM jetable. L'API NVD répond (401 162 entrées) sans l'avertissement « API Key was not provided ».
+- Bases Trivy téléchargées (`trivy fs --download-db-only`, puis `--download-java-db-only`) : 24 s, 1,4 Go + 1,5 Go dans `~/.cache/trivy`. La base Java n'est gardée en cache que 3 jours, et `cve.sh` tourne avec `--skip-java-db-update`. Le premier constat de l'étape 4 reste donc vrai : il faut une mise à jour avant chaque série de scans, pas une seule fois.
+  - *À ajouter dans la fiche de l'étape 5 du pilote :* un téléchargement initial des bases Trivy et NVD (`update-only`), et dire **qui** les rafraîchit ensuite (par exemple une commande `scripts/gates/cve-update.sh` lancée avant la boucle).
+- Déport vers retro : rien de pertinent. La sécurité des dépendances ne dépend pas du corpus.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
