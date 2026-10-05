@@ -1,11 +1,12 @@
 package fr.nextbanking.notifications.application.port.in;
 
-import fr.nextbanking.notifications.domain.TemoinRecu;
+import java.util.UUID;
 
 /**
- * Port entrant : recevoir un témoin.
+ * Port entrant : recevoir un témoin publié par le cœur bancaire.
  */
 public interface RecevoirTemoin {
 
-    TemoinRecu recevoir(long temoinId);
+    /** Enregistre le témoin reçu ; rend {@code false} si l'événement avait déjà été traité. */
+    boolean recevoir(UUID idEvenement, long temoinId);
 }

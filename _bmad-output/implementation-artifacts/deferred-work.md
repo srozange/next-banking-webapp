@@ -46,3 +46,19 @@ source_spec: `spec-1-3-imposer-la-couverture-par-couche.md`
 severity: medium
 reason: prepare-agent passe par la propriété argLine ; aucun POM ne la fixe aujourd'hui (grep argLine vide), donc pas de défaut actuel. Mais check-gates-exist.sh ne lit que le POM effectif (plugin, goal check, minimum) et resterait OK ; JaCoCo journalise « Skipping JaCoCo execution due to missing execution data file » et sort en 0. À couvrir par le canari de couverture déjà reporté (scripts/gates/, protégé) : vérifier aussi la présence de target/jacoco.exec.
 status: open
+
+### DW-4: Les règles de routage du conteneur web (nginx) et du proxy Vite n'ont aucune vérification automatique en dehors du POST témoin de coeur-bancaire.
+origin: spec-deferred c370b9856cac
+location: frontend/nginx.conf ; frontend/vite.config.ts
+source_spec: `spec-1-4-faire-traverser-les-deux-services-par-un-flux-temoin-trace.md`
+severity: low
+reason: trace-smoke.sh n'envoie que POST /api/coeur-bancaire/temoin. Retirer le bloc /api/audit de nginx.conf, passer X-Forwarded-For à $proxy_add_x_forwarded_for, ou retirer le bypass du proxy Vite ne ferait échouer aucun contrôle. Les curl /tableau-de-bord (200) et /api/audit/ (404) des critères sont manuels. Piste : un test Vitest qui importe vite.config.ts et vérifie server.proxy (bypass compris) ; côté nginx, une porte au niveau de la pile (scripts/gates/, protégé : décision humaine).
+status: open
+
+### DW-5: AGENTS.md porte encore « TODO après la story 1.4 : ajouter scripts/gates/trace-smoke.sh à la liste ci-dessus ».
+origin: spec-deferred e53d5257b768
+location: AGENTS.md (section Running and verifying)
+source_spec: `spec-1-4-faire-traverser-les-deux-services-par-un-flux-temoin-trace.md`
+severity: low
+reason: La liste « Avant de déclarer un travail terminé » d'AGENTS.md ne cite pas trace-smoke.sh. Fichier de contexte des agents : modification réservée (report obligatoire), à faire au prochain rafraîchissement (bmad-project-context).
+status: open

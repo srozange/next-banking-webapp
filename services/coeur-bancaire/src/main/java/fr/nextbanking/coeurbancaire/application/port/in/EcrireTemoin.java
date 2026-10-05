@@ -1,11 +1,10 @@
 package fr.nextbanking.coeurbancaire.application.port.in;
 
-import fr.nextbanking.coeurbancaire.domain.Temoin;
-
 /**
  * Port entrant : écrire un témoin.
  */
 public interface EcrireTemoin {
 
-    Temoin ecrire(String libelle);
+    /** Écrit le témoin et rend son identifiant. */
+    long ecrire(String libelle);
 }

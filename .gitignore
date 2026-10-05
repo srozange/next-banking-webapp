@@ -13,3 +13,5 @@ frontend/.vitest/
 .bmad-loop/runs/
 .bmad-loop/cache/
 _bmad/render/
+.env
+.secrets/

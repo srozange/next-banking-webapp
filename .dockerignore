@@ -1,0 +1,17 @@
+.git
+.env
+.secrets
+.bmad-loop
+.claude
+.playwright-mcp
+_bmad
+_bmad-output
+docs
+e2e
+inputs
+reports
+**/target
+**/node_modules
+frontend/dist
+frontend/coverage
+frontend/.vitest

@@ -39,7 +39,7 @@ development_status:
   1-1-poser-le-squelette-des-deux-services-et-du-front: done
   1-2-rendre-l-architecture-hexagonale-vérifiable-et-bloquante: done
   1-3-imposer-la-couverture-par-couche: done
-  1-4-faire-traverser-les-deux-services-par-un-flux-témoin-tracé: backlog
+  1-4-faire-traverser-les-deux-services-par-un-flux-témoin-tracé: done
   1-5-mesurer-la-mutation-du-domaine-et-de-l-application-à-la-dema: backlog
   1-6-bloquer-les-dépendances-vulnérables: backlog
   epic-1-retrospective: optional

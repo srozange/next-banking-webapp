@@ -7,5 +7,6 @@ import fr.nextbanking.coeurbancaire.domain.Temoin;
  */
 public interface DepotTemoins {
 
-    void enregistrer(Temoin temoin);
+    /** Enregistre le témoin et rend son identifiant. */
+    long enregistrer(Temoin temoin);
 }
