@@ -5416,14 +5416,23 @@ afin de rejouer le golden master de façon reproductible, quelle que soit l'heur
 
 **Exigences :** NFR-PAR-04, NFR-PAR-05, NFR-INT-01, NFR-SEC-06, AR-16, AR-33, AR-56, AR-57, AR-58, AR-60, AR-61, AR-63, AR-70, AR-71, AR-72, AR-74, AR-76, AR-77, AR-80, AR-81, AR-82, AR-83, AR-84, AR-100, AR-103, AR-104, UX-DR160, UX-DR161
 **Scénarios golden master :** SC-003-04 (preuve de déterminisme) ; les 31 scénarios applicables pour le lancement du runner
-**Prérequis :** story 10.1 ; les 8 services et les 15 routes de la SPA livrés (AR-100) ; port Horloge et profil `rejeu` du cœur bancaire (epic 3) ; simulateurs Powens, AlphaVantage et Azure OpenAI (epics 7 et 8) ; variables `RETRO_ADMIN_PASSWORD`, `RETRO_CONSEILLER_PASSWORD`, `RETRO_CLIENT_PASSWORD` fournies par l'humain ; exception décidée le 2026-10-05 : cette story, et elle seule, peut créer `e2e/golden-master/package.json` et son fichier de verrouillage ; les tests générés (`e2e/golden-master/specs/`, `auth.setup.ts`, `playwright.config.ts`), le golden master dérivé et `replay-mapping.json` restent interdits de modification, et `scripts/gates/golden-master.sh` continue de le vérifier ; l'exception est à ajouter à `AGENTS.md` par un refresh de `bmad-project-context` avant la story.
+**Prérequis :** story 10.1 ; les 8 services et les 15 routes de la SPA livrés (AR-100) ; port Horloge et profil `rejeu` du cœur bancaire (epic 3) ; simulateurs Powens, AlphaVantage et Azure OpenAI (epics 7 et 8) ; variables `RETRO_ADMIN_PASSWORD`, `RETRO_CONSEILLER_PASSWORD`, `RETRO_CLIENT_PASSWORD` fournies par l'humain ; exception décidée le 2026-10-05 (règle de `docs/quality-gates.md`) : cette story, et elle seule, peut créer `e2e/golden-master/package.json` et son fichier de verrouillage, et corriger en autonomie `replay-mapping.json` puis redériver et régénérer avec les outils, en inscrivant chaque correction au registre des écarts voulus ; jamais d'édition à la main des tests générés ni du dérivé, jamais de scénario retiré ni de texte attendu supprimé ; le golden master reste hors de l'empreinte et du hook (décision a) ; l'exception est à reporter dans `AGENTS.md` par un refresh de `bmad-project-context` avant la story.
 
 **Acceptance Criteria:**
 
 **Given** le dépôt
 **When** la story installe Playwright Test dans `e2e/golden-master`
 **Then** `e2e/golden-master/package.json` déclare `@playwright/test` en version exacte `1.63.0` (versions-verifiees.md) et `e2e/golden-master/package-lock.json` est versionné ; `cd e2e/golden-master && npm ci && npx playwright install chromium` sort en code 0
-**And** les fichiers générés (`playwright.config.ts`, `auth.setup.ts`, `specs/*.spec.ts`, `.gitignore`) et le golden master dérivé ne sont pas modifiés : `git diff --exit-code -- e2e/golden-master/playwright.config.ts e2e/golden-master/auth.setup.ts e2e/golden-master/specs e2e/golden-master/.gitignore docs/retro/golden-master/derived replay-mapping.json` sort en code 0 et `scripts/gates/golden-master.sh` sort en code 0
+**And** les tests générés et le golden master dérivé ne sont jamais édités à la main : toute différence avec `HEAD` sous `e2e/golden-master/` (hors `package.json` et son fichier de verrouillage), `docs/retro/golden-master/derived/` ou `replay-mapping.json` provient d'une correction de `replay-mapping.json` suivie de `uv run docs/retro/tools/derive-golden-master.py derive … --force` et de `uv run docs/retro/tools/export-golden-master-tests.py …`, et `scripts/gates/golden-master.sh` sort en code 0
+
+**Given** une correction de `replay-mapping.json` faite par la story
+**When** je relis `_bmad-output/planning-artifacts/architecture/architecture-next-banking-webapp-2026-10-05/ecarts-voulus-golden-master.md`
+**Then** chaque scénario corrigé y a une ligne (scénario, ce qui change, raison)
+**And** le nombre de scénarios rejoués reste 31 et aucune ligne attendue n'est supprimée : `uv run docs/retro/tools/derive-golden-master.py derive --gm-dir docs/retro/golden-master --mapping replay-mapping.json --output-dir /tmp/gm-check` annonce `derived` = 31 et `dropped` = 2
+
+**Given** une ligne attendue retirée volontairement d'un `expected-dom.txt` du dérivé, à la main
+**When** je lance `scripts/gates/golden-master.sh`
+**Then** le code de sortie est non nul (édition à la main détectée)
 
 **Given** `compose.rejeu.yaml` et la cible `make rejeu-up`
 **When** je lance `docker compose -f compose.yaml -f compose.rejeu.yaml config --format json | jq '[.services[] | select(.environment.SPRING_PROFILES_ACTIVE // "" | test("rejeu"))] | length'`

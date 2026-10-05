@@ -114,6 +114,22 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - **Le prompt laisse le choix des deux services de la story 1.1 ouvert**, alors que la spine les fixe (`coeur-bancaire` et `notifications`, flux témoin `coeur-bancaire.temoin-ecrit.v1`, ARCHITECTURE-SPINE.md:242). J'ai ajouté la précision au prompt, pour que le skill ne les réinvente pas.
   - *À ajouter dans le prompt des epics :* « reprends le découpage et le flux témoin décidés par la spine ».
 
+### 2026-10-05 · Étape 6 · Contrôle de `epics.md`
+
+- `epics.md` : 10 epics, 67 stories ; l'epic 1 contient 1.1 à 1.6 dans l'ordre du prompt ; chaque story a un critère avec commande et code de sortie, et un critère négatif (6 stories l'expriment par un cas de refus ou d'erreur, sans « code non nul »).
+- Contrôle `grep` des outils et seuils de `docs/quality-gates.md` dans le PRD, la spine et `epics.md` : tous présents, sauf `--ignore-unfixed`, absent de `epics.md` (la story 1.6 renvoie à `scripts/gates/cve.sh`, qui le porte). Le PRD ne nomme pas OpenTelemetry, Jaeger ni datasource-micrometer (ils sont dans l'addendum et la spine).
+- **Le prompt du pilote pour les epics ne prévoit pas les écarts de règles découverts à l'écriture des stories** (22 points « à arbitrer » : textes absents du corpus, contradictions PRD / spine / UX). Ils ont été tranchés en session et versés dans un lot de `textes-nouveaux.md` et dans AD-16.
+  - *À ajouter dans `pilote-bmad/reference/prompts-bmad.md` (epics) :* demander la liste des `[À ARBITRER]` en fin de skill, et prévoir que les textes tranchés vont dans `textes-nouveaux.md` (lot daté).
+- **Exception `e2e/golden-master/package.json` (story « Socle du rejeu final »)** : la règle « ne jamais modifier `e2e/golden-master/**` » d'`AGENTS.md` et des surcharges BMAD bloque l'installation du runner prévue par le prompt des epics. Exception décidée, à reporter dans `AGENTS.md` par un refresh.
+  - *À corriger dans `pilote-bmad` (étape 3 et prompt du contexte projet) :* écrire l'interdiction sur les fichiers générés (`specs/`, `auth.setup.ts`, `playwright.config.ts`), pas sur tout le dossier.
+- Déport vers retro : `retro-forward-bmad` pourrait écrire la règle golden master dans `docs/quality-gates.md` (liste des fichiers interdits), absente aujourd'hui ; léger.
+
+### 2026-10-05 · Golden master hors de l'empreinte
+
+- **Décision du propriétaire : le golden master reste hors de l'empreinte et du hook** (`replay-mapping.json`, `docs/retro/golden-master/derived/`, `e2e/golden-master/`). L'agent de la story « Socle du rejeu final » peut corriger le mapping, redériver et régénérer en autonomie, avec inscription au registre des écarts voulus ; `golden-master.sh` reste bloquant. Spine (ligne de l'empreinte, AD-10) et `.memlog.md` mis à jour ; règle dans `docs/quality-gates.md` (fichier préparé, copie par le propriétaire).
+  - *À corriger dans `pilote-bmad/etapes/gm-5.md` :* retirer « ajoute à la commande d'empreinte : `replay-mapping.json`, `playwright.config.ts`, `auth.setup.ts`, `specs/*.spec.ts` », ou en faire une option à décider avec le propriétaire.
+  - *À corriger dans `pilote-bmad/etapes/etape-10.md` (et le hook de l'étape 11) :* ne pas inclure ces fichiers par défaut quand le projet autorise leur correction par la story socle.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |

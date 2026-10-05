@@ -1,5 +1,5 @@
 <!-- bmad:context -->
-<!-- Vérifié le 2026-10-05 sur df265cc. Géré par bmad-project-context ; tout ce qui est entre ces marqueurs est remplacé à chaque refresh. Ce qui doit être conservé va hors des marqueurs. -->
+<!-- Vérifié le 2026-10-05 sur 63d380d. Géré par bmad-project-context ; tout ce qui est entre ces marqueurs est remplacé à chaque refresh. Ce qui doit être conservé va hors des marqueurs. -->
 
 ## next-banking-webapp
 
@@ -14,12 +14,24 @@ Règles pour les agents (reprises de `docs/quality-gates.md`) :
   frontend/.dependency-cruiser.cjs, .trivyignore, config/dependency-check-suppressions.xml.
 - Interdit d'abaisser un seuil, d'ajouter une exclusion de couverture ou de mutation, de désactiver un test.
 - Si un seuil paraît inatteignable : s'arrêter et le signaler, ne pas contourner.
+- Golden master : fichiers interdits de modification, sauf dans la story « Socle du rejeu final du golden master » :
+  e2e/golden-master/** (tests générés), docs/retro/golden-master/derived/**, replay-mapping.json.
+- Dans la story « Socle du rejeu final », l'agent peut, en autonomie :
+  - créer e2e/golden-master/package.json et son fichier de verrouillage ;
+  - corriger replay-mapping.json, puis redériver et régénérer avec les outils
+    (docs/retro/tools/derive-golden-master.py derive --force, puis export-golden-master-tests.py) ;
+  - inscrire chaque correction dans
+    _bmad-output/planning-artifacts/architecture/architecture-next-banking-webapp-2026-10-05/ecarts-voulus-golden-master.md :
+    scénario, ce qui change, raison.
+- Même dans cette story : jamais d'édition à la main des tests générés ni du dérivé,
+  jamais de scénario retiré ni de texte attendu supprimé pour obtenir du vert ;
+  scripts/gates/golden-master.sh doit sortir en code 0.
 
 Exception, jusqu'à la fin de l'epic 1 (avant l'empreinte de l'étape 10) : la story 1.2 crée `frontend/.dependency-cruiser.cjs` et la story 1.4 crée `scripts/gates/trace-smoke.sh`. Aucune autre story ne les modifie ; une fois l'empreinte figée, seul l'humain les modifie.
 
 Golden master et secrets :
-- Ne jamais modifier `e2e/golden-master/**` (généré), `docs/retro/golden-master/derived/` ni `replay-mapping.json` ; si un scénario paraît faux, s'arrêter et le signaler. Les décisions de rejeu passent par le skill `corpus-bmad-golden-master`.
-- Ne jamais rejouer le golden master pendant une story ou entre deux epics : il se rejoue une seule fois, en entier, à la fin du développement.
+- Hors de la story « Socle du rejeu final », si un scénario paraît faux : s'arrêter et le signaler ; les décisions de rejeu passent par le skill `corpus-bmad-golden-master`.
+- Ne jamais rejouer le golden master avant l'epic 10 : seules les stories « Socle du rejeu final » (preuve de déterminisme de SC-003-04) et « Rejeu complet » le rejouent.
 - Secrets uniquement en variables d'environnement (`make secrets` génère `.env` et `.secrets/`, non versionnés). Ne jamais lire, afficher ni écrire dans un POM la clé NVD de `~/.m2/settings.xml`.
 - Ne jamais committer `mode=reel` pour un fournisseur externe : l'adaptateur simulé reste actif par défaut.
 

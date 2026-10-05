@@ -33,6 +33,9 @@
 - CVE back et front : Trivy fs, sévérités HIGH et CRITICAL. Porte bloquante avec --ignore-unfixed ;
   les vulnérabilités sans correctif sont journalisées dans reports/, sans bloquer.
 - Tracing : scripts/gates/trace-smoke.sh prouve qu'une trace traverse deux services avec un span JDBC et un span Kafka.
+- Golden master : scripts/gates/golden-master.sh, contrôle statique sans rejeu. replay-mapping.json se dérive sans erreur,
+  et le golden master dérivé et les tests générés sont identiques à une dérivation et à une génération fraîches. Bloquant.
+  Le rejeu lui-même n'a lieu qu'une fois, développement terminé.
 
 ## Règles pour les agents
 - Un contrôle rouge se corrige dans le code ou dans les tests, jamais en modifiant le contrôle.
@@ -41,3 +44,15 @@
   frontend/.dependency-cruiser.cjs, .trivyignore, config/dependency-check-suppressions.xml.
 - Interdit d'abaisser un seuil, d'ajouter une exclusion de couverture ou de mutation, de désactiver un test.
 - Si un seuil paraît inatteignable : s'arrêter et le signaler, ne pas contourner.
+- Golden master : fichiers interdits de modification, sauf dans la story « Socle du rejeu final du golden master » :
+  e2e/golden-master/** (tests générés), docs/retro/golden-master/derived/**, replay-mapping.json.
+- Dans la story « Socle du rejeu final », l'agent peut, en autonomie :
+  - créer e2e/golden-master/package.json et son fichier de verrouillage ;
+  - corriger replay-mapping.json, puis redériver et régénérer avec les outils
+    (docs/retro/tools/derive-golden-master.py derive --force, puis export-golden-master-tests.py) ;
+  - inscrire chaque correction dans
+    _bmad-output/planning-artifacts/architecture/architecture-next-banking-webapp-2026-10-05/ecarts-voulus-golden-master.md :
+    scénario, ce qui change, raison.
+- Même dans cette story : jamais d'édition à la main des tests générés ni du dérivé,
+  jamais de scénario retiré ni de texte attendu supprimé pour obtenir du vert ;
+  scripts/gates/golden-master.sh doit sortir en code 0.
