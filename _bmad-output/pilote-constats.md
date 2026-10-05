@@ -167,6 +167,20 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - Le mode opératoire « l'agent prépare, l'humain copie » marche bien pour les fichiers protégés avant l'empreinte : il garde la règle « jamais modifier un contrôle » intacte pour l'agent.
   - *À ajouter dans `pilote-bmad` (règles) :* quand un script protégé a tort, préparer la version corrigée dans un dossier non suivi, la tester en l'exécutant depuis ce dossier, puis donner la commande `cp` à l'humain.
 
+### 2026-10-05 · Étape 8 · Installation de bmad-loop et essai à blanc
+
+- `uv tool install` de bmad-loop 0.13.1 (tag vérifié par `git ls-remote`), `bmad-loop init --project . --cli claude`, `bmad-loop validate` sans `FAIL`, `bmad-loop run --dry-run --epic 1` : 4 stories, de 1.3 à 1.6, clés accentuées acceptées, stories en `backlog` prises en charge (le dev les crée).
+- **`init` crée `.claude/settings.json`** (hooks `relay` SessionStart, Stop, SessionEnd, PreCompact…), fichier de la liste protégée. Il faut lancer `claude` une fois dans le projet pour approuver ces hooks avant le premier `run`.
+  - *À ajouter dans `pilote-bmad/etapes/etape-08.md` :* annoncer la création de `.claude/settings.json` dans le plan ; l'étape 11 devra fusionner son hook avec ceux de bmad-loop.
+- **`init` ajoute `.bmad-loop/policy.toml` au `.gitignore`**, alors que l'étape 10 le fige dans l'empreinte. Décision D3 de `_bmad-output/decisions-a-trancher.md`.
+  - *À ajouter dans `etape-08.md` :* retirer la ligne du `.gitignore`, ou décider explicitement de le garder local.
+- **`init` génère une politique complète (16 Ko)** : seuls `[verify] commands` et `[review] trigger = "always"` ont été changés, le reste gardé.
+  - *À corriger dans `etape-08.md` :* la fiche donne un `policy.toml` réduit, qui ferait perdre les réglages par défaut s'il était écrit tel quel ; dire « modifier ces clés dans le fichier généré ».
+- **`validate` exige un arbre propre** : `_bmad/render/` était suivi (recommandation de l'outil : `git rm -r --cached _bmad/render`), et un dossier non suivi du propriétaire bloquait (exclu en local par `.git/info/exclude`).
+- **Les agents de la boucle tournent en `--permission-mode bypassPermissions`**, et le hook de protection n'arrive qu'à l'étape 11. Pendant l'epic 1, rien n'empêche techniquement un agent d'écrire dans `scripts/gates/**`. Décision D1.
+  - *À ajouter dans `etape-08.md` :* le signaler, et prévoir un `git diff --name-only` des fichiers protégés à la fin du run (étape 9).
+- La story 1.6 a des prérequis humains (clé NVD, Trivy 0.75.0, bases à jour) que la boucle ne peut pas fournir. Décision D2.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
