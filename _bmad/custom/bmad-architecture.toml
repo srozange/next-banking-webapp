@@ -7,6 +7,7 @@ persistent_facts = [
   "Golden master du legacy : l'architecture tranche les décisions de docs/retro/golden-master-contract.md (URL de base et authentification de la cible, point d'entrée cible de chaque scénario, sortie qui fait foi) dans replay-mapping.json, puis dérive le golden master (section « Procédure » de docs/retro/golden-master-contract.md, étapes 1 et 2).",
   "Pour que le golden master soit rejouable sur la nouvelle application, l'architecture fixe : la table des routes (page de l'application existante vers route cible, clé routes de replay-mapping.json) ; un attribut de test stable sur chaque champ et bouton actionné par un scénario ; la règle sur les libellés et messages affichés (repris à l'identique, ou écart listé) ; une page de connexion à formulaire et une session conservée en cookie ou en stockage local, pour la connexion de test de chaque rôle ; le chargement des données de référence et la remise à zéro de la base avant un rejeu complet.",
   "Les décisions par scénario de replay-mapping.json se prennent avec le skill corpus-bmad-golden-master, à lancer avant de finaliser l'architecture ; il mesure par les mêmes scripts que le relecteur de finalisation.",
+  "file:{project-root}/docs/quality-gates.md",
 ]
 finalize_reviewers = [
   "file:{project-root}/docs/retro/tools/golden-master-review.md",

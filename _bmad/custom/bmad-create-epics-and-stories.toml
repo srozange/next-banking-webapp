@@ -6,4 +6,5 @@ persistent_facts = [
   "Les bugs du legacy à corriger sont listés dans docs/retro/00-global/LEGACY-BUGS.md ; chaque correction doit être couverte par un test.",
   "Recette de non-régression : le golden master dérivé selon docs/retro/golden-master-contract.md (section « Procédure », étape 3) rejoue sur l'application cible ; critère de cutover : failed: 0 et errors: 0.",
   "Une story livre le socle du rejeu final du golden master : chargement des données de référence, remise à zéro, comptes de test par rôle, bouchons des intégrations tierces, commande de rejeu. Chaque story cite les scénarios SC-NNN-NN du golden master dérivé (docs/retro/golden-master/derived/) qui couvrent sa fonctionnalité, pour savoir où corriger un écart au rejeu final ; aucun scénario dérivé ne reste sans story.",
+  "file:{project-root}/docs/quality-gates.md",
 ]

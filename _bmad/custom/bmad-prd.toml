@@ -11,6 +11,7 @@ persistent_facts = [
   "Si tu as besoin de deux points pour décrire une même règle, écris-la en une seule phrase avec l'exception explicite et cite les deux RG.",
   "Quand une FR s'écarte volontairement d'une règle du corpus, ou reprend une règle de statut Suspect, par décision prise en séance, marque-la [ÉVOLUTION — <raison>] et cite la RG concernée sur sa ligne Source.",
   "Les bugs du legacy à corriger sont listés dans docs/retro/00-global/LEGACY-BUGS.md ; chaque correction doit être couverte par un test.",
+  "file:{project-root}/docs/quality-gates.md",
 ]
 activation_steps_append = [
   "Lis le brief _bmad-output/planning-artifacts/briefs/brief-next-banking-webapp-2026-10-05/brief.md et son addendum _bmad-output/planning-artifacts/briefs/brief-next-banking-webapp-2026-10-05/addendum.md : ce sont les entrées obligatoires du PRD, à donner aussi comme documents d'entrée (Input reconciliation à Finalize).",

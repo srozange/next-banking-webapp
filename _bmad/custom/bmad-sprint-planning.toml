@@ -2,4 +2,5 @@
 [workflow]
 persistent_facts = [
   "Projet de rénovation d'une application existante. Le corpus de rétro-ingénierie docs/retro/ (index : docs/retro/MANIFEST.json, commit c05512ecab8af8878d695ccd0f33fc3ece8811a4) décrit son comportement actuel : c'est la référence de ce qui existe, pas une spécification à recopier. L'architecture cible est libre et peut différer de l'actuelle. Le périmètre fonctionnel peut être revu avec le métier (ajouts, retraits, évolutions) : tout écart volontaire au comportement actuel est décidé explicitement et tracé (FEAT-NNN, RG-NNN-NNN concernés).",
+  "file:{project-root}/docs/quality-gates.md",
 ]
