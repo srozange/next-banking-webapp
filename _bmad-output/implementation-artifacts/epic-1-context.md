@@ -35,7 +35,7 @@ Livrer un squelette à deux services hexagonaux (`coeur-bancaire`, `notification
 - Gérés par le BOM Boot : Spring Kafka 4.1.1 / kafka-clients 4.2.1, OpenTelemetry 1.62.0, micrometer-tracing 1.7.1, Testcontainers 2.0.5 (artefacts `testcontainers-postgresql`, `testcontainers-kafka`), JDBC PostgreSQL 42.7.13, Flyway 12.4.0.
 - `spring-boot-starter-opentelemetry` 4.1.1 ; `datasource-micrometer-spring-boot` 2.3.0.
 - Plugins de contrôle : `archunit-junit5` 1.5.1 ; `jacoco-maven-plugin` 0.8.15 ; `pitest-maven` 1.30.0 + `pitest-junit5-plugin` 1.2.3 ; `dependency-check-maven` 13.0.0 ; Trivy 0.75.0 (jamais 0.69.4 à 0.69.6).
-- Front : Node 24.21.0 ; TypeScript 5.9.3 (pas 7.x) ; Vite 8.3.2 ; `@vitejs/plugin-react` 6.1.2 ; React 19.3.0 ; `vitest` et `@vitest/coverage-v8` exactement 5.0.3 ; dependency-cruiser 18.5.0 ; `@stryker-mutator/core` et `@stryker-mutator/vitest-runner` 10.0.0.
+- Front : Node 24.21.0 ; TypeScript 5.9.3 (pas 7.x) ; Vite 8.3.2 ; `@vitejs/plugin-react` 6.1.2 ; React 19.3.0, `react-dom`, `@types/react` et `@types/react-dom` 19.3.0 (ajoutés par la story 1.1) ; `vitest` et `@vitest/coverage-v8` exactement 5.0.3 ; dependency-cruiser 18.5.0 ; `@stryker-mutator/core` et `@stryker-mutator/vitest-runner` 10.0.0.
 - Conteneurs : `postgres:18.6`, `apache/kafka:4.2.2` (KRaft), `otel/opentelemetry-collector:0.162.0`, `cr.jaegertracing.io/jaegertracing/jaeger:2.21.0` (jamais `all-in-one`), `nginx:1.30.5-alpine`, construction du front `node:24.21.0-alpine` (tag à vérifier).
 
 **Structure et nommage**

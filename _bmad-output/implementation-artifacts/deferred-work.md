@@ -13,3 +13,12 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-1-poser-le-squelette-des-deux-services-et-du-front.md`
   summary: le TODO d'AGENTS.md « commandes de build et de test unitaire par module » est à reporter (refresh de bmad-project-context).
   evidence: `mvn -B -q verify -DfailIfNoTests=true` ; `cd frontend && npm ci && npx vitest run && npm run typecheck`.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-2-rendre-l-architecture-hexagonale-verifiable-et-bloquante.md`
+  summary: seules la règle onion (`canary-arch.sh`) et les règles dont la story a fait un test négatif à la main ont prouvé qu'elles mordent ; aucun canari automatique pour Horloge, clients HTTP et dependency-cruiser.
+  evidence: une règle affaiblie plus tard resterait verte tant qu'aucune violation réelle n'existe. Scripts protégés : décision humaine avant l'empreinte (étape 10 du pilote).
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-2-rendre-l-architecture-hexagonale-verifiable-et-bloquante.md`
+  summary: élargir les interdits du temps (`System.nanoTime`, `new java.util.Date()`, `Calendar.getInstance`, `ZoneId.systemDefault`, `TimeZone.getDefault`, `InstantSource` ; front : `Intl.DateTimeFormat().resolvedOptions().timeZone`) et des clients HTTP (`RestOperations`, `HttpURLConnection`, interfaces HTTP Spring, OkHttp, Apache HttpClient).
+  evidence: AD-19, AD-4 et AD-23 fixent des listes plus courtes ; chaque ajout est une décision d'architecture (spine), puis un ajout de règle dans les tests `*ArchitectureTest`.
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-2-rendre-l-architecture-hexagonale-verifiable-et-bloquante.md`
+  summary: `frontend/.dependency-cruiser.cjs` ne signale ni les imports non résolus (`unknown`, `undetermined`, `couldNotResolve`) ni les cycles (`no-circular`).
+  evidence: AD-2 fixe trois règles et la liste des types ; le fichier devient protégé à l'empreinte : à trancher par l'humain avant l'étape 10.
