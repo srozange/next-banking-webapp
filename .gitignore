@@ -5,3 +5,8 @@ e2e/golden-master/test-results/
 e2e/golden-master/results.json
 e2e/golden-master/.auth/
 e2e/golden-master/node_modules/
+target/
+node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.vitest/

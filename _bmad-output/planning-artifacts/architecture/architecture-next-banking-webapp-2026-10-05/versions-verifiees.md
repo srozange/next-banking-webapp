@@ -32,6 +32,9 @@ Vérification faite le 2026-10-05 en interrogeant directement les registres offi
 | Vitest | `vitest` **5.0.3** + `@vitest/coverage-v8` **5.0.3** (2026-09-30) | https://registry.npmjs.org/vitest ; https://registry.npmjs.org/@vitest/coverage-v8/5.0.3 | 2026-10-05 | coverage-v8 exige exactement la même version que vitest. Dernière 4.x : 4.1.11. |
 | dependency-cruiser | **18.5.0** (2026-09-30) | https://registry.npmjs.org/dependency-cruiser | 2026-10-05 | — |
 | React | `react` **19.3.0** (2026-09-09) | https://registry.npmjs.org/react | 2026-10-05 | — |
+| React DOM | `react-dom` **19.3.0**, aligné sur `react` | https://registry.npmjs.org/react-dom/19.3.0 | 2026-10-05 | Ajouté par la story 1.1 (`createRoot`). |
+| Types React | `@types/react` **19.3.0** | https://registry.npmjs.org/@types/react/19.3.0 | 2026-10-05 | Ajouté par la story 1.1 (compilation TSX), aligné sur React 19.3.0. |
+| Types React DOM | `@types/react-dom` **19.3.0** | https://registry.npmjs.org/@types/react-dom/19.3.0 | 2026-10-05 | Ajouté par la story 1.1, aligné sur React 19.3.0. |
 | TypeScript | dernière : **7.0.2** (2026-07-08) ; dernière 5.x : **5.9.3** (2025-09-30) ; dernière 6.x : 6.0.3 | https://registry.npmjs.org/typescript | 2026-10-05 | La branche 5.x n'est plus la dernière (voir les écarts). |
 | Vite | **8.3.2** (2026-10-01) | https://registry.npmjs.org/vite | 2026-10-05 | Il faut Node `^20.19.0 \|\| >=22.12.0`. |
 | React Router | paquet `react-router` **8.4.0** (2026-09-15) | https://registry.npmjs.org/react-router | 2026-10-05 | En v8, le paquet s'appelle `react-router`. `react-router-dom` s'arrête à 7.18.4. Il faut React >= 19.2.7 et Node >= 22.22.0. |
