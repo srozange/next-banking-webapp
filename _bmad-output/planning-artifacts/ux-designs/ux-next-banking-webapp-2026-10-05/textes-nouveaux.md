@@ -86,6 +86,48 @@ Hors tableau :
 - Virement important exécuté (statut PENDING, de 5 000 € à 9 999,99 €) : les textes du legacy (notification ALERTE « … en attente de validation - transaction importante, verification en cours. », mention « [EN ATTENTE] », badge « En attente » au relevé) sont gardés sans reformulation pour la démonstration (décision B1 révisée, BUG-009 conservé provisoirement). La reformulation « transaction importante » est **reportée après la démonstration (FR-003-29)** et ne fait pas partie de ce lot.
 - Hors du lot : le texte de la notification de solde insuffisant à l'échéance d'un virement programmé (A-004-3) et le message « Compte destinataire introuvable » (A-004-4) restent des suppositions du PRD, non reprises ici.
 
+## Lot « Stories » (2026-10-05) — validé par le décideur le 2026-10-05
+
+Textes et formats manquants relevés à l'écriture des stories (`_bmad-output/planning-artifacts/epics.md`). Règle appliquée : formulation et formats du legacy quand un texte voisin existe, sinon texte court en français, orthographe correcte. Lot validé par le décideur le 2026-10-05 ; les lignes « proposé » restent à confirmer par le métier avant leur story.
+
+| clé | story | texte proposé (statut) | origine ou texte voisin |
+|---|---|---|---|
+| api.erreur.401 | 2.1 et toutes les API | « Authentification requise » (décidé) | aucun texte legacy pour une API sans jeton |
+| api.erreur.403 | 2.1, 6.1 | « Accès refusé » (décidé) | aucun texte legacy générique |
+| api.erreur.404 | 2.1, 4.4, 8.3 | « Ressource introuvable » (décidé) | aucun texte legacy générique |
+| api.erreur.technique | 2.1 | « Une erreur technique est survenue » (décidé) | aucun texte legacy générique |
+| api.erreur.400 | 7.1 | « Requête invalide » (décidé pour la démonstration) | aucun : le legacy ne bloquait que par la limite de saisie (A-029-2) |
+| virement.validation.motif.longueur | 3.1 | « Le motif ne doit pas dépasser 100 caractères » (proposé) | limite de 100 caractères du champ Motif (FR-003-01) ; forme des messages voisins sans point final |
+| format.date / format.heure | 3.4 | `{date}` = `dd/MM/yyyy` (ex. 06/10/2026) ; `{heure}` = `HH:mm` (ex. 10:15), Europe/Paris (proposé) | format des dates du legacy, `dd/MM/yyyy HH:mm` (FR-002-06) ; s'applique à `virement.avis.suspension` et `virement.revue.butoir.valeur` |
+| revue.historique.titre | 3.4 | « Virements traités » (proposé) | — |
+| revue.historique.colonnes | 3.4 | colonnes de la file : « Client », « Montant », « Compte destinataire », « Motif de suspension », « Heure butoir » (réutilisées : `revue.colonne.*`), plus `revue.historique.colonne.issue` « Issue » et `revue.historique.colonne.date` « Date de l'issue » (proposé) | `revue.colonne.*` de ce fichier |
+| revue.historique.profondeur | 3.4 | les 50 derniers virements traités, du plus récent au plus ancien (décidé) | — |
+| revue.issue.libere | 3.4 | « Libéré » (proposé) | — |
+| revue.issue.rejete | 3.4 | « Rejeté » (proposé) | — |
+| revue.issue.rejete.butoir | 3.4 | « Rejeté - heure butoir dépassée » (proposé) | `revue.erreur.heure.butoir` ; séparateur « - » des badges |
+| revue.issue.rejete.solde (réutilisé) | 3.4 | « Rejeté : solde insuffisant au moment du débit » : issue d'un virement libéré puis rejeté au débit, audit TRANSFER_REJECT_INSUFFICIENT_FUNDS (texte existant `revue.motif.rejet.solde.debit`, réutilisé tel quel) | décision B7 |
+| vp.notif.solde.titre | 4.7 | « Virement programmé non exécuté » (proposé ; notification de type ALERTE) | titre legacy voisin « Solde insuffisant sur votre compte » (FEAT-022) |
+| vp.notif.solde.message | 4.7 | « Virement programmé vers {beneficiaire} non exécuté : solde insuffisant, rien n'a été débité » (proposé) | texte proposé par le PRD (A-004-3), orthographe corrigée, mention du débit ajoutée (règle de ce fichier) |
+| vp.notif.introuvable.titre | 4.7 | « Virement programmé refusé » (proposé ; type ALERTE) | — |
+| vp.notif.introuvable.message | 4.7 | « Virement programmé vers {beneficiaire} refusé : compte destinataire introuvable, rien n'a été débité » (proposé) | texte proposé par le PRD (A-021-1), orthographe corrigée, mention du débit ajoutée |
+| budget.motscles.logement | 4.12 | loyer, edf, engie, gaz, eau, charges, syndic (proposé, à confirmer par le métier ; non vérifiable sur le golden master : SC-006-01 n'attend que les titres de section, et les libellés d'opérations de référence, `import.sql`, ne sont pas dans le dépôt) | catégories du legacy (FEAT-006 FIELDS.md) ; mots-clés absents du corpus |
+| budget.motscles.alimentation | 4.12 | carrefour, leclerc, auchan, lidl, monoprix, intermarche, supermarche, boulangerie, restaurant (proposé) | idem |
+| budget.motscles.transport | 4.12 | sncf, ratp, navigo, uber, taxi, essence, carburant, peage, parking (proposé) | idem |
+| budget.motscles.sante | 4.12 | pharmacie, medecin, docteur, dentiste, hopital, mutuelle (proposé) | idem |
+| budget.motscles.loisirs | 4.12 | cinema, theatre, concert, fnac, sport, voyage, hotel (proposé) | idem |
+| budget.motscles.abonnements | 4.12 | abonnement, netflix, spotify, deezer, orange, sfr, free, bouygues (proposé) | idem |
+| budget.motscles.epargne | 4.12 | epargne, livret, placement (proposé) | idem |
+| budget.motscles.revenus | 4.12 | salaire, remboursement (proposé) | idem |
+| budget.motscles.assurances | 4.12 | assurance, axa, maif, macif, allianz (proposé) | idem |
+| budget.motscles (règle) | 4.12 | comparaison sans tenir compte de la casse ni des accents, dans l'ordre Logement, Alimentation, Transport, Sante, Loisirs, Abonnements, Epargne, Revenus, Assurances ; sinon « Autres » (proposé) | ordre des catégories du legacy ; première catégorie trouvée (RG-006-007) |
+| budget.erreur.plafond.max | 4.13 | « Le plafond ne doit pas dépasser 13 chiffres avant la virgule » (proposé) | capacité du montant : 13 chiffres entiers, 2 décimales (NFR-F006) |
+| pret.libelle.inconnu | 5.3 | `{libelle}` = « (type non reconnu) » dans la notification de refus d'un prêt sans type ou de type inconnu (proposé) | message legacy « Votre demande de pret {libelle} de {montant} EUR a ete refusee… » (FR-025-03), inchangé |
+| pret.notif.titre.approuve | 5.3 | « Demande de prêt approuvée » (proposé) | — |
+| pret.notif.titre.refuse | 5.3 | « Demande de prêt refusée » (proposé) | — |
+| bourse.graphique.nom | 7.4 | « Évolution du cours de {symbole} sur {periode} » (proposé ; nom accessible du graphique) | titre legacy « 📈 Évolution du cours » et badge `{PERIOD_LABEL}` (FEAT-009) |
+| conseiller.consigne | 7.7 | « Tu es Sophie, conseillère de Demo Bank. Tu aides les clients sur six domaines : comptes et cartes, épargne, crédits, placements, assurances et projets financiers. Tu ne donnes jamais de conseil d'investissement ferme et tu rappelles que les placements comportent des risques. Tu réponds exclusivement en français, de façon concise, en 3 à 5 phrases, sauf si l'utilisateur demande explicitement une réponse détaillée. » (proposé, à valider par le métier ; les six domaines ne sont pas dans le corpus) | contenu de RG-010-014 à RG-010-017 ; message d'accueil legacy de Sophie (comptes, placements, projets financiers) |
+| powens.callback.incomplet (règle) | 8.2 | texte legacy inchangé « Callback Powens incomplet. Parametres recus: [<paramètres>] » ; la liste ne nomme pas `state` (décidé) : `state` + `code` → « … [code] » | FR-014-04, A-014-1 ; `state` signé imposé par AD-20 |
+
 ## Entrée groupée de l'étape G2 « textes ajoutés »
 
 Les lignes ci-dessus marquées « Entrée groupée G2 » ajoutent du texte à un écran comparé, sans modifier ni retirer aucune ligne attendue. Elles font l'objet d'une seule entrée dans la correspondance des textes (text_map) de l'étape G2 : ajouts uniquement, sans effet en mode `contains`, aucune ligne attendue remplacée. Le libellé de l'entrée est repris dans EXPERIENCE.md (section « Écarts de texte avec le legacy », partie C).

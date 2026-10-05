@@ -231,7 +231,7 @@ Les tests générés ne contiennent pas de remise à zéro et ne doivent pas êt
 
 ## 8. Points tranchés en G2 et points encore ouverts
 
-Statut au 2026-10-05 : les points 1 à 8 sont **réglés** (G2 du 2026-10-05 et AD-17 de la spine) ; ils restent listés pour mémoire. Les points 9 et 10 sont ouverts ; le point 11 est tenu par une supposition de la spine (AD-16).
+Statut au 2026-10-05 : les points 1 à 8 sont **réglés** (G2 du 2026-10-05 et AD-17 de la spine) ; ils restent listés pour mémoire. Les points 9 et 10 sont ouverts et repris comme critères de la story « Socle du rejeu final du golden master », avec la configuration `timezoneId`/`locale` du §6 ; le point 11 est décidé (Q1 (a)).
 
 Décisions globales (en tête de `replay-mapping.json`) — réglées :
 
@@ -256,4 +256,4 @@ Points hors mapping :
 8. Enveloppe d'erreur des API (champ `message`), dont dépend le `json_subset` de SC-001-03 : **réglé**, format unique `{"message"}` (+ `reference`) de AD-17, décidé le 2026-10-05.
 9. **Ouvert, story « Socle du rejeu final du golden master » (dernier epic)** : vérifier que la date de référence du profil de rejeu est postérieure aux dates d'`import.sql` et que `user1` y a 8 opérations au plus.
 10. Remise à zéro avant chaque scénario qui écrit : le script du §7.3 s'en charge à défaut d'un point d'accroche dans les tests générés ; une option de l'outil d'export (commande de remise à zéro avant les scénarios `writes: true`) simplifierait le rejeu en un seul lancement.
-11. FR-001-10 (invalidation à la déconnexion) avec un JWT sans état : la spine retient la suppression du jeton côté front et la durée de vie courte, sans liste de révocation (AD-16, [ASSUMPTION]). Le rejeu tient dans les deux cas grâce au §7.3.
+11. FR-001-10 (invalidation à la déconnexion) avec un JWT sans état : **décidé** (Q1 (a) du 2026-10-05, AD-16) — un jeton reste valable jusqu'à son expiration, sans révocation immédiate ; à la déconnexion, le jeton est supprimé côté front, sa durée de vie est courte, sans liste de révocation. Repris comme critère de la story de FR-001-10. Le rejeu tient grâce au §7.3.

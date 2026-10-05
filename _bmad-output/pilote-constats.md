@@ -107,6 +107,13 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
   - *À corriger dans `pilote-bmad/status.sh` :* pour G3 et cette alerte, appeler `scripts/gates/golden-master.sh` quand il existe (comparaison de contenu, environ 1 s), et ne garder la comparaison de dates qu'avant G4. *Dans `gm-5.md` :* après restauration, remettre la date du mapping (`touch -r docs/retro/golden-master/derived/replay-config.json replay-mapping.json`).
 - Pour l'étape 9 (séquence de fin d'epic) et l'étape 10 (`[verify]` et empreinte) : brancher `scripts/gates/golden-master.sh` (environ 1 s) ; ajouter à l'empreinte `replay-mapping.json`, `e2e/golden-master/playwright.config.ts`, `e2e/golden-master/auth.setup.ts` et `e2e/golden-master/specs/*.spec.ts`.
 
+### 2026-10-05 · Étape 6 · Prompt `bmad-create-epics-and-stories`
+
+- **Le prompt des epics ne cite pas `scripts/gates/golden-master.sh`.** Le critère de chaque story des epics suivants est « tous les contrôles de `docs/quality-gates.md` sont verts », et ce fichier ne mentionne pas le contrôle golden master installé à G4. Une story pourrait toucher une route ou un `data-testid` figés sans que son critère le vérifie. J'ai ajouté une ligne au prompt donné à l'utilisateur.
+  - *À ajouter dans `pilote-bmad/reference/prompts-bmad.md` (variante « avec corpus » des epics) :* « chaque story a aussi pour critère `scripts/gates/golden-master.sh` en code 0 ».
+- **Le prompt laisse le choix des deux services de la story 1.1 ouvert**, alors que la spine les fixe (`coeur-bancaire` et `notifications`, flux témoin `coeur-bancaire.temoin-ecrit.v1`, ARCHITECTURE-SPINE.md:242). J'ai ajouté la précision au prompt, pour que le skill ne les réinvente pas.
+  - *À ajouter dans le prompt des epics :* « reprends le découpage et le flux témoin décidés par la spine ».
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
