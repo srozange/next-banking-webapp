@@ -81,6 +81,14 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - **Le découpage en services n'est fixé ni par `quality-gates.md` ni par les fiches du pilote.** La story 1.4 (flux témoin A → Kafka → B) suppose deux services, sans dire lesquels. Une passerelle placée sous `services/` hérite des contrôles par service (`check-gates-exist.sh` exige un `*ArchitectureTest` par module).
   - *À ajouter dans `pilote-bmad/reference/prompts-bmad.md` (prompt d'architecture) :* un point « découpage en services et place d'une éventuelle passerelle ou BFF (sous `services/` avec un hexagone et ArchUnit, ou hors `services/`) ».
 
+### 2026-10-05 · Étape 6 · Avant `bmad-project-context`
+
+- **`bmad-project-context` a été lancé sans le prompt du pilote.** Le skill a détecté l'intention `setup` (aucun `AGENTS.md` ni `CLAUDE.md`) et commencé son état des lieux. Les exigences du prompt (section « Règles pour les agents » mot pour mot, commandes de contrôle, pointeur, import `@AGENTS.md`) sont à lui donner dans la suite de la même session.
+- **Double chargement des règles dans les sessions de dev.** Le prompt du pilote met la section « Règles pour les agents » mot pour mot dans `AGENTS.md`. Or `bmad-build` et `bmad-build-auto` chargent déjà tout `docs/quality-gates.md` par `persistent_facts` (étape 3). Dans une session de dev de bmad-loop, ces règles sont donc chargées deux fois, ce que `bmad-project-context` signale comme un défaut (« aucune instruction dans deux fichiers chargés »).
+  - *À trancher dans `pilote-bmad/etapes/etape-06.md` ou `etape-03.md` :* garder les deux (redondance assumée : `AGENTS.md` couvre les sessions hors skill BMAD) et le dire dans la fiche, pour que le skill ne propose pas de supprimer l'une des deux copies.
+- **Ordre entre G4 et `bmad-project-context` non précisé.** G4 installe `scripts/gates/golden-master.sh` « avant le premier epic ». Si `bmad-project-context` passe avant, le bloc ne peut pas citer ce contrôle dans les commandes à lancer, et il faudra un `refresh`.
+  - *À préciser dans `pilote-bmad/etapes/gm-4.md` :* placer G4 avant `bmad-project-context`, ou demander au bloc de citer le contrôle golden master dès G4 faite.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
