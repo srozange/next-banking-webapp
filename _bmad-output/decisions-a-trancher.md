@@ -13,24 +13,6 @@ La boucle lance ses agents en `--permission-mode bypassPermissions`. Le hook qui
 
 Recommandation : A, avec le contrôle `git diff` à la fin du run.
 
-### D2. Story 1.6 (bloquer les dépendances vulnérables) : prérequis humains
-
-La story a besoin de la clé NVD dans `~/.m2/settings.xml`, de Trivy 0.75.0 (poste en 0.74.0) et de bases Trivy et Dependency-Check à jour. La boucle ne peut pas les fournir et s'arrêtera sur cette story.
-
-- **A. Préparer le poste avant le run** (mise à jour de Trivy, rafraîchissement des bases).
-- **B. Lancer la boucle sur 1.3 à 1.5 seulement** (`--max-stories 3`), faire la 1.6 après.
-
-Recommandation : B si le run démarre avant que le poste soit prêt.
-
-### D3. `.bmad-loop/policy.toml` ignoré par git
-
-`bmad-loop init` a ajouté `.bmad-loop/policy.toml` au `.gitignore`. Le pilote prévoit de le figer dans l'empreinte (étape 10), donc de le versionner.
-
-- **A. Le versionner** (retirer la ligne du `.gitignore`). La configuration de la boucle est partagée et protégée. Inconvénient : la TUI y écrit la taille de ses panneaux (`[tui]`), ce qui produit des diffs.
-- **B. Le laisser local.** L'empreinte le couvre quand même sur ce poste, mais la configuration n'est pas dans le dépôt.
-
-Recommandation : A.
-
 ## Avant de figer l'empreinte des contrôles (étape 10, fin de l'epic 1)
 
 Ces fichiers deviennent intouchables pour les agents après l'empreinte : tout élargissement se décide avant.
@@ -102,3 +84,8 @@ Le legacy expire la session après 30 minutes d'inactivité (NFR-SEC-07). Le jet
 ### D11. Police Graphik (avant la story 2.3)
 
 Licence d'auto-hébergement à confirmer ; sinon Inter seule. La story 2.3 (écran de connexion au thème Demo Bank) livre le thème.
+
+## Tranchées
+
+- **D2 (2026-10-05)** : poste préparé pour la story 1.6 (bloquer les dépendances vulnérables). Trivy 0.75.0 installé (archive officielle, empreinte SHA-256 vérifiée), bases Trivy (vulnérabilités et Java) et Dependency-Check à jour le 2026-10-05. La base Trivy principale est à rafraîchir après le 2026-10-06 01:10 UTC si la story 1.6 démarre plus tard.
+- **D3 (2026-10-05)** : `.bmad-loop/policy.toml` versionné (commit `581282f`).
