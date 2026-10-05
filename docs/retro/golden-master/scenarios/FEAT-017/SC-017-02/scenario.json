@@ -1,0 +1,14 @@
+{
+  "id": "SC-017-02",
+  "feature_id": "FEAT-017",
+  "feature_name": "Téléchargement documents PDF",
+  "description": "Un utilisateur authentifié obtient un PDF (Content-Type: application/pdf) pour le type RIB d'un compte valide",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-017-008", "RG-017-014"],
+  "tags": [],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

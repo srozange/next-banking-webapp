@@ -1,0 +1,5098 @@
+[
+  {
+    "rg": "RG-001-001",
+    "feature": "FEAT-001",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-002",
+    "feature": "FEAT-001",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-003",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-004",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-005",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-006",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-007",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-008",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-009",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-010",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-011",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-012",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-013",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-014",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-015",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-016",
+    "feature": "FEAT-001",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-017",
+    "feature": "FEAT-001",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : `validatePassword` ne vérifie pas le champ `active` ; un compte désactivé par l'admin peut s'authentifier avec succès",
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-018",
+    "feature": "FEAT-001",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : mots de passe stockés en clair, comparaison par `.equals()` ()",
+    "suffix": null
+  },
+  {
+    "rg": "RG-001-019",
+    "feature": "FEAT-001",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : session fixation (CWE-384) — JSESSIONID non régénéré avant écriture du contexte authentifié (JIRA-9500)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-001",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-002",
+    "feature": "FEAT-002",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : si accountService.findByUsername retourne null après la",
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-003",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-004",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-005",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-006",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-007",
+    "feature": "FEAT-002",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : getAccountsForCustomer n'applique aucun ORDER BY",
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-008",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-009",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-010",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-011",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-012",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-013",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-014",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-015",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-016",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-017",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-018",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-019",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-020",
+    "feature": "FEAT-002",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : NotificationStore est @ApplicationScoped en mémoire",
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-021",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-022",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-023",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-024",
+    "feature": "FEAT-002",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : affiche le texte explicatif",
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-025",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-026",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-027",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-002-028",
+    "feature": "FEAT-002",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-001",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-002",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-003",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-004",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-005",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-006",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-007",
+    "feature": "FEAT-003",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : catch(IllegalStateException) ne s'exécute jamais car l'EJB CMT enveloppe l'exception dans EJBException ; l'exception atteint catch(Exception) qui affiche \"Erreur lors du virement : java.lang.IllegalStateException: Solde insuffisant\" (trace exposée, FIELDS.md observation confirmée)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-008",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-009",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-010",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-011",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-012",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-013",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-014",
+    "feature": "FEAT-003",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : le statut PENDING est trompeur — le solde du compte source est débité immédiatement avant l'affectation du statut () ; PENDING ne signifie pas que le débit est suspendu",
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-015",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-016",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-017",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-018",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-019",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-020",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-021",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-022",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-023",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-024",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-025",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-026",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-027",
+    "feature": "FEAT-003",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la requête compte l'ensemble des transactions du client depuis la création du compte, pas uniquement celles du jour ; le commentaire du log dit \"transactionCount today\" mais aucun filtre de date n'est appliqué (JIRA-9002)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-028",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-029",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-030",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-031",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-032",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-033",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-003-034",
+    "feature": "FEAT-003",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-001",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-002",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-003",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-010",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-011",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-012",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-013",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-014",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-015",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-016",
+    "feature": "FEAT-004",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : format d'entrée yyyy-MM-dd incohérent avec le format dd/MM/yyyy utilisé dans les autres pages (releve.xhtml, admin.xhtml) — divergence d'UX sans justification métier",
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-020",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-021",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-022",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-023",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-024",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-030",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-040",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-041",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-042",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-043",
+    "feature": "FEAT-004",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : absence de vérification de propriété dans toggleActif() et supprimer() — un identifiant forgé permettrait de modifier le virement d'un autre client (IDOR)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-050",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-051",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-052",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-060",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-061",
+    "feature": "FEAT-004",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : exécution silencieusement ignorée sans notification ni suspension; le client ne peut pas savoir que son virement a été sauté",
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-062",
+    "feature": "FEAT-004",
+    "status": "Suspect",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-063",
+    "feature": "FEAT-004",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : le débit est effectué avant la vérification de l'existence du compte cible; si le compte cible est externe (hors base), la source est débitée sans contrepartie — perte d'argent silencieuse",
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-064",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-065",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-066",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-070",
+    "feature": "FEAT-004",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : absence de validation de longueur côté bean et côté UI; un motif > 255 caractères provoque une exception JPA propagée en HTTP 500",
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-071",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : absence de validation de longueur — une valeur > 34 caractères provoque une exception JPA propagée",
+    "suffix": null
+  },
+  {
+    "rg": "RG-004-072",
+    "feature": "FEAT-004",
+    "status": "À confirmer",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : absence de validation de longueur — une valeur > 100 caractères provoque une exception JPA propagée",
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-001",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-002",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-003",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-004",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-005",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-006",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-007",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-008",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-009",
+    "feature": "FEAT-005",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-010",
+    "feature": "FEAT-005",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-011",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-012",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-013",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-014",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-015",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-016",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-017",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-018",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-005-019",
+    "feature": "FEAT-005",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-001",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-002",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-003",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-004",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-005",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-006",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-007",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-008",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-009",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-010",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-011",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-012",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-013",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-014",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-015",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-016",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-017",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-018",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-019",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-020",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-021",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-022",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-023",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-024",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-025",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-026",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-027",
+    "feature": "FEAT-006",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-006-028",
+    "feature": "FEAT-006",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la catégorie REVENUS figure dans le sélecteur de plafond",
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-001",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-002",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-003",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-004",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-005",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-006",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-007",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-008",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-009",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-010",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-011",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-012",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-013",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-014",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-015",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-016",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : aucune validation UI ni service sur la longueur du motif ; un dépassement provoque une erreur de base de données non gérée",
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-017",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-018",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-019",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-020",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-021",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-022",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-023",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-024",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-025",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-026",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-027",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-028",
+    "feature": "FEAT-007",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la validation UI accepte les durées jusqu'à 360 mois (message \"Duree invalide (1-360 mois)\") mais le scorer refuse systématiquement toute durée > 300 mois ; toute demande avec dureeMois ∈ [301, 360] réussit la validation frontale et est automatiquement refusée au scoring sans message différencié pour l'utilisateur",
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-029",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-030",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-031",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-032",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-033",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-034",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-035",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-036",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-037",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-038",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-039",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-007-040",
+    "feature": "FEAT-007",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-001",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-002",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-003",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-004",
+    "feature": "FEAT-008",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy: aucune vérification d'appartenance du compte (accountId) à l'utilisateur connecté ; tout accountId valide est servi sans contrôle (Insecure Direct Object Reference — IDOR)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-005",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-006",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-007",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-008",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-009",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-010",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-011",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-012",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-013",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-014",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-015",
+    "feature": "FEAT-008",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-016",
+    "feature": "FEAT-008",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy: parseInt() retourne 0 pour tout paramètre non numérique ou absent ; genererReleve() ne valide ni l'année ni le mois, génère un PDF vide sans erreur au lieu de rejeter la requête — la validation de plage (mois 1-12, année 2000-2100) n'existe que dans generateReleveDocument() qui n'est pas appelée par le servlet",
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-017",
+    "feature": "FEAT-008",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy: SIRET codé en dur dans la constante statique BANK_SIRET de DocumentService, non configurable sans recompilation (JIRA-8021)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-008-018",
+    "feature": "FEAT-008",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-001",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-002",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-003",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-004",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-005",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-006",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-007",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-008",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-009",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-010",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-011",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-012",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-013",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-014",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-015",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-016",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-017",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-018",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-019",
+    "feature": "FEAT-009",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-020",
+    "feature": "FEAT-009",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : timeouts supprimés lors du hotfix sprint 14",
+    "suffix": null
+  },
+  {
+    "rg": "RG-009-021",
+    "feature": "FEAT-009",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : clé API AlphaVantage en clair dans le source",
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-001",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-002",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-003",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-004",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-005",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-006",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-007",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-008",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-009",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-010",
+    "feature": "FEAT-010",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la zone de rendu AJAX exclut `inputPanel` ; la mise à null de `userInput` côté serveur n'est pas répercutée au client ; le textarea conserve le texte saisi après envoi",
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-011",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-012",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-013",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-014",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-015",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-016",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-017",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-018",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-019",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-020",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-021",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-022",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-023",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-024",
+    "feature": "FEAT-010",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-010-025",
+    "feature": "FEAT-010",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-001",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-002",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-003",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-004",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-005",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-006",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-007",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-008",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-009",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-010",
+    "feature": "FEAT-011",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la valeur brute de interest_rate / expectedReturn (fraction décimale stockée, ex. 0,0300 ≙ 3,00 %) est affichée telle quelle avec le suffixe \"%\" sans multiplication par 100, donnant un affichage 100× trop petit (ex. \"0,0300 %\" au lieu de \"3,00 %\") — f:convertNumber type=\"percent\" ou stockage en valeur entière corrige le problème",
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-011",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-012",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-013",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-014",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-015",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-016",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-017",
+    "feature": "FEAT-011",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-018",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-019",
+    "feature": "FEAT-011",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-011-020",
+    "feature": "FEAT-011",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-001",
+    "feature": "FEAT-012",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-002",
+    "feature": "FEAT-012",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-003",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-004",
+    "feature": "FEAT-012",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-005",
+    "feature": "FEAT-012",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-006",
+    "feature": "FEAT-012",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-007",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-008",
+    "feature": "FEAT-012",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-009",
+    "feature": "FEAT-012",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : erreur Powens (user_cancelled, erreur serveur, etc.) appelle disconnect() sans définir errorMessage ; l'utilisateur retourne silencieusement à l'état non-connecté sans aucune explication, contrairement aux autres chemins d'erreur",
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-010",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-011",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-012",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-013",
+    "feature": "FEAT-012",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-014",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : Thread.sleep(2000) bloquant intercalé avant getAccounts() pour attendre la synchro Powens () ; antipatterne dans un bean CDI @SessionScoped — remplacer par retry asynchrone dans la cible",
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-015",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-016",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-017",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-018",
+    "feature": "FEAT-012",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : solde nul et solde absent sont indiscernables pour l'utilisateur (tous deux affichés \"0,00 EUR\") ; la cible doit indiquer \"solde indisponible\" quand le champ balance est absent de la réponse API",
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-019",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-020",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-021",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-022",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-023",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-024",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-025",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-026",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-027",
+    "feature": "FEAT-012",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : erreurs HTTP 4xx/5xx swallowed dans getAccounts() et getTransactions() ; le LOG.warn reste interne et l'utilisateur voit \"aucun compte disponible\" ou \"aucune transaction\" sans distinction d'une véritable défaillance API",
+    "suffix": null
+  },
+  {
+    "rg": "RG-012-028",
+    "feature": "FEAT-012",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-001",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-002",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-003",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-004",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-005",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-006",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-007",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-008",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-009",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-010",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-011",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-012",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-013",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-014",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-015",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-016",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-017",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-018",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-019",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-020",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-021",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-022",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-023",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-024",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-025",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-026",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-027",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-028",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-029",
+    "feature": "FEAT-013",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : aucun check longueur côté service ; seuls le maxlength UI et la contrainte colonne DB le font valoir — un POST contournant l'UI déclenche une exception de persistance non gérée",
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-030",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-031",
+    "feature": "FEAT-013",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : même défaut que RG-013-029 — exception de persistance non gérée si maxlength UI contourné",
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-032",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-033",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-034",
+    "feature": "FEAT-013",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-013-035",
+    "feature": "FEAT-013",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : aucune vérification d'ownership au niveau service ; la couche UI ne présente que les bénéficiaires du user authentifié mais un POST HTTP forgé permet de supprimer le bénéficiaire de n'importe quel client par son id",
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-001",
+    "feature": "FEAT-014",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-002",
+    "feature": "FEAT-014",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-003",
+    "feature": "FEAT-014",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-004",
+    "feature": "FEAT-014",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-005",
+    "feature": "FEAT-014",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-006",
+    "feature": "FEAT-014",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-007",
+    "feature": "FEAT-014",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-008",
+    "feature": "FEAT-014",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-009",
+    "feature": "FEAT-014",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-010",
+    "feature": "FEAT-014",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : Thread.sleep(2000) bloque le thread JSF/EJB pendant 2 secondes ; une réécriture propre utilisera un mécanisme asynchrone ou une attente sans blocage de thread",
+    "suffix": null
+  },
+  {
+    "rg": "RG-014-011",
+    "feature": "FEAT-014",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-001",
+    "feature": "FEAT-015",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-002",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-003",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-004",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-005",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-006",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-007",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-008",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-009",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-010",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-011",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-012",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-013",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-014",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-015",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-016",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-017",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-018",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-019",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-020",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-021",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-022",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-023",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-024",
+    "feature": "FEAT-015",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-025",
+    "feature": "FEAT-015",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : rafraichir() définie dans le bean mais non câblée à aucun élément JSF dans conseiller-workspace.xhtml ; le bean est @SessionScoped, le @PostConstruct ne s'exécute qu'une fois par session — le portefeuille n'est jamais rafraîchi en cours de session sans reconnexion",
+    "suffix": null
+  },
+  {
+    "rg": "RG-015-026",
+    "feature": "FEAT-015",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : LoanStatus.DEFAUT n'a pas de classe CSS badge dans conseiller-workspace.xhtml (loan-DEFAUT absent des styles) — les prêts en statut DEFAUT s'affichent sans mise en forme visuelle distincte",
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-001",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-002",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-003",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-004",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-005",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-006",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-007",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-008",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-009",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-010",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-011",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-012",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-013",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-014",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : e.getMessage() exposé directement à l'utilisateur — information technique brute sans filtrage",
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-015",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-016",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-017",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-018",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-019",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-020",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-021",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-022",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-023",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-024",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-025",
+    "feature": "FEAT-016",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : l'étiquette UI \"Client depuis\" (date d'entrée en relation client) est portée par le champ technique `advisorSince` (date d'affectation du conseiller) ; ambiguïté sémantique — les deux peuvent être distincts",
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-026",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-027",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-028",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-029",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-030",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-031",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-032",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-033",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-034",
+    "feature": "FEAT-016",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : em_findByStatus() retourne une liste vide pour tout statut autre que OPEN (), donc allAlerts ne contient que les alertes OPEN ; les alertes CONFIRMED et FALSE_POSITIVE sont invisibles dans l'interface — JIRA-7204",
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-035",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-036",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-037",
+    "feature": "FEAT-016",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-016-038",
+    "feature": "FEAT-016",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-001",
+    "feature": "FEAT-017",
+    "status": "Confirmé",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-002",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-003",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-004",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-005",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-006",
+    "feature": "FEAT-017",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : `parseInt()` retourne silencieusement 0 pour toute valeur nulle ou non numérique",
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-007",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-008",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-009",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-010",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-011",
+    "feature": "FEAT-017",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : absence de vérification de propriété (IDOR — Insecure Direct Object Reference)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-012",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-013",
+    "feature": "FEAT-017",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : exception générique capturée en `catch(Exception)` et HTTP 500 renvoyé",
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-014",
+    "feature": "FEAT-017",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-017-015",
+    "feature": "FEAT-017",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : BANK_SIRET hardcodé dans le source, sans possibilité de surcharge par environnement (JIRA-8021)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-001",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-002",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-003",
+    "feature": "FEAT-018",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : taux mensuel (variable monthlyRate = 0,005/12) appliqué chaque nuit par un déclencheur quotidien (@Schedule hour=\"2\") au lieu d'une fois par mois — l'intérêt effectivement créé est environ 30 fois supérieur à l'intention déclarée par le nom de la variable et le commentaire",
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-004",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-005",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-006",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-007",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-008",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-009",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-018-010",
+    "feature": "FEAT-018",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-001",
+    "feature": "FEAT-019",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-002",
+    "feature": "FEAT-019",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-003",
+    "feature": "FEAT-019",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-004",
+    "feature": "FEAT-019",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-005",
+    "feature": "FEAT-019",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : borne effective `>= 10 000` (inclus) mais le message de log écrit `> 10000 EUR` (exclusif) — incohérence entre implémentation et texte journalisé",
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-006",
+    "feature": "FEAT-019",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-007",
+    "feature": "FEAT-019",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-008",
+    "feature": "FEAT-019",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-019-009",
+    "feature": "FEAT-019",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : `Calendar.getInstance()` hérite de la locale JVM ; le changement d'heure (DST) peut étendre ou réduire la fenêtre à 23 h ou 25 h au lieu de 24 h exactes — même défaut que `FraudDetectionService.checkUnusualHours` (FEAT-027)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-020-001",
+    "feature": "FEAT-020",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-020-002",
+    "feature": "FEAT-020",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : stub — la méthode compte les clients et journalise \"Releves mensuels generes pour N clients\" mais ne génère aucun document et n'appelle pas DocumentService.generateReleveDocument() ; log trompeur (faux SUCCESS)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-020-003",
+    "feature": "FEAT-020",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-020-004",
+    "feature": "FEAT-020",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-020-005",
+    "feature": "FEAT-020",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-001",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-002",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": "le timer est explicitement déclaré non-persistant ; un redémarrage retarde au plus de 5 minutes la prochaine exécution",
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-003",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-004",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": "métier",
+    "nature_detail": "le virement reste dû et sera retenté à la prochaine passe (5 min) ; aucune notification n'est envoyée au client ni aucune trace créée pour l'exécution manquée",
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-005",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-006",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-007",
+    "feature": "FEAT-021",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la source est débitée même si la cible est absente de la base ; le montant est soustrait sans être transmis à un système de paiement externe ; l'argent disparaît pour tout IBAN externe",
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-008",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-009",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-010",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-011",
+    "feature": "FEAT-021",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : `prochainExecution` est recalculée depuis `new Date()` (heure réelle d'exécution) au lieu de `rt.getProchainExecution()` (date planifiée) ; le planning dérive progressivement à chaque cycle (un virement mensuel du 15 glisse vers la date d'exécution effective au fil des passes)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-012",
+    "feature": "FEAT-021",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-021-013",
+    "feature": "FEAT-021",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "le catch dans `executeAll` (@TransactionAttribute REQUIRED) attrape les RuntimeException JPA après qu'elles ont potentiellement invalidé le contexte de persistance ; les exécutions suivantes dans la même passe partagent le même EntityManager compromis",
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-001",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-002",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-003",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-004",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-005",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-006",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-007",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-008",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-009",
+    "feature": "FEAT-022",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-010",
+    "feature": "FEAT-022",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : aucune limite effective sur le nombre de notifications/jour ; à raison de 48 exécutions toutes les 30 min, un compte constamment sous le seuil génère 48 alertes/jour ; le champ `maxNotificationsPerDay` est déclaré à 20 mais jamais appliqué",
+    "suffix": null
+  },
+  {
+    "rg": "RG-022-011",
+    "feature": "FEAT-022",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : l'exécution de `checkLowBalances` n'est pas tracée dans `BATCH_JOB_LOGS` et est invisible dans l'interface d'administration (admin.xhtml)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-001",
+    "feature": "FEAT-023",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-002",
+    "feature": "FEAT-023",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : l'absence de JMS est silencieusement ignorée",
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-003",
+    "feature": "FEAT-023",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : le message non-ObjectMessage est silencieusement",
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-004",
+    "feature": "FEAT-023",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-005",
+    "feature": "FEAT-023",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-006",
+    "feature": "FEAT-023",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-007",
+    "feature": "FEAT-023",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-008",
+    "feature": "FEAT-023",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : catch(Exception e) global sans re-throw ; avec",
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-009",
+    "feature": "FEAT-023",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la notification FRAUDE indique \"bloqué pour vérification\"",
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-010",
+    "feature": "FEAT-023",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-023-011",
+    "feature": "FEAT-023",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-001",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-002",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-003",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-004",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-005",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-006",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-007",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-008",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-009",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-010",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-011",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-012",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-013",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-014",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-015",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-016",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-017",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-018",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-019",
+    "feature": "FEAT-024",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-020",
+    "feature": "FEAT-024",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : LoanApprovalProducer.publish() drop silencieux (warn log uniquement) quand JMS non configuré ; le prêt est persisté EN_ATTENTE mais n'est jamais traité, le client ne reçoit aucune information d'échec",
+    "suffix": null
+  },
+  {
+    "rg": "RG-024-021",
+    "feature": "FEAT-024",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : branche de repli inaccessible (LoanType est une enum fermée à 5 valeurs, toutes traitées explicitement) ; si type null, approuve silencieusement si montant ≤ 25 000 EUR au lieu de refuser — contradictoire avec le commentaire « Sinon → refuse »",
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-001",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-002",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-003",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-004",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-005",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-006",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-007",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-008",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-009",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-010",
+    "feature": "FEAT-025",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-011",
+    "feature": "FEAT-025",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : notification persistée en base mais jamais affichée aux utilisateurs ; le seul consommateur JPA est du code mort sans référence dans les 16 fichiers XHTML ; le pipeline actif d'affichage est déconnecté du pipeline JPA",
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-012",
+    "feature": "FEAT-025",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : seuil hardcodé à 100 EUR dans le champ d'instance, non exposé dans AppConfig, non configurable via variable d'environnement",
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-013",
+    "feature": "FEAT-025",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "intention-code-mort : méthode annotée `@Deprecated since v1.5`, corps vide (no-op, log warn uniquement), commentaire « referenced by old batch — DO NOT REMOVE » ; aucun appelant trouvé dans le code source ; le corps ne fait rien — le batch externe éventuel n'en tire aucun bénéfice",
+    "suffix": null
+  },
+  {
+    "rg": "RG-025-014",
+    "feature": "FEAT-025",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "intention-code-mort : `createTransactionNotification()` jamais appelé depuis le pipeline actif des virements (VirementProcessorMDB utilise NotificationStore, non NotificationService) ; la règle des 1000 EUR est inatteignable en production — le seuil actif est SEUIL_ALERTE_EUR (5000 EUR) / SEUIL_FRAUDE_EUR (10000 EUR) dans VirementProcessorMDB",
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-001",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-002",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-003",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-004",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-005",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-006",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-007",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-008",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-009",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-010",
+    "feature": "FEAT-026",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "l'IP n'est capturée que pour LOGIN et LOGIN_FAILED ; LOGOUT, ADMIN_DEACTIVATE, ADMIN_ACTIVATE, ADMIN_LOAN_APPROVE, ADMIN_LOAN_REFUSE, VIREMENT utilisent la surcharge 3-paramètres sans IP",
+    "suffix": null
+  },
+  {
+    "rg": "RG-026-011",
+    "feature": "FEAT-026",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-001",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-002",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-003",
+    "feature": "FEAT-027",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : le contrôle fraude est exécuté après que le virement est réalisé (JIRA-9200) ; toute exception du contrôle est silencieusement ignorée (JIRA-9202, commentaire « décider si une alerte fraude doit bloquer le virement ») — une réécriture propre doit résoudre cette ambiguïté",
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-013",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-004",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-005",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-006",
+    "feature": "FEAT-027",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : la requête JPQL ne filtre pas par date (SELECT t WHERE customer.id = :id sans clause de date) ; le décompte porte sur l'intégralité de l'historique et non sur le jour courant — la borne effective est toutes-transactions vs la borne déclarée journalière (nom du champ, commentaire Javadoc, label FraudRule.HIGH_FREQUENCY)",
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-007",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-008",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-009",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-010",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-011",
+    "feature": "FEAT-027",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-012",
+    "feature": "FEAT-027",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-014",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-015",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-016",
+    "feature": "FEAT-027",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-017",
+    "feature": "FEAT-027",
+    "status": "Suspect",
+    "nature": "métier",
+    "nature_detail": "règle déclarée avec intention explicite (score 80) mais sans implémentation ; comportement cible non déterminable depuis le code seul",
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-018",
+    "feature": "FEAT-027",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : LOG.info/warn logue targetIban en clair dans checkTransaction() — violation RGPD Art.32 + PCI-DSS Req.3",
+    "suffix": null
+  },
+  {
+    "rg": "RG-027-019",
+    "feature": "FEAT-027",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : méthode publique @Deprecated sans caller interne ; l'existence d'un consommateur externe est non vérifiable depuis la base de code seule",
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-001",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-002",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-003",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-004",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-005",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-006",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-007",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-008",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-009",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-010",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-011",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-012",
+    "feature": "FEAT-028",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : Thread.sleep(2000) bloquant dans le thread HTTP CDI ; en remplacement, utiliser une stratégie de retry asynchrone ou une attente non bloquante",
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-013",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-014",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-015",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-016",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-017",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-018",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-019",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-020",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-021",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-022",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-023",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-024",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-025",
+    "feature": "FEAT-028",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : erreurs API Powens silencieusement avalées sur getAccounts et getTransactions ; l'utilisateur voit des listes vides sans message d'erreur explicite",
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-026",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-028-027",
+    "feature": "FEAT-028",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-001",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-002",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-003",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-004",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-005",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-006",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-007",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-008",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-009",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-010",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-011",
+    "feature": "FEAT-029",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : timeouts supprimés lors d'un hotfix sprint 14, thread EJB peut se bloquer indéfiniment si Alpha Vantage ne répond pas",
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-012",
+    "feature": "FEAT-029",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : clé API en clair dans le source (FALLBACK_API_KEY = AppConfig default), commitée par erreur durant sprint 14 hotfix",
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-013",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-014",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-015",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-016",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-017",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-018",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-019",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-020",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-021",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-022",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-023",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-024",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-025",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-026",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-027",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-028",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-029",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-030",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-031",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-032",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-029-033",
+    "feature": "FEAT-029",
+    "status": "Confirmé",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-001",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-002",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-003",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-004",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-005",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-006",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-007",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-008",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-009",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-010",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-011",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-012",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-013",
+    "feature": "FEAT-030",
+    "status": "À confirmer",
+    "nature": null,
+    "nature_detail": null,
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-014",
+    "feature": "FEAT-030",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : session non invalidée avant écriture du contexte utilisateur",
+    "suffix": null
+  },
+  {
+    "rg": "RG-030-015",
+    "feature": "FEAT-030",
+    "status": "Suspect",
+    "nature": "dette-legacy",
+    "nature_detail": "legacy : aucune annotation de sécurité EJB dans les services ; un contournement du filtre HTTP (appel JNDI distant, injection CDI non filtrée) ne serait pas contraint par rôle",
+    "suffix": null
+  }
+]

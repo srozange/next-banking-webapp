@@ -1,0 +1,262 @@
+{
+  "matrix": [
+    {
+      "field": "banque",
+      "kind": "max_length",
+      "front_ids": [
+        "VAL-013-05-banque-F1"
+      ],
+      "back_ids": [
+        "VAL-013-05-banque-B1"
+      ],
+      "front_value": 100,
+      "back_value": 100,
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with banque exceeding 100 characters THE SYSTEM SHALL prevent submission via HTML maxlength=100 attribute"
+      ],
+      "back_ears": [
+        "IF banque length exceeds 100 characters THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        },
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "bic",
+      "kind": "max_length",
+      "front_ids": [
+        "VAL-013-04-bic-F2"
+      ],
+      "back_ids": [],
+      "front_value": 11,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user enters more than 11 characters in the bic field THE SYSTEM SHALL prevent additional input via HTML maxlength=11 attribute"
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse (appel direct non testé)",
+      "observed": null
+    },
+    {
+      "field": "bic",
+      "kind": "pattern",
+      "front_ids": [
+        "VAL-013-04-bic-F1"
+      ],
+      "back_ids": [
+        "VAL-013-04-bic-B1"
+      ],
+      "front_value": "^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$",
+      "back_value": "^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$",
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with a non-empty bic that does not match pattern ^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$ THE SYSTEM SHALL reject the request and display \"BIC invalide. Format attendu : 8 ou 11 caractères alphanumériques.\""
+      ],
+      "back_ears": [
+        "IF bic is non-empty at submission and does not match pattern ^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$ THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "iban",
+      "kind": "custom",
+      "front_ids": [
+        "VAL-013-03-iban-F2"
+      ],
+      "back_ids": [
+        "VAL-013-03-iban-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with an iban that fails MOD-97 validation THE SYSTEM SHALL reject the request and display \"IBAN invalide. Veuillez saisir un IBAN correct (algorithme MOD-97).\""
+      ],
+      "back_ears": [
+        "IF iban fails MOD-97 validation (ISO 13616, length 15-34 chars ignoring spaces) THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        },
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "iban",
+      "kind": "max_length",
+      "front_ids": [
+        "VAL-013-03-iban-F3"
+      ],
+      "back_ids": [],
+      "front_value": 40,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user enters more than 40 characters in the iban field THE SYSTEM SHALL prevent additional input via HTML maxlength=40 attribute"
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse (appel direct non testé)",
+      "observed": null
+    },
+    {
+      "field": "iban",
+      "kind": "required",
+      "front_ids": [
+        "VAL-013-03-iban-F1"
+      ],
+      "back_ids": [
+        "VAL-013-03-iban-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with empty iban THE SYSTEM SHALL reject the request and display \"L'IBAN est obligatoire.\""
+      ],
+      "back_ears": [
+        "IF iban is null or empty at submission THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        },
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "libelle",
+      "kind": "max_length",
+      "front_ids": [
+        "VAL-013-01-libelle-F2"
+      ],
+      "back_ids": [
+        "VAL-013-01-libelle-B2"
+      ],
+      "front_value": 100,
+      "back_value": 100,
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with libelle exceeding 100 characters THE SYSTEM SHALL prevent submission via HTML maxlength=100 attribute"
+      ],
+      "back_ears": [
+        "IF libelle length exceeds 100 characters THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        },
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "libelle",
+      "kind": "required",
+      "front_ids": [
+        "VAL-013-01-libelle-F1"
+      ],
+      "back_ids": [
+        "VAL-013-01-libelle-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with empty libelle THE SYSTEM SHALL reject the request and display \"Le libellé est obligatoire.\""
+      ],
+      "back_ears": [
+        "IF libelle is null or empty at submission THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        },
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "nomTitulaire",
+      "kind": "max_length",
+      "front_ids": [
+        "VAL-013-02-nomTitulaire-F2"
+      ],
+      "back_ids": [
+        "VAL-013-02-nomTitulaire-B2"
+      ],
+      "front_value": 100,
+      "back_value": 100,
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with nomTitulaire exceeding 100 characters THE SYSTEM SHALL prevent submission via HTML maxlength=100 attribute"
+      ],
+      "back_ears": [
+        "IF nomTitulaire length exceeds 100 characters THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        },
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "nomTitulaire",
+      "kind": "required",
+      "front_ids": [
+        "VAL-013-02-nomTitulaire-F1"
+      ],
+      "back_ids": [
+        "VAL-013-02-nomTitulaire-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits add-beneficiary form with empty nomTitulaire THE SYSTEM SHALL reject the request and display \"Le nom du titulaire est obligatoire.\""
+      ],
+      "back_ears": [
+        "IF nomTitulaire is null or empty at submission THEN THE SYSTEM SHALL reject the add request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        },
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    }
+  ],
+  "total_rows": 10,
+  "by_verdict": {
+    "identique": 7,
+    "front_seul": 2,
+    "a_interpreter": 1
+  },
+  "warnings": []
+}

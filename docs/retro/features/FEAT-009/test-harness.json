@@ -1,0 +1,444 @@
+{
+  "test_cases": [
+    {
+      "field": "symboleValeur",
+      "label": "Valeur",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "symboleValeur",
+      "label": "Valeur",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "symboleValeur",
+      "label": "Valeur",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "symboleValeur",
+      "label": "Valeur",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "symboleValeur",
+      "label": "Valeur",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "periode",
+      "label": "Période",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "periode",
+      "label": "Période",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "periode",
+      "label": "Période",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "periode",
+      "label": "Période",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "periode",
+      "label": "Période",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Le symbole est obligatoire (ex: AMZN, SG.PA) »",
+      "source_ids": [
+        "VAL-009-03-newSymbole-B1"
+      ]
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "trop_long_21_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-009-03-newSymbole-B2"
+      ],
+      "legacy_observed": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "limite_exacte_20_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaa",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — d'autres règles du champ peuvent rejeter cette valeur",
+      "source_ids": []
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newSymbole",
+      "label": "Symbole",
+      "scenario": "injection_sql",
+      "input": "' OR '1'='1",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — rejeté ou stocké littéralement, jamais exécuté",
+      "source_ids": []
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Le nom de la valeur est obligatoire »",
+      "source_ids": [
+        "VAL-009-03-newNom-B1"
+      ]
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "trop_long_101_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-009-03-newNom-B2"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "limite_exacte_100_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-009-03-newNom-B2"
+      ]
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newNom",
+      "label": "Nom",
+      "scenario": "injection_sql",
+      "input": "' OR '1'='1",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — rejeté ou stocké littéralement, jamais exécuté",
+      "source_ids": []
+    },
+    {
+      "field": "newMarche",
+      "label": "Marché",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — seul un NOT NULL de schéma est connu (VAL-009-03-newMarche-B2) : une chaîne vide n'est pas NULL",
+      "source_ids": []
+    },
+    {
+      "field": "newMarche",
+      "label": "Marché",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newMarche",
+      "label": "Marché",
+      "scenario": "trop_long_51_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-009-03-newMarche-B1"
+      ]
+    },
+    {
+      "field": "newMarche",
+      "label": "Marché",
+      "scenario": "limite_exacte_50_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-009-03-newMarche-B1"
+      ]
+    },
+    {
+      "field": "newMarche",
+      "label": "Marché",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newMarche",
+      "label": "Marché",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newMarche",
+      "label": "Marché",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newDevise",
+      "label": "Devise",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — seul un NOT NULL de schéma est connu (VAL-009-03-newDevise-B2) : une chaîne vide n'est pas NULL",
+      "source_ids": []
+    },
+    {
+      "field": "newDevise",
+      "label": "Devise",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newDevise",
+      "label": "Devise",
+      "scenario": "trop_long_11_chars",
+      "input": "aaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-009-03-newDevise-B1"
+      ]
+    },
+    {
+      "field": "newDevise",
+      "label": "Devise",
+      "scenario": "limite_exacte_10_chars",
+      "input": "aaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-009-03-newDevise-B1"
+      ]
+    },
+    {
+      "field": "newDevise",
+      "label": "Devise",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newDevise",
+      "label": "Devise",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "newDevise",
+      "label": "Devise",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 40,
+  "fields_count": 6,
+  "by_status": {
+    "verified": 9,
+    "probe": 31
+  },
+  "uncovered_rule_ids": [
+    "VAL-009-03-newDevise-B2",
+    "VAL-009-03-newMarche-B2",
+    "VAL-009-03-newNom-F1",
+    "VAL-009-03-newSymbole-B3",
+    "VAL-009-03-newSymbole-F1"
+  ],
+  "warnings": [
+    "newSymbole/trop_long_21_chars: observation legacy 'accepted' contraire à l'attendu 'rejected' (VAL-009-03-newSymbole-B2) — à trancher dans VALIDATION.md"
+  ]
+}

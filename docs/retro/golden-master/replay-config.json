@@ -1,0 +1,39 @@
+{
+  "target_base_url": "http://localhost:8080/banking-legacy/",
+  "adapters": {
+    "http": {
+      "base_url": "http://localhost:8080"
+    },
+    "playwright": {
+      "base_url": "http://localhost:8080/banking-legacy/",
+      "accounts": [
+        {
+          "role": "ADMIN",
+          "login": "admin",
+          "password_env": "RETRO_ADMIN_PASSWORD"
+        },
+        {
+          "role": "CONSEILLER",
+          "login": "sophie",
+          "password_env": "RETRO_CONSEILLER_PASSWORD"
+        },
+        {
+          "role": "CLIENT",
+          "login": "user1",
+          "password_env": "RETRO_CLIENT_PASSWORD"
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "http_response": {
+      "ignore_fields": [
+        "Date",
+        "Set-Cookie"
+      ]
+    },
+    "dom_text": {
+      "mode": "contains"
+    }
+  }
+}

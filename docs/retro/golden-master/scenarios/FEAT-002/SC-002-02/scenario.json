@@ -1,0 +1,14 @@
+{
+  "id": "SC-002-02",
+  "feature_id": "FEAT-002",
+  "feature_name": "Tableau de bord",
+  "description": "Le centre de notifications affiche les notifications de l'utilisateur avec un badge de décompte",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-002-011", "RG-002-013"],
+  "tags": [],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

@@ -1,0 +1,74 @@
+{
+  "test_cases": [
+    {
+      "field": "chatForm:userInput",
+      "label": "chatForm:userInput",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-010-01-userInput-B1"
+      ]
+    },
+    {
+      "field": "chatForm:userInput",
+      "label": "chatForm:userInput",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "chatForm:userInput",
+      "label": "chatForm:userInput",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "chatForm:userInput",
+      "label": "chatForm:userInput",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "chatForm:userInput",
+      "label": "chatForm:userInput",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "chatForm:userInput",
+      "label": "chatForm:userInput",
+      "scenario": "injection_sql",
+      "input": "' OR '1'='1",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — rejeté ou stocké littéralement, jamais exécuté",
+      "source_ids": []
+    }
+  ],
+  "total": 6,
+  "fields_count": 1,
+  "by_status": {
+    "verified": 1,
+    "probe": 5
+  },
+  "uncovered_rule_ids": [],
+  "warnings": []
+}

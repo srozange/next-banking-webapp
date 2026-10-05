@@ -1,0 +1,14 @@
+{
+  "id": "SC-001-04",
+  "feature_id": "FEAT-001",
+  "feature_name": "Connexion",
+  "description": "Un CLIENT authentifié accède au tableau de bord (session valide — RG-001-003 et RG-001-006 testés via SC-002-01)",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-001-003", "RG-001-006"],
+  "tags": ["smoke"],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

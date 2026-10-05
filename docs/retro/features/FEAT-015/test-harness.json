@@ -1,0 +1,1227 @@
+{
+  "test_cases": [
+    {
+      "field": "page_access",
+      "label": "Contrôle d'accès à la page",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "page_access",
+      "label": "Contrôle d'accès à la page",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "page_access",
+      "label": "Contrôle d'accès à la page",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "page_access",
+      "label": "Contrôle d'accès à la page",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "page_access",
+      "label": "Contrôle d'accès à la page",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "page_access",
+      "label": "Contrôle d'accès à la page",
+      "scenario": "injection_sql",
+      "input": "' OR '1'='1",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — rejeté ou stocké littéralement, jamais exécuté",
+      "source_ids": []
+    },
+    {
+      "field": "nbClients",
+      "label": "Mes clients",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "nbClients",
+      "label": "Mes clients",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "nbClients",
+      "label": "Mes clients",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "nbClients",
+      "label": "Mes clients",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "nbClients",
+      "label": "Mes clients",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "encodesTotal",
+      "label": "Encours total",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "encodesTotal",
+      "label": "Encours total",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "encodesTotal",
+      "label": "Encours total",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "encodesTotal",
+      "label": "Encours total",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "encodesTotal",
+      "label": "Encours total",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoansTotal",
+      "label": "Prets en attente",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoansTotal",
+      "label": "Prets en attente",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoansTotal",
+      "label": "Prets en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoansTotal",
+      "label": "Prets en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoansTotal",
+      "label": "Prets en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientAvatar",
+      "label": "Avatar",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientAvatar",
+      "label": "Avatar",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientAvatar",
+      "label": "Avatar",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientAvatar",
+      "label": "Avatar",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientAvatar",
+      "label": "Avatar",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientFullName",
+      "label": "Nom complet",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientFullName",
+      "label": "Nom complet",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientFullName",
+      "label": "Nom complet",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientFullName",
+      "label": "Nom complet",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientFullName",
+      "label": "Nom complet",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientUsername",
+      "label": "Login",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientUsername",
+      "label": "Login",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientUsername",
+      "label": "Login",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientUsername",
+      "label": "Login",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientUsername",
+      "label": "Login",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientStatus",
+      "label": "Statut",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientStatus",
+      "label": "Statut",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientStatus",
+      "label": "Statut",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientStatus",
+      "label": "Statut",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientStatus",
+      "label": "Statut",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientTotalBalance",
+      "label": "Solde total",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientTotalBalance",
+      "label": "Solde total",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientTotalBalance",
+      "label": "Solde total",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientTotalBalance",
+      "label": "Solde total",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientTotalBalance",
+      "label": "Solde total",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientNbAccounts",
+      "label": "Comptes",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientNbAccounts",
+      "label": "Comptes",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientNbAccounts",
+      "label": "Comptes",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientNbAccounts",
+      "label": "Comptes",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientNbAccounts",
+      "label": "Comptes",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientActiveLoans",
+      "label": "Prets actifs",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientActiveLoans",
+      "label": "Prets actifs",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientActiveLoans",
+      "label": "Prets actifs",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientActiveLoans",
+      "label": "Prets actifs",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientActiveLoans",
+      "label": "Prets actifs",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientPendingLoans",
+      "label": "Prets en attente",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "clientPendingLoans",
+      "label": "Prets en attente",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientPendingLoans",
+      "label": "Prets en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientPendingLoans",
+      "label": "Prets en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "clientPendingLoans",
+      "label": "Prets en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoanAlert",
+      "label": "Alerte pret en attente",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoanAlert",
+      "label": "Alerte pret en attente",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoanAlert",
+      "label": "Alerte pret en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoanAlert",
+      "label": "Alerte pret en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "pendingLoanAlert",
+      "label": "Alerte pret en attente",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientName",
+      "label": "Nom complet (detail)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientName",
+      "label": "Nom complet (detail)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientName",
+      "label": "Nom complet (detail)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientName",
+      "label": "Nom complet (detail)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientName",
+      "label": "Nom complet (detail)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientLogin",
+      "label": "Login (detail)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientLogin",
+      "label": "Login (detail)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientLogin",
+      "label": "Login (detail)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientLogin",
+      "label": "Login (detail)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientLogin",
+      "label": "Login (detail)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientEmail",
+      "label": "Email",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientEmail",
+      "label": "Email",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientEmail",
+      "label": "Email",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientEmail",
+      "label": "Email",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientEmail",
+      "label": "Email",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientPhone",
+      "label": "Telephone",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientPhone",
+      "label": "Telephone",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientPhone",
+      "label": "Telephone",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientPhone",
+      "label": "Telephone",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "detailClientPhone",
+      "label": "Telephone",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountNumber",
+      "label": "Numero",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "accountNumber",
+      "label": "Numero",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountNumber",
+      "label": "Numero",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountNumber",
+      "label": "Numero",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountNumber",
+      "label": "Numero",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountType",
+      "label": "Type compte",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "accountType",
+      "label": "Type compte",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountType",
+      "label": "Type compte",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountType",
+      "label": "Type compte",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountType",
+      "label": "Type compte",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountBalance",
+      "label": "Solde",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "accountBalance",
+      "label": "Solde",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountBalance",
+      "label": "Solde",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountBalance",
+      "label": "Solde",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountBalance",
+      "label": "Solde",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanType",
+      "label": "Type pret",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "loanType",
+      "label": "Type pret",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanType",
+      "label": "Type pret",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanType",
+      "label": "Type pret",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanType",
+      "label": "Type pret",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanAmount",
+      "label": "Montant",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "loanAmount",
+      "label": "Montant",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanAmount",
+      "label": "Montant",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanAmount",
+      "label": "Montant",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanAmount",
+      "label": "Montant",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanMonthly",
+      "label": "Mensualite",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "loanMonthly",
+      "label": "Mensualite",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanMonthly",
+      "label": "Mensualite",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanMonthly",
+      "label": "Mensualite",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanMonthly",
+      "label": "Mensualite",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanStatus",
+      "label": "Statut pret",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "loanStatus",
+      "label": "Statut pret",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanStatus",
+      "label": "Statut pret",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanStatus",
+      "label": "Statut pret",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "loanStatus",
+      "label": "Statut pret",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 121,
+  "fields_count": 24,
+  "by_status": {
+    "verified": 0,
+    "probe": 121
+  },
+  "uncovered_rule_ids": [
+    "VAL-015-01-page_access-B1",
+    "VAL-015-01-page_access-B2",
+    "VAL-015-01-page_access-B3",
+    "VAL-015-01-page_access-B4"
+  ],
+  "warnings": []
+}

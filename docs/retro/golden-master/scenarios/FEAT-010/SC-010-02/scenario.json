@@ -1,0 +1,15 @@
+{
+  "id": "SC-010-02",
+  "feature_id": "FEAT-010",
+  "feature_name": "Chat conseiller IA",
+  "description": "Envoyer un message au chat affiche le message de l'utilisateur et une réponse de Sophie (HTTP 401 en local sans Azure)",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-010-007"],
+  "tags": ["bug"],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}},
+  "notes": "En mode local, Azure AI Foundry n'est pas configuré (HTTP 401). La réponse 'Je suis momentanement indisponible' est le comportement attendu du legacy en local."
+}

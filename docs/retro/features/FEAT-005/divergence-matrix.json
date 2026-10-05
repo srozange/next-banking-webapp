@@ -1,0 +1,43 @@
+{
+  "matrix": [
+    {
+      "field": "releveForm:accountSelect",
+      "kind": "format",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-005-01-accountSelect-B1"
+      ],
+      "front_value": null,
+      "back_value": "Long",
+      "front_ears": [],
+      "back_ears": [
+        "IF submitted selectedAccountId is not parseable as a Long integer THEN THE SYSTEM SHALL reject the request"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    },
+    {
+      "field": "releveForm:accountSelect",
+      "kind": "reference",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-005-01-accountSelect-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF submitted selectedAccountId is not among the authenticated customer's account IDs THEN THE SYSTEM SHALL reject the selection"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    }
+  ],
+  "total_rows": 2,
+  "by_verdict": {
+    "back_seul": 2
+  },
+  "warnings": []
+}

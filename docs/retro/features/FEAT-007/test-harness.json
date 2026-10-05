@@ -1,0 +1,592 @@
+{
+  "test_cases": [
+    {
+      "field": "simMontant",
+      "label": "Montant (EUR)",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Montant invalide »",
+      "source_ids": [
+        "VAL-007-01-simMontant-B1"
+      ]
+    },
+    {
+      "field": "simMontant",
+      "label": "Montant (EUR)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simMontant",
+      "label": "Montant (EUR)",
+      "scenario": "sous_min",
+      "input": "-0.99",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Montant invalide »",
+      "source_ids": [
+        "VAL-007-01-simMontant-B2"
+      ]
+    },
+    {
+      "field": "simMontant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simMontant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simMontant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simTaux",
+      "label": "Taux annuel (%)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "simTaux",
+      "label": "Taux annuel (%)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simTaux",
+      "label": "Taux annuel (%)",
+      "scenario": "sous_min",
+      "input": "-1",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Taux invalide »",
+      "source_ids": [
+        "VAL-007-02-simTaux-B1"
+      ]
+    },
+    {
+      "field": "simTaux",
+      "label": "Taux annuel (%)",
+      "scenario": "au_dessus_max",
+      "input": "31",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Taux invalide »",
+      "source_ids": [
+        "VAL-007-02-simTaux-B2"
+      ]
+    },
+    {
+      "field": "simTaux",
+      "label": "Taux annuel (%)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simTaux",
+      "label": "Taux annuel (%)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simTaux",
+      "label": "Taux annuel (%)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simDuree",
+      "label": "Duree (mois)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "simDuree",
+      "label": "Duree (mois)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simDuree",
+      "label": "Duree (mois)",
+      "scenario": "sous_min",
+      "input": "0",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Duree invalide »",
+      "source_ids": [
+        "VAL-007-03-simDuree-B1"
+      ]
+    },
+    {
+      "field": "simDuree",
+      "label": "Duree (mois)",
+      "scenario": "au_dessus_max",
+      "input": "361",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Duree invalide »",
+      "source_ids": [
+        "VAL-007-03-simDuree-B2"
+      ]
+    },
+    {
+      "field": "simDuree",
+      "label": "Duree (mois)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simDuree",
+      "label": "Duree (mois)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "simDuree",
+      "label": "Duree (mois)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "typePret",
+      "label": "Type de pret",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "typePret",
+      "label": "Type de pret",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "typePret",
+      "label": "Type de pret",
+      "scenario": "hors_liste",
+      "input": "__valeur_hors_liste__",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-007-04-typePret-B1"
+      ]
+    },
+    {
+      "field": "typePret",
+      "label": "Type de pret",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "typePret",
+      "label": "Type de pret",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "typePret",
+      "label": "Type de pret",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Montant invalide »",
+      "source_ids": [
+        "VAL-007-05-montant-B1"
+      ]
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "sous_min",
+      "input": "-0.99",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Montant invalide »",
+      "source_ids": [
+        "VAL-007-05-montant-B2"
+      ]
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "taux",
+      "label": "Taux annuel (%)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "taux",
+      "label": "Taux annuel (%)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "taux",
+      "label": "Taux annuel (%)",
+      "scenario": "sous_min",
+      "input": "-1",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Taux invalide »",
+      "source_ids": [
+        "VAL-007-06-taux-B1"
+      ]
+    },
+    {
+      "field": "taux",
+      "label": "Taux annuel (%)",
+      "scenario": "au_dessus_max",
+      "input": "31",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Taux invalide »",
+      "source_ids": [
+        "VAL-007-06-taux-B2"
+      ]
+    },
+    {
+      "field": "taux",
+      "label": "Taux annuel (%)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "taux",
+      "label": "Taux annuel (%)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "taux",
+      "label": "Taux annuel (%)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "duree",
+      "label": "Duree (mois)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "duree",
+      "label": "Duree (mois)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "duree",
+      "label": "Duree (mois)",
+      "scenario": "sous_min",
+      "input": "0",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Duree invalide »",
+      "source_ids": [
+        "VAL-007-07-duree-B1"
+      ]
+    },
+    {
+      "field": "duree",
+      "label": "Duree (mois)",
+      "scenario": "au_dessus_max",
+      "input": "361",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Duree invalide »",
+      "source_ids": [
+        "VAL-007-07-duree-B2"
+      ]
+    },
+    {
+      "field": "duree",
+      "label": "Duree (mois)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "duree",
+      "label": "Duree (mois)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "duree",
+      "label": "Duree (mois)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "objetPret",
+      "label": "Objet du pret",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « Veuillez indiquer un motif »",
+      "source_ids": [
+        "VAL-007-08-objetPret-F1"
+      ]
+    },
+    {
+      "field": "objetPret",
+      "label": "Objet du pret",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "objetPret",
+      "label": "Objet du pret",
+      "scenario": "trop_long_256_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Erreur : javax.persistence.PersistenceException: org.hibernate.exception.DataException: could not execute statement »",
+      "source_ids": [
+        "VAL-007-08-objetPret-B1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "objetPret",
+      "label": "Objet du pret",
+      "scenario": "limite_exacte_255_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-007-08-objetPret-B1"
+      ]
+    },
+    {
+      "field": "objetPret",
+      "label": "Objet du pret",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "objetPret",
+      "label": "Objet du pret",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "objetPret",
+      "label": "Objet du pret",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 53,
+  "fields_count": 8,
+  "by_status": {
+    "verified": 16,
+    "probe": 37
+  },
+  "uncovered_rule_ids": [
+    "VAL-007-01-simMontant-F1",
+    "VAL-007-01-simMontant-F2",
+    "VAL-007-02-simTaux-F1",
+    "VAL-007-02-simTaux-F2",
+    "VAL-007-03-simDuree-F1",
+    "VAL-007-03-simDuree-F2",
+    "VAL-007-04-typePret-F1",
+    "VAL-007-05-montant-B3",
+    "VAL-007-05-montant-F1",
+    "VAL-007-05-montant-F2",
+    "VAL-007-06-taux-F1",
+    "VAL-007-06-taux-F2",
+    "VAL-007-07-duree-F1",
+    "VAL-007-07-duree-F2"
+  ],
+  "warnings": []
+}

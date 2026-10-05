@@ -1,0 +1,6 @@
+{
+  "method": "GET",
+  "path": "/banking-legacy/dashboard.xhtml",
+  "headers": {},
+  "follow_redirects": false
+}

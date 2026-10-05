@@ -1,0 +1,336 @@
+{
+  "matrix": [
+    {
+      "field": "duree",
+      "kind": "max",
+      "front_ids": [
+        "VAL-007-07-duree-F2"
+      ],
+      "back_ids": [
+        "VAL-007-07-duree-B2"
+      ],
+      "front_value": 360,
+      "back_value": 360,
+      "front_ears": [
+        "IF duree is greater than 360 THEN THE SYSTEM SHALL reject and display \"Duree invalide\""
+      ],
+      "back_ears": [
+        "IF dureeMois is greater than 360 THEN THE SYSTEM SHALL reject the loan request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "duree",
+      "kind": "min",
+      "front_ids": [
+        "VAL-007-07-duree-F1"
+      ],
+      "back_ids": [
+        "VAL-007-07-duree-B1"
+      ],
+      "front_value": 1,
+      "back_value": 1,
+      "front_ears": [
+        "IF duree is less than or equal to zero THEN THE SYSTEM SHALL reject and display \"Duree invalide\""
+      ],
+      "back_ears": [
+        "IF dureeMois is less than or equal to zero THEN THE SYSTEM SHALL reject the loan request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "montant",
+      "kind": "min",
+      "front_ids": [
+        "VAL-007-05-montant-F2"
+      ],
+      "back_ids": [
+        "VAL-007-05-montant-B2"
+      ],
+      "front_value": 0.01,
+      "back_value": 0.01,
+      "front_ears": [
+        "IF montant is less than or equal to zero THEN THE SYSTEM SHALL reject and display \"Montant invalide\""
+      ],
+      "back_ears": [
+        "IF montant is less than or equal to zero THEN THE SYSTEM SHALL reject the loan request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "montant",
+      "kind": "required",
+      "front_ids": [
+        "VAL-007-05-montant-F1"
+      ],
+      "back_ids": [
+        "VAL-007-05-montant-B1",
+        "VAL-007-05-montant-B3"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits loan request with null or empty montant THE SYSTEM SHALL reject and display \"Montant invalide\""
+      ],
+      "back_ears": [
+        "IF montant is null THEN THE SYSTEM SHALL reject the loan request",
+        "THE SYSTEM SHALL store montant as NOT NULL"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "objetPret",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-007-08-objetPret-B1"
+      ],
+      "front_value": null,
+      "back_value": 255,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL reject objetPret values exceeding 255 characters"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejetée par le serveur (observé à l'écran)",
+      "observed": {
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "objetPret",
+      "kind": "required",
+      "front_ids": [
+        "VAL-007-08-objetPret-F1"
+      ],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits loan request with null or blank objetPret THE SYSTEM SHALL reject and display \"Veuillez indiquer un motif\""
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse (appel direct non testé)",
+      "observed": null
+    },
+    {
+      "field": "simDuree",
+      "kind": "max",
+      "front_ids": [
+        "VAL-007-03-simDuree-F2"
+      ],
+      "back_ids": [
+        "VAL-007-03-simDuree-B2"
+      ],
+      "front_value": 360,
+      "back_value": 360,
+      "front_ears": [
+        "IF simDuree is greater than 360 THEN THE SYSTEM SHALL reject and display \"Duree invalide (1-360 mois)\""
+      ],
+      "back_ears": [
+        "IF dureeMois is greater than 360 THEN THE SYSTEM SHALL reject the simulation"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "simDuree",
+      "kind": "min",
+      "front_ids": [
+        "VAL-007-03-simDuree-F1"
+      ],
+      "back_ids": [
+        "VAL-007-03-simDuree-B1"
+      ],
+      "front_value": 1,
+      "back_value": 1,
+      "front_ears": [
+        "IF simDuree is less than or equal to zero THEN THE SYSTEM SHALL reject and display \"Duree invalide (1-360 mois)\""
+      ],
+      "back_ears": [
+        "IF dureeMois is less than or equal to zero THEN THE SYSTEM SHALL reject the simulation"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "simMontant",
+      "kind": "min",
+      "front_ids": [
+        "VAL-007-01-simMontant-F2"
+      ],
+      "back_ids": [
+        "VAL-007-01-simMontant-B2"
+      ],
+      "front_value": 0.01,
+      "back_value": 0.01,
+      "front_ears": [
+        "IF simMontant is less than or equal to zero THEN THE SYSTEM SHALL reject and display \"Montant invalide\""
+      ],
+      "back_ears": [
+        "IF simMontant is less than or equal to zero THEN THE SYSTEM SHALL reject the simulation"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "simMontant",
+      "kind": "required",
+      "front_ids": [
+        "VAL-007-01-simMontant-F1"
+      ],
+      "back_ids": [
+        "VAL-007-01-simMontant-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits simulation with null or empty simMontant THE SYSTEM SHALL reject and display \"Montant invalide\""
+      ],
+      "back_ears": [
+        "IF simMontant is null THEN THE SYSTEM SHALL reject the simulation"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "simTaux",
+      "kind": "max",
+      "front_ids": [
+        "VAL-007-02-simTaux-F2"
+      ],
+      "back_ids": [
+        "VAL-007-02-simTaux-B2"
+      ],
+      "front_value": 30,
+      "back_value": 30,
+      "front_ears": [
+        "IF simTaux is greater than 30 THEN THE SYSTEM SHALL reject and display \"Taux invalide (0-30%)\""
+      ],
+      "back_ears": [
+        "IF tauxAnnuel is greater than 30 THEN THE SYSTEM SHALL reject the simulation"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "simTaux",
+      "kind": "min",
+      "front_ids": [
+        "VAL-007-02-simTaux-F1"
+      ],
+      "back_ids": [
+        "VAL-007-02-simTaux-B1"
+      ],
+      "front_value": 0,
+      "back_value": 0,
+      "front_ears": [
+        "IF simTaux is less than zero THEN THE SYSTEM SHALL reject and display \"Taux invalide (0-30%)\""
+      ],
+      "back_ears": [
+        "IF tauxAnnuel is less than zero THEN THE SYSTEM SHALL reject the simulation"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "taux",
+      "kind": "max",
+      "front_ids": [
+        "VAL-007-06-taux-F2"
+      ],
+      "back_ids": [
+        "VAL-007-06-taux-B2"
+      ],
+      "front_value": 30,
+      "back_value": 30,
+      "front_ears": [
+        "IF taux is greater than 30 THEN THE SYSTEM SHALL reject and display \"Taux invalide\""
+      ],
+      "back_ears": [
+        "IF tauxAnnuel is greater than 30 THEN THE SYSTEM SHALL reject the loan request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "taux",
+      "kind": "min",
+      "front_ids": [
+        "VAL-007-06-taux-F1"
+      ],
+      "back_ids": [
+        "VAL-007-06-taux-B1"
+      ],
+      "front_value": 0,
+      "back_value": 0,
+      "front_ears": [
+        "IF taux is less than zero THEN THE SYSTEM SHALL reject and display \"Taux invalide\""
+      ],
+      "back_ears": [
+        "IF tauxAnnuel is less than zero THEN THE SYSTEM SHALL reject the loan request"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "typePret",
+      "kind": "enum",
+      "front_ids": [
+        "VAL-007-04-typePret-F1"
+      ],
+      "back_ids": [
+        "VAL-007-04-typePret-B1"
+      ],
+      "front_value": [
+        "IMMOBILIER",
+        "AUTO",
+        "CONSOMMATION",
+        "TRAVAUX",
+        "ETUDIANT"
+      ],
+      "back_value": [
+        "IMMOBILIER",
+        "AUTO",
+        "CONSOMMATION",
+        "TRAVAUX",
+        "ETUDIANT"
+      ],
+      "front_ears": [
+        "THE SYSTEM SHALL constrain typePret to enum values IMMOBILIER, AUTO, CONSOMMATION, TRAVAUX, ETUDIANT via combobox with CONSOMMATION as default"
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL store typePret only as one of the valid enum values: IMMOBILIER, AUTO, CONSOMMATION, TRAVAUX, ETUDIANT"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    }
+  ],
+  "total_rows": 15,
+  "by_verdict": {
+    "identique": 13,
+    "back_seul": 1,
+    "front_seul": 1
+  },
+  "warnings": []
+}

@@ -1,0 +1,14 @@
+{
+  "id": "SC-004-02",
+  "feature_id": "FEAT-004",
+  "feature_name": "Virements programmés",
+  "description": "Créer un virement programmé mensuel avec données valides affiche 'Virement programme cree avec succes'",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-004-023", "RG-004-024"],
+  "tags": [],
+  "writes": true,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

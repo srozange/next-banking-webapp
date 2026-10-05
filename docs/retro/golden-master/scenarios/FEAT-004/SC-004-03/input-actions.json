@@ -1,0 +1,8 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/virement-programme.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "click", "selector": "input[type='submit'][value='Creer le virement programme']"},
+    {"type": "wait_for", "text": "Veuillez selectionner un compte source"}
+  ]
+}

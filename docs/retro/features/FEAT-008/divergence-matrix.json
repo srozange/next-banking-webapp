@@ -1,0 +1,169 @@
+{
+  "matrix": [
+    {
+      "field": "accountId",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-008-01-accountId-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF type is RELEVE, RIB, or ATTESTATION and accountId parameter is absent, empty, or non-numeric THEN THE SYSTEM SHALL reject the request."
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": {
+        "back": {
+          "outcome": "rejected",
+          "http_status": 400
+        }
+      }
+    },
+    {
+      "field": "accountId",
+      "kind": "reference",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-008-01-accountId-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF accountId does not match an existing bank account THEN THE SYSTEM SHALL reject the request."
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 404 observé)",
+      "observed": {
+        "back": {
+          "outcome": "rejected",
+          "http_status": 404
+        }
+      }
+    },
+    {
+      "field": "month",
+      "kind": "max",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-008-01-month-B2"
+      ],
+      "front_value": null,
+      "back_value": 12,
+      "front_ears": [],
+      "back_ears": [
+        "IF RELEVE is requested with a month parameter greater than 12 THEN THE SYSTEM SHALL reject the request."
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 200 observé)",
+      "observed": {
+        "back": {
+          "outcome": "accepted",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "field": "month",
+      "kind": "min",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-008-01-month-B1"
+      ],
+      "front_value": null,
+      "back_value": 1,
+      "front_ears": [],
+      "back_ears": [
+        "IF RELEVE is requested with a month parameter that is absent, non-numeric, or less than 1 THEN THE SYSTEM SHALL reject the request."
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 200 observé)",
+      "observed": {
+        "back": {
+          "outcome": "accepted",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "field": "type",
+      "kind": "enum",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-008-01-type-B2"
+      ],
+      "front_value": null,
+      "back_value": [
+        "RELEVE",
+        "RIB",
+        "ATTESTATION",
+        "IFU"
+      ],
+      "front_ears": [],
+      "back_ears": [
+        "IF type parameter is present but not one of RELEVE, RIB, ATTESTATION, or IFU (case-insensitive) THEN THE SYSTEM SHALL reject the request."
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 400 observé)",
+      "observed": {
+        "back": {
+          "outcome": "rejected",
+          "http_status": 400
+        }
+      }
+    },
+    {
+      "field": "type",
+      "kind": "required",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-008-01-type-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF type parameter is absent from the download request THEN THE SYSTEM SHALL reject the request."
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 400 observé)",
+      "observed": {
+        "back": {
+          "outcome": "rejected",
+          "http_status": 400
+        }
+      }
+    },
+    {
+      "field": "year",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-008-01-year-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF RELEVE or IFU is requested with a year parameter that is absent, non-numeric, or outside a valid calendar range THEN THE SYSTEM SHALL reject the request."
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": {
+        "back": {
+          "outcome": "accepted",
+          "http_status": 200
+        }
+      }
+    }
+  ],
+  "total_rows": 7,
+  "by_verdict": {
+    "a_interpreter": 2,
+    "back_seul": 5
+  },
+  "warnings": []
+}

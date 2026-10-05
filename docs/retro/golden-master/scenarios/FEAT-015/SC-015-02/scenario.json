@@ -1,0 +1,14 @@
+{
+  "id": "SC-015-02",
+  "feature_id": "FEAT-015",
+  "feature_name": "Espace Conseiller — Portefeuille clients",
+  "description": "Un CLIENT accédant à conseiller-workspace.xhtml est redirigé silencieusement vers dashboard.xhtml (RBAC)",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-015-002"],
+  "tags": [],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

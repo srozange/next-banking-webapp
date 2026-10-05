@@ -1,0 +1,373 @@
+{
+  "test_cases": [
+    {
+      "field": "j_idt6",
+      "label": "j_idt6",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt6",
+      "label": "j_idt6",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt6",
+      "label": "j_idt6",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt6",
+      "label": "j_idt6",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt6",
+      "label": "j_idt6",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20",
+      "label": "j_idt20",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20",
+      "label": "j_idt20",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20",
+      "label": "j_idt20",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20",
+      "label": "j_idt20",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20",
+      "label": "j_idt20",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20:j_idt21",
+      "label": "j_idt20:j_idt21",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20:j_idt21",
+      "label": "j_idt20:j_idt21",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20:j_idt21",
+      "label": "j_idt20:j_idt21",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20:j_idt21",
+      "label": "j_idt20:j_idt21",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "j_idt20:j_idt21",
+      "label": "j_idt20:j_idt21",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountsForm",
+      "label": "accountsForm",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "accountsForm",
+      "label": "accountsForm",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountsForm",
+      "label": "accountsForm",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountsForm",
+      "label": "accountsForm",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "accountsForm",
+      "label": "accountsForm",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "label": "javax.faces.ViewState",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 35,
+  "fields_count": 7,
+  "by_status": {
+    "verified": 0,
+    "probe": 35
+  },
+  "uncovered_rule_ids": [
+    "VAL-012-01-apiResponse-B1",
+    "VAL-012-02-accessToken-B1",
+    "VAL-012-02-callback_params-B1",
+    "VAL-012-02-callback_params-B2",
+    "VAL-012-02-callback_params-B3",
+    "VAL-012-02-callback_params-B4"
+  ],
+  "warnings": [
+    "accessToken: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "apiResponse: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "callback_params: règles documentées pour un champ absent de fields-raw.json — non couvert"
+  ]
+}

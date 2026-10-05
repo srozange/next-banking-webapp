@@ -1,0 +1,24 @@
+{
+  "test_cases": [],
+  "total": 0,
+  "fields_count": 0,
+  "by_status": {
+    "verified": 0,
+    "probe": 0
+  },
+  "uncovered_rule_ids": [
+    "VAL-008-01-accountId-B1",
+    "VAL-008-01-accountId-B2",
+    "VAL-008-01-month-B1",
+    "VAL-008-01-month-B2",
+    "VAL-008-01-type-B1",
+    "VAL-008-01-type-B2",
+    "VAL-008-01-year-B1"
+  ],
+  "warnings": [
+    "accountId: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "month: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "type: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "year: règles documentées pour un champ absent de fields-raw.json — non couvert"
+  ]
+}

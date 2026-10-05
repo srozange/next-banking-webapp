@@ -1,0 +1,28 @@
+{
+  "matrix": [
+    {
+      "field": "page_access",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-011-01-page_access-B1",
+        "VAL-011-01-page_access-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "WHEN an unauthenticated user requests produits.xhtml THE SYSTEM SHALL redirect to login.xhtml.",
+        "WHEN a user with role CLIENT, CONSEILLER, or ADMIN requests produits.xhtml THE SYSTEM SHALL grant access to the product catalogue page."
+      ],
+      "verdict": "back_seul",
+      "consequence": "contrôle d'accès côté serveur uniquement — aucune règle front équivalente (page sans formulaire)",
+      "observed": null
+    }
+  ],
+  "total_rows": 1,
+  "by_verdict": {
+    "back_seul": 1
+  },
+  "warnings": []
+}

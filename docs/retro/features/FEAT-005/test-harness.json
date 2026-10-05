@@ -1,0 +1,65 @@
+{
+  "test_cases": [
+    {
+      "field": "releveForm:accountSelect",
+      "label": "Compte :",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "releveForm:accountSelect",
+      "label": "Compte :",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "releveForm:accountSelect",
+      "label": "Compte :",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "releveForm:accountSelect",
+      "label": "Compte :",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "releveForm:accountSelect",
+      "label": "Compte :",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 5,
+  "fields_count": 1,
+  "by_status": {
+    "verified": 0,
+    "probe": 5
+  },
+  "uncovered_rule_ids": [
+    "VAL-005-01-accountSelect-B1",
+    "VAL-005-01-accountSelect-B2"
+  ],
+  "warnings": []
+}

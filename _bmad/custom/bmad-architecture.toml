@@ -1,0 +1,13 @@
+# Écrit par retro-forward-bmad — 2026-10-05
+[workflow]
+persistent_facts = [
+  "Projet de rénovation d'une application existante. Le corpus de rétro-ingénierie docs/retro/ (index : docs/retro/MANIFEST.json, commit c05512ecab8af8878d695ccd0f33fc3ece8811a4) décrit son comportement actuel : c'est la référence de ce qui existe, pas une spécification à recopier. L'architecture cible est libre et peut différer de l'actuelle. Le périmètre fonctionnel peut être revu avec le métier (ajouts, retraits, évolutions) : tout écart volontaire au comportement actuel est décidé explicitement et tracé (FEAT-NNN, RG-NNN-NNN concernés).",
+  "Fichiers du corpus utiles à ton travail : docs/retro/00-global/STACK.md, docs/retro/00-global/ARCHITECTURE.md, docs/retro/00-global/DATA-DICTIONARY.md, docs/retro/00-global/ENUMS.md, docs/retro/00-global/INTEGRATIONS-OVERVIEW.md, docs/retro/00-global/NFR.md, docs/retro/00-global/openapi.yaml.",
+  "Les bugs du legacy à corriger sont listés dans docs/retro/00-global/LEGACY-BUGS.md ; chaque correction doit être couverte par un test.",
+  "Golden master du legacy : l'architecture tranche les décisions de docs/retro/golden-master-contract.md (URL de base et authentification de la cible, point d'entrée cible de chaque scénario, sortie qui fait foi) dans replay-mapping.json, puis dérive le golden master (section « Procédure » de docs/retro/golden-master-contract.md, étapes 1 et 2).",
+  "Pour que le golden master soit rejouable sur la nouvelle application, l'architecture fixe : la table des routes (page de l'application existante vers route cible, clé routes de replay-mapping.json) ; un attribut de test stable sur chaque champ et bouton actionné par un scénario ; la règle sur les libellés et messages affichés (repris à l'identique, ou écart listé) ; une page de connexion à formulaire et une session conservée en cookie ou en stockage local, pour la connexion de test de chaque rôle ; le chargement des données de référence et la remise à zéro de la base avant un rejeu complet.",
+  "Les décisions par scénario de replay-mapping.json se prennent avec le skill corpus-bmad-golden-master, à lancer avant de finaliser l'architecture ; il mesure par les mêmes scripts que le relecteur de finalisation.",
+]
+finalize_reviewers = [
+  "file:{project-root}/docs/retro/tools/golden-master-review.md",
+]

@@ -1,0 +1,14 @@
+{
+  "id": "SC-001-03",
+  "feature_id": "FEAT-001",
+  "feature_name": "Connexion",
+  "description": "Des identifiants incorrects maintiennent l'utilisateur sur login.xhtml avec le message 'Identifiants incorrects'",
+  "capture_adapter": "http",
+  "expected_outputs": ["http_response"],
+  "roles": [],
+  "rg_ids": ["RG-001-007"],
+  "tags": [],
+  "writes": true,
+  "writes_justification": "Le legacy enregistre la tentative échouée dans l'audit trail (auditService.log LOGIN_FAILED — LoginBean.java:56)",
+  "compare": {"mode": "status+body_contains"}
+}

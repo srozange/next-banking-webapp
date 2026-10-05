@@ -1,0 +1,228 @@
+{
+  "matrix": [
+    {
+      "field": "compteDestinataire",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-003-01-compteDestinataire-B3"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF the target account identifier equals the source account identifier THEN THE SYSTEM SHALL reject the transfer"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": {
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "compteDestinataire",
+      "kind": "reference",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-003-01-compteDestinataire-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF the target account referenced by targetAccountId does not exist in the database THEN THE SYSTEM SHALL reject the transfer"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    },
+    {
+      "field": "compteDestinataire",
+      "kind": "required",
+      "front_ids": [
+        "VAL-003-01-compteDestinataire-F1"
+      ],
+      "back_ids": [
+        "VAL-003-01-compteDestinataire-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits without selecting a target account THE SYSTEM SHALL reject the transfer and display a required validation error"
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL store the target account reference as a non-null foreign key"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "compteSource",
+      "kind": "reference",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-003-01-compteSource-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF the source account referenced by sourceAccountId does not exist in the database THEN THE SYSTEM SHALL reject the transfer"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    },
+    {
+      "field": "compteSource",
+      "kind": "required",
+      "front_ids": [
+        "VAL-003-01-compteSource-F1"
+      ],
+      "back_ids": [
+        "VAL-003-01-compteSource-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits without selecting a source account THE SYSTEM SHALL reject the transfer and display a required validation error"
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL store the source account reference as a non-null foreign key"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "montant",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-003-01-montant-B2",
+        "VAL-003-01-montant-B3"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF the transfer amount is less than or equal to zero THEN THE SYSTEM SHALL reject the transfer",
+        "IF the source account balance is less than the requested transfer amount THEN THE SYSTEM SHALL reject the transfer"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": {
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "montant",
+      "kind": "format",
+      "front_ids": [
+        "VAL-003-01-montant-F2"
+      ],
+      "back_ids": [],
+      "front_value": "decimal",
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits a non-numeric value in the Montant field THE SYSTEM SHALL reject the submission with a JSF conversion error"
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse — rejetée par le serveur (observé à l'écran)",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "montant",
+      "kind": "required",
+      "front_ids": [
+        "VAL-003-01-montant-F1"
+      ],
+      "back_ids": [
+        "VAL-003-01-montant-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits with empty Montant field THE SYSTEM SHALL reject the transfer and display a required validation error"
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL store the transfer amount as a non-null numeric value"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "motif",
+      "kind": "max_length",
+      "front_ids": [
+        "VAL-003-01-motif-F2"
+      ],
+      "back_ids": [],
+      "front_value": 100,
+      "back_value": null,
+      "front_ears": [
+        "WHEN the Motif field contains more than 100 characters THE SYSTEM SHALL prevent further input beyond the 100-character limit"
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse — acceptée par le serveur (observé à l'écran) — données invalides possibles",
+      "observed": {
+        "front": {
+          "outcome": "accepted"
+        }
+      }
+    },
+    {
+      "field": "motif",
+      "kind": "required",
+      "front_ids": [
+        "VAL-003-01-motif-F1"
+      ],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits with empty Motif field THE SYSTEM SHALL reject the transfer and display a required validation error"
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse — acceptée par le serveur (observé à l'écran) — données invalides possibles",
+      "observed": {
+        "front": {
+          "outcome": "accepted"
+        }
+      }
+    }
+  ],
+  "total_rows": 10,
+  "by_verdict": {
+    "a_interpreter": 2,
+    "back_seul": 2,
+    "identique": 3,
+    "front_seul": 3
+  },
+  "warnings": []
+}

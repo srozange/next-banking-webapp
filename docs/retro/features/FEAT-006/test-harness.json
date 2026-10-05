@@ -1,0 +1,172 @@
+{
+  "test_cases": [
+    {
+      "field": "selectedMonth",
+      "label": "Periode :",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "selectedMonth",
+      "label": "Periode :",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "selectedMonth",
+      "label": "Periode :",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "selectedMonth",
+      "label": "Periode :",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "selectedMonth",
+      "label": "Periode :",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editCategory",
+      "label": "Categorie",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Veuillez selectionner une categorie »",
+      "source_ids": [
+        "VAL-006-01-editCategory-B1"
+      ]
+    },
+    {
+      "field": "editCategory",
+      "label": "Categorie",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editCategory",
+      "label": "Categorie",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editCategory",
+      "label": "Categorie",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editCategory",
+      "label": "Categorie",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editPlafond",
+      "label": "Plafond mensuel (EUR)",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Veuillez saisir un plafond valide »",
+      "source_ids": [
+        "VAL-006-01-editPlafond-B1"
+      ]
+    },
+    {
+      "field": "editPlafond",
+      "label": "Plafond mensuel (EUR)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editPlafond",
+      "label": "Plafond mensuel (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editPlafond",
+      "label": "Plafond mensuel (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "editPlafond",
+      "label": "Plafond mensuel (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 15,
+  "fields_count": 3,
+  "by_status": {
+    "verified": 2,
+    "probe": 13
+  },
+  "uncovered_rule_ids": [
+    "VAL-006-01-editCategory-B2",
+    "VAL-006-01-editPlafond-B2",
+    "VAL-006-01-editPlafond-B3",
+    "VAL-006-01-editPlafond-B4",
+    "VAL-006-01-editPlafond-F1"
+  ],
+  "warnings": []
+}

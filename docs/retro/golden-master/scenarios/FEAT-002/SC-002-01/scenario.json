@@ -1,0 +1,14 @@
+{
+  "id": "SC-002-01",
+  "feature_id": "FEAT-002",
+  "feature_name": "Tableau de bord",
+  "description": "Le tableau de bord CLIENT charge avec les comptes, le solde total et les dernières opérations",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-002-003", "RG-002-005", "RG-002-006", "RG-002-008", "RG-002-009", "RG-002-010"],
+  "tags": ["smoke"],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

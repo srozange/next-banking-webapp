@@ -1,0 +1,22 @@
+{
+  "test_cases": [],
+  "total": 0,
+  "fields_count": 0,
+  "by_status": {
+    "verified": 0,
+    "probe": 0
+  },
+  "uncovered_rule_ids": [
+    "VAL-014-01-error-B1",
+    "VAL-014-02-connection_id-B1",
+    "VAL-014-02-connection_id-B2",
+    "VAL-014-03-code-B1",
+    "VAL-014-04-params-B1"
+  ],
+  "warnings": [
+    "code: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "connection_id: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "error: règles documentées pour un champ absent de fields-raw.json — non couvert",
+    "params: règles documentées pour un champ absent de fields-raw.json — non couvert"
+  ]
+}

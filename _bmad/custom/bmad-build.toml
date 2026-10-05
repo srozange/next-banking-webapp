@@ -1,0 +1,9 @@
+# Écrit par retro-forward-bmad — 2026-10-05
+[workflow]
+persistent_facts = [
+  "Projet de rénovation d'une application existante. Le corpus de rétro-ingénierie docs/retro/ (index : docs/retro/MANIFEST.json, commit c05512ecab8af8878d695ccd0f33fc3ece8811a4) décrit son comportement actuel : c'est la référence de ce qui existe, pas une spécification à recopier. L'architecture cible est libre et peut différer de l'actuelle. Le périmètre fonctionnel peut être revu avec le métier (ajouts, retraits, évolutions) : tout écart volontaire au comportement actuel est décidé explicitement et tracé (FEAT-NNN, RG-NNN-NNN concernés).",
+  "Fichiers du corpus utiles à ton travail : docs/retro/features/FEAT-NNN/RG.md, docs/retro/features/FEAT-NNN/VALIDATION.md, docs/retro/features/FEAT-NNN/FIELDS.md, docs/retro/features/FEAT-NNN/FLOW.md, docs/retro/features/FEAT-NNN/STATES.md, docs/retro/00-global/MESSAGES.md, docs/retro/features/FEAT-NNN/screens/SCR-*.png (FEAT-NNN : la fonctionnalité concernée).",
+  "Les bugs du legacy à corriger sont listés dans docs/retro/00-global/LEGACY-BUGS.md ; chaque correction doit être couverte par un test.",
+  "Recette de non-régression : le golden master dérivé selon docs/retro/golden-master-contract.md (section « Procédure », étape 3) rejoue sur l'application cible ; critère de cutover : failed: 0 et errors: 0.",
+  "Le golden master se rejoue une seule fois, en entier, à la fin du développement, avant la bascule : pas pendant les stories ni entre les epics. Ne modifie jamais un test généré (e2e/golden-master/), le dossier dérivé (docs/retro/golden-master/derived/) ni replay-mapping.json : si un scénario paraît faux, arrête-toi et signale-le.",
+]

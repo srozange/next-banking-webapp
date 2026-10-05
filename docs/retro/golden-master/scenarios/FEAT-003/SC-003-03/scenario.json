@@ -1,0 +1,15 @@
+{
+  "id": "SC-003-03",
+  "feature_id": "FEAT-003",
+  "feature_name": "Effectuer un virement",
+  "description": "Un montant supérieur au solde affiche 'Erreur lors du virement : java.lang.IllegalStateException: Solde insuffisant' (dette-legacy : message technique exposé)",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": [],
+  "tags": ["bug", "debt-legacy"],
+  "notes": "RG-003-007 (Suspect/dette-legacy) : le message d'erreur expose la stack Java ('java.lang.IllegalStateException: Solde insuffisant') au lieu d'un message métier. Capturé pour doc uniquement, hors scope réécriture.",
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

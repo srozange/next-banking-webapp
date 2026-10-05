@@ -1,0 +1,15 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/beneficiaires.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "fill", "selector": "#addForm\\:newLabel", "value": "[retro] test beneficiaire"},
+    {"type": "fill", "selector": "#addForm\\:newHolderName", "value": "Retro Test SA"},
+    {"type": "fill", "selector": "#addForm\\:newIban", "value": "FR3530004000000123456789010"},
+    {"type": "click", "selector": "input[value=\"Verifier l'IBAN\"]"},
+    {"type": "wait_for", "text": "IBAN valide"},
+    {"type": "fill", "selector": "#addForm\\:newBic", "value": "HSBCFRPPXXX"},
+    {"type": "fill", "selector": "#addForm\\:newBank", "value": "HSBC France"},
+    {"type": "click", "selector": "input[value='Ajouter le beneficiaire']"},
+    {"type": "wait_for", "selector": ".alert-info"}
+  ]
+}

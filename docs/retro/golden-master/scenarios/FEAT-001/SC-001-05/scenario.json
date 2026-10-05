@@ -1,0 +1,14 @@
+{
+  "id": "SC-001-05",
+  "feature_id": "FEAT-001",
+  "feature_name": "Connexion",
+  "description": "La déconnexion invalide la session et redirige vers login.xhtml",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-001-010"],
+  "tags": [],
+  "writes": true,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

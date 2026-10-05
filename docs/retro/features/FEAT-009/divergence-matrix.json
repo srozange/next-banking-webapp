@@ -1,0 +1,206 @@
+{
+  "matrix": [
+    {
+      "field": "newDevise",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-009-03-newDevise-B1"
+      ],
+      "front_value": null,
+      "back_value": 10,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL reject currency values longer than 10 characters"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette (aucune observation live de la réponse serveur)",
+      "observed": null
+    },
+    {
+      "field": "newDevise",
+      "kind": "required",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-009-03-newDevise-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL store a non-null currency value"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette (aucune observation live de la réponse serveur)",
+      "observed": null
+    },
+    {
+      "field": "newMarche",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-009-03-newMarche-B1"
+      ],
+      "front_value": null,
+      "back_value": 50,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL reject market values longer than 50 characters"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette (aucune observation live de la réponse serveur)",
+      "observed": null
+    },
+    {
+      "field": "newMarche",
+      "kind": "required",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-009-03-newMarche-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL store a non-null market value"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette (aucune observation live de la réponse serveur)",
+      "observed": null
+    },
+    {
+      "field": "newNom",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-009-03-newNom-B2"
+      ],
+      "front_value": null,
+      "back_value": 100,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL reject name values longer than 100 characters"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejetée par le serveur (observé à l'écran)",
+      "observed": {
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "newNom",
+      "kind": "required",
+      "front_ids": [
+        "VAL-009-03-newNom-F1"
+      ],
+      "back_ids": [
+        "VAL-009-03-newNom-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits the add form with empty or blank newNom THE SYSTEM SHALL display \"Le nom de la valeur est obligatoire\" and keep the form open"
+      ],
+      "back_ears": [
+        "IF newNom is empty or blank THEN THE SYSTEM SHALL reject the submission and display \"Le nom de la valeur est obligatoire\""
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "newSymbole",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-009-03-newSymbole-B2"
+      ],
+      "front_value": null,
+      "back_value": 20,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL reject symbol values longer than 20 characters"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — acceptée par le serveur (observé à l'écran) — données invalides possibles",
+      "observed": {
+        "back": {
+          "outcome": "accepted"
+        }
+      }
+    },
+    {
+      "field": "newSymbole",
+      "kind": "required",
+      "front_ids": [
+        "VAL-009-03-newSymbole-F1"
+      ],
+      "back_ids": [
+        "VAL-009-03-newSymbole-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits the add form with empty or blank newSymbole THE SYSTEM SHALL display \"Le symbole est obligatoire (ex: AMZN, SG.PA)\" and keep the form open"
+      ],
+      "back_ears": [
+        "IF newSymbole is empty or blank THEN THE SYSTEM SHALL reject the submission and display \"Le symbole est obligatoire (ex: AMZN, SG.PA)\""
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "newSymbole",
+      "kind": "unique",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-009-03-newSymbole-B3"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF newSymbole matches an existing symbol (case-insensitive) THEN THE SYSTEM SHALL reject the submission"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    },
+    {
+      "field": "periode",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "symboleValeur",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    }
+  ],
+  "total_rows": 11,
+  "by_verdict": {
+    "back_seul": 7,
+    "identique": 2,
+    "aucune_règle": 2
+  },
+  "warnings": []
+}

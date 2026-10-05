@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "decisions_allowed": [
+    "morte",
+    "vivante",
+    "conservee"
+  ],
+  "features": [
+    {
+      "id": "FEAT-031",
+      "name": "Analytique client et segmentation (code mort probable)",
+      "reason": "code",
+      "evidence": "CustomerAnalyticsService.java:41-437 — méthodes computeCustomerProfile, computeRiskScore, generateRecommendations, computeMonthlyStats — aucun @EJB ni import trouvé dans le reste de la base de code ; service présent mais inatteignable en production",
+      "proposed_at": "2026-10-02T16:12:47Z",
+      "decision": "morte",
+      "decided_at": "2026-10-02T17:41:45Z",
+      "decided_in": "gate retro-features",
+      "note": ""
+    },
+    {
+      "id": "FEAT-032",
+      "name": "Bean gestion notifications UI (code mort probable)",
+      "reason": "code",
+      "evidence": "NotificationBean.java:27 @Named @SessionScoped — méthodes markRead, markAllRead, refreshNotifications — aucune référence #{notificationBean dans les 16 fichiers xhtml ; bean CDI inatteignable en production",
+      "proposed_at": "2026-10-02T16:12:47Z",
+      "decision": "morte",
+      "decided_at": "2026-10-02T17:41:45Z",
+      "decided_in": "gate retro-features",
+      "note": ""
+    }
+  ]
+}

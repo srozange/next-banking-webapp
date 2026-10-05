@@ -1,0 +1,136 @@
+{
+  "matrix": [
+    {
+      "field": "accessToken",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-012-02-accessToken-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF accessToken session attribute is null when processCallback executes THEN THE SYSTEM SHALL reject the callback and display a session expiration message"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    },
+    {
+      "field": "apiResponse",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-012-01-apiResponse-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF initAndGetWebviewUrl returns null THEN THE SYSTEM SHALL display an error and remain in non-connected state"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    },
+    {
+      "field": "callback_params",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-012-02-callback_params-B1",
+        "VAL-012-02-callback_params-B2",
+        "VAL-012-02-callback_params-B3",
+        "VAL-012-02-callback_params-B4"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF request to powens-callback.xhtml contains neither connection_id nor code nor error parameter THEN THE SYSTEM SHALL display error message indicating incomplete callback",
+        "IF request to powens-callback.xhtml contains error parameter THEN THE SYSTEM SHALL inform the user of the reason for the Powens connection failure",
+        "IF request to powens-callback.xhtml contains connection_id parameter THEN THE SYSTEM SHALL trigger account loading using that connection identifier",
+        "IF request to powens-callback.xhtml contains code parameter without connection_id THEN THE SYSTEM SHALL trigger account loading using that code as fallback identifier"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": {
+        "back": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "accountsForm",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "j_idt20",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "j_idt20:j_idt21",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "j_idt6",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "javax.faces.ViewState",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    }
+  ],
+  "total_rows": 8,
+  "by_verdict": {
+    "a_interpreter": 3,
+    "aucune_règle": 5
+  },
+  "warnings": []
+}

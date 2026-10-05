@@ -1,0 +1,11 @@
+{
+  "test_cases": [],
+  "total": 0,
+  "fields_count": 0,
+  "by_status": {
+    "verified": 0,
+    "probe": 0
+  },
+  "uncovered_rule_ids": [],
+  "warnings": []
+}

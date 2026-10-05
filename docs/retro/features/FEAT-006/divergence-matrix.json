@@ -1,0 +1,103 @@
+{
+  "matrix": [
+    {
+      "field": "editCategory",
+      "kind": "required",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-006-01-editCategory-B1",
+        "VAL-006-01-editCategory-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF editCategory IS NULL THEN THE SYSTEM SHALL display \"Veuillez selectionner une categorie\" and abort the save",
+        "THE SYSTEM SHALL reject budget records where CATEGORY IS NULL"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    },
+    {
+      "field": "editPlafond",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-006-01-editPlafond-B2",
+        "VAL-006-01-editPlafond-B4"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF editPlafond IS NOT NULL AND editPlafond <= 0 THEN THE SYSTEM SHALL display \"Veuillez saisir un plafond valide\" and abort the save",
+        "THE SYSTEM SHALL reject plafond values that exceed DECIMAL(15,2) precision"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    },
+    {
+      "field": "editPlafond",
+      "kind": "format",
+      "front_ids": [
+        "VAL-006-01-editPlafond-F1"
+      ],
+      "back_ids": [],
+      "front_value": "numeric",
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits budgetForm with non-numeric text in editPlafond THE SYSTEM SHALL display \"budgetForm:editPlafond: '{value}' is not a number.\""
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse — rejetée par le serveur (observé à l'écran)",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "editPlafond",
+      "kind": "required",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-006-01-editPlafond-B1",
+        "VAL-006-01-editPlafond-B3"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF editPlafond IS NULL THEN THE SYSTEM SHALL display \"Veuillez saisir un plafond valide\" and abort the save",
+        "THE SYSTEM SHALL reject budget records where PLAFOND IS NULL"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    },
+    {
+      "field": "selectedMonth",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    }
+  ],
+  "total_rows": 5,
+  "by_verdict": {
+    "back_seul": 2,
+    "a_interpreter": 1,
+    "front_seul": 1,
+    "aucune_règle": 1
+  },
+  "warnings": []
+}

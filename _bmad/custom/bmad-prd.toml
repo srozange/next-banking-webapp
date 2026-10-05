@@ -1,0 +1,26 @@
+# Écrit par retro-forward-bmad — 2026-10-05
+[workflow]
+persistent_facts = [
+  "Projet de rénovation d'une application existante. Le corpus de rétro-ingénierie docs/retro/ (index : docs/retro/MANIFEST.json, commit c05512ecab8af8878d695ccd0f33fc3ece8811a4) décrit son comportement actuel : c'est la référence de ce qui existe, pas une spécification à recopier. L'architecture cible est libre et peut différer de l'actuelle. Le périmètre fonctionnel peut être revu avec le métier (ajouts, retraits, évolutions) : tout écart volontaire au comportement actuel est décidé explicitement et tracé (FEAT-NNN, RG-NNN-NNN concernés).",
+  "Fichiers du corpus utiles à ton travail : docs/retro/00-global/FEATURES.md, docs/retro/features/FEAT-NNN/RG.md, docs/retro/rules-index.json, docs/retro/00-global/PERMISSIONS.md (FEAT-NNN : la fonctionnalité concernée).",
+  "Projet de rénovation dérivé d'un corpus retro (commit c05512ecab8af8878d695ccd0f33fc3ece8811a4). Entrées obligatoires du PRD : le brief _bmad-output/planning-artifacts/briefs/brief-next-banking-webapp-2026-10-05/brief.md et docs/retro/ (règles : docs/retro/features/*/RG.md, index docs/retro/rules-index.json). Chaque FR cite l'identifiant RG-NNN-NNN qu'elle couvre. Une fonctionnalité ou une règle volontairement non reprise est citée (FEAT-NNN, RG-NNN-NNN) dans la section Non-Goals, avec sa raison.",
+  "file:{project-root}/docs/retro/INDEX.md",
+  "file:{project-root}/docs/retro/GAPS.md",
+  "Quand tu fusionnes des règles voisines de plusieurs fonctionnalités en une seule FR, cite tous leurs identifiants RG.",
+  "Quand une décision remplace une règle du corpus, cite l'identifiant de la règle remplacée dans la FR.",
+  "Si tu as besoin de deux points pour décrire une même règle, écris-la en une seule phrase avec l'exception explicite et cite les deux RG.",
+  "Quand une FR s'écarte volontairement d'une règle du corpus, ou reprend une règle de statut Suspect, par décision prise en séance, marque-la [ÉVOLUTION — <raison>] et cite la RG concernée sur sa ligne Source.",
+  "Les bugs du legacy à corriger sont listés dans docs/retro/00-global/LEGACY-BUGS.md ; chaque correction doit être couverte par un test.",
+]
+activation_steps_append = [
+  "Lis le brief _bmad-output/planning-artifacts/briefs/brief-next-banking-webapp-2026-10-05/brief.md et son addendum _bmad-output/planning-artifacts/briefs/brief-next-banking-webapp-2026-10-05/addendum.md : ce sont les entrées obligatoires du PRD, à donner aussi comme documents d'entrée (Input reconciliation à Finalize).",
+  "Lis {project-root}/docs/retro/GAPS.md. Pour chaque ligne marquée [TODO bloquant], présente la question à l'utilisateur avant de commencer Discovery (ou la reprise d'un PRD en brouillon) et annonce-la comme phase-blocker : elle doit finir dans le PRD soit comme FR, soit comme Open Question tranchée. Dès que le dossier du run existe, consigne chacune dans le memlog (memlog.py append).",
+]
+external_sources = [
+  "Pour toute question sur le comportement de l'application existante (écrans, champs, messages, règles, droits, batchs, données), consulte d'abord {project-root}/docs/retro/ (carte : docs/retro/INDEX.md) avant toute recherche web ou supposition, et cite le fichier et la section utilisés.",
+]
+finalize_reviewers = [
+  "file:{project-root}/docs/retro/tools/retro-coverage-review.md",
+  "Relecteur « conformité des écarts au corpus », sur tout le PRD, fonctionnalité par fonctionnalité. Pour chaque FR, lis la ou les RG citées sur sa ligne Source dans {project-root}/docs/retro/features/FEAT-NNN/RG.md. Si la FR diffère de la RG (seuil, condition, effet, message), elle doit être marquée comme écart volontaire, citer la RG exacte concernée et donner sa raison ; sinon finding critical. Vérifie aussi que chaque décision du memlog ({doc_workspace}/.memlog.md) qui mentionne une RG cite la bonne RG (texte de la RG conforme à ce que dit la décision) et a été appliquée au PRD ; sinon finding critical.",
+  "Relecteur « conditions qui se recouvrent », sur tout le PRD : pour chaque fonctionnalité, {project-root}/docs/retro/features/FEAT-NNN/RG.md et la section correspondante du PRD ; commence par les RG dont le texte renvoie déjà à une autre RG. Compare les RG deux à deux. Si deux règles de statut Confirmé ont des conditions qui peuvent être vraies en même temps et des effets opposés (ex. rejeter / exécuter), c'est une contradiction, même si l'une paraît être l'exception de l'autre : une exception n'est acceptée que si la règle générale l'énonce explicitement (« sauf », « unless », renvoi à l'autre RG). Quand deux RG s'appliquent à la même situation, le PRD rend leur lien explicite : une seule FR avec « sauf si … » citant les deux RG, ou deux FR qui se renvoient l'une à l'autre. Chaque contradiction non explicitée, dans le corpus ou entre les FR qui en dérivent, est un finding critical qui cite les deux identifiants.",
+]

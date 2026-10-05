@@ -1,0 +1,9 @@
+# Écrit par retro-forward-bmad — 2026-10-05
+[workflow]
+persistent_facts = [
+  "Projet de rénovation d'une application existante. Le corpus de rétro-ingénierie docs/retro/ (index : docs/retro/MANIFEST.json, commit c05512ecab8af8878d695ccd0f33fc3ece8811a4) décrit son comportement actuel : c'est la référence de ce qui existe, pas une spécification à recopier. L'architecture cible est libre et peut différer de l'actuelle. Le périmètre fonctionnel peut être revu avec le métier (ajouts, retraits, évolutions) : tout écart volontaire au comportement actuel est décidé explicitement et tracé (FEAT-NNN, RG-NNN-NNN concernés).",
+  "Fichiers du corpus utiles à ton travail : docs/retro/00-global/FEATURES.md, docs/retro/screens/navigation-flow.md, docs/retro/features/FEAT-NNN/FLOW.md (FEAT-NNN : la fonctionnalité concernée).",
+  "Les bugs du legacy à corriger sont listés dans docs/retro/00-global/LEGACY-BUGS.md ; chaque correction doit être couverte par un test.",
+  "Recette de non-régression : le golden master dérivé selon docs/retro/golden-master-contract.md (section « Procédure », étape 3) rejoue sur l'application cible ; critère de cutover : failed: 0 et errors: 0.",
+  "Une story livre le socle du rejeu final du golden master : chargement des données de référence, remise à zéro, comptes de test par rôle, bouchons des intégrations tierces, commande de rejeu. Chaque story cite les scénarios SC-NNN-NN du golden master dérivé (docs/retro/golden-master/derived/) qui couvrent sa fonctionnalité, pour savoir où corriger un écart au rejeu final ; aucun scénario dérivé ne reste sans story.",
+]

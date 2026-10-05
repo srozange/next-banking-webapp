@@ -1,0 +1,26 @@
+{
+  "matrix": [
+    {
+      "field": "chatFormUserInput",
+      "kind": "required",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-010-01-userInput-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF userInput is null or blank THEN THE SYSTEM SHALL reject the send action."
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet par le serveur (contrôle présent dans le code)",
+      "observed": null
+    }
+  ],
+  "total_rows": 1,
+  "by_verdict": {
+    "back_seul": 1
+  },
+  "warnings": []
+}

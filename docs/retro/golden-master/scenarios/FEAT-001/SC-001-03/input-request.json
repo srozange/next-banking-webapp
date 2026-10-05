@@ -1,0 +1,13 @@
+{
+  "method": "POST",
+  "path": "/banking-legacy/login.xhtml",
+  "headers": {"Content-Type": "application/x-www-form-urlencoded"},
+  "body": {
+    "loginForm": "loginForm",
+    "loginForm:username": "retro-compte-inexistant",
+    "loginForm:password": "retro-mauvais-mot-de-passe",
+    "loginForm:j_idt11": "Me connecter"
+  },
+  "form_tokens_from": "/banking-legacy/login.xhtml",
+  "follow_redirects": false
+}

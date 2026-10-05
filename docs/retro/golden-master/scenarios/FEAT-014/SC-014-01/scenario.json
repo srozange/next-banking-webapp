@@ -1,0 +1,20 @@
+{
+  "id": "SC-014-01",
+  "feature_id": "FEAT-014",
+  "feature_name": "Callback OAuth Powens",
+  "description": "La page de callback Powens est accessible sans authentification et redirige vers comptes-tiers.xhtml quand les paramètres sont absents",
+  "capture_adapter": "http",
+  "replay_adapter": "http",
+  "expected_outputs": [
+    "http_response"
+  ],
+  "roles": [],
+  "rg_ids": [
+    "RG-014-001"
+  ],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "mode": "status+json_subset"
+  }
+}

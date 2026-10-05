@@ -1,0 +1,9 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/login.xhtml",
+  "role": "",
+  "actions": [
+    {"type": "fill", "selector": "#loginForm\\:username", "value": "retro-compte-inexistant"},
+    {"type": "click", "selector": "input[name='loginForm:j_idt11']"},
+    {"type": "wait_for", "text": "Identifiants incorrects"}
+  ]
+}

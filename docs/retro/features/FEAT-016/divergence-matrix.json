@@ -1,0 +1,44 @@
+{
+  "matrix": [
+    {
+      "field": "page_access",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-016-01-page_access-B1",
+        "VAL-016-01-page_access-B2",
+        "VAL-016-01-page_access-B3"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "WHEN an unauthenticated user requests admin.xhtml THE SYSTEM SHALL redirect to login.xhtml.",
+        "WHEN a user with role CONSEILLER or CLIENT requests admin.xhtml THE SYSTEM SHALL redirect to dashboard.xhtml.",
+        "WHEN a user with role ADMIN requests admin.xhtml THE SYSTEM SHALL grant access to all administration sections."
+      ],
+      "verdict": "back_seul",
+      "consequence": "contrôle d'accès RBAC côté serveur uniquement — aucune règle front équivalente",
+      "observed": null
+    },
+    {
+      "field": "j_idt18:j_idt19",
+      "kind": null,
+      "front_ids": [],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [],
+      "verdict": "aucune_règle",
+      "consequence": "",
+      "observed": null
+    }
+  ],
+  "total_rows": 2,
+  "by_verdict": {
+    "back_seul": 1,
+    "aucune_règle": 1
+  },
+  "warnings": []
+}

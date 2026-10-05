@@ -1,0 +1,51 @@
+{
+  "matrix": [
+    {
+      "field": "loginForm:password",
+      "kind": "required",
+      "front_ids": [
+        "VAL-001-01-password-F1"
+      ],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits loginForm with empty \"Mot de passe\" field THE SYSTEM SHALL display \"Mot de passe requis\""
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse — rejetée par le serveur (observé à l'écran)",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        }
+      }
+    },
+    {
+      "field": "loginForm:username",
+      "kind": "required",
+      "front_ids": [
+        "VAL-001-01-username-F1"
+      ],
+      "back_ids": [],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits loginForm with empty \"Identifiant\" field THE SYSTEM SHALL display \"Identifiant requis\""
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse — rejetée par le serveur (observé à l'écran)",
+      "observed": {
+        "front": {
+          "outcome": "rejected"
+        }
+      }
+    }
+  ],
+  "total_rows": 2,
+  "by_verdict": {
+    "front_seul": 2
+  },
+  "warnings": []
+}

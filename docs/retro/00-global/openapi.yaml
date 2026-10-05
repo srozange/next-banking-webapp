@@ -1,0 +1,758 @@
+openapi: 3.0.0
+info:
+  title: API — inférée depuis HAR
+  version: 1.0.0 — inféré depuis HAR
+paths:
+  /banking-legacy/:
+    get:
+      summary: GET /banking-legacy/
+      tags:
+      - api
+      parameters: []
+      responses:
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+  /banking-legacy/admin.xhtml:
+    get:
+      summary: GET /banking-legacy/admin.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/admin.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                j_idt201:
+                  type: string
+                j_idt201:j_idt204:
+                  type: string
+                j_idt207:
+                  type: string
+                j_idt207:j_idt208:
+                  type: string
+                j_idt25:
+                  type: string
+                j_idt25:j_idt26:
+                  type: string
+                j_idt49:
+                  type: string
+                j_idt49:j_idt215:
+                  type: string
+                j_idt49:j_idt52:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+  /banking-legacy/beneficiaires.xhtml:
+    get:
+      summary: GET /banking-legacy/beneficiaires.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/beneficiaires.xhtml
+      tags:
+      - api
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/xml:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                addForm:
+                  type: string
+                addForm:newBank:
+                  type: string
+                addForm:newBic:
+                  type: string
+                addForm:newHolderName:
+                  type: string
+                addForm:newIban:
+                  type: string
+                addForm:newLabel:
+                  type: string
+                j_idt29:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+                javax.faces.behavior.event:
+                  type: string
+                javax.faces.partial.ajax:
+                  type: string
+                javax.faces.partial.event:
+                  type: string
+                javax.faces.partial.execute:
+                  type: string
+                javax.faces.partial.render:
+                  type: string
+                javax.faces.source:
+                  type: string
+  /banking-legacy/bourse.xhtml:
+    get:
+      summary: GET /banking-legacy/bourse.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/bourse.xhtml
+      tags:
+      - api
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/xml:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                bourseForm:
+                  type: string
+                bourseForm:j_idt181:
+                  type: string
+                bourseForm:j_idt183:
+                  type: string
+                bourseForm:j_idt185:
+                  type: string
+                bourseForm:j_idt192:
+                  type: string
+                bourseForm:periodSelect:
+                  type: string
+                bourseForm:symbolSelect:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+                javax.faces.behavior.event:
+                  type: string
+                javax.faces.partial.ajax:
+                  type: string
+                javax.faces.partial.event:
+                  type: string
+                javax.faces.partial.execute:
+                  type: string
+                javax.faces.partial.render:
+                  type: string
+                javax.faces.source:
+                  type: string
+  /banking-legacy/budget.xhtml:
+    get:
+      summary: GET /banking-legacy/budget.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/budget.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                budgetForm:
+                  type: string
+                budgetForm:editCat:
+                  type: string
+                budgetForm:editPlafond:
+                  type: string
+                budgetForm:j_idt49:
+                  type: string
+                j_idt55:
+                  type: string
+                j_idt55:j_idt64:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+                monthForm:
+                  type: string
+                monthForm:j_idt11:
+                  type: string
+                monthForm:j_idt13:
+                  type: string
+  /banking-legacy/comptes-tiers.xhtml:
+    get:
+      summary: GET /banking-legacy/comptes-tiers.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/comptes-tiers.xhtml
+      tags:
+      - api
+      parameters: []
+      responses:
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                j_idt13:
+                  type: string
+                j_idt13:j_idt14:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+  /banking-legacy/conseiller-workspace.xhtml:
+    get:
+      summary: GET /banking-legacy/conseiller-workspace.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/conseiller-workspace.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                j_idt17:
+                  type: string
+                j_idt17:j_idt18:
+                  type: string
+                j_idt32:
+                  type: string
+                j_idt32:j_idt33:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+  /banking-legacy/conseiller.xhtml:
+    get:
+      summary: GET /banking-legacy/conseiller.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/conseiller.xhtml
+      tags:
+      - api
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/xml:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                chatForm:
+                  type: string
+                chatForm:userInput:
+                  type: string
+                j_idt10:
+                  type: string
+                j_idt19:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+                javax.faces.behavior.event:
+                  type: string
+                javax.faces.partial.ajax:
+                  type: string
+                javax.faces.partial.event:
+                  type: string
+                javax.faces.partial.execute:
+                  type: string
+                javax.faces.partial.render:
+                  type: string
+                javax.faces.source:
+                  type: string
+  /banking-legacy/dashboard.xhtml:
+    get:
+      summary: GET /banking-legacy/dashboard.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+  /banking-legacy/documents.xhtml:
+    get:
+      summary: GET /banking-legacy/documents.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+  /banking-legacy/javax.faces.resource/jsf.js.xhtml:
+    get:
+      summary: GET /banking-legacy/javax.faces.resource/jsf.js.xhtml
+      tags:
+      - api
+      parameters:
+      - name: ln
+        in: query
+        schema:
+          type: string
+      - name: stage
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        '304':
+          description: Not Modified
+  /banking-legacy/login.xhtml:
+    get:
+      summary: GET /banking-legacy/login.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/login.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                javax.faces.ViewState:
+                  type: string
+                loginForm:
+                  type: string
+                loginForm:j_idt11:
+                  type: string
+                loginForm:password:
+                  type: string
+                loginForm:username:
+                  type: string
+  /banking-legacy/powens-callback.xhtml:
+    get:
+      summary: GET /banking-legacy/powens-callback.xhtml
+      tags:
+      - api
+      parameters:
+      - name: connection_id
+        in: query
+        schema:
+          type: string
+      - name: error
+        in: query
+        schema:
+          type: string
+      responses:
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+  /banking-legacy/pret.xhtml:
+    get:
+      summary: GET /banking-legacy/pret.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/pret.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                j_idt36:
+                  type: string
+                j_idt36:j_idt45:
+                  type: string
+                j_idt36:j_idt483:
+                  type: string
+                javax.faces.ViewState:
+                  type: string
+                pretForm:
+                  type: string
+                pretForm:fDuree:
+                  type: string
+                pretForm:fMontant:
+                  type: string
+                pretForm:fMotif:
+                  type: string
+                pretForm:fTaux:
+                  type: string
+                pretForm:fType:
+                  type: string
+                pretForm:j_idt33:
+                  type: string
+                simForm:
+                  type: string
+                simForm:j_idt18:
+                  type: string
+                simForm:simDuree:
+                  type: string
+                simForm:simMontant:
+                  type: string
+                simForm:simTaux:
+                  type: string
+  /banking-legacy/produits.xhtml:
+    get:
+      summary: GET /banking-legacy/produits.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+  /banking-legacy/releve.xhtml:
+    get:
+      summary: GET /banking-legacy/releve.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/releve.xhtml
+      tags:
+      - api
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/xml:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                javax.faces.ViewState:
+                  type: string
+                javax.faces.behavior.event:
+                  type: string
+                javax.faces.partial.ajax:
+                  type: string
+                javax.faces.partial.event:
+                  type: string
+                javax.faces.partial.execute:
+                  type: string
+                javax.faces.partial.render:
+                  type: string
+                javax.faces.source:
+                  type: string
+                releveForm:
+                  type: string
+                releveForm:accountSelect:
+                  type: string
+  /banking-legacy/virement-programme.xhtml:
+    get:
+      summary: GET /banking-legacy/virement-programme.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/virement-programme.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                javax.faces.ViewState:
+                  type: string
+                vpForm:
+                  type: string
+                vpForm:dateExec:
+                  type: string
+                vpForm:freq:
+                  type: string
+                vpForm:j_idt29:
+                  type: string
+                vpForm:montant:
+                  type: string
+                vpForm:motif:
+                  type: string
+                vpForm:srcAcc:
+                  type: string
+                vpForm:targetLabel:
+                  type: string
+                vpForm:targetNum:
+                  type: string
+  /banking-legacy/virement.xhtml:
+    get:
+      summary: GET /banking-legacy/virement.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: POST /banking-legacy/virement.xhtml
+      tags:
+      - page
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Found
+          headers:
+            Location:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                javax.faces.ViewState:
+                  type: string
+                virementForm:
+                  type: string
+                virementForm:amount:
+                  type: string
+                virementForm:j_idt23:
+                  type: string
+                virementForm:motif:
+                  type: string
+                virementForm:source:
+                  type: string
+                virementForm:target:
+                  type: string
+  /docs/download:
+    get:
+      summary: GET /docs/download
+      tags:
+      - page
+      parameters:
+      - name: accountId
+        in: query
+        schema:
+          type: string
+      - name: month
+        in: query
+        schema:
+          type: string
+      - name: type
+        in: query
+        schema:
+          type: string
+      - name: year
+        in: query
+        schema:
+          type: string
+      responses:
+        '404':
+          description: Not Found
+          content:
+            text/html:
+              schema:
+                type: string
+servers:
+- url: http://localhost:8080

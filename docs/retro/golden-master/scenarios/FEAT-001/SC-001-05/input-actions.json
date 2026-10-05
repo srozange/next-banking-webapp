@@ -1,0 +1,8 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/dashboard.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "click", "selector": "a:has-text('Deconnexion')"},
+    {"type": "wait_for", "text": "Identifiant"}
+  ]
+}

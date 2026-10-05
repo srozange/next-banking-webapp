@@ -1,0 +1,21 @@
+{
+  "id": "SC-017-01",
+  "feature_id": "FEAT-017",
+  "feature_name": "Téléchargement documents PDF",
+  "description": "Un accès sans session au endpoint /docs/download est redirigé vers la page de connexion (HTTP 302)",
+  "capture_adapter": "http",
+  "replay_adapter": "http",
+  "expected_outputs": [
+    "http_response"
+  ],
+  "roles": [],
+  "rg_ids": [
+    "RG-017-001",
+    "RG-017-002"
+  ],
+  "tags": [],
+  "writes": false,
+  "compare": {
+    "mode": "status+json_subset"
+  }
+}

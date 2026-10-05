@@ -1,0 +1,14 @@
+{
+  "id": "SC-007-01",
+  "feature_id": "FEAT-007",
+  "feature_name": "Demande et suivi de prêts",
+  "description": "La page de prêts charge avec le simulateur, le formulaire de demande et la liste des emprunts en cours",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-007-001", "RG-007-002"],
+  "tags": ["smoke"],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

@@ -1,0 +1,22 @@
+{
+  "id": "SC-001-02",
+  "feature_id": "FEAT-001",
+  "feature_name": "Connexion",
+  "description": "Tout accès non authentifié à une page protégée redirige vers login.xhtml (HTTP 302)",
+  "capture_adapter": "http",
+  "replay_adapter": "http",
+  "expected_outputs": [
+    "http_response"
+  ],
+  "roles": [],
+  "rg_ids": [
+    "RG-001-001"
+  ],
+  "tags": [
+    "smoke"
+  ],
+  "writes": false,
+  "compare": {
+    "mode": "status+json_subset"
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "test_cases": [
+    {
+      "field": "compteSource",
+      "label": "Compte source",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « virementForm:source: Validation Error: Value is required. »",
+      "source_ids": [
+        "VAL-003-01-compteSource-F1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "compteSource",
+      "label": "Compte source",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "compteSource",
+      "label": "Compte source",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "compteSource",
+      "label": "Compte source",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "compteSource",
+      "label": "Compte source",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "compteDestinataire",
+      "label": "Compte destinataire",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « virementForm:target: Validation Error: Value is required. »",
+      "source_ids": [
+        "VAL-003-01-compteDestinataire-F1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "compteDestinataire",
+      "label": "Compte destinataire",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "compteDestinataire",
+      "label": "Compte destinataire",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "compteDestinataire",
+      "label": "Compte destinataire",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "compteDestinataire",
+      "label": "Compte destinataire",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (€)",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « virementForm:amount: Validation Error: Value is required. »",
+      "source_ids": [
+        "VAL-003-01-montant-F1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "montant",
+      "label": "Montant (€)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (€)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (€)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (€)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « virementForm:motif: Validation Error: Value is required. »",
+      "source_ids": [
+        "VAL-003-01-motif-F1"
+      ],
+      "legacy_observed": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "field": "motif",
+      "label": "Motif",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif",
+      "scenario": "trop_long_101_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue)",
+      "source_ids": [
+        "VAL-003-01-motif-F2"
+      ],
+      "legacy_observed": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "field": "motif",
+      "label": "Motif",
+      "scenario": "limite_exacte_100_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté par le front",
+      "source_ids": [
+        "VAL-003-01-motif-F2"
+      ]
+    },
+    {
+      "field": "motif",
+      "label": "Motif",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 22,
+  "fields_count": 4,
+  "by_status": {
+    "verified": 6,
+    "probe": 16
+  },
+  "uncovered_rule_ids": [
+    "VAL-003-01-compteDestinataire-B1",
+    "VAL-003-01-compteDestinataire-B2",
+    "VAL-003-01-compteDestinataire-B3",
+    "VAL-003-01-compteSource-B1",
+    "VAL-003-01-compteSource-B2",
+    "VAL-003-01-montant-B1",
+    "VAL-003-01-montant-B2",
+    "VAL-003-01-montant-B3",
+    "VAL-003-01-montant-F2"
+  ],
+  "warnings": [
+    "motif/vide: observation legacy 'accepted' contraire à l'attendu 'rejected' (VAL-003-01-motif-F1) — à trancher dans VALIDATION.md",
+    "motif/trop_long_101_chars: observation legacy 'accepted' contraire à l'attendu 'rejected' (VAL-003-01-motif-F2) — à trancher dans VALIDATION.md"
+  ]
+}

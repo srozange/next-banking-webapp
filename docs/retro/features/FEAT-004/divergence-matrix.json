@@ -1,0 +1,273 @@
+{
+  "matrix": [
+    {
+      "field": "dateExec",
+      "kind": "format",
+      "front_ids": [
+        "VAL-004-05-dateExec-F2"
+      ],
+      "back_ids": [],
+      "front_value": "yyyy-MM-dd",
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits a dateExec value not matching the pattern yyyy-MM-dd THE SYSTEM SHALL reject and display \"Format de date invalide (attendu : yyyy-MM-dd)\""
+      ],
+      "back_ears": [],
+      "verdict": "front_seul",
+      "consequence": "back accepte ce que front refuse (appel direct non testé)",
+      "observed": null
+    },
+    {
+      "field": "dateExec",
+      "kind": "required",
+      "front_ids": [
+        "VAL-004-05-dateExec-F1"
+      ],
+      "back_ids": [
+        "VAL-004-05-dateExec-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits the form with empty dateExec field THE SYSTEM SHALL reject and display \"Veuillez saisir la date de premiere execution\""
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL require a non-null first execution date"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "freq",
+      "kind": "enum",
+      "front_ids": [
+        "VAL-004-06-freq-F1"
+      ],
+      "back_ids": [
+        "VAL-004-06-freq-B1"
+      ],
+      "front_value": [
+        "HEBDOMADAIRE",
+        "MENSUEL",
+        "BIMESTRIEL",
+        "TRIMESTRIEL",
+        "SEMESTRIEL",
+        "ANNUEL"
+      ],
+      "back_value": [
+        "HEBDOMADAIRE",
+        "MENSUEL",
+        "BIMESTRIEL",
+        "TRIMESTRIEL",
+        "SEMESTRIEL",
+        "ANNUEL"
+      ],
+      "front_ears": [
+        "WHEN user submits the form THE SYSTEM SHALL accept only frequency values from the fixed list: HEBDOMADAIRE, MENSUEL, BIMESTRIEL, TRIMESTRIEL, SEMESTRIEL, ANNUEL"
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL store only valid RecurringFrequency enum values: HEBDOMADAIRE, MENSUEL, BIMESTRIEL, TRIMESTRIEL, SEMESTRIEL, ANNUEL"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "montant",
+      "kind": "min",
+      "front_ids": [
+        "VAL-004-04-montant-F2"
+      ],
+      "back_ids": [
+        "VAL-004-04-montant-B2"
+      ],
+      "front_value": "0.01",
+      "back_value": "0.01",
+      "front_ears": [
+        "WHEN user submits the form with montant less than or equal to zero THE SYSTEM SHALL reject and display \"Montant invalide\""
+      ],
+      "back_ears": [
+        "IF montant is less than or equal to zero THEN THE SYSTEM SHALL reject the recurring transfer creation"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "montant",
+      "kind": "required",
+      "front_ids": [
+        "VAL-004-04-montant-F1"
+      ],
+      "back_ids": [
+        "VAL-004-04-montant-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits the form with null montant THE SYSTEM SHALL reject and display \"Montant invalide\""
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL require a non-null montant"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "motif",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-004-07-motif-B1"
+      ],
+      "front_value": null,
+      "back_value": 255,
+      "front_ears": [],
+      "back_ears": [
+        "IF motif exceeds 255 characters THEN THE SYSTEM SHALL reject the submission"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 200 observé)",
+      "observed": {
+        "back": {
+          "outcome": "rejected",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "field": "srcAcc",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-004-01-srcAcc-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF the source account does not belong to the authenticated customer THEN THE SYSTEM SHALL reject the recurring transfer creation"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    },
+    {
+      "field": "srcAcc",
+      "kind": "required",
+      "front_ids": [
+        "VAL-004-01-srcAcc-F1"
+      ],
+      "back_ids": [
+        "VAL-004-01-srcAcc-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits the form with no source account selected THE SYSTEM SHALL reject and display \"Veuillez selectionner un compte source\""
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL require a non-null source account identifier"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "targetLabel",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-004-03-targetLabel-B2"
+      ],
+      "front_value": null,
+      "back_value": 100,
+      "front_ears": [],
+      "back_ears": [
+        "IF targetLabel exceeds 100 characters THEN THE SYSTEM SHALL reject the submission"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 200 observé)",
+      "observed": {
+        "back": {
+          "outcome": "rejected",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "field": "targetLabel",
+      "kind": "required",
+      "front_ids": [
+        "VAL-004-03-targetLabel-F1"
+      ],
+      "back_ids": [
+        "VAL-004-03-targetLabel-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits the form with empty targetLabel field THE SYSTEM SHALL reject and display \"Veuillez saisir le libelle du beneficiaire\""
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL require a non-null beneficiary label"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    },
+    {
+      "field": "targetNum",
+      "kind": "max_length",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-004-02-targetNum-B2"
+      ],
+      "front_value": null,
+      "back_value": 34,
+      "front_ears": [],
+      "back_ears": [
+        "IF targetNum exceeds 34 characters THEN THE SYSTEM SHALL reject the submission"
+      ],
+      "verdict": "back_seul",
+      "consequence": "front accepte ce que back rejette — rejet à la soumission (HTTP 200 observé)",
+      "observed": {
+        "back": {
+          "outcome": "rejected",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "field": "targetNum",
+      "kind": "required",
+      "front_ids": [
+        "VAL-004-02-targetNum-F1"
+      ],
+      "back_ids": [
+        "VAL-004-02-targetNum-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [
+        "WHEN user submits the form with empty targetNum field THE SYSTEM SHALL reject and display \"Veuillez saisir le numero de compte destinataire\""
+      ],
+      "back_ears": [
+        "THE SYSTEM SHALL require a non-null target account number"
+      ],
+      "verdict": "identique",
+      "consequence": "",
+      "observed": null
+    }
+  ],
+  "total_rows": 12,
+  "by_verdict": {
+    "front_seul": 1,
+    "identique": 7,
+    "back_seul": 3,
+    "a_interpreter": 1
+  },
+  "warnings": []
+}

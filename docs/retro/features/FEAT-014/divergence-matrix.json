@@ -1,0 +1,79 @@
+{
+  "matrix": [
+    {
+      "field": "code",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-014-03-code-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF no error parameter and no connection_id parameter are present and the request contains a non-empty `code` parameter THEN THE SYSTEM SHALL invoke handleCallback(code) as an alternative OAuth flow and redirect to /comptes-tiers"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    },
+    {
+      "field": "connection_id",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-014-02-connection_id-B1",
+        "VAL-014-02-connection_id-B2"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF no error parameter is present and the request contains a non-empty `connection_id` parameter THEN THE SYSTEM SHALL invoke handleCallback(connection_id) and redirect to /comptes-tiers",
+        "IF handleCallback is invoked and the session access token is null THEN THE SYSTEM SHALL abort account loading and set error message 'Session expiree. Veuillez recommencer la connexion.'"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    },
+    {
+      "field": "error",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-014-01-error-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF the request contains a non-empty `error` parameter THEN THE SYSTEM SHALL call disconnect() to reset all Powens session state and redirect to /comptes-tiers"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    },
+    {
+      "field": "params",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-014-04-params-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "IF none of the error, connection_id, or code parameters are present and non-empty THEN THE SYSTEM SHALL set an error message 'Callback Powens incomplet. Parametres recus: [...]' and redirect to /comptes-tiers"
+      ],
+      "verdict": "a_interpreter",
+      "consequence": "contrainte non réductible mécaniquement — à trancher par l'agent dans VALIDATION.md",
+      "observed": null
+    }
+  ],
+  "total_rows": 4,
+  "by_verdict": {
+    "a_interpreter": 4
+  },
+  "warnings": []
+}

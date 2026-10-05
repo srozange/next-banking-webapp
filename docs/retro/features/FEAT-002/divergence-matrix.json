@@ -1,0 +1,60 @@
+{
+  "matrix": [
+    {
+      "field": "solde_total",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-002-01-solde_total-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL return 0 (EUR0.00) as total balance when the authenticated user has no bank accounts."
+      ],
+      "verdict": "back_seul",
+      "consequence": "règle d'affichage côté serveur sans équivalent front — affichage conditionnel uniquement",
+      "observed": null
+    },
+    {
+      "field": "dernieres_operations",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-002-01-dernieres_operations-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL display at most 5 transactions from the first account in the user's account list."
+      ],
+      "verdict": "back_seul",
+      "consequence": "règle de pagination côté serveur — sélection du premier compte uniquement",
+      "observed": null
+    },
+    {
+      "field": "notifications_jms",
+      "kind": "custom",
+      "front_ids": [],
+      "back_ids": [
+        "VAL-002-01-notifications_jms-B1"
+      ],
+      "front_value": null,
+      "back_value": null,
+      "front_ears": [],
+      "back_ears": [
+        "THE SYSTEM SHALL return an empty notification list when no authenticated customer session exists."
+      ],
+      "verdict": "back_seul",
+      "consequence": "comportement défensif côté serveur sans règle front équivalente",
+      "observed": null
+    }
+  ],
+  "total_rows": 3,
+  "by_verdict": {
+    "back_seul": 3
+  },
+  "warnings": []
+}

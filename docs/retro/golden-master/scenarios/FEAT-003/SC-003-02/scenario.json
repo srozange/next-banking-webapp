@@ -1,0 +1,14 @@
+{
+  "id": "SC-003-02",
+  "feature_id": "FEAT-003",
+  "feature_name": "Effectuer un virement",
+  "description": "Sélectionner le même compte en source et destination affiche 'Le compte source et destination doivent être différents'",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-003-005"],
+  "tags": [],
+  "writes": false,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

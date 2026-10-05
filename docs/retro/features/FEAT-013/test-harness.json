@@ -1,0 +1,424 @@
+{
+  "test_cases": [
+    {
+      "field": "libelle",
+      "label": "Libelle *",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Le libellé est obligatoire. »",
+      "source_ids": [
+        "VAL-013-01-libelle-B1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "libelle",
+      "label": "Libelle *",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "libelle",
+      "label": "Libelle *",
+      "scenario": "trop_long_101_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-013-01-libelle-B2"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "libelle",
+      "label": "Libelle *",
+      "scenario": "limite_exacte_100_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-013-01-libelle-B2"
+      ]
+    },
+    {
+      "field": "libelle",
+      "label": "Libelle *",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "libelle",
+      "label": "Libelle *",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "libelle",
+      "label": "Libelle *",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "nomTitulaire",
+      "label": "Nom du titulaire *",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Le nom du titulaire est obligatoire. »",
+      "source_ids": [
+        "VAL-013-02-nomTitulaire-B1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "nomTitulaire",
+      "label": "Nom du titulaire *",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "nomTitulaire",
+      "label": "Nom du titulaire *",
+      "scenario": "trop_long_101_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-013-02-nomTitulaire-B2"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "nomTitulaire",
+      "label": "Nom du titulaire *",
+      "scenario": "limite_exacte_100_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-013-02-nomTitulaire-B2"
+      ]
+    },
+    {
+      "field": "nomTitulaire",
+      "label": "Nom du titulaire *",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "nomTitulaire",
+      "label": "Nom du titulaire *",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "nomTitulaire",
+      "label": "Nom du titulaire *",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "iban",
+      "label": "IBAN *",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « L'IBAN est obligatoire. »",
+      "source_ids": [
+        "VAL-013-03-iban-B1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "iban",
+      "label": "IBAN *",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "iban",
+      "label": "IBAN *",
+      "scenario": "trop_long_41_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue)",
+      "source_ids": [
+        "VAL-013-03-iban-F3"
+      ]
+    },
+    {
+      "field": "iban",
+      "label": "IBAN *",
+      "scenario": "limite_exacte_40_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — d'autres règles du champ peuvent rejeter cette valeur",
+      "source_ids": []
+    },
+    {
+      "field": "iban",
+      "label": "IBAN *",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "iban",
+      "label": "IBAN *",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "iban",
+      "label": "IBAN *",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — la valeur nominale ne respecte pas le motif '^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$' (VAL-013-04-bic-F1) : fournir une valeur conforme",
+      "source_ids": []
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "trop_long_12_chars",
+      "input": "aaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue)",
+      "source_ids": [
+        "VAL-013-04-bic-F2"
+      ]
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "limite_exacte_11_chars",
+      "input": "aaaaaaaaaaa",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — d'autres règles du champ peuvent rejeter cette valeur",
+      "source_ids": []
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "format_invalide",
+      "input": "abc",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « BIC invalide. Format attendu : 8 ou 11 caractères alphanumériques. »",
+      "source_ids": [
+        "VAL-013-04-bic-B1"
+      ]
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "bic",
+      "label": "BIC (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "banque",
+      "label": "Banque (optionnel)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "banque",
+      "label": "Banque (optionnel)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "banque",
+      "label": "Banque (optionnel)",
+      "scenario": "trop_long_101_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-013-05-banque-B1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected"
+      }
+    },
+    {
+      "field": "banque",
+      "label": "Banque (optionnel)",
+      "scenario": "limite_exacte_100_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-013-05-banque-B1"
+      ]
+    },
+    {
+      "field": "banque",
+      "label": "Banque (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "banque",
+      "label": "Banque (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "banque",
+      "label": "Banque (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 36,
+  "fields_count": 5,
+  "by_status": {
+    "verified": 12,
+    "probe": 24
+  },
+  "uncovered_rule_ids": [
+    "VAL-013-01-libelle-F1",
+    "VAL-013-01-libelle-F2",
+    "VAL-013-02-nomTitulaire-F1",
+    "VAL-013-02-nomTitulaire-F2",
+    "VAL-013-03-iban-B2",
+    "VAL-013-03-iban-F1",
+    "VAL-013-03-iban-F2",
+    "VAL-013-04-bic-F1",
+    "VAL-013-05-banque-F1"
+  ],
+  "warnings": []
+}

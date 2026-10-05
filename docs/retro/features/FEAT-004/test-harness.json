@@ -1,0 +1,479 @@
+{
+  "test_cases": [
+    {
+      "field": "srcAcc",
+      "label": "Compte débiteur",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « Veuillez selectionner un compte source »",
+      "source_ids": [
+        "VAL-004-01-srcAcc-F1"
+      ]
+    },
+    {
+      "field": "srcAcc",
+      "label": "Compte débiteur",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "srcAcc",
+      "label": "Compte débiteur",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "srcAcc",
+      "label": "Compte débiteur",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "srcAcc",
+      "label": "Compte débiteur",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-004-04-montant-B1"
+      ]
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "montant",
+      "label": "Montant (EUR)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "freq",
+      "label": "Fréquence",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — attribut HTML required présent, aucune règle documentée",
+      "source_ids": []
+    },
+    {
+      "field": "freq",
+      "label": "Fréquence",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "freq",
+      "label": "Fréquence",
+      "scenario": "hors_liste",
+      "input": "__valeur_hors_liste__",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur",
+      "source_ids": [
+        "VAL-004-06-freq-B1"
+      ]
+    },
+    {
+      "field": "freq",
+      "label": "Fréquence",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "freq",
+      "label": "Fréquence",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "freq",
+      "label": "Fréquence",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetNum",
+      "label": "IBAN / N compte bénéficiaire",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « Veuillez saisir le numero de compte destinataire »",
+      "source_ids": [
+        "VAL-004-02-targetNum-F1"
+      ]
+    },
+    {
+      "field": "targetNum",
+      "label": "IBAN / N compte bénéficiaire",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetNum",
+      "label": "IBAN / N compte bénéficiaire",
+      "scenario": "trop_long_35_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Erreur : javax.persistence.PersistenceException: org.hibernate.exception.DataException: could not execute statement »",
+      "source_ids": [
+        "VAL-004-02-targetNum-B2"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected",
+        "http_status": 200
+      }
+    },
+    {
+      "field": "targetNum",
+      "label": "IBAN / N compte bénéficiaire",
+      "scenario": "limite_exacte_34_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-004-02-targetNum-B2"
+      ]
+    },
+    {
+      "field": "targetNum",
+      "label": "IBAN / N compte bénéficiaire",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetNum",
+      "label": "IBAN / N compte bénéficiaire",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetNum",
+      "label": "IBAN / N compte bénéficiaire",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetLabel",
+      "label": "Libellé bénéficiaire",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « Veuillez saisir le libelle du beneficiaire »",
+      "source_ids": [
+        "VAL-004-03-targetLabel-F1"
+      ]
+    },
+    {
+      "field": "targetLabel",
+      "label": "Libellé bénéficiaire",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetLabel",
+      "label": "Libellé bénéficiaire",
+      "scenario": "trop_long_101_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Erreur : javax.persistence.PersistenceException: org.hibernate.exception.DataException: could not execute statement »",
+      "source_ids": [
+        "VAL-004-03-targetLabel-B2"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected",
+        "http_status": 200
+      }
+    },
+    {
+      "field": "targetLabel",
+      "label": "Libellé bénéficiaire",
+      "scenario": "limite_exacte_100_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-004-03-targetLabel-B2"
+      ]
+    },
+    {
+      "field": "targetLabel",
+      "label": "Libellé bénéficiaire",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetLabel",
+      "label": "Libellé bénéficiaire",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "targetLabel",
+      "label": "Libellé bénéficiaire",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "dateExec",
+      "label": "Date de première exécution",
+      "scenario": "vide",
+      "input": "",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le front (aucune règle back connue) — message « Veuillez saisir la date de premiere execution »",
+      "source_ids": [
+        "VAL-004-05-dateExec-F1"
+      ]
+    },
+    {
+      "field": "dateExec",
+      "label": "Date de première exécution",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "dateExec",
+      "label": "Date de première exécution",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "dateExec",
+      "label": "Date de première exécution",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "dateExec",
+      "label": "Date de première exécution",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif (optionnel)",
+      "scenario": "vide",
+      "input": "",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "à observer — aucune règle « obligatoire » documentée",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif (optionnel)",
+      "scenario": "valeur_valide",
+      "input": "valeur_test",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté attendu — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif (optionnel)",
+      "scenario": "trop_long_256_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "rejected",
+      "expected_behavior": "rejeté par le serveur — message « Erreur : javax.persistence.PersistenceException: org.hibernate.exception.DataException: could not execute statement »",
+      "source_ids": [
+        "VAL-004-07-motif-B1"
+      ],
+      "legacy_observed": {
+        "outcome": "rejected",
+        "http_status": 200
+      }
+    },
+    {
+      "field": "motif",
+      "label": "Motif (optionnel)",
+      "scenario": "limite_exacte_255_chars",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "verified",
+      "expected_outcome": "accepted",
+      "expected_behavior": "accepté",
+      "source_ids": [
+        "VAL-004-07-motif-B1"
+      ]
+    },
+    {
+      "field": "motif",
+      "label": "Motif (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "<script>alert(1)</script>",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "'--",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    },
+    {
+      "field": "motif",
+      "label": "Motif (optionnel)",
+      "scenario": "caractères_spéciaux",
+      "input": "\u0000",
+      "status": "probe",
+      "expected_outcome": null,
+      "expected_behavior": "accepté ou sanitisé — à observer",
+      "source_ids": []
+    }
+  ],
+  "total": 42,
+  "fields_count": 7,
+  "by_status": {
+    "verified": 12,
+    "probe": 30
+  },
+  "uncovered_rule_ids": [
+    "VAL-004-01-srcAcc-B1",
+    "VAL-004-01-srcAcc-B2",
+    "VAL-004-02-targetNum-B1",
+    "VAL-004-03-targetLabel-B1",
+    "VAL-004-04-montant-B2",
+    "VAL-004-04-montant-F1",
+    "VAL-004-04-montant-F2",
+    "VAL-004-05-dateExec-B1",
+    "VAL-004-05-dateExec-F2",
+    "VAL-004-06-freq-F1"
+  ],
+  "warnings": []
+}

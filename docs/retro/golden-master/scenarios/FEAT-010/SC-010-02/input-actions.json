@@ -1,0 +1,9 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/conseiller.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "fill", "selector": "#chatForm\\:userInput", "value": "Quel est mon solde courant ?"},
+    {"type": "click", "selector": "input[id='chatForm:sendBtn']"},
+    {"type": "wait_for", "selector": ".msg.user"}
+  ]
+}

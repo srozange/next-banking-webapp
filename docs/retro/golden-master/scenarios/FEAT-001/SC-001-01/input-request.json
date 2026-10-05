@@ -1,0 +1,5 @@
+{
+  "method": "GET",
+  "path": "/banking-legacy/login.xhtml",
+  "headers": {}
+}

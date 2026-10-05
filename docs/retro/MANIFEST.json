@@ -1,0 +1,3993 @@
+{
+  "schema": 1,
+  "source_commit": "c05512ecab8af8878d695ccd0f33fc3ece8811a4",
+  "source_branch": "main",
+  "exported_at": "2026-10-05T05:17:16Z",
+  "files": [
+    {
+      "path": "00-global/API.md",
+      "sha256": "bf4cb531c95229e78e89c910d49a7271a057d97001cf8c16df10c0a8450a11c4",
+      "bytes": 6501,
+      "transformed": false
+    },
+    {
+      "path": "00-global/ARCHITECTURE.md",
+      "sha256": "ca51325fb2c1ebaa4ecd16cd347c9a9f5d7e2eb5d0d754a2f00ffc8360143303",
+      "bytes": 2867,
+      "transformed": true
+    },
+    {
+      "path": "00-global/BATCH.md",
+      "sha256": "8cee4c01036f4575cb6eb8589dffb207f1c6fe6089902eaf7d02748b72e51dfa",
+      "bytes": 6175,
+      "transformed": true
+    },
+    {
+      "path": "00-global/CONCERNS.md",
+      "sha256": "4727bd36aa9ac78c4c2a6abf2efcbb0635d2da4c99c06a311ad40d5b134357ac",
+      "bytes": 2793,
+      "transformed": true
+    },
+    {
+      "path": "00-global/CONFIG.md",
+      "sha256": "9f7c568bd0b18822f81d4bdeb90d9dce3406221cd11c288876c17bac5e046c51",
+      "bytes": 8639,
+      "transformed": true
+    },
+    {
+      "path": "00-global/CONVENTIONS.md",
+      "sha256": "895a614d88daa0dda2fcccad7230c37decf0558774e07b2138ecfac9c2e8fbbd",
+      "bytes": 2410,
+      "transformed": true
+    },
+    {
+      "path": "00-global/DATA-DICTIONARY.md",
+      "sha256": "b2437bc5ef5a2def93d8dbc1f7de034c4496442fdbe0b57bebecf7af0b7ce16d",
+      "bytes": 9264,
+      "transformed": false
+    },
+    {
+      "path": "00-global/DOCUMENTS.md",
+      "sha256": "d57cc611d8d0a6d375cf21bd8d44342cf421e05490d9374f6dce51b76409f867",
+      "bytes": 11631,
+      "transformed": true
+    },
+    {
+      "path": "00-global/ENUMS.md",
+      "sha256": "ad4ab5f6bdf379f9e5591ce0ce3518fb62382a67036d5c64e72b971de3c2f288",
+      "bytes": 3512,
+      "transformed": true
+    },
+    {
+      "path": "00-global/FEATURES.md",
+      "sha256": "ccf6e4569b2c7004bf22ab2a3878ec9237823a51cb2e869404866c8952682a29",
+      "bytes": 17843,
+      "transformed": true
+    },
+    {
+      "path": "00-global/INTEGRATIONS-OVERVIEW.md",
+      "sha256": "d6bf3b1332712ec595e53c18e1c44a4b27b201b056dca099f62353bd69566aa4",
+      "bytes": 2695,
+      "transformed": true
+    },
+    {
+      "path": "00-global/INTEGRATIONS.md",
+      "sha256": "7e90fc4e336bf6ef940fa018fa02fb1a0bc0cf5c0b4b6642c786036bb183ae3e",
+      "bytes": 4882,
+      "transformed": true
+    },
+    {
+      "path": "00-global/LEGACY-BUGS.md",
+      "sha256": "db257ef5e29773e7e300ffbff8bc83dcfae2911b3653119ce5b33e9c2b808c24",
+      "bytes": 69842,
+      "transformed": false
+    },
+    {
+      "path": "00-global/MESSAGES.md",
+      "sha256": "043650548313605cb98f0bd07e18a7b7cef420601b7cbef3244c87afad2cf048",
+      "bytes": 56116,
+      "transformed": true
+    },
+    {
+      "path": "00-global/NFR.md",
+      "sha256": "a7e8c604647fca89827591ac543f914de6a1f72e6acb88ea1a90afb1e3fa4910",
+      "bytes": 5072,
+      "transformed": false
+    },
+    {
+      "path": "00-global/PERMISSIONS.md",
+      "sha256": "95f4ed8de0bfe82e6019be4f91b92a65bd5fdcb8637880b2f4b62c555901ce5a",
+      "bytes": 7852,
+      "transformed": true
+    },
+    {
+      "path": "00-global/STACK.md",
+      "sha256": "fc044b061bb8ca48a09b9836e0d917cf54f03eb7de2b4e4a12204f07a467c8ca",
+      "bytes": 1673,
+      "transformed": true
+    },
+    {
+      "path": "00-global/TESTING.md",
+      "sha256": "cdcda679d756f8de476bcf735434fa1af4de40210a60003d21c378de5571f562",
+      "bytes": 1399,
+      "transformed": true
+    },
+    {
+      "path": "00-global/UI-KIT.md",
+      "sha256": "c38fad36c28e23fdcf9a240e8783073370f7bca5fe8158024a68e2c89c4a6755",
+      "bytes": 19224,
+      "transformed": false
+    },
+    {
+      "path": "00-global/dead-features.json",
+      "sha256": "2425e36e6736bd30e04ab2f10a972602208ce364b9cea4a1bf2d3d6f49e89ef2",
+      "bytes": 1238,
+      "transformed": false
+    },
+    {
+      "path": "00-global/documents/DOC-001.pdf",
+      "sha256": "104b9c59261abb760d97affe2005034134bd189dfebe2633f0990618df5b6862",
+      "bytes": 10067,
+      "transformed": false
+    },
+    {
+      "path": "00-global/documents/DOC-002.pdf",
+      "sha256": "54aff84dcd2844522608b64df304be9e749a7aa012c7d103aaae681b53634f96",
+      "bytes": 9789,
+      "transformed": false
+    },
+    {
+      "path": "00-global/documents/DOC-004.pdf",
+      "sha256": "89d7b40197c6523a4fad8ca8dd597e93117e3fb54154e2047cbdbfb7eb97e59c",
+      "bytes": 9998,
+      "transformed": false
+    },
+    {
+      "path": "00-global/documents/DOC-005.pdf",
+      "sha256": "d073d24b35b518b330830799fef684c7c5b5afae1c07f913c00f3f8e417b60a7",
+      "bytes": 9981,
+      "transformed": false
+    },
+    {
+      "path": "00-global/legacy-bugs.json",
+      "sha256": "7283b83b9f30038a56bc11a1cb4bd5f4c6c25bef708353143331eb2372b19760",
+      "bytes": 118760,
+      "transformed": false
+    },
+    {
+      "path": "00-global/openapi.yaml",
+      "sha256": "959f513b044bc2f3d33a3fdbf61495c7d0a140c8ea73daa7fe2949d0fc151269",
+      "bytes": 19430,
+      "transformed": false
+    },
+    {
+      "path": "GAPS.md",
+      "sha256": "8cbbf0418a0185b0e799b4b5e0fbf83911f2281977833b93ea56755001884ee8",
+      "bytes": 6261,
+      "transformed": false
+    },
+    {
+      "path": "INDEX.md",
+      "sha256": "631ba4b09ee21be08020810e324e1ae33549ab813255699264fa613d59262a63",
+      "bytes": 3934,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-001/FIELDS.md",
+      "sha256": "9593c99b199e4ae0713f3ce5daa60d7398427b73e4bb3db2f7294a57a89c23af",
+      "bytes": 1707,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-001/FLOW.md",
+      "sha256": "b28bd330bc09fbd9bd570aa3fc312f07ef6ddb7b6fafe680c685932318b12762",
+      "bytes": 1356,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-001/MESSAGES.md",
+      "sha256": "caad6eb59762af8adb29e1ec082e011a112fce96c041d7bbb7ef784dc74eaef8",
+      "bytes": 2533,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-001/RG.md",
+      "sha256": "5017a855298d87a6fea439b45d55e17551f74755567b8ff39cde9075bac79394",
+      "bytes": 3897,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-001/VALIDATION.md",
+      "sha256": "56947c7047b19838e4719cca36bdc356c4c3f8fcdb5b2f4cf6c1a880e10d75f7",
+      "bytes": 4842,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-001/divergence-matrix.json",
+      "sha256": "0afa3fdb5d1a110517b13b76e15ba28558b2838d6c4fc9764d7af2747b9307f0",
+      "bytes": 1332,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-001/scenarios.feature",
+      "sha256": "a6771378a605da802697e0b3eb6d44bd7fea378f85819111d45be9c59ec048e2",
+      "bytes": 5716,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-001/screens/SCR-001-01_vide.png",
+      "sha256": "44ae262b32f02410d466138c098c31ae13c708651ddfcc7e9019745a8a3c0ec2",
+      "bytes": 20426,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-001/screens/SCR-001-02_erreur_validation.png",
+      "sha256": "ba720197f3e6dd6988f7aa1b21818b68adba6a95613f76a62e17f2853f141b98",
+      "bytes": 24873,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-001/screens/SCR-001-03_confirmation_redirect_dashboard.png",
+      "sha256": "1bddc5a218860b48ebcc97a2a3776dec2ee7f2a95a4ee79674b13d237f9fc7d9",
+      "bytes": 100343,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-001/screens/SCR-001-04_erreur_identifiants.png",
+      "sha256": "9cf0e450f6409814e0d4bf24712ad1cb0494272b425868fbcd9222f45e7477df",
+      "bytes": 24669,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-001/test-harness.json",
+      "sha256": "4341972e7c1f131e67fc673f71df2d7bdd283fc6b552d0cc7b5a01077509c591",
+      "bytes": 3748,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-002/FIELDS.md",
+      "sha256": "22693b04643aeac3392cae918a70f393b089d92307d61133131b760b4a875615",
+      "bytes": 3079,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-002/FLOW.md",
+      "sha256": "9a22c442be6d77832be00d354bf76e7d60a26977c8b3d0222274508fbda8c90a",
+      "bytes": 1502,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-002/MESSAGES.md",
+      "sha256": "69ddfd82889607d3c3ba745215c8de854fecd6f49d306d395914cc32a73db5cb",
+      "bytes": 6619,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-002/RG.md",
+      "sha256": "a30444bcabf4b98b87d3c919612c7386a2d5808968408d2c3719ecf35327ea18",
+      "bytes": 5943,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-002/VALIDATION.md",
+      "sha256": "f14f28ef3fc2529e1559e7b0aac975e9c5a6bb83ea268a138f0862642022995f",
+      "bytes": 3493,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-002/divergence-matrix.json",
+      "sha256": "d400c57743780143d90adfeb5bc22fb04deaceba99821e09d03b5cf6a1a7341d",
+      "bytes": 1721,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-002/scenarios.feature",
+      "sha256": "12305589b81d2604812cded1c844e17b40ce016ae7575e869681e71ab31b3eb0",
+      "bytes": 6661,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-002/screens/SCR-002-01_charge.png",
+      "sha256": "1dbc30789a4e6c0c4d63b37a9f5333979279117d680e6a0b58bf79ae76c45afe",
+      "bytes": 142499,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-002/screens/SCR-002-02_charge_admin.png",
+      "sha256": "1bddc5a218860b48ebcc97a2a3776dec2ee7f2a95a4ee79674b13d237f9fc7d9",
+      "bytes": 100343,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-002/screens/SCR-002-03_charge_conseiller.png",
+      "sha256": "8faaccb9443b5f91dbd1b78d2e9dddbe8e46e77ce44cd73471e5087fa2956b17",
+      "bytes": 99644,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-002/test-harness.json",
+      "sha256": "7dbca5f6835393e261f89974b702d87288664c30a8f21ddbef9f289debadf4e0",
+      "bytes": 160,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-003/FIELDS.md",
+      "sha256": "db100ce3ee16e709cf188685028655db24207574fb8c133668bc4d6a0b3af7a0",
+      "bytes": 3135,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/FLOW.md",
+      "sha256": "13f511b5a7f1c3fb967fccb877000fdf3b6e9ca6037a78ed497ab73eda6c416a",
+      "bytes": 1777,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/MESSAGES.md",
+      "sha256": "6094d2f7940931ee4ddcae39bc26812fa58a6525f6526df2f4589dc3b92f1bc6",
+      "bytes": 7110,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-003/RG.md",
+      "sha256": "8db09093387dfe2642ab06953ecd33d052479df6af40f7945c4c5bb71b682c2d",
+      "bytes": 7161,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-003/STATES.md",
+      "sha256": "59dfbf2011d5f8a496bb617a74b12c65449c6fadd7a66934f8f318dc6426a670",
+      "bytes": 6008,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-003/VALIDATION.md",
+      "sha256": "ba93ef66c9683ed82b4c92e906f8aaab29e5480175bee0cee80d41d87097bff6",
+      "bytes": 12261,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-003/divergence-matrix.json",
+      "sha256": "c2ed0a697fed3b79bb4a18d8379b232088b21bd1944ffc9fe02538b7b74a9641",
+      "bytes": 6675,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/scenarios.feature",
+      "sha256": "aef7bee323f53b6dab673ea54941d407b76407aea0663598cb040520ed8ccc3b",
+      "bytes": 11330,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/screens/SCR-003-01_chargé.png",
+      "sha256": "4f543382bd047144c128885a768153d265245230e02f8fcdc0254096238d6b2f",
+      "bytes": 61538,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/screens/SCR-003-02_erreur-comptes-identiques.png",
+      "sha256": "54dad13eaf7d921ecae6ca6877a43b0c1d9feef1ceed25696432186ade32302a",
+      "bytes": 72143,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/screens/SCR-003-03_erreur-solde-insuffisant.png",
+      "sha256": "e10ba840c9f690ccf94009dddba4b7e015f00167ab84bad77fb8bca83f238b92",
+      "bytes": 73554,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/screens/SCR-003-04_confirmation-dashboard.png",
+      "sha256": "08813a668439f0599f83224496247565e78772e06dd13b4422317abd8ddde548",
+      "bytes": 151124,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/screens/SCR-003-05_droits-reduits-conseiller.png",
+      "sha256": "d9895409b417d8ab65119badc0a43e0d63ad91d676df70c6ca91ff019d6f5db1",
+      "bytes": 63698,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/screens/SCR-003-06_droits-reduits-admin.png",
+      "sha256": "be9a33594d032cee88b577bd2bbacb4fbdfe42a2c512217315d6654ac46f112a",
+      "bytes": 65103,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-003/test-harness.json",
+      "sha256": "6afe475eeb02069b6ddc052c070cb129a6ec30bb3cd5a5a97824de09439b51eb",
+      "bytes": 8220,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-004/FIELDS.md",
+      "sha256": "bb68f5167abc6f9029d62f816bd1fcc4d1adf584e127fea75db06d087b04e262",
+      "bytes": 3166,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-004/FLOW.md",
+      "sha256": "a59d400f136dcf27344ef263c40712186dc655cf1d31c953789efa2f5ebafda3",
+      "bytes": 1712,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-004/MESSAGES.md",
+      "sha256": "8918c2e07e6d864efaf133049abc399cc8627de4230fd42b5e37bfebf4cb807e",
+      "bytes": 6662,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-004/RG.md",
+      "sha256": "bbaa096f3c2f0419c0f4afa1d8a981aea9cfd97f528d9ba35e1a58c3ba8b8a47",
+      "bytes": 8424,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-004/VALIDATION.md",
+      "sha256": "30ee9046eb404294ea2e10a787d63755cd056fbc2ad869d2a305d2c8ab3a7cac",
+      "bytes": 9872,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-004/divergence-matrix.json",
+      "sha256": "a6354b20cc4dc2d4e665c285942a557b78d2b89c5136c10769900eb12bf3dd2c",
+      "bytes": 7624,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-004/scenarios.feature",
+      "sha256": "54b46041337b7b1ec962be4a729a82ee15763589afe362f9ce7df490a23e7b16",
+      "bytes": 7284,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-004/screens/SCR-004-01_charge.png",
+      "sha256": "aa24ce0647c2009202cfb93240d86359d1d7f6ace05e6866d1b69b3c83c7fa95",
+      "bytes": 100655,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-004/screens/SCR-004-02_erreur.png",
+      "sha256": "086c509d2f82d91aea84ab30896b5fa4beff13eb65c97a827fe7bcf3802ed69d",
+      "bytes": 103725,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-004/screens/SCR-004-03_confirmation.png",
+      "sha256": "36d40e4540bff1fdafc195105de259ad89fa3c6730c079ff86cb54bd857c3f79",
+      "bytes": 115691,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-004/screens/SCR-004-04_vide.png",
+      "sha256": "e6d023ffc586c0163456dbdf41f21b5da8a90127f186f2d7973a4f385730d7e0",
+      "bytes": 67635,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-004/test-harness.json",
+      "sha256": "062e53ac0d9de35c32e4804a12797c72e95e100a78198f686fc28584b1f1e2a0",
+      "bytes": 14916,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-005/FIELDS.md",
+      "sha256": "ce95be7440430e36a95f9c1100e8541faf97bd6ea4b7c8ac9bd55f7b35e48608",
+      "bytes": 2852,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/FLOW.md",
+      "sha256": "38c5da837f366e4090358c4f413eb4dd15574fb6992cb9d614a8ab42d5d303cc",
+      "bytes": 1319,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/MESSAGES.md",
+      "sha256": "bb5cb93df6204d36db225b08d85f232493a124538deef85ec837713c174fb78e",
+      "bytes": 4950,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-005/RG.md",
+      "sha256": "3dbe09390d74775538597fcb34fc4305f2a244a09c32a66a667eceaf1facc7b4",
+      "bytes": 4265,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-005/VALIDATION.md",
+      "sha256": "9aaaf69297fcfdabe222ec13b81786f2810c11d690f1e68e8e983581c51410a8",
+      "bytes": 5533,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-005/divergence-matrix.json",
+      "sha256": "7c4829d5b0acfe45904a8d7c4cef8f9e40b86bcc9cfd115fc39945fdd1bba5e1",
+      "bytes": 1253,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/scenarios.feature",
+      "sha256": "b12772d63ca4e2f3d3b699635c1a54e02110c5b0e013fd3c55fc088b97f8385b",
+      "bytes": 3010,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/screens/SCR-005-01_charge.png",
+      "sha256": "3082333f2e8c52f2198b3429b48ee4b669495a9c6e17c2ea07dece5db70e5d3f",
+      "bytes": 230495,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/screens/SCR-005-02_charge_epargne.png",
+      "sha256": "e5939517bb9aea7dcd920eb074edf04706ded05895e797095b1eea39a7bb191e",
+      "bytes": 86530,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/screens/SCR-005-03_vide_conseiller.png",
+      "sha256": "1c803ff54a6613bb6d8fb963af59a7be339c063c1263a06a0ea92fbb1ce60d3b",
+      "bytes": 36643,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/screens/SCR-005-04_vide_admin.png",
+      "sha256": "db938c1bab2805802ae1366da4224dd42d59e97802c9fd7ca183bc0aa062942a",
+      "bytes": 38062,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-005/test-harness.json",
+      "sha256": "1c3f7545594e29c84fe79fc979bee9c4f8807a2c3e2035780cba0576d8fae863",
+      "bytes": 1736,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-006/FIELDS.md",
+      "sha256": "9b761e48710a7cd6279582b9476dcfb8ce1bfbac85ef8d627149964d448822c6",
+      "bytes": 4094,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/FLOW.md",
+      "sha256": "439dae5d75002288663ad4dd985e3ee35c2b74ec2f5af35103b5fd420aa032b2",
+      "bytes": 2242,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/MESSAGES.md",
+      "sha256": "ec992c0379cc3e89bf508cbaae1bd3ba6f32e771a701e7f89d70a23260807c8b",
+      "bytes": 6006,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-006/RG.md",
+      "sha256": "0437a9d47728ed9c2dc3927ca15ba40bf76bea8f5682ddb266b24158059064db",
+      "bytes": 5926,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-006/VALIDATION.md",
+      "sha256": "5eefb20607b315fdc54548064548a6a1f84272adbc2310440eaae9b63efd2f64",
+      "bytes": 5808,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-006/divergence-matrix.json",
+      "sha256": "bbf579c35442d46d945db50a4df24d453214fb0dc977db19b243c93f46fa08db",
+      "bytes": 3144,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/scenarios.feature",
+      "sha256": "646c7355e3d48066db450a7d7dca4cb07fa818c758e107844cc9c43e80270e68",
+      "bytes": 2240,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/screens/SCR-006-01_charge.png",
+      "sha256": "c738e9a17d14347b810bc555dcad0a0e4655426b020aecd0a1567f196756918c",
+      "bytes": 68620,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/screens/SCR-006-02_vide.png",
+      "sha256": "27f83db249759c15466defdddb23c44eedbf67c2f2e55276aa31481936d5e0a4",
+      "bytes": 58891,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/screens/SCR-006-03_erreur.png",
+      "sha256": "944617573ba051beca0725259c05555c5029b3fcdd7d284f5211079567b2a8e0",
+      "bytes": 61536,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/screens/SCR-006-04_confirmation.png",
+      "sha256": "7acf15398994d2707a4bc1f245fe17ee7c810ccd53a943b436459e8c5c3e22c7",
+      "bytes": 74052,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/screens/SCR-006-05_droits_reduits_conseiller.png",
+      "sha256": "71f95cfa9d286ab2906743558d5bec4249b0ea12d455a46d9299980de856f518",
+      "bytes": 61150,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-006/test-harness.json",
+      "sha256": "32f55c387daebe31ba32f13c14da61719388cf9a85884c34eae8b80cba4061bd",
+      "bytes": 4870,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-007/FIELDS.md",
+      "sha256": "76a7f824f5e82bb28475fd58868b8db5721ff05b806cc95af2cde33ba37c51fa",
+      "bytes": 4568,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/FLOW.md",
+      "sha256": "83f0b949c8e8829e0d3211ca214bd01d45daef50e25103d6e94f4817bd363084",
+      "bytes": 2475,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/MESSAGES.md",
+      "sha256": "38d9bd5c01b53eedaee66b4fe82b05615df85cb9dd964c88a6fdcda2dcae95d3",
+      "bytes": 11727,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-007/RG.md",
+      "sha256": "931f7280be1812c33487cdeb419411e5f1a1db5d4d5521f1278179d83104d1d3",
+      "bytes": 8075,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-007/STATES.md",
+      "sha256": "e9e43f16a1ec5cf484b0a43d69c9867298e000710321a436f85af072afd53176",
+      "bytes": 5685,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-007/VALIDATION.md",
+      "sha256": "db97c2958cae60163adf44454b642ee1618f9cc65af2187044deb7ff00fae7d9",
+      "bytes": 11291,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-007/divergence-matrix.json",
+      "sha256": "0f20f8cde70fe8489b007cbbd2313b33f2943fa0b9150ce30b6442fcb30b4121",
+      "bytes": 9068,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-007/scenarios.feature",
+      "sha256": "7ed3e421e129bc55c37edca23458f0a50e744134b3a03a354b9fe8c9d1f0a539",
+      "bytes": 4072,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-00_vide.png",
+      "sha256": "200737cbc84c88942aedb9f0568cd932327d9deca5d33ec3e102387b7d20a596",
+      "bytes": 143961,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-01_charge.png",
+      "sha256": "d458150a148901cf8b857d0a8e6b1a852283d13bd4e8cc315241025a49517211",
+      "bytes": 87849,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-02_simulation.png",
+      "sha256": "d00b203fa026c4ee7e32d9828fcbc794f7ccc349a845aea0d99911b8eb52c450",
+      "bytes": 102087,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-03_echeancier_simulateur.png",
+      "sha256": "f654bf9ea4298d7489820888bdecd26efc181d6a93d0de24dc23e637547c25ef",
+      "bytes": 128915,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-04_echeancier_pret.png",
+      "sha256": "200737cbc84c88942aedb9f0568cd932327d9deca5d33ec3e102387b7d20a596",
+      "bytes": 143961,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-05_erreur.png",
+      "sha256": "c81efa71fd3be3504f536180e49bdd79465eecc015fdd6772a4f4079daf06433",
+      "bytes": 147529,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-06_confirmation.png",
+      "sha256": "18f85f79b5c7849dc24014f1cbb6656857124f9b831096516e68624bfe6c81d6",
+      "bytes": 165371,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-07_suppression.png",
+      "sha256": "1c0bd3baa6360d065d419ab7b4834da970647d46d673097fb7ddc8fe56d79520",
+      "bytes": 146658,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-08_conseiller.png",
+      "sha256": "465981bfaa95000af7eb831d65c2329bcbb7a7fc886b1f113b9bd663ee23a127",
+      "bytes": 73720,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/screens/SCR-007-09_admin.png",
+      "sha256": "ae1de36694918ba5621ddb9f71ca130f9ef665acc6985aa6abf61c5c643e4f00",
+      "bytes": 74787,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-007/test-harness.json",
+      "sha256": "f7d910514b133d944abcacc22d9f05ee18a256fb712c077dec9d2f73875cbe69",
+      "bytes": 17340,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-008/FIELDS.md",
+      "sha256": "6dd788f49cf5af90540cb0c8526b0135652271d16bfd777d1c83705b2046093e",
+      "bytes": 2759,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-008/FLOW.md",
+      "sha256": "d0597652d9b48574e413ba3978fd7342a339401ac81e74f66792fe145c21db28",
+      "bytes": 1203,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-008/MESSAGES.md",
+      "sha256": "3a179a6b90bfd70928d779134019a3e02efd99c85ddb4bbf4e459a2b4979ffc1",
+      "bytes": 6878,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-008/RG.md",
+      "sha256": "ac899bf4775ebaad73997518d5375f93bdf0aa8a237cba85e95fc5a4d889e674",
+      "bytes": 4123,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-008/VALIDATION.md",
+      "sha256": "e82d17fdff1afb6aaa58223258ed25a9639f09ab2fa4f1e340d74cf5e92708a8",
+      "bytes": 6794,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-008/divergence-matrix.json",
+      "sha256": "e49d02d1b068771de9b8410d8ed8c1cb691e4b2c48671de8af414ab8f429f917",
+      "bytes": 4675,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-008/scenarios.feature",
+      "sha256": "73f3879a1e9d288ee6c7d4f67b7d7c45ee244fe14a2f47c7e77a61be0f8b8dcc",
+      "bytes": 2863,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-008/screens/SCR-008-01_charge.png",
+      "sha256": "2a24dec59fa1c078390c3bf289e206d034ebdeadbda83d889909d69eba7d0944",
+      "bytes": 103865,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-008/screens/SCR-008-02_charge_admin.png",
+      "sha256": "47f543679af24496b1cecf9fbc25b1e513a1b8f48f84d518b015a201e367b231",
+      "bytes": 48321,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-008/screens/SCR-008-03_charge_conseiller.png",
+      "sha256": "84666101e9dfa0f849a8609ca9f884a93ac260cbe523b2f4dc2ef00bc748c48f",
+      "bytes": 47188,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-008/test-harness.json",
+      "sha256": "17f371cb6841f6b063991b9782588211af6aa2ee13abd618e3382468e15ac44b",
+      "bytes": 724,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-009/FIELDS.md",
+      "sha256": "d575475ec62fc89c0abd49f3da55057faa72ad063329ac48c7f337382a181a60",
+      "bytes": 3268,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/FLOW.md",
+      "sha256": "b7200fee28491f674d02bf91c0a36c4a15aa1793d3f0265d61bf62eac18b26b1",
+      "bytes": 1142,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/MESSAGES.md",
+      "sha256": "5de2bb42ebaba0c8e848a86fd3c3c7908bd1d07a1e01751c3368109d9378bbdc",
+      "bytes": 9900,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-009/RG.md",
+      "sha256": "d34047d9565440c3b67e3b63146bebda73da2ea72655961660ed25e85ba2a110",
+      "bytes": 6277,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-009/VALIDATION.md",
+      "sha256": "e5a6ce1d7ad8404cc60a198c1a244d2a7eadccbc4e8a51176ead01a4e97cffdf",
+      "bytes": 8700,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-009/divergence-matrix.json",
+      "sha256": "9f4a49806f82276f56be6d6856b3dfa3631533b412a9667c028722cbcfcb8a5d",
+      "bytes": 5737,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-009/scenarios.feature",
+      "sha256": "f091b1b597f687fd24b4cc97f4f890cb453ccf52f1bb5e5fee8f8a38c5d917cd",
+      "bytes": 1695,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/screens/SCR-009-01_charge.png",
+      "sha256": "0f19ff54846dcdfed90a8ac97fd892eac80fa6770f985c07dc53851c5f8b767a",
+      "bytes": 161701,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/screens/SCR-009-02_apres_suppr.png",
+      "sha256": "c1dc39eaca2bf5bbd0f88fa2d8c9cf37257d8b3f0d46870d23416a8156076ff7",
+      "bytes": 156136,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/screens/SCR-009-03_modale_ajout.png",
+      "sha256": "687eee03b8ee6f408f489f1a65e43a3d1cc6d73a2f96fe5a11f2f19f4eac68e5",
+      "bytes": 169119,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/screens/SCR-009-04_erreur_validation.png",
+      "sha256": "50be89ca9731761f24ae9bf8e1eec19b2e2d79ca42cf8c9570198b94d4d57d55",
+      "bytes": 173925,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/screens/SCR-009-05_apres_ajout.png",
+      "sha256": "0f19ff54846dcdfed90a8ac97fd892eac80fa6770f985c07dc53851c5f8b767a",
+      "bytes": 161701,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/screens/SCR-009-06_ADMIN_charge.png",
+      "sha256": "cbeb1f235b2f8c3c963fda0e7414ec5cbd5090466939b2f076e840f2482969e4",
+      "bytes": 168657,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/screens/SCR-009-07_CONSEILLER_charge.png",
+      "sha256": "c4d0d128b2da2b64df04a56c99e2e4845e8c32b0cbd1c3740e6b1e1c58379e8f",
+      "bytes": 163975,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-009/test-harness.json",
+      "sha256": "064819817b87a06ec9ae90da8f6a516bcdadf1f9b394358caee73f0e7bb7838a",
+      "bytes": 12779,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-010/FIELDS.md",
+      "sha256": "37a93bd5d3c2e6eff3dd32335e7417b9d07f2e6eaa3cac8569cfc9aacdffe11b",
+      "bytes": 2950,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/FLOW.md",
+      "sha256": "ea05b9a8ef53c565bc5f36e98936caaa3d2e5fd9c5862c286aebf4f421844ce7",
+      "bytes": 1427,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/MESSAGES.md",
+      "sha256": "bed543cd059249817a388895227818acfc9f44b377956a101a942b3534a547d3",
+      "bytes": 5484,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-010/RG.md",
+      "sha256": "1898db0ffb7343cf30e35ecbb73214f624660f0a6ed80aaec7614448346077ec",
+      "bytes": 5438,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-010/VALIDATION.md",
+      "sha256": "e6c8cd2fda50ba621c95efbe2b9b722bb3cc399d077842c9f3566ce367ac91fb",
+      "bytes": 5654,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-010/divergence-matrix.json",
+      "sha256": "41e5cbf4179e8fdd89b8cb43ae45b204881d54abab4b42e8373bbb9e9d6df589",
+      "bytes": 624,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/scenarios.feature",
+      "sha256": "c302806b63b3b943a70702e4b9991fc5f53ed295bb649a14bfb07ad9d0335a44",
+      "bytes": 3661,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/screens/SCR-010-01_charge.png",
+      "sha256": "53660178bc15283b54f8b0c34d3508a53e8905dff72b1f14a850f137e2bad9b9",
+      "bytes": 62003,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/screens/SCR-010-02_erreur.png",
+      "sha256": "2ad104333d8c0e17820dbf9596f493dc633b99fd139b660f3bd4c5aec1c2a858",
+      "bytes": 73954,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/screens/SCR-010-03_vide.png",
+      "sha256": "45800fdec7e8e4b56a368e15839bf730ead5b83e8f26c3722d4405b681d766fe",
+      "bytes": 66089,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/screens/SCR-010-04_conseiller.png",
+      "sha256": "ce43ec3cde24e0af67378c052f358a84dfec19edf760277f489443bffd74b24b",
+      "bytes": 64661,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/screens/SCR-010-05_admin.png",
+      "sha256": "146ed140b47f29195dbdf87421e8fa11056d079420e3be6915672a8ff378029d",
+      "bytes": 67220,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-010/test-harness.json",
+      "sha256": "bd13c44423174572bf1918fb1600ec6bcb6dc8d2ef1f7e3be08e0661791fa73a",
+      "bytes": 2027,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-011/FIELDS.md",
+      "sha256": "cde5625de2bc1ffeb8fb801025131869a9cc41d7bfd4154da7bd6a9cebbf394a",
+      "bytes": 4213,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-011/FLOW.md",
+      "sha256": "1732343edb70ef0483f9a986f7633d13a2307076be614cef2dd8bd3dfa11c802",
+      "bytes": 1179,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-011/MESSAGES.md",
+      "sha256": "aaa6777c1b6ebbde4b5e118a117a072188859abbbeb9950a58a56f6a20a45a92",
+      "bytes": 7129,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-011/RG.md",
+      "sha256": "3f81748b69102cb5cc64e2dfc8e2e1b9ed81daf4d6be5fa78ac96dc6066dd1b3",
+      "bytes": 3834,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-011/VALIDATION.md",
+      "sha256": "d9a7b5e61ed382bb0c3f88b3aeaa09faf47d673f4edca1967388a70a25e343d3",
+      "bytes": 4360,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-011/divergence-matrix.json",
+      "sha256": "bb40a4f2da1a86f0a77bb3299215da4fd58c98927e34653f24a585ac5a2ed438",
+      "bytes": 833,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-011/scenarios.feature",
+      "sha256": "069b747572941c6f469e0d59b5c80f4d67ab7b919fb3681445d7a8d9b134e25a",
+      "bytes": 782,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-011/screens/SCR-011-01_charge.png",
+      "sha256": "4522f371e7f4e7333bc583679eb139a1bf722c941d5694785f9d47ac12b475e4",
+      "bytes": 180367,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-011/screens/SCR-011-02_droits_reduits.png",
+      "sha256": "60e60d2ce93f9a31109dafd805d5a541af09c53a31bc0791d52a2657d1824a6a",
+      "bytes": 175638,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-011/screens/SCR-011-03_charge_conseiller.png",
+      "sha256": "d21bd601a6b35eff52d7546b8e5f23613efcabb7e04c749fc9476a4db215e0ae",
+      "bytes": 179312,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-011/test-harness.json",
+      "sha256": "7dbca5f6835393e261f89974b702d87288664c30a8f21ddbef9f289debadf4e0",
+      "bytes": 160,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-012/FIELDS.md",
+      "sha256": "2c79c9d7f4ebcc357389933272f936790a2535ea1e2c0cf5c54bd07400cbb0a9",
+      "bytes": 4802,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/FLOW.md",
+      "sha256": "ae9914c7ba0668132b14f933cce2ca4ba8be5b958e67aa427b7a9dd1d19895ef",
+      "bytes": 2904,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/MESSAGES.md",
+      "sha256": "320260cc6095814b70a55e9dd4a0d8d88c1605c15cb61871b6013907fc298709",
+      "bytes": 7577,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-012/RG.md",
+      "sha256": "2890c18bd63fb8cf1162430b98bcb7f81b8cf1c31ec29615553e47715209c3ad",
+      "bytes": 7339,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-012/VALIDATION.md",
+      "sha256": "1bb9c38d522a631928edf8d56d383a8fbc349a4c10e11fd21951caf7731db3f4",
+      "bytes": 6574,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-012/divergence-matrix.json",
+      "sha256": "5c5c159d63da6df3043415310a0a2a729e4c5835275a87183d27f299833f7dcd",
+      "bytes": 4035,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/scenarios.feature",
+      "sha256": "8e4c7e737a6c00e4a0acff556adae553dc6533d1b6a0d35d0402d718404ff998",
+      "bytes": 2121,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/screens/SCR-012-01_charge.png",
+      "sha256": "92027023095b69d9aa628e7cf5b9a391cbc6cbec2e8bb6df89df2f610e651ec0",
+      "bytes": 56080,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/screens/SCR-012-02_oauth_powens_webview.png",
+      "sha256": "6d00c64b584612f488b673588b5940c6b285ef4155ff924a44bc087845fb4b55",
+      "bytes": 63908,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/screens/SCR-012-03_erreur.png",
+      "sha256": "762b622334b97391422126ba1bbb9b60a17b5d3faf311281742a25e5d3330e2d",
+      "bytes": 60339,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/screens/SCR-012-04_connecte_comptes_vides.png",
+      "sha256": "161d1a553333f9ffcbf8f3f93ad07564ada5d8da40726598054da8226f1d9540",
+      "bytes": 49038,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/screens/SCR-012-05_charge_admin.png",
+      "sha256": "c65141d8218ee628ca5750a28e539b464b5385ff88753e9ae83bcb87921ee0fd",
+      "bytes": 61206,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/screens/SCR-012-06_charge_conseiller.png",
+      "sha256": "9ab82bc49550d19a2d1fa84c3608a5678c9db3fe1448aa3f2276663ae1d5ffdc",
+      "bytes": 58429,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-012/test-harness.json",
+      "sha256": "5f944a9fd6040769806ff44e6e7ce8d7285b8bca955774e166323547eb8b8ed6",
+      "bytes": 11101,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-013/FIELDS.md",
+      "sha256": "4313ac2ae6016e13b5e734b9673c0f8871ebc1109bbce2dad310aa2f0d0baae3",
+      "bytes": 3522,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/FLOW.md",
+      "sha256": "df21cebab63b0af091680a5480192f97177d9d6f7aef9e6d793805446640e57c",
+      "bytes": 1421,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/MESSAGES.md",
+      "sha256": "21d1166b3c2965c9d8b74cbc2dcdc24fcdd5afc578dd610b6a8ffcb891487a55",
+      "bytes": 7757,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-013/RG.md",
+      "sha256": "b268ad6a46964858545abd895a5769c2f2208e79bf2a840fb4ba423d4c7f1c76",
+      "bytes": 6536,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-013/VALIDATION.md",
+      "sha256": "ecbe6b84b74bfa3349f429835a9833fe29c23236a47886f4a9accc897a77bca1",
+      "bytes": 11203,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-013/divergence-matrix.json",
+      "sha256": "0439f62afaaa01d0e271153c316129267b12391b714c14d1476063d4997b876f",
+      "bytes": 7578,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-013/scenarios.feature",
+      "sha256": "8234a0f6587c79f2c73fde1d0ebe5b8fb813582b9ed8e89614c82435f42aad4b",
+      "bytes": 6879,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/screens/SCR-013-01_charge.png",
+      "sha256": "fb3be29e593629340f5c8d60c6c84635a89b697b8f3e0380af48e69dc593fde0",
+      "bytes": 78226,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/screens/SCR-013-02_erreur_iban_invalide.png",
+      "sha256": "14e5341fdfa6d643d973afdb3c024036b80b2876175df56379abda33541eec22",
+      "bytes": 86500,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/screens/SCR-013-03_erreur_validation.png",
+      "sha256": "c89350a62090dba22874ff1bbda5b289ff6de92ae8a36c90a1c044da383aa341",
+      "bytes": 86294,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/screens/SCR-013-04_post_suppression.png",
+      "sha256": "f6985cae67140423a0e82038f1fc0a7b7f84e36374fb76c885b55a76e5538b36",
+      "bytes": 76503,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/screens/SCR-013-05_confirmation_ajout.png",
+      "sha256": "49c61466b8665f9c5a45bb187174d684cff399a8ef94956396f29b14a61614e8",
+      "bytes": 80343,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/screens/SCR-013-06_vide_aucun_beneficiaire.png",
+      "sha256": "d92634a941a03c2a8b212b2d5d62c4e6c2f4d0e681dd15ed79595f327f9c81c2",
+      "bytes": 58600,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-013/test-harness.json",
+      "sha256": "08ed32d66923c8508aec1a0b4f48635711919af55c4318e2de5fb259f6622097",
+      "bytes": 12564,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-014/FIELDS.md",
+      "sha256": "9e054591e91145f6838740415b2bc8308d46fe5f692f7a494de6c82568195f67",
+      "bytes": 1245,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-014/FLOW.md",
+      "sha256": "efeba67dc07eb9051672261cf1f36d0171053ace20d11a0e532d0bc37c12b855",
+      "bytes": 2007,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-014/MESSAGES.md",
+      "sha256": "c6655b29de6e24cff0bb17b8579d149cc33ae94f2f598d9da0e9f3b9cd1c8a96",
+      "bytes": 2344,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-014/RG.md",
+      "sha256": "d52c4003613f652568754940e80801d17faea9c4c2edb0bbef4fe762bde5fbba",
+      "bytes": 3167,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-014/VALIDATION.md",
+      "sha256": "0906a4fee4422e8e3a2a7e7c1b120ec74348d0b1f5ed78c6101849425c0fa5e4",
+      "bytes": 4840,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-014/divergence-matrix.json",
+      "sha256": "714de8fff5bb850b9ab871544ade115a8cef1394fd256047a42ac7a00dd68ba6",
+      "bytes": 2858,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-014/scenarios.feature",
+      "sha256": "7370e3d0b5d7776a4fc2bb5bf1023631d6df5ed10dbbc8b1e40ac6b1524a4d86",
+      "bytes": 991,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-014/screens/SCR-014-01_redirect_sans_params.png",
+      "sha256": "762b622334b97391422126ba1bbb9b60a17b5d3faf311281742a25e5d3330e2d",
+      "bytes": 60339,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-014/screens/SCR-014-02_redirect_erreur_oauth.png",
+      "sha256": "92027023095b69d9aa628e7cf5b9a391cbc6cbec2e8bb6df89df2f610e651ec0",
+      "bytes": 56080,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-014/screens/SCR-014-03_redirect_connection_id.png",
+      "sha256": "b3d0adfb27aa1f762afef78d83013012efca2c89ebbe29e1a178b804c7e020f3",
+      "bytes": 60302,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-014/test-harness.json",
+      "sha256": "2d5cafb54742711e7e8c46db8086135cefd64b3e2915a73aebf55f6624f04512",
+      "bytes": 687,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-015/FIELDS.md",
+      "sha256": "48ea6beea0724b8ab919d231a98804ad61678dd6a127019a112a23a6bb50dbe0",
+      "bytes": 4666,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/FLOW.md",
+      "sha256": "129e9232c39b6cb8adbf7b2392ae86cca0d4a93eeae07a3da7b44a6ae7cbb0a1",
+      "bytes": 1722,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/MESSAGES.md",
+      "sha256": "a3bc9484279b7862dc426237423e56e017078b4d4188a67eb12e1892405b1ef6",
+      "bytes": 6956,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-015/RG.md",
+      "sha256": "d35053e2bfad172944ae41c02cb3a772262af6df658c22883a82144ec5a94d85",
+      "bytes": 4772,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-015/VALIDATION.md",
+      "sha256": "ac316075e8e2f386b6010df539e27bee5df7b76527d66298fc9e415c1468376e",
+      "bytes": 6031,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-015/divergence-matrix.json",
+      "sha256": "e9e1e41be5e2eceb28417c0c88a9e87e0e4cb6aed30d00d7f2767665e6eba307",
+      "bytes": 8105,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/scenarios.feature",
+      "sha256": "7ed6ce6f4c86681667af9944530f1092df1133b33577382640cbd63d8daa3d9c",
+      "bytes": 3563,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/screens/SCR-015-01_charge.png",
+      "sha256": "ee32f85f67d62ca3a3c174786a307b1e99d4213633a7193aa2271f29c5dfe4ef",
+      "bytes": 47697,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/screens/SCR-015-02_modale_detail_client.png",
+      "sha256": "abc07b0d39335a4997bf83488aaadad22b13f83c98c4f70b179e7c2b724dc44c",
+      "bytes": 79801,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/screens/SCR-015-03_vide.png",
+      "sha256": "95531c91a8b0c1656966f1db121e842e21c995a435992c26b98c883d099dd294",
+      "bytes": 36614,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/screens/SCR-015-04_droits_reduits.png",
+      "sha256": "fb2a7f0b7cee30031c3430df3f0cfa771cf7c3846a37b4abc66293e338281f67",
+      "bytes": 164370,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-015/test-harness.json",
+      "sha256": "421f623ff7dc1e9c6c63d0f3890b0324ee5d1f2fe756ae8cacbac5637466f9bf",
+      "bytes": 35853,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-016/FIELDS.md",
+      "sha256": "c5a592a9cbca97328acbdca82e3f9ff29a589e7c652470a26686f5361d31d11a",
+      "bytes": 5155,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-016/FLOW.md",
+      "sha256": "ced2c14193b15865740e0e56438d99771211563d06bdbff2a0398e02bb2fc3f6",
+      "bytes": 2175,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-016/MESSAGES.md",
+      "sha256": "ef703784c40d9fa3250eeff35f55162477fb70579f76d53f8baf2697ac8e1a77",
+      "bytes": 12836,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-016/RG.md",
+      "sha256": "fe27852861d2f809e3dcfdf19e22abae79c9fc54006913dea781cffdc096d47b",
+      "bytes": 7390,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-016/VALIDATION.md",
+      "sha256": "22c59fbb14b7102a4428648b44b759c21c387fd61bc2d444c53eb3287d9d9e9e",
+      "bytes": 4494,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-016/divergence-matrix.json",
+      "sha256": "0c651a17011d9313ebb0125db06dc11d56c0d6f5e191266d89cf959efe5a3015",
+      "bytes": 1263,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/scenarios.feature",
+      "sha256": "5712951c1449dd2282efebd39347502e2d7b8ae9c25d71aeb24eed31330dec91",
+      "bytes": 4758,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/screens/SCR-016-01_charge.png",
+      "sha256": "ccb4d46bf7911105ec55725a244d09f42a0f3b063206bae23f813a41e4cb9fa4",
+      "bytes": 307973,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/screens/SCR-016-02_confirmation_refus_pret.png",
+      "sha256": "b8bfcd1cda58759d2c3d3a4df7e74639da6f53aea9cd62a6ac20aa6493b30e4c",
+      "bytes": 302952,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/screens/SCR-016-03_modale_detail_client.png",
+      "sha256": "65727f66e1a4ee428c767b2dec18280097f0a420a91daa4474135f23ee1021a6",
+      "bytes": 320638,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/screens/SCR-016-04_confirmation_desactiver_client.png",
+      "sha256": "d278792de7ecd863072679a042ffc6ba377d98b1dbdbbaebe5ab5cc265ed8a50",
+      "bytes": 304435,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/screens/SCR-016-05_vide_pipeline_prets.png",
+      "sha256": "41de7f865cdcf9a74d001d9e39da8abb0957a9353df89ffa751de44d1eaa849a",
+      "bytes": 303069,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/screens/SCR-016-06_droits_reduits_conseiller.png",
+      "sha256": "8faaccb9443b5f91dbd1b78d2e9dddbe8e46e77ce44cd73471e5087fa2956b17",
+      "bytes": 99644,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/screens/SCR-016-07_droits_reduits_client.png",
+      "sha256": "fb2a7f0b7cee30031c3430df3f0cfa771cf7c3846a37b4abc66293e338281f67",
+      "bytes": 164370,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-016/test-harness.json",
+      "sha256": "90c96f0dc29dde4ad5716b4280eb65157081192c29473ad9000c73b6a3888ff6",
+      "bytes": 46553,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-017/MESSAGES.md",
+      "sha256": "97abb96e2c9e3a7868f54c73aafe3a8d3c2847695608fe39023d8f35191a41fd",
+      "bytes": 11564,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-017/RG.md",
+      "sha256": "35eb45e9f1379857718f8511750b1c004cfd48fc9d97bdb7f9df7607474f0bcc",
+      "bytes": 4170,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-017/VALIDATION.md",
+      "sha256": "0f7b5dd0a94f653e3a69365a679f7579951116770dd8ce544177214fb5f615c7",
+      "bytes": 6433,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-017/scenarios.feature",
+      "sha256": "b2c088f08ca751e39bf58b61bfcf20736568a6b974ad4d1966cec84dc1f5eaf7",
+      "bytes": 4201,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-018/MESSAGES.md",
+      "sha256": "3257589edcb01a2a1bdec010cf2f6b883afdf63cbc8109653d8fee3708d126e6",
+      "bytes": 4026,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-018/RG.md",
+      "sha256": "6109f9ab284793c7f25290bcd1f12a70eb1f7bb4013e7e1285c7567d4625783a",
+      "bytes": 2457,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-018/scenarios.feature",
+      "sha256": "22b9ddf67eb2300b675308c2d00fc3999e85ae38c1fb7be7fa7751f59c1551e4",
+      "bytes": 759,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-019/MESSAGES.md",
+      "sha256": "7b45c02beba23a0cf7e38700dae315b23e0b86f35cc5cd0cf0d35bb7435bf7ff",
+      "bytes": 3244,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-019/RG.md",
+      "sha256": "c6f9bff78b2af57028054465db3bb87497fe27a3a56ec5e71f5b01ba9a0320a5",
+      "bytes": 2314,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-019/scenarios.feature",
+      "sha256": "bf75df40344e00e8217a01906b09e20cfed86d8e55378d52ba743ffd4894c359",
+      "bytes": 908,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-020/MESSAGES.md",
+      "sha256": "8bf009a29209d18b10f63c85d8478f2210a48282129a8e8359b73c5a3eaf70b1",
+      "bytes": 2520,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-020/RG.md",
+      "sha256": "fd719dc9acb9e1bb71703d14658742ad27e42c1f3857ab90a0d2fec11fd40ee9",
+      "bytes": 1266,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-021/MESSAGES.md",
+      "sha256": "d791ad668d2a7a98b73f77f65dcdfeaa504538dad49b2aa12ae996211e554f95",
+      "bytes": 5307,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-021/RG.md",
+      "sha256": "0b1c5acac70206fbfedbc26289550d6c6f5cf951098b7ba5e7ccd806a261b5c2",
+      "bytes": 3065,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-021/scenarios.feature",
+      "sha256": "5bcb1b49f01225d5c841f7ce26d09ee5cfb5e42e4b9f52fc22ed30a4e030074a",
+      "bytes": 1962,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-022/MESSAGES.md",
+      "sha256": "a8362d258dae5116b71f443f634bf15cbc286e01f0a961eb7421d224905d9b6c",
+      "bytes": 4244,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-022/RG.md",
+      "sha256": "e315e4e755e972436e654adc3f11b3642b8d56afc7ae1279c04d71df41065a2d",
+      "bytes": 2537,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-022/scenarios.feature",
+      "sha256": "b573ab2f69a3251216c6b89a007659cf36abe66c8fd56dd347d9f0752668f5dd",
+      "bytes": 1221,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-023/MESSAGES.md",
+      "sha256": "7cf334a65ead4fcdd05fd7de7360c0fd9e78603be5a10cd28c999f9d30d349fa",
+      "bytes": 3351,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-023/RG.md",
+      "sha256": "3a4354c87acaf6265e6c02f1c08692599af480acba119378af2feaff5c2a96bc",
+      "bytes": 3545,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-023/scenarios.feature",
+      "sha256": "a0c0f1c9f85f94b1d7b492e9ea85838ad12189401d3ce0b57f15170d3f6ecf0a",
+      "bytes": 1625,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-024/MESSAGES.md",
+      "sha256": "4a55c8baf1733957bde02351606da27c5fd917103297210092b77a7d07949021",
+      "bytes": 3910,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-024/RG.md",
+      "sha256": "67f0746ef54013b21e4a97087b97219770ba58373fa09011f49bf51a18b5a4bb",
+      "bytes": 4252,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-024/scenarios.feature",
+      "sha256": "89e65c105e38967a466ff8ed68e2e18799af6497975443a5d21efb97ce0fd9e4",
+      "bytes": 1347,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-025/MESSAGES.md",
+      "sha256": "5030b3041544e34b9e1af27eae80b6956c7b3cb9ba8e60d3662513e2aefaea9d",
+      "bytes": 7127,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-025/RG.md",
+      "sha256": "16fe47121f54626273519d68b97788240b9339055f6e725ffb3bc4728c3af499",
+      "bytes": 4989,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-025/scenarios.feature",
+      "sha256": "e5801b4a650180f2ff07c48a1139b3fe920f7e91e14b589d5abcb22039cce160",
+      "bytes": 1129,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-026/MESSAGES.md",
+      "sha256": "e43adf643036ca23976d39a5751f392ff5c3f500dbc650da44df4a70f84272f7",
+      "bytes": 2462,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-026/RG.md",
+      "sha256": "ce9def4d277ca84cf70044e5f64f2135b83ced1be6d96b195504bd0a6b1f7f6c",
+      "bytes": 2981,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-026/scenarios.feature",
+      "sha256": "3608f40116047f23ea3f7ff164b38c23489c0a72fcced233828ac28c2d287f6d",
+      "bytes": 671,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-027/MESSAGES.md",
+      "sha256": "7f37c6a66a0dd1f356d9304dda6e28e2610ee337138bc83d5b0455a2e0403520",
+      "bytes": 6845,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-027/RG.md",
+      "sha256": "32b73005d46eef67df727bcad36a0b9ca207601598a0c79892ea19a78ed1c407",
+      "bytes": 4982,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-027/STATES.md",
+      "sha256": "c8f07fddec9a3a74fcb43d1367ac590505291d966cfac04d1df8f75cfc1b41de",
+      "bytes": 4379,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-027/scenarios.feature",
+      "sha256": "d08c246bc46b9b5759b6dc6b54d339fcc7508dbf49f0e225344f70c56be9c9b0",
+      "bytes": 2093,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-028/MESSAGES.md",
+      "sha256": "24841a495691a6a595d3a29baf83f066462da778bfaf2d717cc9fa31f9e76c57",
+      "bytes": 2256,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-028/RG.md",
+      "sha256": "1bcb90911a369f367b20c10b31eb80e43482a5c3abfcf214f6d48fb80186729b",
+      "bytes": 6376,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-028/scenarios.feature",
+      "sha256": "3e0dbe0838e437fa554869cad80b38233bb3c29a5a022289f62d75cb77f25dd3",
+      "bytes": 1244,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-029/MESSAGES.md",
+      "sha256": "d8e6eb7d8c4a01ea6b4c7daf5cae11aeae8a4b4b8389b504fcf6107bef0e0851",
+      "bytes": 11175,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-029/RG.md",
+      "sha256": "8b432d1164918cd527b31cf456c1bdec891b29eeea95a6ba255244980652521b",
+      "bytes": 6563,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-029/scenarios.feature",
+      "sha256": "1b82fae81627c45eed2377ff4d00fce0dcc9308bfeead389fc1d19d12de053e9",
+      "bytes": 1063,
+      "transformed": false
+    },
+    {
+      "path": "features/FEAT-030/MESSAGES.md",
+      "sha256": "17200e83aa8ae9af6626cbadcc3538fbc7f47a51cf9e1cd18f17d0e1377d0a0f",
+      "bytes": 3385,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-030/RG.md",
+      "sha256": "4c8b0fac4eea5776dffdf5535e6abae09056a610f11a49bea94eaea4a91889e8",
+      "bytes": 3149,
+      "transformed": true
+    },
+    {
+      "path": "features/FEAT-030/scenarios.feature",
+      "sha256": "a9b7ed9735109de8fa3ff2c598531f3b29031ffde5c4942792ca578e95edd68f",
+      "bytes": 1342,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/replay-config.json",
+      "sha256": "963b0e33ee6c37b8d5bfd4029b57ad8a444cd8a68ee62f319b01ab262ab3e87a",
+      "bytes": 821,
+      "transformed": true
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-01/expected-response.json",
+      "sha256": "268861a21b430b5d12e343d6f6821b870c22f251359ba58556c1f5e3d4bf944b",
+      "bytes": 25,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-01/input-request.json",
+      "sha256": "24bf6cc40ecf8a7f2f115bb9b44253f9e4a04bd009635fdfc7e01a19509c1fbf",
+      "bytes": 80,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-01/scenario.json",
+      "sha256": "2045c8c7f5177562451a79bbb7b1637ac2b841c0aaad92d22cd7f57e07ad50ec",
+      "bytes": 429,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-02/expected-response.json",
+      "sha256": "8936db212d37305db7bfdbf8e5bdfe99385ec9a9ce004438df580f6a63fbea63",
+      "bytes": 25,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-02/input-request.json",
+      "sha256": "502152529684b06ec43cb15cd48f7b23b48977136d5f95f4472150d1c6cf7e87",
+      "bytes": 113,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-02/scenario.json",
+      "sha256": "9f0d1f39265a1284ddc8a950d1b9bb9447e31f0bd936ce4a1579c27f40017107",
+      "bytes": 449,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-03/expected-dom.txt",
+      "sha256": "64beebcdc822808e5cf3ac3c020fab2588a8448ab3c0b29ec1e8e2565d8c8e62",
+      "bytes": 24,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-03/expected-response.json",
+      "sha256": "0b82b7fb553c1dd95d5e95c67db4eb7b4c60be40a57759c30247ca1cb65c0608",
+      "bytes": 73,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-03/input-actions.json",
+      "sha256": "20a311c88a367b7d02cd2c45bed982691e38a372fad62bb1eb93a52d7049832a",
+      "bytes": 329,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-03/input-request.json",
+      "sha256": "e64dec11da2b2677e4a62309086e6d5b8290d0d7fdace36161ab3993497974dd",
+      "bytes": 410,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-03/scenario.json",
+      "sha256": "3fbf838f8785b362e9ec8b1a26435f1004d27766be7ef4130e3ea3be1bae17fc",
+      "bytes": 554,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-04/expected-dom.txt",
+      "sha256": "681d9f8f413cdff5ff31e7cfad9a803c34a139b72ea1f07835722d8e17c16f01",
+      "bytes": 59,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-04/input-actions.json",
+      "sha256": "c8c3b8c46b47ed394717451f98989ffd3fbfa8bffaaca2e09d06861b45f369e9",
+      "bytes": 111,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-04/scenario.json",
+      "sha256": "1e79ec4c6d8b3d726f8bd8c0fa9b3336dd63a2992b021cecd6cf3039cedbadfd",
+      "bytes": 480,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-05/expected-dom.txt",
+      "sha256": "2dbd6c0fd8d914e8e0c304c56e0efe1b10139c7ee8e0205a5bda1f20285c1a96",
+      "bytes": 39,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-05/input-actions.json",
+      "sha256": "37e8a4ef4d76f94aa11841fdbc0bb8d615204131a2829ae2c73cb6cb4dd3735a",
+      "bytes": 226,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-001/SC-001-05/scenario.json",
+      "sha256": "c4fc7936bd9e5592719530caa514847fb3c3a2ba0f57d0e5e72c9e29386ade46",
+      "bytes": 405,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-002/SC-002-01/expected-dom.txt",
+      "sha256": "e9ae735602a69a66f1df7a94759e959221433432c01f0b9c1625921426122508",
+      "bytes": 146,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-002/SC-002-01/input-actions.json",
+      "sha256": "c8c3b8c46b47ed394717451f98989ffd3fbfa8bffaaca2e09d06861b45f369e9",
+      "bytes": 111,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-002/SC-002-01/scenario.json",
+      "sha256": "5c2af4ebc3bc588981deb9ae190f8f923eb7558152a37d768c868b10c1a6ff70",
+      "bytes": 520,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-002/SC-002-02/expected-dom.txt",
+      "sha256": "4cb01de0757087de08780fb2307221c2b78def1a29dbd568b66d83fc2d81a847",
+      "bytes": 24,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-002/SC-002-02/input-actions.json",
+      "sha256": "c8c3b8c46b47ed394717451f98989ffd3fbfa8bffaaca2e09d06861b45f369e9",
+      "bytes": 111,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-002/SC-002-02/scenario.json",
+      "sha256": "3dd0f161ad36dbbc4bda37f6b1f728ccf7527f44d2e3b974e2de00b48ceea848",
+      "bytes": 458,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-01/expected-dom.txt",
+      "sha256": "ff1ace53fe9e2dfb1bbf6bd0e03e3e3eeaecdbd4a9b3ad9b1380c77c491ad2dc",
+      "bytes": 86,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-01/input-actions.json",
+      "sha256": "ab3d48423a14096b5d5f26c8c1cd6018f366fa3e8aa9667fdc5c09c5f7506cd0",
+      "bytes": 110,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-01/scenario.json",
+      "sha256": "2257af221872a5109d95f2ead10488b865d1fe471e707408be2939b0c03f1833",
+      "bytes": 447,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-02/expected-dom.txt",
+      "sha256": "1a598be48890dd309ea6a5e47df193c441a7afeb71ba464a9a7707c3dd9a5cb3",
+      "bytes": 58,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-02/input-actions.json",
+      "sha256": "d8215389c20d0aff8e9e6f9740207edab20be1087c699770eb6d7036d2e43b4b",
+      "bytes": 582,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-02/scenario.json",
+      "sha256": "48860a7c6fbd84c54f39d9d118bf0880153d00ffd940f0a465ab4589cfe077e2",
+      "bytes": 476,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-03/expected-dom.txt",
+      "sha256": "49136e0c37bdc3758aa65c0f74564d03aa287b8f879200c9a65771fa24631779",
+      "bytes": 77,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-03/input-actions.json",
+      "sha256": "121f9e1c66c825cc8687b53729b293052eb729e881348ddfaf8dcdd8abea6a5e",
+      "bytes": 572,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-03/scenario.json",
+      "sha256": "a08d26e5f874e70810d82442ac3b7fd82186d77b5b4f535691b850d9f63d54c0",
+      "bytes": 753,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-04/expected-dom.txt",
+      "sha256": "d9c0b45439ed7fa0c4d8b47f61539f3646c6469a6f17cd7ca5dc9fed87b0faa3",
+      "bytes": 81,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-04/input-actions.json",
+      "sha256": "823a6dc24641ea857326ed66a2da15235012e27c0d50c8acf01c8de1468540f7",
+      "bytes": 564,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-003/SC-003-04/scenario.json",
+      "sha256": "29c9567a59ec8ff45c3b7870a15a62c48b754cd1b2a99a4e98688f9820badd4f",
+      "bytes": 555,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-01/expected-dom.txt",
+      "sha256": "190374a35eba2223ef5e99a05e81cd24195a6e7a438d6476c70b6f3582a73f6f",
+      "bytes": 117,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-01/input-actions.json",
+      "sha256": "26d7905f2ebb684fa085613d725d7d1229c7a8600cad9e40f24d79013b550a7d",
+      "bytes": 120,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-01/scenario.json",
+      "sha256": "5fdb3aaa090750506c1f8ea103f288772ca6b987a1dc69e892c5cfdf1940da25",
+      "bytes": 479,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-02/expected-dom.txt",
+      "sha256": "d4c0087b9dfd9cea986c45bde3c0cb6ebfd431720543cacc07814c3b0bbe9c2c",
+      "bytes": 61,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-02/input-actions.json",
+      "sha256": "119a2d306bfe292b295168da52651784e44a2bf2ea4f1f4b6efe334f93299473",
+      "bytes": 806,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-02/scenario.json",
+      "sha256": "70183ddd6f444862add34ca330c61f58f3999910aabcc4ff45cb86305f1c5ea9",
+      "bytes": 472,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-03/expected-dom.txt",
+      "sha256": "8edb4e8eefe53707f8f44f611dd5fe8123efb5b0534e342eba0238a7ee685da2",
+      "bytes": 39,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-03/input-actions.json",
+      "sha256": "e924b82043333fcd746b79dd77db588115ddb6c0d976a69fd7f798bc51539930",
+      "bytes": 294,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-004/SC-004-03/scenario.json",
+      "sha256": "2a51bc9026923b3588a62a85b8ab0cd1965b99e075854b4e431988344bdec8f2",
+      "bytes": 431,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-005/SC-005-01/expected-dom.txt",
+      "sha256": "3625b23adb8d3d786c62f26f7012b5e018d6cd39fff79d51976a4b03a85fce58",
+      "bytes": 90,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-005/SC-005-01/input-actions.json",
+      "sha256": "1102714a88daec52ab9870a28543f33dd43b47950e8c657d1353aea6a093f4ca",
+      "bytes": 108,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-005/SC-005-01/scenario.json",
+      "sha256": "071742fb970d67a0344057177468d300222effa65ab3dfd7205edb0f64fa6e89",
+      "bytes": 515,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-006/SC-006-01/expected-dom.txt",
+      "sha256": "6bb76649473569c43aa28eb4fee5104c36cca7e76ec7599f534cf3ac08974539",
+      "bytes": 76,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-006/SC-006-01/input-actions.json",
+      "sha256": "e842df404a014310bb4a83c3b8afbf2cdad7435b29073324f33c3b0ccacb6ad0",
+      "bytes": 108,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-006/SC-006-01/scenario.json",
+      "sha256": "51749177e47d7330342de951191220f36d2444528f3fad932b2dde79fef24069",
+      "bytes": 478,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-007/SC-007-01/expected-dom.txt",
+      "sha256": "9faf5107b4e46c846547df5351534545a85fb071e5159936de21f793fb586221",
+      "bytes": 83,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-007/SC-007-01/input-actions.json",
+      "sha256": "56a497a929f1128001f9b18694ce98b11fce31feafc44a30194756ddcc1b20a7",
+      "bytes": 106,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-007/SC-007-01/scenario.json",
+      "sha256": "d089a033b700cdc2ba245b43a70ce8e9a97710f75736670ac13b0897dfe58586",
+      "bytes": 483,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-007/SC-007-02/expected-dom.txt",
+      "sha256": "54de792dd2d4b56d5f678a9270cbbbe6fb2df56b7a170adee9208940aa83be8f",
+      "bytes": 107,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-007/SC-007-02/input-actions.json",
+      "sha256": "9454b7aaef328120fc651df407855aaa7ff03807bea7d8a8ac219ca9840af2c5",
+      "bytes": 454,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-007/SC-007-02/scenario.json",
+      "sha256": "96fe9c7ee0a82dca4d4fb2082f61553daae50a3f450a680e581f8162876f63f9",
+      "bytes": 444,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-008/SC-008-01/expected-dom.txt",
+      "sha256": "11399de38d5738630a833d2803f0751e780510b2b31367071a0d2015d7cdf1f8",
+      "bytes": 104,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-008/SC-008-01/input-actions.json",
+      "sha256": "f74ea69cab0a8d0a088ab958e8da702c0c9c9a5ae776d3741d5fc2f8e6a94c7f",
+      "bytes": 111,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-008/SC-008-01/scenario.json",
+      "sha256": "6d2ebf46d4765d46f2e02eaf07c4cbf225a816d2321c74a34f0df41835781a4e",
+      "bytes": 505,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-009/SC-009-01/expected-dom.txt",
+      "sha256": "29c5bc0f1afc5b9f871f64e7220f1e4b2e1d2c8f6628c2d05702ed29cf14ba61",
+      "bytes": 60,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-009/SC-009-01/input-actions.json",
+      "sha256": "b536efd88fa6acca7deeadb3f010af3f32a670f4a6c7359b89c81a27a9197e20",
+      "bytes": 108,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-009/SC-009-01/scenario.json",
+      "sha256": "a44999a38799cc8c734f3f9fc93d0128487a99fafc636ed57cdac2f48b3ec3c1",
+      "bytes": 458,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-010/SC-010-01/expected-dom.txt",
+      "sha256": "c46fd799ed1f671135b5dd4a119026c1d4f4ae7a8748086f27f4a4e27db118cb",
+      "bytes": 49,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-010/SC-010-01/input-actions.json",
+      "sha256": "57b6a504b3fc5f4af5c1f2b01480153c77646ac0c23693a0b0aacafe20921963",
+      "bytes": 112,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-010/SC-010-01/scenario.json",
+      "sha256": "d7b8e2bcf886508751d6e6fd5086922fef232001e999df9ed0a97b4a154868e7",
+      "bytes": 489,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-010/SC-010-02/expected-dom.txt",
+      "sha256": "fe279b12e6c2ed041d8b9230b3b4c58578f4ffb9877506800c5dea8d0d237ab1",
+      "bytes": 64,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-010/SC-010-02/input-actions.json",
+      "sha256": "da359761f2d62a953ea746bf2aaabc123911aeb59c3ab4815c122e00510eeb6e",
+      "bytes": 332,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-010/SC-010-02/scenario.json",
+      "sha256": "ccd2f1524a4ddfbb1ff7759e7886cb8dc2449f545cf2fe64d50beaf6dbdfc113",
+      "bytes": 651,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-011/SC-011-01/expected-dom.txt",
+      "sha256": "398f1ceee95a2072b4aa727b1685c9ffb1503f9c5d968fb4c672930c71582a1a",
+      "bytes": 81,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-011/SC-011-01/input-actions.json",
+      "sha256": "816e871b2019234ebcd79e0b8b47f12ad4c3712156a4971c01987c150560cce5",
+      "bytes": 110,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-011/SC-011-01/scenario.json",
+      "sha256": "f88d589552f6da3dc3492b54d99efb8174f4125fc894188e68a12fc851d09601",
+      "bytes": 445,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-012/SC-012-01/expected-dom.txt",
+      "sha256": "6e50b83d096b6de5ab556d490d31500cfd5166ac127616a9b236f2f734ba9fa1",
+      "bytes": 70,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-012/SC-012-01/input-actions.json",
+      "sha256": "0c8c2eba3543fd884c26c3e7dde9c7d99f2e3dbb46350bb82def5a9d1aff007f",
+      "bytes": 115,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-012/SC-012-01/scenario.json",
+      "sha256": "baed8e578b89aa5f1bd763a9772ffcd3e8e97661a2c59476cbc281b6d979ad0f",
+      "bytes": 462,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-013/SC-013-01/expected-dom.txt",
+      "sha256": "742518f65c708c5c40e6aef1936d74d2f96ec82c94379f6bf463bd58acc58515",
+      "bytes": 122,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-013/SC-013-01/input-actions.json",
+      "sha256": "e7b20d8b216a84ecbcb9269aab77cb222e0d8c7ded853ec2cec769f0261b0610",
+      "bytes": 115,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-013/SC-013-01/scenario.json",
+      "sha256": "1fecf71ed3d6054889ed8db78e16cb84251841509854b99576fbe7f8ad6d39bd",
+      "bytes": 508,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-013/SC-013-02/expected-dom.txt",
+      "sha256": "0c59ad99a163b57490f577879cbdec8bf49e2d7bf421ced5e2bd28d7eb0c7e7c",
+      "bytes": 121,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-013/SC-013-02/input-actions.json",
+      "sha256": "8d78246f349f27e4b5fbf5623ad9c14edbc2955e350ebd1299e774496e988e3c",
+      "bytes": 805,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-013/SC-013-02/scenario.json",
+      "sha256": "4ae6cd65494fa4753d2e9a8cf64c0cf4a4045c63b891a0a2972d71d7fe334aa3",
+      "bytes": 497,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-014/SC-014-01/expected-response.json",
+      "sha256": "8936db212d37305db7bfdbf8e5bdfe99385ec9a9ce004438df580f6a63fbea63",
+      "bytes": 25,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-014/SC-014-01/input-request.json",
+      "sha256": "1f2d49293a429a019f3e736cbe2a4034fba2943fe0aceb0e06f2b2cb0b1426ce",
+      "bytes": 119,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-014/SC-014-01/scenario.json",
+      "sha256": "1e58eca6574c7356777b8f30a620436b46c9ab391060fdbf2cf6e3b053b2fc36",
+      "bytes": 493,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-015/SC-015-01/expected-dom.txt",
+      "sha256": "db5aa694eb6b64e13b3dff769407cae6d3509970557bd48cfa63cea182c4291a",
+      "bytes": 82,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-015/SC-015-01/input-actions.json",
+      "sha256": "5d71b47b038f7b95efb1d621dfc89e443f269d633e23e46a0af933cbbf793af7",
+      "bytes": 126,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-015/SC-015-01/scenario.json",
+      "sha256": "1797d19771c4710de43fd5014b6c742fb4551ad14db401760692aa9c836aa9c8",
+      "bytes": 521,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-015/SC-015-02/expected-dom.txt",
+      "sha256": "cb2c48372cb9219c133b906359937b25646b97624962b94836ae1764a4d0cc03",
+      "bytes": 38,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-015/SC-015-02/input-actions.json",
+      "sha256": "9a779ef250bd6eb1222ee1edec64a27baf7ab899be75e35fac7a84ccbe3f085f",
+      "bytes": 122,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-015/SC-015-02/scenario.json",
+      "sha256": "30e6a2eaa33272c730ebdacb3b571b8d7d9ad3f72a7f1afa9784ee98d297d7a7",
+      "bytes": 482,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-016/SC-016-01/expected-dom.txt",
+      "sha256": "547e8a9c9f71b3cc1d37f2d022261007fd803b185b330fd07df855197d42dee8",
+      "bytes": 96,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-016/SC-016-01/input-actions.json",
+      "sha256": "fea7da28de1b46c3bce1c22ffb98720db6f7397a09fdb31052e7c44dfc2ea5e7",
+      "bytes": 106,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-016/SC-016-01/scenario.json",
+      "sha256": "c022391b193199fffbd41aa0ac7409a8317291ab566536e35ec46b998aef17b3",
+      "bytes": 527,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-016/SC-016-02/expected-dom.txt",
+      "sha256": "cb2c48372cb9219c133b906359937b25646b97624962b94836ae1764a4d0cc03",
+      "bytes": 38,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-016/SC-016-02/input-actions.json",
+      "sha256": "627fe0ceb66991b0979f9ae4068187d55358c1383f927d21d071864c3c0ebec6",
+      "bytes": 107,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-016/SC-016-02/scenario.json",
+      "sha256": "02e4b864185c504972e160b54c7c49646c91c08bf7e03a973d56b86492daeab4",
+      "bytes": 482,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-017/SC-017-01/expected-response.json",
+      "sha256": "8936db212d37305db7bfdbf8e5bdfe99385ec9a9ce004438df580f6a63fbea63",
+      "bytes": 25,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-017/SC-017-01/input-request.json",
+      "sha256": "06fbd2aba30dcbf41e7c011fa500161399440893329798ed1f5cfd5f13b6636d",
+      "bytes": 132,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-017/SC-017-01/scenario.json",
+      "sha256": "a608c724f08a686b24e24585daf60daf6fb77e8222f6af8a8d05bb806ec7dbbf",
+      "bytes": 485,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-017/SC-017-02/expected-dom.txt",
+      "sha256": "47dbd7d6d3392c1bb1bca7590aca6d65e1e5250c6a66057776062357725181f6",
+      "bytes": 80,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-017/SC-017-02/input-actions.json",
+      "sha256": "a4734b356e53e640859f5f8b46d7f74e4c93adc4bf2e00e43af770597c5e33be",
+      "bytes": 166,
+      "transformed": false
+    },
+    {
+      "path": "golden-master/scenarios/FEAT-017/SC-017-02/scenario.json",
+      "sha256": "17beb9f5eb976395b4f06db93fc8bcd641602b8d7336bd23671323ae526c0039",
+      "bytes": 487,
+      "transformed": false
+    },
+    {
+      "path": "rules-index.json",
+      "sha256": "b1179b6caf2450af33670a61bd7bb9008ce4127aa16c1a50fbd6bd9755fc5d3d",
+      "bytes": 112582,
+      "transformed": false
+    },
+    {
+      "path": "screens/navigation-flow.md",
+      "sha256": "2ad7939210aec31dc36b15777133f63d7dabebb7df35fd6932a53f32a1822843",
+      "bytes": 6344,
+      "transformed": false
+    },
+    {
+      "path": "tools/auth_session.py",
+      "sha256": "dfe017d22914d9e4ac5cbee296968dd62bab5f5d8d92b57e9e91502b38290d96",
+      "bytes": 11475,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/bmad-prd-mecanisme.md",
+      "sha256": "e19afc2251b2f275a4011ad807c7ff5ee6d25a55d5f953dbce21d4c86e03dc48",
+      "bytes": 31536,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/check-prd-coverage.py",
+      "sha256": "60b1fe46df42be2b2a6db93d25829b05b6bcc3f5330ebb5439788ba61cfe4b7e",
+      "bytes": 15048,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/derive-golden-master.py",
+      "sha256": "7bb17adcf0d5492376b104289463dd7b650fd4e0f741c603194dbd3d635790de",
+      "bytes": 62054,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/export-golden-master-tests.py",
+      "sha256": "d2ceee32804db216e60ec96ce0c77f65724d40a7388aad2efbbf5582013e4539",
+      "bytes": 30216,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/golden-master-review.md",
+      "sha256": "8e62b4e8fecdf1e7e31973bd71138c36549d4022e98db683b06843c8bdbfe53b",
+      "bytes": 3670,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/login-state.py",
+      "sha256": "0cbe77e0f4f8437423439f08905127885ef85e29fb8c77acce16de51a154d557",
+      "bytes": 12405,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/replay-golden-master.py",
+      "sha256": "835a8d4174ac34ea50fa1932ad6bfe005be81ec113f0a0174ac1e1e41c333e61",
+      "bytes": 79180,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    },
+    {
+      "path": "tools/retro-coverage-review.md",
+      "sha256": "d9d73e71001f1a298df388f6df3bb78721222b01a460479ecd7abae1260214c6",
+      "bytes": 3954,
+      "transformed": false,
+      "origin": "retro-skill@b280143"
+    }
+  ],
+  "excluded": [
+    {
+      "path": ".auth/ADMIN.json",
+      "reason": "sessions de connexion Playwright (secrets, jamais exportées — DEC-070/071)"
+    },
+    {
+      "path": ".auth/CLIENT.json",
+      "reason": "sessions de connexion Playwright (secrets, jamais exportées — DEC-070/071)"
+    },
+    {
+      "path": ".auth/CONSEILLER.json",
+      "reason": "sessions de connexion Playwright (secrets, jamais exportées — DEC-070/071)"
+    },
+    {
+      "path": ".crawl-accounts.json",
+      "reason": "comptes de crawl — rôles et logins, sans mot de passe (couche travail)"
+    },
+    {
+      "path": ".env",
+      "reason": "secrets du pipeline retro (jamais exportés)"
+    },
+    {
+      "path": ".gitignore",
+      "reason": "règles git du corpus retro (couche travail)"
+    },
+    {
+      "path": "00-global/batch-jobs-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "00-global/components-graph.json",
+      "reason": "carte des appels entre composants (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/DATA-DICTIONARY.md",
+      "reason": "introspection et livrables par base (couche travail, fusionnés dans 00-global/)"
+    },
+    {
+      "path": "00-global/db/bankdb/ENUMS.md",
+      "reason": "introspection et livrables par base (couche travail, fusionnés dans 00-global/)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-columns.csv",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-columns.sql",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-enums.csv",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-enums.sql",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-fill.sql",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-intermediate.json",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-tables.csv",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/introspection-tables.sql",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/db/bankdb/reference-data-export.sql",
+      "reason": "introspection et livrables par base (couche travail, fusionnés dans 00-global/)"
+    },
+    {
+      "path": "00-global/docs-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "00-global/documents/fetch-log.json",
+      "reason": "journal de téléchargement des exemplaires (couche travail, retro-skill-uhho)"
+    },
+    {
+      "path": "00-global/features-gate-reviewed.json",
+      "reason": "features gardées à la gate retro-features (couche travail, retro-skill-ewo)"
+    },
+    {
+      "path": "00-global/features.json",
+      "reason": "jumeau JSON de FEATURES.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "00-global/introspection-intermediate.json",
+      "reason": "introspection SQL (couche travail)"
+    },
+    {
+      "path": "00-global/permissions-matrix.json",
+      "reason": "matrice brute de permissions (couche travail)"
+    },
+    {
+      "path": "00-global/scan-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "POINTS-OUVERTS.md",
+      "reason": "points ouverts : questions et manques (couche travail, régénérés par le rapport)"
+    },
+    {
+      "path": "PROGRESS.md",
+      "reason": "état du pipeline retro"
+    },
+    {
+      "path": "crawl-plan.json",
+      "reason": "plan de crawl (couche travail)"
+    },
+    {
+      "path": "discovery.json",
+      "reason": "découverte du runtime (couche travail)"
+    },
+    {
+      "path": "features/FEAT-001/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-001/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-001/screens/ADMIN-erreur-credentials.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-001/screens/ADMIN-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-001/screens/admin-erreur-partiel.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-001/screens/admin-erreur.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-001/screens/admin-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-001/screens/admin-vide2.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-001/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-001/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-001/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-002/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-002/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-002/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-002/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-002/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-002/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-002/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-002/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-003/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-003/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-003/screens/ADMIN-droits-réduits.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-003/screens/CLIENT-chargé.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-003/screens/CLIENT-confirmation-dashboard.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-003/screens/CLIENT-erreur-comptes-identiques.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-003/screens/CLIENT-erreur-solde.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-003/screens/CLIENT-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-003/screens/CONSEILLER-droits-réduits.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-003/states-transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-003/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-003/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-003/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-004/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-004/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-004/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-004/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-004/screens/CLIENT-confirmation.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-004/screens/CLIENT-erreur.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-004/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-004/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-004/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-004/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-005/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-005/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-005/screens/ADMIN-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-005/screens/CLIENT-charge-epargne.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-005/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-005/screens/CONSEILLER-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-005/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-005/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-005/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-006/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-006/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-006/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-006/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-006/screens/CLIENT-confirmation.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-006/screens/CLIENT-erreur.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-006/screens/CLIENT-periode-change.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-006/screens/CLIENT-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-006/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-006/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-006/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-006/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-007/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-007/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-007/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-after-echeancier.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-confirmation.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-echeancier-simulateur.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-erreur.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-simulation.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-suppression.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CLIENT-voir-echeancier.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-007/states-transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-007/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-007/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-007/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-008/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-008/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-008/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-008/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-008/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-008/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-008/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-008/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-009/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-009/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-009/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/screens/CLIENT-ajout-dialog.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/screens/CLIENT-apres-suppr-full.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/screens/CLIENT-apres-suppr.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/screens/CLIENT-confirmation.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/screens/CLIENT-erreur-validation.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-009/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-009/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-009/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-010/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-010/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-010/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/screens/CLIENT-action-rapide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/screens/CLIENT-chargement.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/screens/CLIENT-erreur.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/screens/CLIENT-nouvelle-conv.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/screens/CLIENT-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-010/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-010/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-010/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-011/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-011/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-011/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-011/screens/CLIENT-droits-reduits.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-011/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-011/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-011/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-011/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-012/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-012/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-012/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-012/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-012/screens/CLIENT-connecte.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-012/screens/CLIENT-erreur.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-012/screens/CLIENT-oauth-redirect.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-012/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-012/screens/comptes-tiers-charge.html",
+      "reason": "HTML brut capturé au crawl"
+    },
+    {
+      "path": "features/FEAT-012/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-012/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-012/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-013/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-013/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-013/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-avant-ajout.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-charge-reload.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-confirmation-ajout.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-erreur-iban.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-erreur-validation.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-iban-valide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-modale.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CLIENT-vide.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-013/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-013/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-013/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-014/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-014/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-014/screens/CLIENT-connection_id.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-014/screens/CLIENT-erreur_oauth.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-014/screens/CLIENT-redirect_sans_params.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-014/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-014/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-014/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-015/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-015/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-015/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-015/screens/CLIENT-droits_reduits.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-015/screens/CONSEILLER-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-015/screens/CONSEILLER-charge2.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-015/screens/CONSEILLER-modale.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-015/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-015/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-015/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-016/fields-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-016/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-016/screens/ADMIN-apres-fermer.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/ADMIN-charge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/ADMIN-confirmation-desactiver.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/ADMIN-modale-detail-client.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/ADMIN-modale-refus.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/ADMIN-recharge.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/ADMIN-vide-pipeline.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/CONSEILLER-droits-reduits.snap",
+      "reason": "snapshot d'accessibilité Playwright"
+    },
+    {
+      "path": "features/FEAT-016/screens/admin-dom.html",
+      "reason": "HTML brut capturé au crawl"
+    },
+    {
+      "path": "features/FEAT-016/transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-016/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-016/validation-front.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-017/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-017/validation-back.json",
+      "reason": "extraction brute des validations (couche travail)"
+    },
+    {
+      "path": "features/FEAT-018/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-019/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-020/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-021/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-022/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-023/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-024/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-025/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-026/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-027/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-027/states-transitions-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "features/FEAT-028/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-029/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/FEAT-030/rules.json",
+      "reason": "jumeau JSON de RG.md pour les scripts (couche travail, retro-skill-sas.12)"
+    },
+    {
+      "path": "features/navigation-flow.md",
+      "reason": "doublon de screens/navigation-flow.md (couche travail, retro-skill-jtwz)"
+    },
+    {
+      "path": "features-gate-decisions.json",
+      "reason": "décisions de la gate retro-features exportées du rapport (couche travail, retro-skill-jtwz)"
+    },
+    {
+      "path": "forward-bmad.json",
+      "reason": "contexte du forward (couche travail)"
+    },
+    {
+      "path": "golden-master/captures-manquantes.json",
+      "reason": "règles sans capture golden master, pour une relance ciblée (couche travail, retro-skill-dq4)"
+    },
+    {
+      "path": "golden-master/replay-diagnosis.json",
+      "reason": "diagnostic du rejeu golden master (couche travail, retro-skill-5i32)"
+    },
+    {
+      "path": "golden-master/results-baseline.json",
+      "reason": "résultat de rejeu du golden master (couche travail)"
+    },
+    {
+      "path": "interfaces/session.har",
+      "reason": "trafic réseau enregistré (couche travail)"
+    },
+    {
+      "path": "interfaces/targeted.har",
+      "reason": "trafic réseau enregistré (couche travail)"
+    },
+    {
+      "path": "interfaces/ui.har",
+      "reason": "trafic réseau enregistré (couche travail)"
+    },
+    {
+      "path": "metrics.json",
+      "reason": "métriques de session du pipeline"
+    },
+    {
+      "path": "project_config.yaml",
+      "reason": "configuration du pipeline retro"
+    },
+    {
+      "path": "report/archi-legacy-archi.png",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/archi-legacy-v2.png",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/archi-legacy.png",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/capture-feat003-appli-back.png",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/capture-feat003-appli-front.png",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/capture-feat003-validation.png",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/data-model-v2.png",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/ARCHITECTURE.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/BATCH.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/CONCERNS.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/CONVENTIONS.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/ENUMS.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/FEATURES.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/INTEGRATIONS-OVERVIEW.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/INTEGRATIONS.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/PERMISSIONS.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/STACK.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/00-global/TESTING.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-007/RG.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-007/STATES.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-008/RG.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-011/RG.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-012/RG.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-023/RG.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-027/RG.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/docs/features/FEAT-028/RG.md.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-001.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-002.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-003.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-004.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-005.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-006.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-007.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-008.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-009.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-010.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-011.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-012.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-013.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-014.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-015.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-016.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-017.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-018.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-019.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-020.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-021.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-022.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-023.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-024.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-025.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-026.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-027.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-028.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-029.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-030.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-031.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-032.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-033.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-034.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-035.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-036.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-037.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-038.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-039.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-040.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-041.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-042.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-043.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-044.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-045.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-046.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-047.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-048.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-049.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-050.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-051.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-052.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-053.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-054.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-055.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-056.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-057.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-058.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-059.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-060.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-061.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-062.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-063.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-064.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-065.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-066.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-067.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-068.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-069.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-070.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-071.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-072.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-073.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-074.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-075.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-076.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-077.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-078.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-079.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-080.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-081.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-082.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-083.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-084.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-085.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-086.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-087.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-088.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-089.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-090.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-091.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-092.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-bug-093.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-001.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-002.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-003.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-004.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-005.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-006.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-007.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-008.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-009.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-010.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-011.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-012.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-013.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-014.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-015.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-016.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-017.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-018.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-019.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-020.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-021.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-022.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-023.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-024.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-025.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-026.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-027.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-028.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-029.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-feat-030.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-report-2026-10-04.zip",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "report/retro-report.html",
+      "reason": "rapport HTML de vérification (couche travail)"
+    },
+    {
+      "path": "rg-variants-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "runtime/app.log",
+      "reason": "journaux et état d'exécution de l'instance (couche travail)"
+    },
+    {
+      "path": "runtime/instance.json",
+      "reason": "journaux et état d'exécution de l'instance (couche travail)"
+    },
+    {
+      "path": "runtime/mutations.jsonl",
+      "reason": "journal d'exploration (couche travail)"
+    },
+    {
+      "path": "runtime/probes/FEAT-001.har",
+      "reason": "trafic réseau enregistré (couche travail)"
+    },
+    {
+      "path": "runtime/probes/FEAT-010.har",
+      "reason": "trafic réseau enregistré (couche travail)"
+    },
+    {
+      "path": "runtime/probes/FEAT-015-location.har",
+      "reason": "trafic réseau enregistré (couche travail)"
+    },
+    {
+      "path": "runtime/probes/FEAT-015.har",
+      "reason": "trafic réseau enregistré (couche travail)"
+    },
+    {
+      "path": "screens/api-probes.json",
+      "reason": "résultat de sonde HTTP (couche travail)"
+    },
+    {
+      "path": "screens/api-routes.json",
+      "reason": "routes à sonder (couche travail)"
+    },
+    {
+      "path": "screens/features-raw.json",
+      "reason": "données brutes de script (couche travail)"
+    },
+    {
+      "path": "screens/setup-validation.png",
+      "reason": "capture de crawl hors écran identifié SCR-*"
+    }
+  ],
+  "gaps": 63,
+  "open_questions": 8
+}

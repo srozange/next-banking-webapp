@@ -1,0 +1,7 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/documents.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "wait_for", "text": "Telecharger PDF"}
+  ]
+}

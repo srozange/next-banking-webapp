@@ -1,0 +1,14 @@
+{
+  "id": "SC-003-04",
+  "feature_id": "FEAT-003",
+  "feature_name": "Effectuer un virement",
+  "description": "Un virement valide (100 EUR, COURANT→EPARGNE) est exécuté et redirige vers le tableau de bord avec une notification CONFIRMATION",
+  "capture_adapter": "playwright",
+  "replay_adapter": "playwright",
+  "expected_outputs": ["dom_text"],
+  "roles": ["CLIENT"],
+  "rg_ids": ["RG-003-010", "RG-003-011", "RG-003-013", "RG-003-015", "RG-003-017", "RG-003-019"],
+  "tags": [],
+  "writes": true,
+  "compare": {"dom_text": {"mode": "contains"}}
+}

@@ -1,0 +1,15 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/virement-programme.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "select", "selector": "#vpForm\\:srcAcc", "value": "1"},
+    {"type": "fill", "selector": "#vpForm\\:montant", "value": "50"},
+    {"type": "select", "selector": "#vpForm\\:freq", "value": "MENSUEL"},
+    {"type": "fill", "selector": "#vpForm\\:targetNum", "value": "FR76-0001-0002"},
+    {"type": "fill", "selector": "#vpForm\\:targetLabel", "value": "[retro] test virprog"},
+    {"type": "fill", "selector": "#vpForm\\:dateExec", "value": "2027-01-01"},
+    {"type": "fill", "selector": "#vpForm\\:motif", "value": "[retro] virement programm gm"},
+    {"type": "click", "selector": "input[name='vpForm:j_idt29']"},
+    {"type": "wait_for", "text": "cree avec succes"}
+  ]
+}

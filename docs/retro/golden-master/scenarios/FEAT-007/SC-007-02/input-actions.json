@@ -1,0 +1,11 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/pret.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "fill", "selector": "#simForm\\:simMontant", "value": "10000"},
+    {"type": "fill", "selector": "#simForm\\:simTaux", "value": "3.5"},
+    {"type": "fill", "selector": "#simForm\\:simDuree", "value": "36"},
+    {"type": "click", "selector": "input[type='submit'][value='Calculer']"},
+    {"type": "wait_for", "text": "Mensualite"}
+  ]
+}

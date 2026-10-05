@@ -1,0 +1,12 @@
+{
+  "start_url": "http://localhost:8080/banking-legacy/virement.xhtml",
+  "role": "CLIENT",
+  "actions": [
+    {"type": "select", "selector": "#virementForm\\:source", "value": "1"},
+    {"type": "select", "selector": "#virementForm\\:target", "value": "2"},
+    {"type": "fill", "selector": "#virementForm\\:amount", "value": "100"},
+    {"type": "fill", "selector": "#virementForm\\:motif", "value": "[retro] virement doré 100EUR"},
+    {"type": "click", "selector": "input[name='virementForm:j_idt23']"},
+    {"type": "wait_for", "text": "CONFIRMATION"}
+  ]
+}
