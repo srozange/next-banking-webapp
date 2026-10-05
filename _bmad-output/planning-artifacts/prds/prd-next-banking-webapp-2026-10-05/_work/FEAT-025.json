@@ -1,0 +1,133 @@
+{
+ "rules": [
+  {
+   "rg": "RG-025-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-009",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-010",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-025-011",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : notification persistée en base mais jamais affichée aux utilisateurs ; le seul consommateur JPA est du code mort sans référence dans les 16 fichiers XHTML ; le pipeline actif d'affichage est déconnecté du pipeline JPA"
+  },
+  {
+   "rg": "RG-025-012",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : seuil hardcodé à 100 EUR dans le champ d'instance, non exposé dans AppConfig, non configurable via variable d'environnement"
+  },
+  {
+   "rg": "RG-025-013",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "intention-code-mort : méthode annotée `@Deprecated since v1.5`, corps vide (no-op, log warn uniquement), commentaire « referenced by old batch — DO NOT REMOVE » ; aucun appelant trouvé dans le code source ; le corps ne fait rien — le batch externe éventuel n'en tire aucun bénéfice"
+  },
+  {
+   "rg": "RG-025-014",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "intention-code-mort : `createTransactionNotification()` jamais appelé depuis le pipeline actif des virements (VirementProcessorMDB utilise NotificationStore, non NotificationService) ; la règle des 1000 EUR est inatteignable en production — le seuil actif est SEUIL_ALERTE_EUR (5000 EUR) / SEUIL_FRAUDE_EUR (10000 EUR) dans VirementProcessorMDB"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-079",
+   "rg_ids": [
+    "RG-025-011"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les notifications de solde faible sont enregistrées en base de données mais ne parviennent jamais à s'afficher dans l'espace du client. Le client n'est pas averti que son solde est bas.",
+   "expected_behavior": "WHEN the periodic low-balance scan detects that an active customer's account balance is strictly less than 100 EUR THE SYSTEM SHALL display a low-balance notification to the customer in their account dashboard."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-080",
+   "rg_ids": [
+    "RG-025-012"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le seuil d'alerte de solde faible est fixé à 100 EUR directement dans le code et ne peut pas être modifié sans recompiler et redéployer l'application.",
+   "expected_behavior": "IF the low-balance threshold is intended to be configurable per customer or via environment variable THEN THE SYSTEM SHALL apply the configured value."
+  },
+  {
+   "id": "BUG-081",
+   "rg_ids": [
+    "RG-025-013"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Une ancienne méthode d'envoi de notification, marquée comme obsolète, ne fait rien quand elle est appelée. Tout système externe qui l'utiliserait croirait avoir envoyé une notification alors qu'il n'en est rien.",
+   "expected_behavior": "WHEN a caller invokes the deprecated `sendNotification(customerId, message)` method THE SYSTEM SHALL route the request to `createSystemNotification()` and process the notification."
+  },
+  {
+   "id": "BUG-082",
+   "rg_ids": [
+    "RG-025-014"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "La méthode chargée de créer des notifications pour les virements importants n'est jamais appelée depuis le traitement réel des virements. Les règles de priorité des notifications de transaction ne sont jamais appliquées.",
+   "expected_behavior": "IF a transaction notification is created AND the amount is greater than 1000 EUR THEN THE SYSTEM SHALL assign HIGH priority to the notification."
+  }
+ ],
+ "scenarios": []
+}

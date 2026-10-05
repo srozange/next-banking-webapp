@@ -1,0 +1,252 @@
+{
+ "rules": [
+  {
+   "rg": "RG-003-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-007",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : catch(IllegalStateException) ne s'exécute jamais car l'EJB CMT enveloppe l'exception dans EJBException ; l'exception atteint catch(Exception) qui affiche \"Erreur lors du virement : java.lang.IllegalStateException: Solde insuffisant\" (trace exposée, FIELDS.md observation confirmée)"
+  },
+  {
+   "rg": "RG-003-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-014",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : le statut PENDING est trompeur — le solde du compte source est débité immédiatement avant l'affectation du statut () ; PENDING ne signifie pas que le débit est suspendu"
+  },
+  {
+   "rg": "RG-003-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-025",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-027",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la requête compte l'ensemble des transactions du client depuis la création du compte, pas uniquement celles du jour ; le commentaire du log dit \"transactionCount today\" mais aucun filtre de date n'est appliqué (JIRA-9002)"
+  },
+  {
+   "rg": "RG-003-028",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-029",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-030",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-031",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-032",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-033",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-003-034",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-008",
+   "rg_ids": [
+    "RG-003-007"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Quand un virement est refusé pour solde insuffisant, un message d'erreur interne s'affiche à l'utilisateur au lieu d'un message compréhensible. L'utilisateur voit une erreur technique du système.",
+   "expected_behavior": "IF the source account balance is insufficient for the requested amount THEN THE SYSTEM SHALL reject the transfer and inform the user that the balance is insufficient."
+  },
+  {
+   "id": "BUG-009",
+   "rg_ids": [
+    "RG-003-014"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Un virement marqué 'En attente' prélève immédiatement le compte source. Le statut 'En attente' laisse croire que l'argent n'a pas encore été débité, ce qui est inexact.",
+   "expected_behavior": "IF the transfer amount is greater than or equal to 5000 EUR THEN THE SYSTEM SHALL mark the transfer status as PENDING."
+  },
+  {
+   "id": "BUG-010",
+   "rg_ids": [
+    "RG-003-027"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Pour détecter une fréquence de transactions suspecte, le système compte toutes les transactions depuis l'ouverture du compte au lieu de celles du jour uniquement. Un client actif depuis longtemps peut déclencher une alerte fraude sans que son comportement du jour soit anormal.",
+   "expected_behavior": "IF the number of transactions executed by the customer on the current day exceeds 8 THEN THE SYSTEM SHALL raise a HIGH_FREQUENCY fraud alert with a risk score of 50."
+  },
+  {
+   "id": "BUG-011",
+   "rg_ids": [],
+   "val_ids": [],
+   "scenario_ids": [
+    "SC-003-03"
+   ],
+   "summary": "Lorsqu'un virement est refusé pour solde insuffisant, le message affiché contient des détails techniques internes au lieu d'une explication claire. L'utilisateur ne comprend pas ce qui s'est passé.",
+   "expected_behavior": "IF the source account balance is insufficient for the requested transfer amount THEN THE SYSTEM SHALL reject the transfer and inform the user with a clear, non-technical message that the balance is insufficient."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

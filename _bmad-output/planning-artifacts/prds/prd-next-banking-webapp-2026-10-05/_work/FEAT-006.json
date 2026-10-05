@@ -1,0 +1,186 @@
+{
+ "rules": [
+  {
+   "rg": "RG-006-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-025",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-027",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-006-028",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la catégorie REVENUS figure dans le sélecteur de plafond"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-023",
+   "rg_ids": [
+    "RG-006-028"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "La catégorie 'Revenus' est proposée dans le sélecteur de plafond de dépenses. Comparer un plafond à des revenus ne produit jamais de dépassement, rendant ce plafond inutile et trompeur.",
+   "expected_behavior": "THE SYSTEM SHALL exclude income categories such as 'Revenus' from the budget ceiling selection, as income categories cannot meaningfully be capped as spending."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

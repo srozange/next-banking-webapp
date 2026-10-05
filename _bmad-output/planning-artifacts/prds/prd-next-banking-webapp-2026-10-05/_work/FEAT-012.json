@@ -1,0 +1,227 @@
+{
+ "rules": [
+  {
+   "rg": "RG-012-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-009",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : erreur Powens (user_cancelled, erreur serveur, etc.) appelle disconnect() sans définir errorMessage ; l'utilisateur retourne silencieusement à l'état non-connecté sans aucune explication, contrairement aux autres chemins d'erreur"
+  },
+  {
+   "rg": "RG-012-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-013",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-014",
+   "status": "À confirmer",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : Thread.sleep(2000) bloquant intercalé avant getAccounts() pour attendre la synchro Powens () ; antipatterne dans un bean CDI @SessionScoped — remplacer par retry asynchrone dans la cible"
+  },
+  {
+   "rg": "RG-012-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-018",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : solde nul et solde absent sont indiscernables pour l'utilisateur (tous deux affichés \"0,00 EUR\") ; la cible doit indiquer \"solde indisponible\" quand le champ balance est absent de la réponse API"
+  },
+  {
+   "rg": "RG-012-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-025",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-012-027",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : erreurs HTTP 4xx/5xx swallowed dans getAccounts() et getTransactions() ; le LOG.warn reste interne et l'utilisateur voit \"aucun compte disponible\" ou \"aucune transaction\" sans distinction d'une véritable défaillance API"
+  },
+  {
+   "rg": "RG-012-028",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-040",
+   "rg_ids": [
+    "RG-012-009"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lorsque la connexion à une banque externe via Powens échoue, l'utilisateur revient silencieusement à l'état non connecté sans aucune explication. Il ne sait pas pourquoi la connexion a échoué.",
+   "expected_behavior": "WHEN le callback Powens est reçu avec un paramètre error THE SYSTEM SHALL déconnecter la session Powens et informer l'utilisateur de la raison du retour."
+  },
+  {
+   "id": "BUG-042",
+   "rg_ids": [
+    "RG-012-018"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si une banque externe ne renvoie pas l'information de solde pour un compte, le système affiche '0,00 EUR' comme si le solde était nul. L'utilisateur ne peut pas distinguer un vrai solde zéro d'une information manquante.",
+   "expected_behavior": "IF un compte externe renvoyé par l'API Powens a un solde manquant (champ absent ou null) THEN THE SYSTEM SHALL distinguer l'absence de solde d'un solde effectivement nul."
+  },
+  {
+   "id": "BUG-043",
+   "rg_ids": [
+    "RG-012-027"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le service Powens retourne une erreur lors du chargement des comptes ou des transactions, l'utilisateur voit des listes vides sans aucune explication. Il ne peut pas savoir s'il s'agit d'une absence de données ou d'une défaillance du service.",
+   "expected_behavior": "IF l'API Powens retourne une réponse HTTP >= 400 lors du chargement des comptes ou des transactions THEN THE SYSTEM SHALL informer l'utilisateur de l'indisponibilité temporaire du service."
+  },
+  {
+   "id": "BUG-044",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-012-02-callback_params-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Lorsque la connexion à une banque externe échoue et que Powens redirige vers l'application avec un code d'erreur, l'utilisateur revient sur la page sans aucune explication sur la raison de l'échec.",
+   "expected_behavior": "IF request to powens-callback.xhtml contains error parameter THEN THE SYSTEM SHALL inform the user of the reason for the Powens connection failure."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-041",
+   "rg_ids": [
+    "RG-012-014"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Après la connexion à une banque externe, le chargement des comptes est précédé d'une pause artificielle qui bloque le serveur. Ce mécanisme primitif peut saturer les ressources en cas de pic de connexions.",
+   "expected_behavior": "WHEN le chargement des comptes après callback retourne au moins un compte THE SYSTEM SHALL passer à l'état connecté, sélectionner automatiquement le premier compte de la liste et charger ses transactions."
+  }
+ ],
+ "scenarios": []
+}

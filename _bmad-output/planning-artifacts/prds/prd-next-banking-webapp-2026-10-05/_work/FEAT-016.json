@@ -1,0 +1,266 @@
+{
+ "rules": [
+  {
+   "rg": "RG-016-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-014",
+   "status": "À confirmer",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : e.getMessage() exposé directement à l'utilisateur — information technique brute sans filtrage"
+  },
+  {
+   "rg": "RG-016-015",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-016",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-017",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-019",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-025",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : l'étiquette UI \"Client depuis\" (date d'entrée en relation client) est portée par le champ technique `advisorSince` (date d'affectation du conseiller) ; ambiguïté sémantique — les deux peuvent être distincts"
+  },
+  {
+   "rg": "RG-016-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-027",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-028",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-029",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-030",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-031",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-032",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-033",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-034",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : em_findByStatus() retourne une liste vide pour tout statut autre que OPEN (), donc allAlerts ne contient que les alertes OPEN ; les alertes CONFIRMED et FALSE_POSITIVE sont invisibles dans l'interface — JIRA-7204"
+  },
+  {
+   "rg": "RG-016-035",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-036",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-037",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-016-038",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-054",
+   "rg_ids": [
+    "RG-016-014"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si une erreur survient lors de l'approbation ou du refus d'un prêt, l'administrateur voit un message d'erreur technique brut à la place d'un message métier compréhensible.",
+   "expected_behavior": "IF an exception occurs during loan approval or refusal THEN THE SYSTEM SHALL display a user-friendly error notification to the admin without exposing internal exception details."
+  },
+  {
+   "id": "BUG-055",
+   "rg_ids": [
+    "RG-016-025"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "L'étiquette 'Client depuis' dans la fiche client du conseiller affiche la date d'affectation du conseiller au client, et non la date à laquelle le client a rejoint la banque. Ces deux dates peuvent être différentes, ce qui induit le conseiller en erreur.",
+   "expected_behavior": "WHEN a client is displayed in the advisor detail panel THE SYSTEM SHALL display under the 'Client depuis' label the date the customer became a client of the bank, which may differ from the date the advisor was assigned to that customer."
+  },
+  {
+   "id": "BUG-056",
+   "rg_ids": [
+    "RG-016-034"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Dans l'interface d'administration, seules les alertes fraude au statut 'Ouvert' sont affichées. Les alertes confirmées ou classées comme faux positifs sont invisibles, ce qui empêche d'en avoir une vue complète.",
+   "expected_behavior": "WHEN the admin views the fraud alert table without a status filter THE SYSTEM SHALL display all fraud alerts regardless of status."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

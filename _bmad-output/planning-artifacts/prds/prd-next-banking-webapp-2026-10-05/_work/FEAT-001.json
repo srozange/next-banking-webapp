@@ -1,0 +1,152 @@
+{
+ "rules": [
+  {
+   "rg": "RG-001-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-001-017",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : `validatePassword` ne vérifie pas le champ `active` ; un compte désactivé par l'admin peut s'authentifier avec succès"
+  },
+  {
+   "rg": "RG-001-018",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : mots de passe stockés en clair, comparaison par `.equals()` ()"
+  },
+  {
+   "rg": "RG-001-019",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : session fixation (CWE-384) — JSESSIONID non régénéré avant écriture du contexte authentifié (JIRA-9500)"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-001",
+   "rg_ids": [
+    "RG-001-017"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Un compte désactivé par l'administrateur peut toujours se connecter à l'application. Un utilisateur dont l'accès a été suspendu conserve l'accès à ses données bancaires.",
+   "expected_behavior": "IF a customer with `active = false` submits valid credentials THEN THE SYSTEM SHALL reject the login."
+  },
+  {
+   "id": "BUG-002",
+   "rg_ids": [
+    "RG-001-018"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les mots de passe des utilisateurs sont stockés sans protection dans la base de données. En cas de fuite de la base, tous les mots de passe seraient immédiatement lisibles.",
+   "expected_behavior": "THE SYSTEM SHALL store and verify passwords using a secure one-way hashing function."
+  },
+  {
+   "id": "BUG-003",
+   "rg_ids": [
+    "RG-001-019"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lors de la connexion, l'identifiant de session existant n'est pas reprotégé. Un attaquant ayant observé la session avant la connexion pourrait en usurper le contrôle après authentification.",
+   "expected_behavior": "WHEN a user authenticates successfully THE SYSTEM SHALL invalidate the existing HTTP session before writing the authenticated user context."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

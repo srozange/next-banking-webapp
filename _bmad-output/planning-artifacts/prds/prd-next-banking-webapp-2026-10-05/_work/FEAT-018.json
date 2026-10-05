@@ -1,0 +1,78 @@
+{
+ "rules": [
+  {
+   "rg": "RG-018-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-003",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : taux mensuel (variable monthlyRate = 0,005/12) appliqué chaque nuit par un déclencheur quotidien (@Schedule hour=\"2\") au lieu d'une fois par mois — l'intérêt effectivement créé est environ 30 fois supérieur à l'intention déclarée par le nom de la variable et le commentaire"
+  },
+  {
+   "rg": "RG-018-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-018-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-064",
+   "rg_ids": [
+    "RG-018-003"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le calcul des intérêts nocturnes s'exécute chaque nuit au lieu d'une fois par mois. Les clients accumulent en pratique environ trente fois plus d'intérêts que prévu sur leurs comptes épargne.",
+   "expected_behavior": "WHEN the interest calculation batch runs THE SYSTEM SHALL apply a monthly interest rate of 0.5% / 12 to each selected EPARGNE account once per month."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

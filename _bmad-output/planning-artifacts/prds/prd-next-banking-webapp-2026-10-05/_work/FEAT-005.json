@@ -1,0 +1,121 @@
+{
+ "rules": [
+  {
+   "rg": "RG-005-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-011",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-012",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-013",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-014",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-015",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-016",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-017",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-018",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-005-019",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

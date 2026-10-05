@@ -1,0 +1,216 @@
+{
+ "rules": [
+  {
+   "rg": "RG-002-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-002",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : si accountService.findByUsername retourne null après la"
+  },
+  {
+   "rg": "RG-002-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-007",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : getAccountsForCustomer n'applique aucun ORDER BY"
+  },
+  {
+   "rg": "RG-002-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-020",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : NotificationStore est @ApplicationScoped en mémoire"
+  },
+  {
+   "rg": "RG-002-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-024",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : affiche le texte explicatif"
+  },
+  {
+   "rg": "RG-002-025",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-027",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-002-028",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-004",
+   "rg_ids": [
+    "RG-002-002"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si un compte utilisateur est supprimé de la base alors qu'une session est active, l'application peut se comporter de manière imprévisible au lieu d'afficher un message compréhensible.",
+   "expected_behavior": "IF the database no longer contains the user whose username is stored in the HTTP session THEN THE SYSTEM SHALL handle the absence gracefully without exposing an error to the user."
+  },
+  {
+   "id": "BUG-005",
+   "rg_ids": [
+    "RG-002-007"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Sur le tableau de bord, les dernières opérations affichées peuvent ne pas provenir du compte courant du client, selon l'ordre dans lequel les comptes sont retournés. L'utilisateur peut voir des opérations appartenant à un autre de ses comptes.",
+   "expected_behavior": "WHEN displaying recent transactions, THE SYSTEM SHALL draw them from the COURANT account."
+  },
+  {
+   "id": "BUG-006",
+   "rg_ids": [
+    "RG-002-020"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les notifications (alertes, confirmations de virement) sont conservées uniquement en mémoire du serveur et non en base de données. Un redémarrage du serveur les efface définitivement.",
+   "expected_behavior": "THE SYSTEM SHALL persist notification data across server restarts."
+  },
+  {
+   "id": "BUG-007",
+   "rg_ids": [
+    "RG-002-024"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lors d'un virement, plusieurs types de notifications (confirmation, alerte, détection de fraude) peuvent être générés simultanément pour une même opération. Un seul type de notification devrait être produit par virement.",
+   "expected_behavior": "WHEN a transfer is processed, THE SYSTEM SHALL generate exactly one notification per transfer (CONFIRMATION, ALERTE, or FRAUDE — mutually exclusive, never a combination)."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

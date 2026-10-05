@@ -1,0 +1,279 @@
+{
+ "rules": [
+  {
+   "rg": "RG-013-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-025",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-027",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-028",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-029",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : aucun check longueur côté service ; seuls le maxlength UI et la contrainte colonne DB le font valoir — un POST contournant l'UI déclenche une exception de persistance non gérée"
+  },
+  {
+   "rg": "RG-013-030",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-031",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : même défaut que RG-013-029 — exception de persistance non gérée si maxlength UI contourné"
+  },
+  {
+   "rg": "RG-013-032",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-033",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-034",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-013-035",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : aucune vérification d'ownership au niveau service ; la couche UI ne présente que les bénéficiaires du user authentifié mais un POST HTTP forgé permet de supprimer le bénéficiaire de n'importe quel client par son id"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-047",
+   "rg_ids": [
+    "RG-013-035"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Un utilisateur malveillant peut supprimer le bénéficiaire d'un autre client en forgeant une requête avec l'identifiant de ce bénéficiaire. Il n'y a aucune vérification côté serveur que le bénéficiaire appartient à l'utilisateur connecté.",
+   "expected_behavior": "WHEN the user deletes a beneficiary THE SYSTEM SHALL verify that the beneficiary belongs to the authenticated user before executing the deletion."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-045",
+   "rg_ids": [
+    "RG-013-029"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le libellé d'un bénéficiaire est trop long et que la saisie standard est contournée, une erreur technique interne s'affiche au lieu d'un message compréhensible.",
+   "expected_behavior": "IF libelle length exceeds 100 characters THEN THE SYSTEM SHALL inform the user of the rejection."
+  },
+  {
+   "id": "BUG-046",
+   "rg_ids": [
+    "RG-013-031"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le nom du titulaire d'un bénéficiaire est trop long et que la saisie standard est contournée, une erreur technique interne s'affiche au lieu d'un message clair.",
+   "expected_behavior": "IF nomTitulaire length exceeds 100 characters THEN THE SYSTEM SHALL inform the user of the rejection."
+  },
+  {
+   "id": "BUG-048",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-013-01-libelle-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le libellé d'un bénéficiaire dépasse la longueur maximale autorisée, un message d'erreur technique brut est affiché à l'utilisateur à la place d'un message métier.",
+   "expected_behavior": "IF libelle length exceeds 100 characters THEN THE SYSTEM SHALL reject the add request"
+  },
+  {
+   "id": "BUG-049",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-013-02-nomTitulaire-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le nom du titulaire d'un bénéficiaire dépasse la longueur maximale autorisée, un message d'erreur technique brut est affiché à l'utilisateur à la place d'un message clair.",
+   "expected_behavior": "IF nomTitulaire length exceeds 100 characters THEN THE SYSTEM SHALL reject the add request"
+  },
+  {
+   "id": "BUG-050",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-013-05-banque-B1"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le nom de la banque d'un bénéficiaire dépasse la longueur maximale autorisée, un message d'erreur technique brut est affiché à l'utilisateur à la place d'un message compréhensible.",
+   "expected_behavior": "IF banque length exceeds 100 characters THEN THE SYSTEM SHALL reject the add request"
+  }
+ ],
+ "scenarios": []
+}

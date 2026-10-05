@@ -1,0 +1,227 @@
+{
+ "rules": [
+  {
+   "rg": "RG-029-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-009",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-010",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-011",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : timeouts supprimés lors d'un hotfix sprint 14, thread EJB peut se bloquer indéfiniment si Alpha Vantage ne répond pas"
+  },
+  {
+   "rg": "RG-029-012",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : clé API en clair dans le source (FALLBACK_API_KEY = AppConfig default), commitée par erreur durant sprint 14 hotfix"
+  },
+  {
+   "rg": "RG-029-013",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-014",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-015",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-016",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-017",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-018",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-019",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-020",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-021",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-022",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-023",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-024",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-025",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-026",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-027",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-028",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-029",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-030",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-031",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-032",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-029-033",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-091",
+   "rg_ids": [
+    "RG-029-012"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "La clé d'accès au service de cotations boursières AlphaVantage est directement lisible dans le code source de l'application. Toute personne accédant au code source peut utiliser cette clé à des fins non autorisées.",
+   "expected_behavior": "THE SYSTEM SHALL protect the AlphaVantage API key from being exposed in the source code."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-090",
+   "rg_ids": [
+    "RG-029-011"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le service de cotations boursières AlphaVantage ne répond pas, le serveur peut attendre indéfiniment, monopolisant un fil d'exécution jusqu'à épuisement des ressources disponibles.",
+   "expected_behavior": "WHEN making HTTP calls to the AlphaVantage API THE SYSTEM SHALL apply a connection timeout and a read timeout to prevent indefinite thread blocking."
+  }
+ ],
+ "scenarios": []
+}

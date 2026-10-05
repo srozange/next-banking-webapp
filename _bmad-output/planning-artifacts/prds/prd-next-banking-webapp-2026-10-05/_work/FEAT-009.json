@@ -1,0 +1,175 @@
+{
+ "rules": [
+  {
+   "rg": "RG-009-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-010",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-009-020",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : timeouts supprimés lors du hotfix sprint 14"
+  },
+  {
+   "rg": "RG-009-021",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : clé API AlphaVantage en clair dans le source"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-034",
+   "rg_ids": [
+    "RG-009-021"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "La clé d'accès au service de cotations boursières est directement lisible dans le code source de l'application. Toute personne accédant au code peut utiliser cette clé à des fins non autorisées.",
+   "expected_behavior": "THE SYSTEM SHALL retrieve the AlphaVantage API key exclusively from a secure configuration source (environment variable or system property) and never fall back to a value committed to source code."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-033",
+   "rg_ids": [
+    "RG-009-020"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le service de cotations boursières ne répond pas, la requête peut rester bloquée indéfiniment, monopolisant des ressources du serveur. L'application ne se protège pas d'une non-réponse du service externe.",
+   "expected_behavior": "WHEN the AlphaVantage HTTP connection is initiated THE SYSTEM SHALL complete the request within a bounded time to prevent indefinite thread blocking."
+  },
+  {
+   "id": "BUG-035",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-009-03-newNom-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le nom d'une valeur boursière à ajouter à la liste de surveillance dépasse 100 caractères, une erreur technique interne s'affiche à la place d'un message compréhensible.",
+   "expected_behavior": "THE SYSTEM SHALL reject name values longer than 100 characters"
+  },
+  {
+   "id": "BUG-036",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-009-03-newSymbole-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le symbole d'une valeur boursière dépasse 20 caractères, il est tronqué silencieusement sans avertir l'utilisateur. La valeur enregistrée peut ne pas correspondre à ce que l'utilisateur a saisi.",
+   "expected_behavior": "THE SYSTEM SHALL reject symbol values longer than 20 characters"
+  }
+ ],
+ "scenarios": []
+}

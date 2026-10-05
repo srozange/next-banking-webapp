@@ -1,0 +1,169 @@
+{
+ "rules": [
+  {
+   "rg": "RG-017-001",
+   "status": "Confirmé",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-002",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-006",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : `parseInt()` retourne silencieusement 0 pour toute valeur nulle ou non numérique"
+  },
+  {
+   "rg": "RG-017-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-011",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : absence de vérification de propriété (IDOR — Insecure Direct Object Reference)"
+  },
+  {
+   "rg": "RG-017-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-013",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : exception générique capturée en `catch(Exception)` et HTTP 500 renvoyé"
+  },
+  {
+   "rg": "RG-017-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-017-015",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : BANK_SIRET hardcodé dans le source, sans possibilité de surcharge par environnement (JIRA-8021)"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-058",
+   "rg_ids": [
+    "RG-017-011"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Via l'interface d'administration, un utilisateur peut télécharger les documents d'un compte qui ne lui appartient pas en modifiant l'identifiant de compte dans la requête. Il n'y a aucune vérification d'appartenance.",
+   "expected_behavior": "IF an authenticated session customer requests a document for an `accountId` that does not belong to them THEN THE SYSTEM SHALL reject the request."
+  },
+  {
+   "id": "BUG-059",
+   "rg_ids": [
+    "RG-017-013"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si une erreur technique survient pendant la génération d'un document PDF, un message d'erreur interne brut peut être renvoyé. L'utilisateur ne reçoit pas d'explication compréhensible sur l'échec.",
+   "expected_behavior": "IF an unexpected error occurs during PDF generation THEN THE SYSTEM SHALL inform the client that document generation failed, without exposing internal error details."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-057",
+   "rg_ids": [
+    "RG-017-006"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si des paramètres de date invalides sont fournis pour le téléchargement d'un relevé depuis l'interface d'administration, le système les accepte silencieusement et peut produire un document vide ou incorrect.",
+   "expected_behavior": "IF type equals RELEVE and the `year` or `month` parameter is absent or non-numeric THEN THE SYSTEM SHALL reject the request with a validation error."
+  },
+  {
+   "id": "BUG-060",
+   "rg_ids": [
+    "RG-017-015"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le numéro SIRET de la banque figurant dans les documents IFU est inscrit directement dans le code source. Il ne peut pas être modifié sans recompiler et redéployer l'application.",
+   "expected_behavior": "WHEN generating the IFU document, THE SYSTEM SHALL use the bank's registered SIRET number sourced from application configuration."
+  },
+  {
+   "id": "BUG-061",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-017-03-accountId-B3"
+   ],
+   "scenario_ids": [],
+   "summary": "Si l'identifiant de compte fourni pour le téléchargement d'un document ne correspond à aucun compte existant, le serveur retourne une erreur technique interne au lieu d'un message indiquant que le compte est introuvable.",
+   "expected_behavior": "IF type is RELEVE, RIB or ATTESTATION and the accountId does not reference an existing account THEN THE SYSTEM SHALL reject the request with a clear error indicating the account was not found."
+  },
+  {
+   "id": "BUG-062",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-017-04-year-B1"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le paramètre d'année est absent ou invalide pour le téléchargement d'un relevé ou d'un IFU, le système accepte silencieusement la valeur et génère un document pour l'année zéro. L'utilisateur reçoit un document incorrect sans explication.",
+   "expected_behavior": "IF the year parameter is absent, non-numeric, or outside a valid calendar range THEN THE SYSTEM SHALL reject the RELEVE or IFU download request."
+  },
+  {
+   "id": "BUG-063",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-017-05-month-B1"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le paramètre de mois est absent ou invalide pour le téléchargement d'un relevé, le système accepte silencieusement la valeur et peut générer un document pour le mois de janvier de l'année zéro. L'utilisateur reçoit un document incorrect sans explication.",
+   "expected_behavior": "IF the month parameter is absent, non-numeric, or not in the range 1 to 12 THEN THE SYSTEM SHALL reject the RELEVE download request."
+  }
+ ],
+ "scenarios": []
+}

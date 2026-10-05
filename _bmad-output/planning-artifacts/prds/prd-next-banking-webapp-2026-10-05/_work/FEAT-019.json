@@ -1,0 +1,83 @@
+{
+ "rules": [
+  {
+   "rg": "RG-019-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-019-002",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-019-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-019-004",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-019-005",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : borne effective `>= 10 000` (inclus) mais le message de log écrit `> 10000 EUR` (exclusif) — incohérence entre implémentation et texte journalisé"
+  },
+  {
+   "rg": "RG-019-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-019-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-019-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-019-009",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : `Calendar.getInstance()` hérite de la locale JVM ; le changement d'heure (DST) peut étendre ou réduire la fenêtre à 23 h ou 25 h au lieu de 24 h exactes — même défaut que `FraudDetectionService.checkUnusualHours` (FEAT-027)"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-066",
+   "rg_ids": [
+    "RG-019-009"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "La fenêtre de détection de fraude nocturne peut couvrir 23 ou 25 heures lors des changements d'heure saisonniers, au lieu de 24 heures précises. La détection est imprécise aux dates de passage heure d'été/heure d'hiver.",
+   "expected_behavior": "WHEN the nightly fraud-detection batch computes the 24-hour lookback window THE SYSTEM SHALL define the boundary using a fixed-offset reference to ensure the window is always exactly 24 hours regardless of daylight saving time transitions."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-065",
+   "rg_ids": [
+    "RG-019-005"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le journal du batch de détection de fraude nocturne utilise un seuil excluant la borne inférieure (> 10 000 EUR) alors que la règle appliquée est inclusive (>= 10 000 EUR). La journalisation ne reflète pas fidèlement la règle effective.",
+   "expected_behavior": "WHEN the nightly fraud-detection batch queries suspicious transactions THE SYSTEM SHALL apply a threshold of amount >= 10 000 EUR (inclusive)."
+  }
+ ],
+ "scenarios": []
+}

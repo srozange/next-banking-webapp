@@ -1,0 +1,177 @@
+{
+ "rules": [
+  {
+   "rg": "RG-008-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-004",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy: aucune vérification d'appartenance du compte (accountId) à l'utilisateur connecté ; tout accountId valide est servi sans contrôle (Insecure Direct Object Reference — IDOR)"
+  },
+  {
+   "rg": "RG-008-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-009",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-010",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-011",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-012",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-013",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-014",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-015",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-008-016",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy: parseInt() retourne 0 pour tout paramètre non numérique ou absent ; genererReleve() ne valide ni l'année ni le mois, génère un PDF vide sans erreur au lieu de rejeter la requête — la validation de plage (mois 1-12, année 2000-2100) n'existe que dans generateReleveDocument() qui n'est pas appelée par le servlet"
+  },
+  {
+   "rg": "RG-008-017",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy: SIRET codé en dur dans la constante statique BANK_SIRET de DocumentService, non configurable sans recompilation (JIRA-8021)"
+  },
+  {
+   "rg": "RG-008-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-027",
+   "rg_ids": [
+    "RG-008-004"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Un utilisateur peut télécharger les documents (relevés, attestations) d'un autre client en modifiant l'identifiant de compte dans la requête. Il n'y a aucune vérification que le compte appartient à l'utilisateur connecté.",
+   "expected_behavior": "IF a logged-in user requests a RELEVE, RIB, or ATTESTATION document with an `accountId` that does not belong to them THEN THE SYSTEM SHALL reject the request."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-028",
+   "rg_ids": [
+    "RG-008-016"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si des paramètres de mois ou d'année invalides sont fournis pour la génération d'un relevé, le système génère un document vide sans signaler d'erreur. L'utilisateur reçoit un PDF vide sans explication.",
+   "expected_behavior": "IF a RELEVE is requested with an invalid or out-of-range year or month parameter THEN THE SYSTEM SHALL reject the request."
+  },
+  {
+   "id": "BUG-029",
+   "rg_ids": [
+    "RG-008-017"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le numéro SIRET de la banque est inscrit directement dans le code source de l'application. Il ne peut pas être modifié sans recompiler et redéployer l'application.",
+   "expected_behavior": "WHEN any document is generated that includes the bank's SIRET THE SYSTEM SHALL include the bank's SIRET number sourced from an external configuration."
+  },
+  {
+   "id": "BUG-030",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-008-01-month-B1"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le mois demandé pour un relevé est absent ou invalide, le système génère un document pour le mois de janvier de l'année zéro sans signaler d'erreur. L'utilisateur reçoit un PDF vide ou incorrect sans explication.",
+   "expected_behavior": "IF RELEVE is requested with a month parameter that is absent, non-numeric, or less than 1 THEN THE SYSTEM SHALL reject the request."
+  },
+  {
+   "id": "BUG-031",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-008-01-month-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le mois demandé pour un relevé est supérieur à 12, le système génère un document vide sans signaler l'erreur. L'utilisateur reçoit un PDF vide sans explication.",
+   "expected_behavior": "IF RELEVE is requested with a month parameter greater than 12 THEN THE SYSTEM SHALL reject the request."
+  },
+  {
+   "id": "BUG-032",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-008-01-year-B1"
+   ],
+   "scenario_ids": [],
+   "summary": "Si l'année demandée pour un relevé ou un IFU est invalide ou absente, le système génère un document vide ou incorrect sans signaler d'erreur. L'utilisateur reçoit un PDF vide sans explication.",
+   "expected_behavior": "IF RELEVE or IFU is requested with a year parameter that is absent, non-numeric, or outside a valid calendar range THEN THE SYSTEM SHALL reject the request."
+  }
+ ],
+ "scenarios": []
+}

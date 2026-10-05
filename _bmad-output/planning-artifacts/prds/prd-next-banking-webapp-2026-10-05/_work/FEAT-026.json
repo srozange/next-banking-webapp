@@ -1,0 +1,84 @@
+{
+ "rules": [
+  {
+   "rg": "RG-026-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-009",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-026-010",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "l'IP n'est capturée que pour LOGIN et LOGIN_FAILED ; LOGOUT, ADMIN_DEACTIVATE, ADMIN_ACTIVATE, ADMIN_LOAN_APPROVE, ADMIN_LOAN_REFUSE, VIREMENT utilisent la surcharge 3-paramètres sans IP"
+  },
+  {
+   "rg": "RG-026-011",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-083",
+   "rg_ids": [
+    "RG-026-010"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les journaux d'audit n'enregistrent l'adresse de connexion de l'utilisateur que pour les connexions et les échecs de connexion. Les virements, les actions d'administration et les déconnexions ne sont pas tracés avec l'adresse d'origine.",
+   "expected_behavior": "WHEN any user action is audited THE SYSTEM SHALL record the originating client IP address in the audit entry."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

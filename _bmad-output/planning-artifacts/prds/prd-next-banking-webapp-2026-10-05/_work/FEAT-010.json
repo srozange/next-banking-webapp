@@ -1,0 +1,181 @@
+{
+ "rules": [
+  {
+   "rg": "RG-010-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-010",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la zone de rendu AJAX exclut `inputPanel` ; la mise à null de `userInput` côté serveur n'est pas répercutée au client ; le textarea conserve le texte saisi après envoi"
+  },
+  {
+   "rg": "RG-010-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-020",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-022",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-023",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-010-025",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-038",
+   "rg_ids": [
+    "RG-010-007"
+   ],
+   "val_ids": [],
+   "scenario_ids": [
+    "SC-010-02"
+   ],
+   "summary": "Lors de l'envoi d'un message au chat, une erreur de connexion avec le service d'intelligence artificielle peut s'afficher avec un code technique. L'utilisateur voit un message incompréhensible au lieu d'une explication claire sur l'indisponibilité du service.",
+   "expected_behavior": "IF the AI advisor service returns an authentication error THEN THE SYSTEM SHALL inform the user that the advisor is temporarily unavailable instead of exposing an authentication failure code."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-037",
+   "rg_ids": [
+    "RG-010-010"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Après l'envoi d'un message au chat, le champ de saisie ne se vide pas automatiquement. L'utilisateur doit effacer lui-même le texte précédent avant de saisir un nouveau message.",
+   "expected_behavior": "WHEN a user submits a message via the send button, THE SYSTEM SHALL clear the message textarea after submission."
+  }
+ ],
+ "scenarios": []
+}

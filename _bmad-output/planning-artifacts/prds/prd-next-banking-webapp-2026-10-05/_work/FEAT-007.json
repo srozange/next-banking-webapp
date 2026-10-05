@@ -1,0 +1,279 @@
+{
+ "rules": [
+  {
+   "rg": "RG-007-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-016",
+   "status": "À confirmer",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : aucune validation UI ni service sur la longueur du motif ; un dépassement provoque une erreur de base de données non gérée"
+  },
+  {
+   "rg": "RG-007-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-025",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-027",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-028",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la validation UI accepte les durées jusqu'à 360 mois (message \"Duree invalide (1-360 mois)\") mais le scorer refuse systématiquement toute durée > 300 mois ; toute demande avec dureeMois ∈ [301, 360] réussit la validation frontale et est automatiquement refusée au scoring sans message différencié pour l'utilisateur"
+  },
+  {
+   "rg": "RG-007-029",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-030",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-031",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-032",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-033",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-034",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-035",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-036",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-037",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-038",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-039",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-007-040",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-025",
+   "rg_ids": [
+    "RG-007-028"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le formulaire de demande de prêt accepte des durées allant jusqu'à 360 mois, mais toute durée supérieure à 300 mois est automatiquement refusée par le système de notation sans message spécifique. L'utilisateur ne comprend pas pourquoi sa demande est rejetée.",
+   "expected_behavior": "IF formDuree is between 301 and 360 months (inclusive) THEN THE SYSTEM SHALL reject the loan request as invalid."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-024",
+   "rg_ids": [
+    "RG-007-016"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le motif d'une demande de prêt est trop long, le système affiche une erreur technique interne à la place d'un message clair. La demande échoue sans explication compréhensible pour l'utilisateur.",
+   "expected_behavior": "IF formMotif exceeds 255 characters THEN THE SYSTEM SHALL reject the loan request."
+  },
+  {
+   "id": "BUG-026",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-007-08-objetPret-B1"
+   ],
+   "scenario_ids": [],
+   "summary": "Si l'objet du prêt dépasse 255 caractères et que la saisie standard est contournée, une erreur technique interne s'affiche à la place d'un message compréhensible.",
+   "expected_behavior": "THE SYSTEM SHALL reject objetPret values exceeding 255 characters"
+  }
+ ],
+ "scenarios": []
+}

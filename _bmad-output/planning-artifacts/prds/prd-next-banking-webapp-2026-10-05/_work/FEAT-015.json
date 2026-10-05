@@ -1,0 +1,184 @@
+{
+ "rules": [
+  {
+   "rg": "RG-015-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-015-025",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : rafraichir() définie dans le bean mais non câblée à aucun élément JSF dans conseiller-workspace.xhtml ; le bean est @SessionScoped, le @PostConstruct ne s'exécute qu'une fois par session — le portefeuille n'est jamais rafraîchi en cours de session sans reconnexion"
+  },
+  {
+   "rg": "RG-015-026",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : LoanStatus.DEFAUT n'a pas de classe CSS badge dans conseiller-workspace.xhtml (loan-DEFAUT absent des styles) — les prêts en statut DEFAUT s'affichent sans mise en forme visuelle distincte"
+  }
+ ],
+ "bugs_corriger": [],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-052",
+   "rg_ids": [
+    "RG-015-025"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le bouton de rafraîchissement du portefeuille clients pour le conseiller est défini dans le code mais jamais affiché dans l'interface. Le conseiller ne peut pas actualiser sa liste de clients sans se déconnecter et se reconnecter.",
+   "expected_behavior": "THE SYSTEM SHALL allow the adviser to refresh their portfolio during the session to reflect changes made since the initial page load."
+  },
+  {
+   "id": "BUG-053",
+   "rg_ids": [
+    "RG-015-026"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le statut 'Défaut' d'un prêt s'affiche sans mise en forme visuelle distincte. L'absence de badge différencié empêche le conseiller de repérer rapidement les prêts en défaut.",
+   "expected_behavior": "THE SYSTEM SHALL display each loan status with a consistent visual badge covering all supported statuses."
+  }
+ ],
+ "scenarios": []
+}

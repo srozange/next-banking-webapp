@@ -1,0 +1,154 @@
+{
+ "rules": [
+  {
+   "rg": "RG-024-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-024-020",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : LoanApprovalProducer.publish() drop silencieux (warn log uniquement) quand JMS non configuré ; le prêt est persisté EN_ATTENTE mais n'est jamais traité, le client ne reçoit aucune information d'échec"
+  },
+  {
+   "rg": "RG-024-021",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : branche de repli inaccessible (LoanType est une enum fermée à 5 valeurs, toutes traitées explicitement) ; si type null, approuve silencieusement si montant ≤ 25 000 EUR au lieu de refuser — contradictoire avec le commentaire « Sinon → refuse »"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-077",
+   "rg_ids": [
+    "RG-024-020"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si la file de messages n'est pas disponible lors de la soumission d'une demande de prêt, la demande est enregistrée comme 'En attente' mais ne sera jamais traitée. Le client n'est pas informé de l'échec et peut attendre indéfiniment.",
+   "expected_behavior": "IF the loan request cannot be handed over for approval THEN THE SYSTEM SHALL reject the request and inform the customer instead of leaving it pending forever."
+  },
+  {
+   "id": "BUG-078",
+   "rg_ids": [
+    "RG-024-021"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si un type de prêt non reconnu est soumis, le système peut l'approuver à tort si le montant est inférieur à 25 000 EUR, au lieu de le refuser systématiquement. Un prêt invalide peut ainsi être accordé.",
+   "expected_behavior": "IF the loan type is not recognized by the credit scorer THEN THE SYSTEM SHALL refuse the loan request."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

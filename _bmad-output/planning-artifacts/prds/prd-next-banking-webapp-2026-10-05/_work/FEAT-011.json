@@ -1,0 +1,138 @@
+{
+ "rules": [
+  {
+   "rg": "RG-011-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-009",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-010",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la valeur brute de interest_rate / expectedReturn (fraction décimale stockée, ex. 0,0300 ≙ 3,00 %) est affichée telle quelle avec le suffixe \"%\" sans multiplication par 100, donnant un affichage 100× trop petit (ex. \"0,0300 %\" au lieu de \"3,00 %\") — f:convertNumber type=\"percent\" ou stockage en valeur entière corrige le problème"
+  },
+  {
+   "rg": "RG-011-011",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-012",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-013",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-014",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-015",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-016",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-018",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-019",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-011-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-039",
+   "rg_ids": [
+    "RG-011-010"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les taux d'intérêt des produits bancaires sont affichés cent fois plus petits que leur valeur réelle (par exemple '0,03 %' au lieu de '3,00 %'). L'utilisateur consulte des taux manifestement incorrects.",
+   "expected_behavior": "WHEN displaying a product's interest rate or expected return, THE SYSTEM SHALL display the value as a percentage (e.g. 3,00 %)."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

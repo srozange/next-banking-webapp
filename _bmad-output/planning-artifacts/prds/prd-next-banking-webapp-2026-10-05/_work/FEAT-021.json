@@ -1,0 +1,116 @@
+{
+ "rules": [
+  {
+   "rg": "RG-021-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-002",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": "le timer est explicitement déclaré non-persistant ; un redémarrage retarde au plus de 5 minutes la prochaine exécution"
+  },
+  {
+   "rg": "RG-021-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-004",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": "le virement reste dû et sera retenté à la prochaine passe (5 min) ; aucune notification n'est envoyée au client ni aucune trace créée pour l'exécution manquée"
+  },
+  {
+   "rg": "RG-021-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-007",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la source est débitée même si la cible est absente de la base ; le montant est soustrait sans être transmis à un système de paiement externe ; l'argent disparaît pour tout IBAN externe"
+  },
+  {
+   "rg": "RG-021-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-011",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : `prochainExecution` est recalculée depuis `new Date()` (heure réelle d'exécution) au lieu de `rt.getProchainExecution()` (date planifiée) ; le planning dérive progressivement à chaque cycle (un virement mensuel du 15 glisse vers la date d'exécution effective au fil des passes)"
+  },
+  {
+   "rg": "RG-021-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-021-013",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "le catch dans `executeAll` (@TransactionAttribute REQUIRED) attrape les RuntimeException JPA après qu'elles ont potentiellement invalidé le contexte de persistance ; les exécutions suivantes dans la même passe partagent le même EntityManager compromis"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-068",
+   "rg_ids": [
+    "RG-021-007"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lors d'un virement vers un compte externe inexistant, le compte source est prélevé sans que l'argent ne soit crédité nulle part. La somme disparaît et le client n'en est pas informé.",
+   "expected_behavior": "IF the beneficiary account number does not correspond to any internal account THEN THE SYSTEM SHALL reject the transfer before any debit, and inform the customer with a clear error message."
+  },
+  {
+   "id": "BUG-069",
+   "rg_ids": [
+    "RG-021-011"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Après chaque exécution, la prochaine date d'un virement récurrent est calculée depuis la date réelle d'exécution au lieu de la date planifiée. Le planning dérive progressivement à chaque cycle et le virement s'exécute de plus en plus tard.",
+   "expected_behavior": "WHEN computing the next execution date after a successful execution THE SYSTEM SHALL advance the next scheduled execution date computed from the originally scheduled date and the transfer frequency."
+  },
+  {
+   "id": "BUG-070",
+   "rg_ids": [
+    "RG-021-013"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si l'exécution d'un virement récurrent échoue avec une erreur grave, les virements suivants de la même passe peuvent être affectés car ils partagent le même contexte de connexion à la base de données. Des virements corrects peuvent être perdus.",
+   "expected_behavior": "WHEN the execution of an individual recurring transfer raises an exception THE SYSTEM SHALL isolate the failure and continue processing the remaining due transfers in the same batch run."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

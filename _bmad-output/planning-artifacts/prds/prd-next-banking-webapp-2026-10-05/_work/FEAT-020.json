@@ -1,0 +1,48 @@
+{
+ "rules": [
+  {
+   "rg": "RG-020-001",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-020-002",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : stub — la méthode compte les clients et journalise \"Releves mensuels generes pour N clients\" mais ne génère aucun document et n'appelle pas DocumentService.generateReleveDocument() ; log trompeur (faux SUCCESS)"
+  },
+  {
+   "rg": "RG-020-003",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-020-004",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-020-005",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-067",
+   "rg_ids": [
+    "RG-020-002"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le batch de génération des relevés mensuels ne génère aucun document. Il compte uniquement les clients actifs et enregistre un message de succès trompeur, donnant l'illusion que les relevés ont été produits.",
+   "expected_behavior": "WHEN the monthly statements batch runs THE SYSTEM SHALL generate a monthly statement document for each active CLIENT-role customer."
+  }
+ ],
+ "scenarios": []
+}

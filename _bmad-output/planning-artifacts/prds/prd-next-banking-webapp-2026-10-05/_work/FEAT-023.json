@@ -1,0 +1,115 @@
+{
+ "rules": [
+  {
+   "rg": "RG-023-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-023-002",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : l'absence de JMS est silencieusement ignorée"
+  },
+  {
+   "rg": "RG-023-003",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : le message non-ObjectMessage est silencieusement"
+  },
+  {
+   "rg": "RG-023-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-023-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-023-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-023-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-023-008",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : catch(Exception e) global sans re-throw ; avec"
+  },
+  {
+   "rg": "RG-023-009",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la notification FRAUDE indique \"bloqué pour vérification\""
+  },
+  {
+   "rg": "RG-023-010",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-023-011",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-073",
+   "rg_ids": [
+    "RG-023-002"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si la file de messages n'est pas disponible lors de la soumission d'un virement, l'échec est ignoré silencieusement. Le client croit que son virement a été pris en charge alors qu'il n'est jamais traité.",
+   "expected_behavior": "IF the transfer cannot be handed over for processing THEN THE SYSTEM SHALL reject the transfer and inform the customer instead of reporting it as submitted."
+  },
+  {
+   "id": "BUG-076",
+   "rg_ids": [
+    "RG-023-009"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Pour les virements dépassant le seuil de détection de fraude, le compte source est débité immédiatement malgré le statut 'suspendu'. L'argent est prélevé avant même que le contrôle soit effectué, ce qui contredit le sens de la suspension.",
+   "expected_behavior": "IF virement amount >= seuilFraudeEur (default: 10 000 EUR) THEN THE SYSTEM SHALL suspend the transfer pending manual fraud verification before applying any balance change."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-074",
+   "rg_ids": [
+    "RG-023-003"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lorsqu'un message de virement reçu est dans un format inattendu, il est ignoré sans être acheminé vers une file de récupération. Le virement associé peut être perdu sans trace exploitable.",
+   "expected_behavior": "WHEN VirementProcessorMDB receives a JMS message that is not an ObjectMessage THE SYSTEM SHALL reject it and route it to the dead-letter queue."
+  },
+  {
+   "id": "BUG-075",
+   "rg_ids": [
+    "RG-023-008"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si une erreur survient pendant le traitement d'un virement en file de messages, le message est ignoré sans être acheminé vers une file de récupération. Le virement peut être perdu définitivement.",
+   "expected_behavior": "WHEN VirementProcessorMDB encounters an exception during message processing THE SYSTEM SHALL route the unprocessed message to the dead-letter queue for reprocessing."
+  }
+ ],
+ "scenarios": []
+}

@@ -1,0 +1,84 @@
+{
+ "rules": [
+  {
+   "rg": "RG-014-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-003",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-006",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-009",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-014-010",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : Thread.sleep(2000) bloque le thread JSF/EJB pendant 2 secondes ; une réécriture propre utilisera un mécanisme asynchrone ou une attente sans blocage de thread"
+  },
+  {
+   "rg": "RG-014-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-051",
+   "rg_ids": [
+    "RG-014-010"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lors du retour du service Powens après connexion, le chargement des comptes est précédé d'une pause artificielle bloquante. Ce mécanisme peut saturer les ressources du serveur en période de charge.",
+   "expected_behavior": "WHEN Powens account synchronization is pending immediately after a callback THE SYSTEM SHALL wait for synchronization to complete before retrieving accounts."
+  }
+ ],
+ "scenarios": []
+}

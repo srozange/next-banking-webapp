@@ -1,0 +1,317 @@
+{
+ "rules": [
+  {
+   "rg": "RG-004-001",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-002",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-003",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-010",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-011",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-012",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-013",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-014",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-015",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-016",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : format d'entrée yyyy-MM-dd incohérent avec le format dd/MM/yyyy utilisé dans les autres pages (releve.xhtml, admin.xhtml) — divergence d'UX sans justification métier"
+  },
+  {
+   "rg": "RG-004-020",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-021",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-022",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-023",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-024",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-030",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-040",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-041",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-042",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-043",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : absence de vérification de propriété dans toggleActif() et supprimer() — un identifiant forgé permettrait de modifier le virement d'un autre client (IDOR)"
+  },
+  {
+   "rg": "RG-004-050",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-051",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-052",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-060",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-061",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : exécution silencieusement ignorée sans notification ni suspension; le client ne peut pas savoir que son virement a été sauté"
+  },
+  {
+   "rg": "RG-004-062",
+   "status": "Suspect",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-063",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : le débit est effectué avant la vérification de l'existence du compte cible; si le compte cible est externe (hors base), la source est débitée sans contrepartie — perte d'argent silencieuse"
+  },
+  {
+   "rg": "RG-004-064",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-065",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-066",
+   "status": "À confirmer",
+   "nature": "métier",
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-004-070",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : absence de validation de longueur côté bean et côté UI; un motif > 255 caractères provoque une exception JPA propagée en HTTP 500"
+  },
+  {
+   "rg": "RG-004-071",
+   "status": "À confirmer",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : absence de validation de longueur — une valeur > 34 caractères provoque une exception JPA propagée"
+  },
+  {
+   "rg": "RG-004-072",
+   "status": "À confirmer",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : absence de validation de longueur — une valeur > 100 caractères provoque une exception JPA propagée"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-013",
+   "rg_ids": [
+    "RG-004-043"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Un utilisateur malveillant peut modifier ou supprimer le virement programmé d'un autre client en forgeant une requête avec l'identifiant de ce virement. Il n'y a aucune vérification d'appartenance côté serveur.",
+   "expected_behavior": "WHEN toggle (suspend/reactivate) or delete is requested for a recurring transfer THE SYSTEM SHALL verify that the transfer belongs to the authenticated customer before executing the action."
+  },
+  {
+   "id": "BUG-014",
+   "rg_ids": [
+    "RG-004-061"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Quand un virement programmé est sauté faute de solde suffisant, le client n'en est pas informé. Il ne peut pas savoir que son virement n'a pas été exécuté.",
+   "expected_behavior": "IF the source account balance is strictly less than the recurring transfer amount at execution time THEN THE SYSTEM SHALL skip the execution and notify the customer that the scheduled transfer could not be executed due to insufficient funds."
+  },
+  {
+   "id": "BUG-015",
+   "rg_ids": [
+    "RG-004-063"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lorsqu'un virement programmé est destiné à un compte externe inexistant, le compte source est prélevé sans que l'argent ne soit crédité nulle part. La somme disparaît sans que le client en soit informé.",
+   "expected_behavior": "IF the target account number does not correspond to any internal account THEN THE SYSTEM SHALL reject the recurring transfer before any debit, and inform the customer with a clear error message."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-012",
+   "rg_ids": [
+    "RG-004-016"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le champ 'Date de première exécution' des virements programmés utilise un format de date différent des autres formulaires de l'application. Cette incohérence peut induire l'utilisateur en erreur lors de la saisie.",
+   "expected_behavior": "WHEN the user submits the first execution date for a recurring transfer THE SYSTEM SHALL accept the date in the dd/MM/yyyy format, consistent with date inputs in other pages of the application."
+  },
+  {
+   "id": "BUG-016",
+   "rg_ids": [
+    "RG-004-070"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si un motif de virement programmé trop long est soumis en contournant la saisie standard, le système affiche une erreur technique interne. Aucun contrôle préventif n'est réalisé côté serveur.",
+   "expected_behavior": "IF the motif field exceeds 255 characters THEN THE SYSTEM SHALL reject the submission."
+  },
+  {
+   "id": "BUG-017",
+   "rg_ids": [
+    "RG-004-071"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le numéro de compte du bénéficiaire dépasse la longueur autorisée et que la saisie standard est contournée, le système affiche une erreur technique interne à la place d'un message compréhensible.",
+   "expected_behavior": "IF the beneficiary account number exceeds 34 characters THEN THE SYSTEM SHALL reject the submission."
+  },
+  {
+   "id": "BUG-018",
+   "rg_ids": [
+    "RG-004-072"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Si le libellé du bénéficiaire est trop long et que la saisie standard est contournée, le système affiche une erreur technique interne à la place d'un message clair.",
+   "expected_behavior": "IF the beneficiary label exceeds 100 characters THEN THE SYSTEM SHALL reject the submission."
+  },
+  {
+   "id": "BUG-019",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-004-02-targetNum-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le numéro de compte du bénéficiaire dépasse la longueur maximale autorisée, un message d'erreur technique brut est affiché à l'utilisateur à la place d'un message métier.",
+   "expected_behavior": "IF targetNum exceeds 34 characters THEN THE SYSTEM SHALL reject the submission"
+  },
+  {
+   "id": "BUG-020",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-004-03-targetLabel-B2"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le libellé du bénéficiaire est trop long, un message d'erreur technique brut est affiché à l'utilisateur à la place d'un message compréhensible.",
+   "expected_behavior": "IF targetLabel exceeds 100 characters THEN THE SYSTEM SHALL reject the submission"
+  },
+  {
+   "id": "BUG-021",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-004-05-dateExec-F2"
+   ],
+   "scenario_ids": [],
+   "summary": "Le format attendu pour la date d'exécution d'un virement programmé est incohérent avec le reste de l'application. L'utilisateur peut saisir une date dans le bon format et se voir refuser la soumission.",
+   "expected_behavior": "WHEN user submits a dateExec value not matching the pattern yyyy-MM-dd THE SYSTEM SHALL reject and display \"Format de date invalide (attendu : yyyy-MM-dd)\""
+  },
+  {
+   "id": "BUG-022",
+   "rg_ids": [],
+   "val_ids": [
+    "VAL-004-07-motif-B1"
+   ],
+   "scenario_ids": [],
+   "summary": "Si le motif d'un virement programmé dépasse la longueur maximale autorisée, un message d'erreur technique est affiché à l'utilisateur à la place d'un message métier compréhensible.",
+   "expected_behavior": "IF motif exceeds 255 characters THEN THE SYSTEM SHALL reject the submission"
+  }
+ ],
+ "scenarios": []
+}

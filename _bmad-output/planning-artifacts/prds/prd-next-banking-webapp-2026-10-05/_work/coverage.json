@@ -1,0 +1,49 @@
+{
+  "prd": "_bmad-output/planning-artifacts/prds/prd-next-banking-webapp-2026-10-05/prd.md",
+  "addendum": "_bmad-output/planning-artifacts/prds/prd-next-banking-webapp-2026-10-05/addendum.md",
+  "frs": 332,
+  "rules": {
+    "expected": 161,
+    "covered": 161,
+    "missing": []
+  },
+  "bugs": {
+    "expected": 50,
+    "covered": 50,
+    "missing": []
+  },
+  "bugs_kept": {
+    "expected": 43,
+    "cited": 43,
+    "missing": [],
+    "documented_by": "LEGACY-BUGS.md"
+  },
+  "forbidden_as_fr": [],
+  "promoted_suspect": [
+    {
+      "fr": "FR-003-28",
+      "ids": [
+        "RG-027-003"
+      ]
+    },
+    {
+      "fr": "FR-027-17",
+      "ids": [
+        "RG-023-009",
+        "RG-027-003"
+      ]
+    }
+  ],
+  "blocking_gaps": [],
+  "removed_in_prd": {
+    "features": [
+      "FEAT-031",
+      "FEAT-032"
+    ],
+    "rules": []
+  },
+  "coverage": {
+    "rules": 1.0,
+    "bugs": 1.0
+  }
+}

@@ -1,0 +1,163 @@
+{
+ "rules": [
+  {
+   "rg": "RG-027-001",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-002",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-003",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : le contrôle fraude est exécuté après que le virement est réalisé (JIRA-9200) ; toute exception du contrôle est silencieusement ignorée (JIRA-9202, commentaire « décider si une alerte fraude doit bloquer le virement ») — une réécriture propre doit résoudre cette ambiguïté"
+  },
+  {
+   "rg": "RG-027-013",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-004",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-005",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-006",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : la requête JPQL ne filtre pas par date (SELECT t WHERE customer.id = :id sans clause de date) ; le décompte porte sur l'intégralité de l'historique et non sur le jour courant — la borne effective est toutes-transactions vs la borne déclarée journalière (nom du champ, commentaire Javadoc, label FraudRule.HIGH_FREQUENCY)"
+  },
+  {
+   "rg": "RG-027-007",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-008",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-009",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-010",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-014",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-015",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-016",
+   "status": "Confirmé",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-027-017",
+   "status": "Suspect",
+   "nature": "métier",
+   "nature_detail": "règle déclarée avec intention explicite (score 80) mais sans implémentation ; comportement cible non déterminable depuis le code seul"
+  },
+  {
+   "rg": "RG-027-018",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : LOG.info/warn logue targetIban en clair dans checkTransaction() — violation RGPD Art.32 + PCI-DSS Req.3"
+  },
+  {
+   "rg": "RG-027-019",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : méthode publique @Deprecated sans caller interne ; l'existence d'un consommateur externe est non vérifiable depuis la base de code seule"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-084",
+   "rg_ids": [
+    "RG-027-003"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "La détection de fraude s'exécute après que le virement a déjà été réalisé et le solde débité. Une transaction frauduleuse est donc déjà consommée au moment où l'alerte est générée.",
+   "expected_behavior": "WHEN a transfer is submitted THE SYSTEM SHALL execute fraud detection before the transfer is finally committed; IF the fraud check raises an error THE SYSTEM SHALL log the error and the transfer SHALL NOT proceed silently."
+  },
+  {
+   "id": "BUG-085",
+   "rg_ids": [
+    "RG-027-006"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Le système détecte une fréquence de transactions suspecte en comptant toutes les transactions depuis l'ouverture du compte, au lieu de celles du jour uniquement. Un client actif peut déclencher une alerte fraude injustifiée sur la base d'un historique ancien.",
+   "expected_behavior": "IF the number of transactions executed by the customer on the current day exceeds 8 THEN THE SYSTEM SHALL raise a HIGH_FREQUENCY fraud signal with risk score 50."
+  },
+  {
+   "id": "BUG-086",
+   "rg_ids": [
+    "RG-027-018"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les numéros de compte des bénéficiaires (IBAN) sont enregistrés en clair dans les journaux du serveur lors de chaque virement. Ces journaux sont accessibles aux administrateurs et ne respectent pas les règles de protection des données personnelles.",
+   "expected_behavior": "THE SYSTEM SHALL mask the target IBAN in all server log entries (e.g. FR76****1234) to avoid exposing sensitive payment data."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-087",
+   "rg_ids": [
+    "RG-027-019"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Une méthode interne d'évaluation individuelle de fraude est accessible publiquement sans restriction d'accès. Elle devrait être réservée à l'usage interne du service de détection.",
+   "expected_behavior": "THE SYSTEM SHALL NOT expose evaluateSingleScore() as a public API entry point for fraud detection."
+  }
+ ],
+ "scenarios": []
+}

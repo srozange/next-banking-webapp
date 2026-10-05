@@ -45,6 +45,7 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
   - *À reporter dans `pilote-bmad/reference/non-verifie.md`.*
 - Clé NVD contrôlée sans être lue ni affichée : présence de `<id>nvd</id>` dans `<servers>`, mot de passe non vide de 36 caractères (format UUID). Preuve fonctionnelle : `mvn dependency-check:update-only -DnvdApiServerId=nvd` lancé sur un POM jetable. L'API NVD répond (401 162 entrées) sans l'avertissement « API Key was not provided ».
 - Bases Trivy téléchargées (`trivy fs --download-db-only`, puis `--download-java-db-only`) : 24 s, 1,4 Go + 1,5 Go dans `~/.cache/trivy`. La base Java n'est gardée en cache que 3 jours, et `cve.sh` tourne avec `--skip-java-db-update`. Le premier constat de l'étape 4 reste donc vrai : il faut une mise à jour avant chaque série de scans, pas une seule fois.
+- **Base NVD téléchargée** (`dependency-check:update-only` avec la clé de `settings.xml`) : `BUILD SUCCESS`, 401 169 entrées en **36 min**. La première exécution est longue : la fiche de l'étape 5 doit le dire, et la lancer en arrière-plan tôt (avant l'étape 6).
   - *À ajouter dans la fiche de l'étape 5 du pilote :* un téléchargement initial des bases Trivy et NVD (`update-only`), et dire **qui** les rafraîchit ensuite (par exemple une commande `scripts/gates/cve-update.sh` lancée avant la boucle).
 - Déport vers retro : rien de pertinent. La sécurité des dépendances ne dépend pas du corpus.
 

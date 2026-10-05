@@ -1,0 +1,94 @@
+{
+ "rules": [
+  {
+   "rg": "RG-022-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-022-010",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : aucune limite effective sur le nombre de notifications/jour ; à raison de 48 exécutions toutes les 30 min, un compte constamment sous le seuil génère 48 alertes/jour ; le champ `maxNotificationsPerDay` est déclaré à 20 mais jamais appliqué"
+  },
+  {
+   "rg": "RG-022-011",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : l'exécution de `checkLowBalances` n'est pas tracée dans `BATCH_JOB_LOGS` et est invisible dans l'interface d'administration (admin.xhtml)"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-071",
+   "rg_ids": [
+    "RG-022-010"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "La limite de 20 alertes de solde faible par compte et par jour est configurée dans le code mais jamais appliquée. Un compte en sous-solde peut générer des dizaines d'alertes inutiles par jour.",
+   "expected_behavior": "WHEN a customer's account balance is below the threshold THE SYSTEM SHALL generate at most 20 low-balance notifications per account per day."
+  },
+  {
+   "id": "BUG-072",
+   "rg_ids": [
+    "RG-022-011"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les exécutions du batch de surveillance des soldes faibles ne sont pas enregistrées dans le journal d'administration. L'administrateur ne peut pas vérifier si ce traitement s'est déroulé normalement.",
+   "expected_behavior": "WHEN the periodic low-balance scan completes THE SYSTEM SHALL record the execution result in the batch job execution log."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

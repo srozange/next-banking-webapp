@@ -1,0 +1,118 @@
+{
+ "rules": [
+  {
+   "rg": "RG-030-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-012",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-030-014",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : session non invalidée avant écriture du contexte utilisateur"
+  },
+  {
+   "rg": "RG-030-015",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : aucune annotation de sécurité EJB dans les services ; un contournement du filtre HTTP (appel JNDI distant, injection CDI non filtrée) ne serait pas contraint par rôle"
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-092",
+   "rg_ids": [
+    "RG-030-014"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lors de la connexion, l'identifiant de session existant n'est pas reprotégé avant l'enregistrement du contexte authentifié. Un attaquant ayant observé l'identifiant avant la connexion pourrait usurper la session du client.",
+   "expected_behavior": "WHEN a user successfully authenticates THE SYSTEM SHALL invalidate the existing HTTP session and create a fresh session before storing the authentication context."
+  },
+  {
+   "id": "BUG-093",
+   "rg_ids": [
+    "RG-030-015"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les contrôles de rôle d'accès ne sont appliqués qu'au niveau du filtre de requêtes, pas dans les services métier. Un accès contournant ce filtre ne serait pas contraint par les rôles définis.",
+   "expected_behavior": "THE SYSTEM SHALL enforce role-based access control at the service layer independently of the HTTP filter."
+  }
+ ],
+ "bugs_ne_pas_corriger": [],
+ "scenarios": []
+}

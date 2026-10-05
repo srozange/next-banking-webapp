@@ -1,0 +1,191 @@
+{
+ "rules": [
+  {
+   "rg": "RG-028-001",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-002",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-003",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-004",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-005",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-006",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-007",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-008",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-009",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-010",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-011",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-012",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : Thread.sleep(2000) bloquant dans le thread HTTP CDI ; en remplacement, utiliser une stratégie de retry asynchrone ou une attente non bloquante"
+  },
+  {
+   "rg": "RG-028-013",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-014",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-015",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-016",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-017",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-018",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-019",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-020",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-021",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-022",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-023",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-024",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-025",
+   "status": "Suspect",
+   "nature": "dette-legacy",
+   "nature_detail": "legacy : erreurs API Powens silencieusement avalées sur getAccounts et getTransactions ; l'utilisateur voit des listes vides sans message d'erreur explicite"
+  },
+  {
+   "rg": "RG-028-026",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  },
+  {
+   "rg": "RG-028-027",
+   "status": "À confirmer",
+   "nature": null,
+   "nature_detail": null
+  }
+ ],
+ "bugs_corriger": [
+  {
+   "id": "BUG-089",
+   "rg_ids": [
+    "RG-028-025"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Les erreurs retournées par le service Powens lors du chargement des comptes ou des transactions sont ignorées et l'appelant reçoit une liste vide. L'interface ne peut pas distinguer 'aucun compte' d'une 'défaillance du service', et l'utilisateur n'est pas informé.",
+   "expected_behavior": "IF the Powens API returns an error response when loading accounts or transactions THE SYSTEM SHALL propagate an error indicator to the caller so that the user can be informed of the service unavailability."
+  }
+ ],
+ "bugs_ne_pas_corriger": [
+  {
+   "id": "BUG-088",
+   "rg_ids": [
+    "RG-028-012"
+   ],
+   "val_ids": [],
+   "scenario_ids": [],
+   "summary": "Lors du chargement des comptes Powens après un retour de connexion, le service attend deux secondes de manière bloquante. Ce mécanisme primitif peut bloquer les ressources serveur en période de forte charge.",
+   "expected_behavior": "WHEN loading external accounts after a Powens callback THE SYSTEM SHALL wait for Powens account synchronization to complete using a non-blocking mechanism before querying the accounts API."
+  }
+ ],
+ "scenarios": []
+}
