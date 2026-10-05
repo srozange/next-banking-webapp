@@ -130,6 +130,13 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
   - *À corriger dans `pilote-bmad/etapes/gm-5.md` :* retirer « ajoute à la commande d'empreinte : `replay-mapping.json`, `playwright.config.ts`, `auth.setup.ts`, `specs/*.spec.ts` », ou en faire une option à décider avec le propriétaire.
   - *À corriger dans `pilote-bmad/etapes/etape-10.md` (et le hook de l'étape 11) :* ne pas inclure ces fichiers par défaut quand le projet autorise leur correction par la story socle.
 
+### 2026-10-05 · Étape 6 terminée · `bmad-sprint-planning`
+
+- Porte de préparation à PASS : 333 FR du PRD toutes dans la table de correspondance et dans au moins une story, aucune FR orpheline côté stories ; toutes les NFR reprises ; 13 UX-DR sans story, justifiées dans `epics.md`. Les 6 questions ouvertes de la spine sont affectées à une story. Seule décision humaine en attente : expiration sur inactivité et renouvellement du jeton (AR-106), prérequis de la story 2.5.
+- `sprint-status.yaml` : 10 epics, 67 stories en `backlog`, 10 rétrospectives `optional` ; le script ne lit pas comme epics 4 titres annexes de `epics.md` (« Epic 1 imposé », « Epic List »…), ce qui est attendu.
+- **Clés de story accentuées** (`1-2-rendre-l-architecture-hexagonale-vérifiable-et-bloquante`) : le slug du script est Unicode par conception. `status.sh` les lit correctement (étape 7 : `1.1=backlog ; 1.2=backlog`). À surveiller à l'étape 8 : bmad-loop et ses expressions de clés de story.
+  - *À ajouter dans `pilote-bmad/etapes/etape-08.md` :* vérifier que bmad-loop accepte des clés non ASCII avant le premier `run`.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |

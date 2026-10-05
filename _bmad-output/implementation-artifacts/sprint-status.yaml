@@ -1,0 +1,133 @@
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created, ready for development
+#   - in-progress: Developer actively working on implementation
+#   - review: Implementation complete, ready for review
+#   - done: Story completed
+
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+# Action Item Status:
+#   - open: Committed during a retrospective, not yet addressed
+#   - in-progress: Actively being worked on
+#   - done: Completed
+
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when its first story starts (via build's sprint sync)
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates the next story after the previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Retrospective appends its action items to action_items; the status view surfaces open ones
+generated: 10-05-2026 19:35
+last_updated: 10-05-2026 19:35
+project: next-banking-webapp
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+development_status:
+  epic-1: backlog
+  1-1-poser-le-squelette-des-deux-services-et-du-front: backlog
+  1-2-rendre-l-architecture-hexagonale-vérifiable-et-bloquante: backlog
+  1-3-imposer-la-couverture-par-couche: backlog
+  1-4-faire-traverser-les-deux-services-par-un-flux-témoin-tracé: backlog
+  1-5-mesurer-la-mutation-du-domaine-et-de-l-application-à-la-dema: backlog
+  1-6-bloquer-les-dépendances-vulnérables: backlog
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-se-connecter-par-l-api-du-service-identité-et-clients: backlog
+  2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adresse: backlog
+  2-3-se-connecter-depuis-l-écran-de-connexion-au-thème-demo-bank: backlog
+  2-4-naviguer-dans-son-espace-selon-son-rôle: backlog
+  2-5-se-déconnecter-et-retrouver-la-connexion-quand-la-session-ex: backlog
+  2-6-faire-appliquer-les-rôles-par-les-services-eux-mêmes: backlog
+  2-7-publier-l-état-des-clients-pour-les-autres-services: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-exécuter-un-virement-entre-ses-comptes: backlog
+  3-2-évaluer-les-signaux-de-fraude-de-chaque-virement: backlog
+  3-3-notifier-le-client-de-l-issue-de-son-virement: backlog
+  3-4-suspendre-refuser-revoir-et-rejeter-à-l-échéance-un-virement: backlog
+  3-5-suspendre-un-virement-qui-fait-dépasser-le-cumul-glissant-su: backlog
+  3-6-refaire-un-virement-refusé-depuis-un-formulaire-prérempli: backlog
+  3-7-consulter-le-relevé-d-un-compte: backlog
+  3-8-voir-ses-comptes-et-ses-dernières-opérations-sur-le-tableau: backlog
+  3-9-lire-et-gérer-ses-notifications-sur-le-tableau-de-bord: backlog
+  3-10-lever-une-alerte-de-fraude-après-des-échecs-de-connexion-rép: backlog
+  epic-3-retrospective: optional
+
+  epic-4: backlog
+  4-1-consulter-ses-bénéficiaires-externes-et-en-supprimer-un: backlog
+  4-2-vérifier-un-iban-et-ajouter-un-bénéficiaire: backlog
+  4-3-créer-un-virement-programmé-et-voir-ses-virements-programmés: backlog
+  4-4-suspendre-réactiver-ou-supprimer-un-virement-programmé: backlog
+  4-5-journaliser-les-traitements-planifiés-relevés-mensuels-et-se: backlog
+  4-6-exécuter-automatiquement-les-échéances-dues-des-virements-pr: backlog
+  4-7-traiter-les-échéances-non-exécutées-et-prévenir-le-client: backlog
+  4-8-suspendre-une-échéance-suspecte-et-la-soumettre-à-la-revue: backlog
+  4-9-créditer-les-intérêts-mensuels-des-comptes-épargne: backlog
+  4-10-compter-chaque-nuit-les-transactions-importantes: backlog
+  4-11-alerter-le-client-d-un-solde-faible: backlog
+  4-12-consulter-ses-dépenses-du-mois-par-catégorie: backlog
+  4-13-définir-et-suivre-des-plafonds-de-dépenses-par-catégorie: backlog
+  epic-4-retrospective: optional
+
+  epic-5: backlog
+  5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: backlog
+  5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: backlog
+  5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: backlog
+  5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: backlog
+  5-5-consulter-l-échéancier-marquer-une-échéance-payée-et-supprim: backlog
+  5-6-traiter-le-pipeline-des-prêts-en-attente-depuis-l-administra: backlog
+  epic-5-retrospective: optional
+
+  epic-6: backlog
+  6-1-télécharger-son-rib-et-son-attestation-de-solde-depuis-le-se: backlog
+  6-2-télécharger-ses-relevés-mensuels-et-ses-ifu: backlog
+  6-3-consulter-la-page-documents-et-ouvrir-ses-pdf: backlog
+  epic-6-retrospective: optional
+
+  epic-7: backlog
+  7-1-ouvrir-le-service-bourse-et-gérer-la-watchlist-commune: backlog
+  7-2-raccorder-le-fournisseur-de-cotations-alphavantage-derrière: backlog
+  7-3-générer-le-graphique-d-évolution-du-cours-côté-serveur: backlog
+  7-4-afficher-l-écran-bourse: backlog
+  7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata: backlog
+  7-6-afficher-l-écran-produits: backlog
+  7-7-raccorder-azure-openai-derrière-un-port-simulé-et-exposer-l: backlog
+  7-8-dialoguer-avec-sophie-sur-l-écran-mon-conseiller: backlog
+  epic-7-retrospective: optional
+
+  epic-8: backlog
+  8-1-raccorder-powens-derrière-un-port-et-lancer-la-connexion-à-u: backlog
+  8-2-traiter-le-retour-public-de-powens: backlog
+  8-3-consulter-sélectionner-rafraîchir-et-déconnecter-ses-comptes: backlog
+  8-4-afficher-l-écran-comptes-tiers: backlog
+  8-5-afficher-le-patrimoine-total-avec-les-comptes-externes-sur-l: backlog
+  epic-8-retrospective: optional
+
+  epic-9: backlog
+  9-1-exposer-le-portefeuille-du-conseiller-décidé-côté-serveur: backlog
+  9-2-afficher-l-espace-conseiller-portefeuille-cartes-et-détail-d: backlog
+  9-3-afficher-les-indicateurs-la-gestion-des-clients-et-tous-les: backlog
+  9-4-activer-et-désactiver-un-client-depuis-la-gestion-des-client: backlog
+  9-5-revoir-les-alertes-de-fraude-sans-toucher-au-virement-suspen: backlog
+  9-6-afficher-le-journal-des-traitements-et-le-catalogue-des-prod: backlog
+  epic-9-retrospective: optional
+
+  epic-10: backlog
+  10-1-reformuler-les-textes-d-un-virement-important-exécuté: backlog
+  10-2-monter-le-socle-du-rejeu-final-du-golden-master: backlog
+  10-3-rejouer-le-golden-master-en-entier-et-mesurer-le-critère-de: backlog
+  epic-10-retrospective: optional
