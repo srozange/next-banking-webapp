@@ -1,5 +1,5 @@
 <!-- bmad:context -->
-<!-- Vérifié le 2026-10-05 sur 925a236. Géré par bmad-project-context ; tout ce qui est entre ces marqueurs est remplacé à chaque refresh. Ce qui doit être conservé va hors des marqueurs. -->
+<!-- Vérifié le 2026-10-05 sur df265cc. Géré par bmad-project-context ; tout ce qui est entre ces marqueurs est remplacé à chaque refresh. Ce qui doit être conservé va hors des marqueurs. -->
 
 ## next-banking-webapp
 
@@ -15,6 +15,8 @@ Règles pour les agents (reprises de `docs/quality-gates.md`) :
 - Interdit d'abaisser un seuil, d'ajouter une exclusion de couverture ou de mutation, de désactiver un test.
 - Si un seuil paraît inatteignable : s'arrêter et le signaler, ne pas contourner.
 
+Exception, jusqu'à la fin de l'epic 1 (avant l'empreinte de l'étape 10) : la story 1.2 crée `frontend/.dependency-cruiser.cjs` et la story 1.4 crée `scripts/gates/trace-smoke.sh`. Aucune autre story ne les modifie ; une fois l'empreinte figée, seul l'humain les modifie.
+
 Golden master et secrets :
 - Ne jamais modifier `e2e/golden-master/**` (généré), `docs/retro/golden-master/derived/` ni `replay-mapping.json` ; si un scénario paraît faux, s'arrêter et le signaler. Les décisions de rejeu passent par le skill `corpus-bmad-golden-master`.
 - Ne jamais rejouer le golden master pendant une story ou entre deux epics : il se rejoue une seule fois, en entier, à la fin du développement.
@@ -29,7 +31,7 @@ Golden master et secrets :
 
 ## Running and verifying
 
-- Avant de déclarer un travail terminé : `scripts/gates/build.sh` puis `scripts/gates/check-gates-exist.sh`, code de sortie 0. Pendant l'epic 1, `check-gates-exist.sh` affiche des `KO` pour les contrôles des stories pas encore livrées ; ceux de la story en cours doivent passer à `OK`.
+- Avant de déclarer un travail terminé : `scripts/gates/build.sh`, `scripts/gates/check-gates-exist.sh` et `scripts/gates/golden-master.sh` (statique, ne rejoue rien), code de sortie 0. Pendant l'epic 1, `check-gates-exist.sh` affiche des `KO` pour les contrôles des stories pas encore livrées ; ceux de la story en cours doivent passer à `OK`.
 - `scripts/gates/mutation.sh` et `scripts/gates/cve.sh` : à la demande. `cve.sh` ne met pas à jour les bases Trivy et NVD : si elles manquent ou ont expiré, s'arrêter et demander à l'humain de les rafraîchir.
 - TODO après la story 1.4 : ajouter `scripts/gates/trace-smoke.sh` à la liste ci-dessus.
 - Versions : uniquement celles de `_bmad-output/planning-artifacts/architecture/architecture-next-banking-webapp-2026-10-05/versions-verifiees.md`, jamais celles de l'environnement local ni « la dernière » (ex. TypeScript 5.9.3, pas 7.x).

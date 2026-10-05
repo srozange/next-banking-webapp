@@ -89,6 +89,24 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - **Ordre entre G4 et `bmad-project-context` non précisé.** G4 installe `scripts/gates/golden-master.sh` « avant le premier epic ». Si `bmad-project-context` passe avant, le bloc ne peut pas citer ce contrôle dans les commandes à lancer, et il faudra un `refresh`.
   - *À préciser dans `pilote-bmad/etapes/gm-4.md` :* placer G4 avant `bmad-project-context`, ou demander au bloc de citer le contrôle golden master dès G4 faite.
 
+### 2026-10-05 · Étape G4 · Contrôle statique du golden master
+
+- Script copié tel quel : aucun chemin à adapter (valeurs par défaut conformes au dépôt). Options de `derive-golden-master.py derive` et `export-golden-master-tests.py --check` confirmées par leur `--help`. Niveau statique consigné.
+- **`AGENTS.md` interdit désormais `scripts/gates/**` aux agents**, alors que le pilote y installe encore `golden-master.sh` (G4) et que les stories 1.2 et 1.4 y créent des fichiers. La spine (ligne 160) prévoit ces exceptions, mais `AGENTS.md` ne les cite pas : un agent de dev de la story 1.4 pourrait refuser de créer `trace-smoke.sh`.
+  - *À préciser dans le prompt `bmad-project-context` de `pilote-bmad/reference/prompts-bmad.md` :* ajouter une ligne d'exception datée (« jusqu'à la fin de l'epic 1 : la story 1.2 crée `frontend/.dependency-cruiser.cjs`, la story 1.4 crée `scripts/gates/trace-smoke.sh` »), à retirer au refresh après l'étape 10.
+- Déport vers retro : rien.
+
+### 2026-10-05 · Étape G5 · Contrôle golden master prouvé
+
+- Réel : code 0, deux `OK`. Négatifs « test généré retouché » et « dérivé retouché » : code 1, fichiers nommés.
+- **Le négatif « route du mapping remplacée par `[ASK ARCHITECT]` » de la fiche ne prouve rien sur ce dépôt.** `derive-golden-master.py` (`screen_start_url`) ne lit `routes[page]` que si `target.start_url` est vide. Ici, les 26 scénarios d'écran en `map` ont tous un `target.start_url` explicite : `routes` n'est jamais lu, et le contrôle sort en 0, à juste titre. Le cas a été remplacé par `target.start_url` de SC-003-01 à `[ASK ARCHITECT]` : code 1, scénario et champ nommés.
+  - *À corriger dans `pilote-bmad/etapes/gm-5.md` et `reference/tests-scripts.md` :* viser `target.start_url` d'un scénario d'écran, ou ne viser `routes` qu'après avoir vérifié qu'un scénario `map` sans `start_url` l'utilise.
+  - *À déporter vers `corpus-bmad-golden-master` (léger) :* signaler, à la dérivation, une table `routes` qu'aucun scénario ne lit (donnée morte, trompeuse pour les relecteurs).
+- Moi : mon premier script de modification supposait `scenarios` en objet ; c'est une liste. Le plantage a eu lieu avant l'écriture, sans effet.
+- **Fausse alerte de `status.sh` après les tests négatifs.** Restaurer `replay-mapping.json` par `git checkout` le rend plus récent que le dérivé. `status.sh` compare les dates (`-nt`, lignes 156 et 159) : il repasse G3 à « à faire » et lève « `replay-mapping.json` a changé depuis la dernière dérivation », alors que le contenu est identique au commit et que `golden-master.sh` sort en 0.
+  - *À corriger dans `pilote-bmad/status.sh` :* pour G3 et cette alerte, appeler `scripts/gates/golden-master.sh` quand il existe (comparaison de contenu, environ 1 s), et ne garder la comparaison de dates qu'avant G4. *Dans `gm-5.md` :* après restauration, remettre la date du mapping (`touch -r docs/retro/golden-master/derived/replay-config.json replay-mapping.json`).
+- Pour l'étape 9 (séquence de fin d'epic) et l'étape 10 (`[verify]` et empreinte) : brancher `scripts/gates/golden-master.sh` (environ 1 s) ; ajouter à l'empreinte `replay-mapping.json`, `e2e/golden-master/playwright.config.ts`, `e2e/golden-master/auth.setup.ts` et `e2e/golden-master/specs/*.spec.ts`.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
