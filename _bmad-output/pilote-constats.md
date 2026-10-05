@@ -137,6 +137,17 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - **Clés de story accentuées** (`1-2-rendre-l-architecture-hexagonale-vérifiable-et-bloquante`) : le slug du script est Unicode par conception. `status.sh` les lit correctement (étape 7 : `1.1=backlog ; 1.2=backlog`). À surveiller à l'étape 8 : bmad-loop et ses expressions de clés de story.
   - *À ajouter dans `pilote-bmad/etapes/etape-08.md` :* vérifier que bmad-loop accepte des clés non ASCII avant le premier `run`.
 
+### 2026-10-05 · Étape 7 · Story 1.1 (bmad-build, déroulée par l'agent à la demande du propriétaire)
+
+- Commit `9e27361`, story en `review`. Vérifié : `mvn -B -q verify -DfailIfNoTests=true` (6 tests par module), `help:effective-pom` des deux services, `vitest run` (5 tests), `tsc --noEmit`, `golden-master.sh` : code 0 ; aucun fichier protégé modifié depuis le commit de départ.
+- **`build.sh` ne peut pas être vert en 1.1** : il lance `-Dtest='*ArchitectureTest'` et depcruise, livrés en 1.2. La consigne du pilote (et AGENTS.md « avant de déclarer un travail terminé : build.sh ») est inapplicable à la 1.1.
+  - *À corriger dans `pilote-bmad/etapes/etape-07.md` et le prompt de la 1.1 :* critère de fin de la 1.1 = commandes de ses critères + `golden-master.sh` ; `build.sh` à partir de la 1.2.
+- **Critère « fichiers protégés inchangés » basé sur `origin/main`** : le `main` local a 14 commits d'avance non poussés (planification), donc `git diff merge-base origin/main` liste tous les fichiers protégés. Comparaison faite depuis le commit de départ de la story.
+  - *À ajouter dans le prompt des epics :* comparer depuis `baseline_commit` de la spec, ou pousser `main` avant le premier `bmad-build`.
+- **`build.sh` sans `clean`** : un module dont on retire tous les tests passe encore, les classes de test compilées restent dans `target/test-classes` (constaté par l'agent ; échec seulement avec `mvn clean verify`). À tester à l'étape 7 (négatif de `build.sh`) ; correctif éventuel du script protégé à proposer avant l'empreinte.
+- **`build.sh` ne vérifie pas les types du front** (pas de `tsc --noEmit`) : une erreur de type passe tous les contrôles. Consigné dans `deferred-work.md`. Décision humaine avant l'étape 10.
+- RTK réécrit `npx vitest run` et écrit `frontend/.vitest/json/output.json` : ignoré par `.gitignore`. Sans effet sur les contrôles (`build.sh` est lancé hors réécriture).
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
