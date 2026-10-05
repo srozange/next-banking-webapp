@@ -148,6 +148,17 @@ Chaque constat : date, étape, ce qui a été observé, et une proposition (« �
 - **`build.sh` ne vérifie pas les types du front** (pas de `tsc --noEmit`) : une erreur de type passe tous les contrôles. Consigné dans `deferred-work.md`. Décision humaine avant l'étape 10.
 - RTK réécrit `npx vitest run` et écrit `frontend/.vitest/json/output.json` : ignoré par `.gitignore`. Sans effet sur les contrôles (`build.sh` est lancé hors réécriture).
 
+### 2026-10-05 · Étape 7 · Story 1.2 et tests de `build.sh` / `canary-arch.sh`
+
+- Commit `f7ff77d`, story en `review`. `build.sh` code 0, `check-gates-exist.sh` : 7 lignes de la story à `OK`, `golden-master.sh` code 0, aucun fichier protégé modifié hors `frontend/.dependency-cruiser.cjs`.
+- Tests consignés : `build.sh` réel OK, négatif OK (depcruise sur domaine → adaptateur et `react` dans application, ArchUnit sur Spring dans le domaine) ; `canary-arch.sh` réel et négatif OK, sans résidu.
+- **`build.sh` a tort sur un cas** : tous les tests d'un module retirés → code 0, car `mvn verify` sans `clean` rejoue `target/test-classes`. Le même biais masquerait la suppression d'un `*ArchitectureTest` (seul `check-gates-exist.sh` la verrait, sur les sources). Correctif proposé à l'humain : `clean verify`. Consigné `negatif KO`.
+  - *À corriger dans `pilote-bmad/fichiers/scripts/gates/build.sh` et `reference/tests-scripts.md` :* `mvn -B -q clean verify -DfailIfNoTests=true` ; ajouter le négatif « module sans test » au plan de test de `build.sh`.
+- `onionArchitecture()` échoue sur une couche vide (« domain service » non déclarée) : `withOptionalLayers(true)` nécessaire, compensé par `ensureAllClassesAreContainedInArchitecture()`.
+  - *À ajouter dans `pilote-bmad/reference/formes.md` (story 1.2) :* ces deux réglages, et `ImportOption.DoNotIncludeTests` (les tests de contexte Spring dépendent des adaptateurs).
+- La revue a relevé des listes d'interdits plus courtes que les contournements possibles (références de méthode `Instant::now` corrigées ; `nanoTime`, `ZoneId.systemDefault`, `RestOperations`, `HttpURLConnection`, imports non résolus de depcruise reportés) : décisions d'architecture à prendre avant l'empreinte, listées dans `deferred-work.md`.
+- Les stories restent en `review` (statut de fin de `bmad-build`) : `status.sh` garde l'étape 7 à « à faire » tant que l'humain ne les passe pas à `done`.
+
 ## Pistes de déport vers les skills retro (synthèse)
 
 | Fonction aujourd'hui dans le pilote | Candidat | Intérêt | Risque de surcharge |
