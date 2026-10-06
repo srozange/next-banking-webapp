@@ -6,7 +6,10 @@ import fr.nextbanking.identiteclients.application.port.in.ConsulterProfil;
 import fr.nextbanking.identiteclients.application.port.in.SeConnecter;
 import fr.nextbanking.identiteclients.application.port.out.DepotClients;
 import fr.nextbanking.identiteclients.application.port.out.EmetteurJeton;
+import fr.nextbanking.identiteclients.application.port.out.Horloge;
+import fr.nextbanking.identiteclients.application.port.out.JournalAudit;
 import fr.nextbanking.identiteclients.application.port.out.MotsDePasse;
+import fr.nextbanking.identiteclients.application.port.out.Transaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,8 +20,9 @@ import org.springframework.context.annotation.Configuration;
 public class AssemblageConnexion {
 
     @Bean
-    SeConnecter seConnecter(DepotClients depotClients, MotsDePasse motsDePasse, EmetteurJeton emetteurJeton) {
-        return new SeConnecterCasUsage(depotClients, motsDePasse, emetteurJeton);
+    SeConnecter seConnecter(DepotClients depotClients, MotsDePasse motsDePasse, EmetteurJeton emetteurJeton,
+            JournalAudit journalAudit, Transaction transaction, Horloge horloge) {
+        return new SeConnecterCasUsage(depotClients, motsDePasse, emetteurJeton, journalAudit, transaction, horloge);
     }
 
     @Bean

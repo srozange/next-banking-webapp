@@ -6,10 +6,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 import org.springframework.test.context.DynamicPropertyRegistry;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
 /**
- * Base de test (Testcontainers), démarrée une fois pour toute l'exécution, et paire RSA du jeton générée en mémoire :
+ * Base et Kafka de test (Testcontainers), démarrés une fois pour toute l'exécution, et paire RSA du jeton générée en mémoire :
  * aucune clé n'est écrite dans un fichier.
  */
 public final class Conteneurs {
@@ -17,10 +18,12 @@ public final class Conteneurs {
     public static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18.6")
             .withDatabaseName("identite_clients").withUsername("identite_clients")
             .withPassword("mot-de-passe-de-test");
+    public static final KafkaContainer KAFKA = new KafkaContainer("apache/kafka:4.2.2");
     public static final KeyPair CLES = paireRsa();
 
     static {
         POSTGRES.start();
+        KAFKA.start();
     }
 
     private Conteneurs() {
@@ -36,11 +39,12 @@ public final class Conteneurs {
         return Base64.getEncoder().encodeToString(CLES.getPublic().getEncoded());
     }
 
-    /** Propriétés de connexion et clés pour {@code @DynamicPropertySource}. */
+    /** Propriétés de connexion (base, Kafka) et clés pour {@code @DynamicPropertySource}. */
     public static void proprietes(DynamicPropertyRegistry registre) {
         registre.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registre.add("spring.datasource.username", POSTGRES::getUsername);
         registre.add("spring.datasource.password", POSTGRES::getPassword);
+        registre.add("spring.kafka.bootstrap-servers", KAFKA::getBootstrapServers);
         registre.add("nb.jeton.cle-privee", Conteneurs::clePrivee);
         registre.add("nb.jeton.cle-publique", Conteneurs::clePublique);
         registre.add("management.tracing.export.enabled", () -> "false");
@@ -52,6 +56,7 @@ public final class Conteneurs {
                 "--spring.datasource.url=" + POSTGRES.getJdbcUrl(),
                 "--spring.datasource.username=" + POSTGRES.getUsername(),
                 "--spring.datasource.password=" + POSTGRES.getPassword(),
+                "--spring.kafka.bootstrap-servers=" + KAFKA.getBootstrapServers(),
                 "--nb.jeton.cle-privee=" + clePrivee(),
                 "--nb.jeton.cle-publique=" + clePublique(),
                 "--management.tracing.export.enabled=false");

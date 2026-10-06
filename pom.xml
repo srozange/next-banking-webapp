@@ -21,6 +21,7 @@
         <module>services/coeur-bancaire</module>
         <module>services/notifications</module>
         <module>services/identite-clients</module>
+        <module>services/audit</module>
     </modules>
 
     <properties>

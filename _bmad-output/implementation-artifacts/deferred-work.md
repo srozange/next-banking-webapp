@@ -94,3 +94,19 @@ source_spec: `spec-2-1-se-connecter-par-l-api-du-service-identite-et-clients.md`
 severity: medium
 reason: scripts/gates/trace-smoke.sh:21 ne lance `make secrets` que si .env est absent ; script protégé. Le .env de ce poste a été complété ; les autres postes doivent relancer `make secrets` (inscrit en operator_actions).
 status: open
+
+### DW-10: Une connexion tient deux connexions du pool à la fois (transaction de la connexion, puis executerIndependamment en REQUIRES_NEW) : au-delà de 10 connexions simultanées (pool Hikari par défaut), les
+origin: spec-deferred 7054a18b9e87
+location: services/identite-clients/src/main/java/fr/nextbanking/identiteclients/application/SeConnecterCasUsage.java ; adapter/out/persistance/TransactionSpring.java
+source_spec: `spec-2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adresse-ip-d-origine.md`
+severity: medium
+reason: DataSourceTransactionManager prend la connexion dès l'ouverture de la transaction externe, qui reste tenue pendant la comparaison bcrypt ; REQUIRES_NEW en demande une seconde. L'imbrication est imposée par AR-40/AD-18 (et par le critère « opération annulée ») : la parade (pool dédié à l'audit, dimensionnement, borne de concurrence) est une décision d'architecture qui vaut pour tous les services émetteurs d'audit (Blind Hunter, Edge Case Hunter, Verification Gap).
+status: open
+
+### DW-11: Le consommateur audit garde le gestionnaire d'erreurs Kafka par défaut (10 essais sans délai puis abandon) : pendant une panne de sa base de plus de quelques minutes, des entrées d'audit sont perdues
+origin: spec-deferred 743a6bbb73c0
+location: services/audit/src/main/java/fr/nextbanking/audit/adapter/in/evenements/RecepteurAudit.java ; services/audit/src/main/resources/application.properties
+source_spec: `spec-2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adresse-ip-d-origine.md`
+severity: medium
+reason: Aucun DefaultErrorHandler configuré ; chaque essai attend le délai Hikari (30 s), puis l'offset est validé. Même motif que le consommateur notifications (story 1.4) : la politique de reprise (attente exponentielle, topic de rejet, exceptions non rejouables) est à décider pour tous les consommateurs (Edge Case Hunter).
+status: open

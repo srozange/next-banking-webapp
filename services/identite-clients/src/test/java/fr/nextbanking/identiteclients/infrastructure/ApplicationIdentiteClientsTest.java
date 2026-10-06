@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import fr.nextbanking.identiteclients.application.port.in.ConsulterProfil;
 import fr.nextbanking.identiteclients.application.port.in.SeConnecter;
+import fr.nextbanking.identiteclients.application.port.out.Horloge;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -32,6 +34,9 @@ class ApplicationIdentiteClientsTest {
     @Autowired
     private ConsulterProfil consulterProfil;
 
+    @Autowired
+    private Horloge horloge;
+
     @Test
     void les_cas_d_usage_sont_assembles() {
         assertThat(seConnecter).isNotNull();
@@ -55,6 +60,31 @@ class ApplicationIdentiteClientsTest {
     void refuse_de_demarrer_sans_cle_publique() {
         assertThatThrownBy(() -> demarrer(avec("--nb.jeton.cle-publique=")))
                 .hasStackTraceContaining("nb.jeton.cle-publique est obligatoire");
+    }
+
+    @Test
+    @Tag("FR-001-13")
+    void refuse_de_demarrer_avec_une_plage_de_confiance_illisible() {
+        assertThatThrownBy(() -> demarrer(avec("--nb.reseau.mandataires-de-confiance=172.30.0.0/99")))
+                .hasStackTraceContaining("nb.reseau.mandataires-de-confiance contient une plage CIDR illisible");
+    }
+
+    @Test
+    @Tag("FR-001-13")
+    void refuse_de_demarrer_sans_plage_de_confiance() {
+        assertThatThrownBy(() -> demarrer(avec("--nb.reseau.mandataires-de-confiance=")))
+                .hasStackTraceContaining("nb.reseau.mandataires-de-confiance est obligatoire");
+    }
+
+    @Test
+    void refuse_de_demarrer_avec_un_fuseau_invalide() {
+        assertThatThrownBy(() -> demarrer(avec("--nb.fuseau=Mars/Olympus")))
+                .hasStackTraceContaining("nb.fuseau n'est pas un fuseau valide : Mars/Olympus");
+    }
+
+    @Test
+    void l_horloge_est_dans_le_fuseau_metier() {
+        assertThat(horloge.fuseau()).isEqualTo(java.time.ZoneId.of("Europe/Paris"));
     }
 
     @Test
