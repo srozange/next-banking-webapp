@@ -12,10 +12,12 @@ interface Proprietes {
   roles: readonly string[];
   /** Nom complet lu par /moi ; null tant qu'il est inconnu (aucune salutation). */
   nomComplet: string | null;
+  /** Action du bouton de déconnexion. */
+  surDeconnexion: () => void;
 }
 
 /** En-tête global (header, 72px) : marque, liens filtrés par rôle, badge, salutation, déconnexion. */
-export function EnTete({ roles, nomComplet }: Proprietes) {
+export function EnTete({ roles, nomComplet, surDeconnexion }: Proprietes) {
   const badge = badgeDuRole(roles);
   return (
     <div className="en-tete">
@@ -41,7 +43,7 @@ export function EnTete({ roles, nomComplet }: Proprietes) {
             {T.salutation(nomComplet)}
           </span>
         )}
-        <BoutonTexte data-testid="nav-deconnexion">{T.deconnexion}</BoutonTexte>
+        <BoutonTexte data-testid="nav-deconnexion" onClick={surDeconnexion}>{T.deconnexion}</BoutonTexte>
       </div>
     </div>
   );

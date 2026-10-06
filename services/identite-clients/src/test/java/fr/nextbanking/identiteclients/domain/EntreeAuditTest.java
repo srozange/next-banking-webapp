@@ -28,6 +28,17 @@ class EntreeAuditTest {
     }
 
     @Test
+    void une_deconnexion_a_pour_utilisateur_le_client_id_en_texte() {
+        EntreeAudit entree = EntreeAudit.deconnexion(1L, "203.0.113.7", ID, HORODATAGE);
+
+        assertThat(entree.utilisateur()).isEqualTo("1");
+        assertThat(entree.action()).isEqualTo(ActionAudit.LOGOUT);
+        assertThat(entree.detail()).isEqualTo("Déconnexion");
+        assertThat(entree.adresseIp()).isEqualTo("203.0.113.7");
+        assertThat(entree.horodatage()).isEqualTo(HORODATAGE);
+    }
+
+    @Test
     void une_tentative_echouee_a_pour_utilisateur_l_identifiant_saisi() {
         EntreeAudit entree = EntreeAudit.tentativeEchouee("retro-compte-inexistant", "10.0.0.1", ID, HORODATAGE);
 

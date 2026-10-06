@@ -49,7 +49,7 @@ development_status:
   2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adresse: done
   2-3-se-connecter-depuis-l-écran-de-connexion-au-thème-demo-bank: done
   2-4-naviguer-dans-son-espace-selon-son-rôle: done
-  2-5-se-déconnecter-et-retrouver-la-connexion-quand-la-session-ex: backlog
+  2-5-se-déconnecter-et-retrouver-la-connexion-quand-la-session-ex: done
   2-6-faire-appliquer-les-rôles-par-les-services-eux-mêmes: backlog
   2-7-publier-l-état-des-clients-pour-les-autres-services: backlog
   epic-2-retrospective: optional
@@ -59,12 +59,12 @@ development_status:
   3-2-évaluer-les-signaux-de-fraude-de-chaque-virement: backlog
   3-3-notifier-le-client-de-l-issue-de-son-virement: backlog
   3-4-suspendre-refuser-revoir-et-rejeter-à-l-échéance-un-virement: backlog
-  3-5-suspendre-un-virement-qui-fait-dépasser-le-cumul-glissant-su: backlog
-  3-6-refaire-un-virement-refusé-depuis-un-formulaire-prérempli: backlog
+  3-5-suspendre-un-virement-qui-fait-dépasser-le-cumul-glissant-su: optional
+  3-6-refaire-un-virement-refusé-depuis-un-formulaire-prérempli: optional
   3-7-consulter-le-relevé-d-un-compte: backlog
   3-8-voir-ses-comptes-et-ses-dernières-opérations-sur-le-tableau: backlog
   3-9-lire-et-gérer-ses-notifications-sur-le-tableau-de-bord: backlog
-  3-10-lever-une-alerte-de-fraude-après-des-échecs-de-connexion-rép: backlog
+  3-10-lever-une-alerte-de-fraude-après-des-échecs-de-connexion-rép: optional
   epic-3-retrospective: optional
 
   epic-4: backlog
@@ -72,13 +72,13 @@ development_status:
   4-2-vérifier-un-iban-et-ajouter-un-bénéficiaire: backlog
   4-3-créer-un-virement-programmé-et-voir-ses-virements-programmés: backlog
   4-4-suspendre-réactiver-ou-supprimer-un-virement-programmé: backlog
-  4-5-journaliser-les-traitements-planifiés-relevés-mensuels-et-se: backlog
+  4-5-journaliser-les-traitements-planifiés-relevés-mensuels-et-se: optional
   4-6-exécuter-automatiquement-les-échéances-dues-des-virements-pr: backlog
   4-7-traiter-les-échéances-non-exécutées-et-prévenir-le-client: backlog
-  4-8-suspendre-une-échéance-suspecte-et-la-soumettre-à-la-revue: backlog
-  4-9-créditer-les-intérêts-mensuels-des-comptes-épargne: backlog
-  4-10-compter-chaque-nuit-les-transactions-importantes: backlog
-  4-11-alerter-le-client-d-un-solde-faible: backlog
+  4-8-suspendre-une-échéance-suspecte-et-la-soumettre-à-la-revue: optional
+  4-9-créditer-les-intérêts-mensuels-des-comptes-épargne: optional
+  4-10-compter-chaque-nuit-les-transactions-importantes: optional
+  4-11-alerter-le-client-d-un-solde-faible: optional
   4-12-consulter-ses-dépenses-du-mois-par-catégorie: backlog
   4-13-définir-et-suivre-des-plafonds-de-dépenses-par-catégorie: backlog
   epic-4-retrospective: optional
@@ -123,7 +123,7 @@ development_status:
   9-3-afficher-les-indicateurs-la-gestion-des-clients-et-tous-les: backlog
   9-4-activer-et-désactiver-un-client-depuis-la-gestion-des-client: backlog
   9-5-revoir-les-alertes-de-fraude-sans-toucher-au-virement-suspen: backlog
-  9-6-afficher-le-journal-des-traitements-et-le-catalogue-des-prod: backlog
+  9-6-afficher-le-journal-des-traitements-et-le-catalogue-des-prod: optional
   epic-9-retrospective: optional
 
   epic-10: backlog

@@ -5,7 +5,8 @@ package fr.nextbanking.identiteclients.domain;
  */
 public enum ActionAudit {
     LOGIN("Connexion réussie"),
-    LOGIN_FAILED("Tentative échouée");
+    LOGIN_FAILED("Tentative échouée"),
+    LOGOUT("Déconnexion");
 
     private final String detail;
 

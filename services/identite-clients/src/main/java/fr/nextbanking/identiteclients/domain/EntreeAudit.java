@@ -39,6 +39,11 @@ public record EntreeAudit(UUID idEvenement, String utilisateur, ActionAudit acti
         return new EntreeAudit(idEvenement, Long.toString(clientId), ActionAudit.LOGIN, adresseIp, horodatage);
     }
 
+    /** Déconnexion : l'utilisateur est l'identifiant numérique du client, en texte. */
+    public static EntreeAudit deconnexion(long clientId, String adresseIp, UUID idEvenement, Instant horodatage) {
+        return new EntreeAudit(idEvenement, Long.toString(clientId), ActionAudit.LOGOUT, adresseIp, horodatage);
+    }
+
     /**
      * Tentative échouée : l'utilisateur est l'identifiant saisi ; au-delà de {@link #LONGUEUR_MAX_IDENTIFIANT_SAISI}
      * caractères, il est rogné puis tronqué à cette longueur.

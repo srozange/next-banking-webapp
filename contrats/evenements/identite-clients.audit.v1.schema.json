@@ -17,12 +17,12 @@
       "required": ["utilisateur", "action", "detail", "adresseIp"],
       "additionalProperties": false,
       "properties": {
-        "utilisateur": { "type": "string", "minLength": 1, "description": "clientId en texte pour LOGIN, identifiant saisi pour LOGIN_FAILED, SYSTEM pour un traitement." },
+        "utilisateur": { "type": "string", "minLength": 1, "description": "clientId en texte pour LOGIN et LOGOUT, identifiant saisi pour LOGIN_FAILED, SYSTEM pour un traitement." },
         "action": {
           "enum": ["LOGIN", "LOGIN_FAILED", "LOGOUT", "ADMIN_DEACTIVATE", "ADMIN_ACTIVATE", "ADMIN_LOAN_APPROVE", "ADMIN_LOAN_REFUSE", "ADMIN_TRANSFER_RELEASE", "ADMIN_TRANSFER_REJECT", "VIREMENT", "TRANSFER_EXECUTED", "TRANSFER_AUTO_REJECT", "TRANSFER_REJECT_INSUFFICIENT_FUNDS"],
-          "description": "Catalogue fermé AR-40 ; identite-clients produit LOGIN et LOGIN_FAILED."
+          "description": "Catalogue fermé AR-40 ; identite-clients produit LOGIN, LOGIN_FAILED et LOGOUT."
         },
-        "detail": { "type": "string", "description": "« Connexion réussie » pour LOGIN, « Tentative échouée » pour LOGIN_FAILED." },
+        "detail": { "type": "string", "description": "« Connexion réussie » pour LOGIN, « Tentative échouée » pour LOGIN_FAILED, « Déconnexion » pour LOGOUT." },
         "adresseIp": { "type": ["string", "null"], "description": "Adresse IP d'origine résolue par adapter.in.http (AD-17) ; null pour une action du système." }
       }
     }

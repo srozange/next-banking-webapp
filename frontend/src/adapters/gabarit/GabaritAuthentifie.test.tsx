@@ -184,10 +184,9 @@ describe('gabarit authentifié', () => {
     expect(localStorage.getItem('nb.jeton')).not.toBeNull();
   });
 
-  it('[FR-030-04] Deconnexion est un bouton sans effet, seul bouton de l’en-tête : aucun menu repliable', async () => {
+  it('[FR-030-04] Deconnexion est un bouton, seul bouton de l’en-tête : aucun menu repliable', async () => {
     connecter('CLIENT');
-    const utilisateur = userEvent.setup();
-    const { routeur } = rendreApplication('/tableau-de-bord');
+    rendreApplication('/tableau-de-bord');
     await attendreProfil();
 
     const boutons = within(screen.getByRole('banner')).getAllByRole('button');
@@ -196,10 +195,124 @@ describe('gabarit authentifié', () => {
     expect(deconnexion.type).toBe('button');
     expect(deconnexion.textContent).toBe('Deconnexion');
     expect(document.querySelector('[aria-expanded], [aria-haspopup]')).toBeNull();
+  });
 
-    await utilisateur.click(deconnexion);
-    expect(routeur.state.location.pathname).toBe('/tableau-de-bord');
-    expect(localStorage.getItem('nb.jeton')).not.toBeNull();
+  it('[FR-001-10] un clic sur Deconnexion supprime le jeton, informe le service et mène à /login sans message', async () => {
+    connecter('CLIENT');
+    const jeton = localStorage.getItem('nb.jeton');
+    const utilisateur = userEvent.setup();
+    const { routeur, deconnecter } = rendreApplication('/tableau-de-bord');
+    await attendreProfil();
+
+    await utilisateur.click(screen.getByTestId('nav-deconnexion'));
+
+    expect(localStorage.getItem('nb.jeton')).toBeNull();
+    expect(deconnecter).toHaveBeenCalledExactlyOnceWith(jeton);
+    await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+    expect(routeur.state.historyAction).toBe('REPLACE');
+    expect(await screen.findByTestId('login-identifiant')).toBeTruthy();
+    expect(screen.queryByTestId('login-message-erreur')).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('[FR-001-10] service injoignable à la déconnexion : jeton supprimé et /login quand même', async () => {
+    connecter('CLIENT');
+    const utilisateur = userEvent.setup();
+    const { routeur } = rendreApplication('/tableau-de-bord', undefined, undefined, undefined, {
+      deconnecter: () => Promise.reject(new TypeError('Failed to fetch')),
+    });
+    await attendreProfil();
+
+    await utilisateur.click(screen.getByTestId('nav-deconnexion'));
+
+    expect(localStorage.getItem('nb.jeton')).toBeNull();
+    await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+  });
+
+  it('[FR-030-05] tout 401 d’un service : jeton supprimé et /login sans message', async () => {
+    connecter('CLIENT');
+    const { routeur, signal } = rendreApplication('/tableau-de-bord');
+    await attendreProfil();
+
+    localStorage.removeItem('nb.jeton');
+    signal.declencher();
+
+    await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+    expect(routeur.state.historyAction).toBe('REPLACE');
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  describe('renouvellement sur activité', () => {
+    const MAINTENANT_MS = Date.parse('2026-10-06T10:00:00Z');
+    const horloge = { maintenant: () => MAINTENANT_MS };
+
+    function jetonExpirant(secondesRestantes: number) {
+      return jetonDeTest({ sub: '1', roles: ['CLIENT'], exp: MAINTENANT_MS / 1000 + secondesRestantes });
+    }
+
+    it('[FR-030-05] moins de 600 s restantes : un clic appelle le renouvellement et remplace le jeton', async () => {
+      const ancien = jetonExpirant(599);
+      const neuf = jetonExpirant(1800);
+      localStorage.setItem('nb.jeton', ancien);
+      const utilisateur = userEvent.setup();
+      const { renouveler } = rendreApplication('/tableau-de-bord', undefined, undefined, horloge, {
+        renouveler: () => Promise.resolve({ statut: 'renouvelee', jeton: neuf }),
+      });
+      await attendreProfil();
+
+      await utilisateur.click(document.body);
+
+      await waitFor(() => expect(localStorage.getItem('nb.jeton')).toBe(neuf));
+      expect(renouveler).toHaveBeenCalledExactlyOnceWith(ancien);
+    });
+
+    it('[FR-030-05] 600 s restantes ou plus : aucun appel', async () => {
+      localStorage.setItem('nb.jeton', jetonExpirant(600));
+      const utilisateur = userEvent.setup();
+      const { renouveler } = rendreApplication('/tableau-de-bord', undefined, undefined, horloge);
+      await attendreProfil();
+
+      await utilisateur.click(document.body);
+      await utilisateur.keyboard('a');
+
+      expect(renouveler).not.toHaveBeenCalled();
+    });
+
+    it('[FR-030-05] une frappe est aussi une activité, sans appels en double pendant un renouvellement', async () => {
+      localStorage.setItem('nb.jeton', jetonExpirant(10));
+      const utilisateur = userEvent.setup();
+      let terminer: () => void = () => {};
+      const { renouveler } = rendreApplication('/tableau-de-bord', undefined, undefined, horloge, {
+        renouveler: () =>
+          new Promise((resolve) => {
+            terminer = () => resolve({ statut: 'technique' });
+          }),
+      });
+      await attendreProfil();
+
+      await utilisateur.keyboard('a');
+      await utilisateur.keyboard('b');
+      expect(renouveler).toHaveBeenCalledOnce();
+      terminer();
+      await waitFor(() => expect(renouveler).toHaveBeenCalledOnce());
+      await utilisateur.keyboard('c');
+      expect(renouveler).toHaveBeenCalledTimes(2);
+    });
+
+    it('[FR-030-05] client désactivé (401 au renouvellement) : jeton supprimé, /login sans message', async () => {
+      localStorage.setItem('nb.jeton', jetonExpirant(30));
+      const utilisateur = userEvent.setup();
+      const { routeur } = rendreApplication('/tableau-de-bord', undefined, undefined, horloge, {
+        renouveler: () => Promise.resolve({ statut: 'nonAuthentifie' }),
+      });
+      await attendreProfil();
+
+      await utilisateur.click(document.body);
+
+      await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+      expect(localStorage.getItem('nb.jeton')).toBeNull();
+      expect(screen.queryByRole('alert')).toBeNull();
+    });
   });
 
   it('[FR-030-04] l’en-tête précède le contenu principal et suit le lien d’évitement', async () => {

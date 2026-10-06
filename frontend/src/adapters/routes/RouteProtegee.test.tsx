@@ -4,6 +4,9 @@ import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
 import { jetonDeTest } from '../jeton/jetonDeTest';
+import { creerExpirationJeton } from '../session/ExpirationJetonJwt';
+import { horlogeSysteme } from '../session/horloge';
+import { creerSignalExpiration } from '../session/signalExpiration';
 import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
 import { rendreApplication } from '../test/rendreApplication';
 import { RouteProtegee } from './RouteProtegee';
@@ -29,6 +32,11 @@ function rendreGarde(chemin: string) {
             stockage={creerStockageJetonLocal()}
             decodeur={decodeurJetonJwt}
             clientProfil={{ lire: () => Promise.resolve({ statut: 'profil', nomComplet: 'Jean Dupont' }) }}
+            session={{
+              client: { deconnecter: () => Promise.resolve(), renouveler: () => Promise.resolve({ statut: 'technique' }) },
+              expiration: creerExpirationJeton(horlogeSysteme),
+              signal: creerSignalExpiration(),
+            }}
           />
         ),
         children: [
