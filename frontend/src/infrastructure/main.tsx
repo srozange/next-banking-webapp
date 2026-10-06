@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
+import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
 import { creerClientSessionHttp } from '../adapters/http/ClientSessionHttp';
 import { decodeurJetonJwt } from '../adapters/jeton/DecodeurJetonJwt';
@@ -32,6 +33,7 @@ const routeur = createBrowserRouter(
     decodeurJeton: decodeurJetonJwt,
     clientProfil: creerClientProfilHttp(fetchAuthentifie),
     clientBourse: creerClientBourseHttp(fetchAuthentifie),
+    clientProduits: creerClientProduitsHttp(fetchAuthentifie),
     session: {
       client: creerClientSessionHttp(fetchAuthentifie),
       expiration: creerExpirationJeton(horlogeSysteme),

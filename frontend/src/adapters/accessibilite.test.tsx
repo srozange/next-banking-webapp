@@ -106,6 +106,49 @@ describe('accessibilité (axe)', () => {
     });
   });
 
+  describe('/produits', () => {
+    const CATALOGUE = {
+      epargne: [{ id: 1, nom: 'Livret A', description: 'Epargne', taux: '0.0300', depotMin: '10.00', capitalGaranti: true, dureeMaxMois: null }],
+      credit: [],
+      investissement: [{ id: 3, nom: 'SCPI', description: null, secteur: null, niveauRisque: 4, rendementAttendu: '0.0650' }],
+    };
+    const JOURNAL = [
+      { job: 'CLOTURE', debut: '2026-10-06T02:00+02:00', fin: null, dureeMs: 0, enregistrements: 3, statut: 'SUCCESS', details: null },
+      { job: 'INTERETS', debut: null, fin: null, dureeMs: 0, enregistrements: null, statut: 'FAILED', details: 'Echec' },
+      { job: 'ARCHIVAGE', debut: null, fin: null, dureeMs: 0, enregistrements: null, statut: 'PARTIAL', details: null },
+    ];
+
+    async function ouvrirProduits(journal: typeof JOURNAL) {
+      localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+      rendreApplication('/produits', undefined, undefined, undefined, undefined, undefined, {
+        lireCatalogue: () => Promise.resolve({ statut: 'ok', donnees: CATALOGUE }),
+        lireTraitements: () => Promise.resolve({ statut: 'ok', donnees: journal }),
+      });
+      await screen.findByTestId('produits-rafraichir');
+      await waitFor(() => expect(screen.getByTestId('produits-contenu').getAttribute('aria-busy')).toBeNull());
+    }
+
+    it('[axe] /produits avec catalogue, section vide et journal ne relève aucune violation', async () => {
+      await ouvrirProduits(JOURNAL);
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+
+    it('[axe] /produits avec un journal vide ne relève aucune violation', async () => {
+      await ouvrirProduits([]);
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+
+    it('[axe] /produits en panne technique ne relève aucune violation', async () => {
+      localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+      rendreApplication('/produits');
+      await screen.findByTestId('produits-erreur-technique');
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+  });
+
   it('[axe] cas témoin : un champ sans <label for> viole la règle label', async () => {
     render(
       <main>

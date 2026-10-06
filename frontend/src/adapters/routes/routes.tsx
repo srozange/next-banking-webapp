@@ -2,11 +2,13 @@ import type { RouteObject } from 'react-router';
 import { ROUTE_CONNEXION } from '../../domain/connexion';
 import type { ClientProfil } from '../../application/chargerProfil';
 import type { ClientBourse } from '../../application/consulterBourse';
+import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
 import { Application } from '../Application';
 import type { Session } from '../session/session';
 import { EcranBourse } from '../ecrans/bourse/EcranBourse';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
+import { EcranProduits } from '../ecrans/produits/EcranProduits';
 import { TEXTES } from '../textes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { RedirectionAccueil } from './RedirectionAccueil';
@@ -19,6 +21,7 @@ export interface Dependances {
   decodeurJeton: DecodeurJeton;
   clientProfil: ClientProfil;
   clientBourse: ClientBourse;
+  clientProduits: ClientProduits;
   session: Session;
 }
 
@@ -32,7 +35,7 @@ const TITRES_ONGLET: Readonly<Record<(typeof ROUTES_PROTEGEES)[number], string>>
   '/administration': TEXTES.titresOnglet.administration,
 };
 
-export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, clientBourse, session }: Dependances): RouteObject[] {
+export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, clientBourse, clientProduits, session }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
   return [
     {
@@ -52,6 +55,8 @@ export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, cli
           children: [
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-009-01).
             { path: '/bourse', element: <EcranBourse client={clientBourse} stockage={stockageJeton} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-010-01, FR-011-01).
+            { path: '/produits', element: <EcranProduits client={clientProduits} stockage={stockageJeton} /> },
             ...ROUTES_PROTEGEES.map((path) => ({ path, element: <title>{TITRES_ONGLET[path]}</title> })),
           ],
         },

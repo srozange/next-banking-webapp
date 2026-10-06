@@ -142,3 +142,11 @@ source_spec: `spec-7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-c
 severity: medium
 reason: Même constat que pour bourse et identite-clients : le chargement est prévu par `make reset-data` (story « Socle du rejeu final »). Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur la pile.
 status: open
+
+### DW-16: Le dépôt minimal s'affiche « 300,00 EUR » alors que le legacy affichait « EUR300 » (format monétaire JSF non spécifié par le PRD).
+origin: spec-deferred eb6630d0ba23
+location: frontend/src/domain/produits.ts
+source_spec: `spec-7-6-afficher-l-ecran-produits.md`
+severity: low
+reason: Choix de cette story (Design Notes), à confirmer par le métier ; le golden master SC-011-01 ne compare pas cette valeur.
+status: open

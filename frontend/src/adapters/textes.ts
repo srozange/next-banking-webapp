@@ -26,6 +26,51 @@ export const TEXTES = {
     espaceConseiller: 'BankApp Demo - Espace Conseiller',
     administration: 'BankApp Demo - Administration',
     bourse: 'BankApp Demo - Bourse',
+    /** MSG-011-001 */
+    produits: 'BankApp Demo - Produits bancaires',
+  },
+  /**
+   * Écran Produits : FEAT-011 MESSAGES.md (casse et absence d'accents comprises) ; titres de section sans
+   * « (EJB @Schedule) » (A-011-2, MSG-011-100 et MSG-011-101), bandeau JPA supprimé (MSG-011-004).
+   */
+  produits: {
+    catalogue: 'Catalogue des produits',
+    rafraichir: 'Rafraichir',
+    nom: 'Nom',
+    description: 'Description',
+    taux: 'Taux',
+    dureeMax: 'Duree max',
+    epargne: {
+      titre: 'Produits d epargne',
+      depotMin: 'Depot min',
+      capitalGaranti: 'Capital garanti',
+      aucun: 'Aucun produit d epargne disponible',
+    },
+    credit: {
+      titre: 'Produits de credit',
+      ltvMax: 'LTV max',
+      assuranceRequise: 'Assurance requise',
+      aucun: 'Aucun produit de credit disponible',
+    },
+    investissement: {
+      titre: 'Produits d investissement',
+      secteur: 'Secteur',
+      niveauDeRisque: 'Niveau de risque',
+      rendementAttendu: 'Rendement attendu',
+      aucun: 'Aucun produit d investissement disponible',
+    },
+    traitements: {
+      separateur: 'Traitements nocturnes',
+      titre: 'Historique des traitements nocturnes',
+      job: 'Job',
+      debut: 'Debut',
+      fin: 'Fin',
+      duree: 'Duree (ms)',
+      enregistrements: 'Enregistrements',
+      statut: 'Statut',
+      details: 'Details',
+      aucun: 'Aucun traitement nocturne enregistre — les jobs s executent a 02h00, 02h30 et le 1er du mois a 03h00',
+    },
   },
   /**
    * Écran Bourse : FEAT-009 et FEAT-029 MESSAGES.md (casse comprise) ; nom accessible du graphique :
