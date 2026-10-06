@@ -29,6 +29,10 @@
         <archunit.version>1.5.1</archunit.version>
         <jacoco.version>0.8.15</jacoco.version>
         <datasource-micrometer.version>2.3.0</datasource-micrometer.version>
+        <!-- Correctifs de sécurité au-dessus du BOM Boot 4.1.1 (cve.sh, story 1.6) : retirer quand Boot les embarque. -->
+        <tomcat.version>11.0.25</tomcat.version>
+        <jackson-bom.version>3.1.7</jackson-bom.version>
+        <kotlin.version>2.4.20</kotlin.version>
     </properties>
 
     <dependencyManagement>
@@ -146,6 +150,30 @@
                             <historyInputFile>${user.home}/.cache/next-banking-webapp/pit/${project.artifactId}.history</historyInputFile>
                             <historyOutputFile>${user.home}/.cache/next-banking-webapp/pit/${project.artifactId}.history</historyOutputFile>
                             <timestampedReports>false</timestampedReports>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- CVE à la demande (scripts/gates/cve.sh) : Dependency-Check n'existe que dans ce profil, base figée sauf -Ddc.autoUpdate=true. -->
+        <profile>
+            <id>security</id>
+            <properties>
+                <dc.autoUpdate>false</dc.autoUpdate>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>13.0.0</version>
+                        <configuration>
+                            <failBuildOnCVSS>7</failBuildOnCVSS>
+                            <nvdApiServerId>nvd</nvdApiServerId>
+                            <ossIndexAnalyzerEnabled>false</ossIndexAnalyzerEnabled>
+                            <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
+                            <autoUpdate>${dc.autoUpdate}</autoUpdate>
+                            <suppressionFile>${maven.multiModuleProjectDirectory}/config/dependency-check-suppressions.xml</suppressionFile>
                         </configuration>
                     </plugin>
                 </plugins>

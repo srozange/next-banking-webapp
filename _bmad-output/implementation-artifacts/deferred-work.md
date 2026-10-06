@@ -62,3 +62,11 @@ source_spec: `spec-1-4-faire-traverser-les-deux-services-par-un-flux-temoin-trac
 severity: low
 reason: La liste « Avant de déclarer un travail terminé » d'AGENTS.md ne cite pas trace-smoke.sh. Fichier de contexte des agents : modification réservée (report obligatoire), à faire au prochain rafraîchissement (bmad-project-context).
 status: open
+
+### DW-6: Les surcharges de sécurité tomcat.version, jackson-bom.version et kotlin.version du POM parent n'ont aucun déclencheur de retrait.
+origin: spec-deferred 8ed597c2f7aa
+location: pom.xml:30-33
+source_spec: `spec-1-6-bloquer-les-dependances-vulnerables.md`
+severity: medium
+reason: Seuls un commentaire du POM et versions-verifiees.md disent de les retirer quand Boot embarque Tomcat >= 11.0.25, Jackson >= 3.1.7 et Kotlin >= 2.4.20. Lors d'une montée de Boot, ces surcharges figées pourraient rétrograder une version plus récente gérée par le BOM, sans qu'aucun contrôle ne le signale.
+status: open
