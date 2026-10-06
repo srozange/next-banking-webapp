@@ -38,6 +38,16 @@ class CasUsageTest {
         public long creer(fr.nextbanking.credits.domain.NouveauPret pret) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public boolean transitionner(long pretId, StatutPret de, StatutPret vers) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void creerEcheancier(long pretId, List<fr.nextbanking.credits.domain.EcheancePret> echeances) {
+            throw new UnsupportedOperationException();
+        }
     };
 
     private static Pret pret(long id, long clientId) {

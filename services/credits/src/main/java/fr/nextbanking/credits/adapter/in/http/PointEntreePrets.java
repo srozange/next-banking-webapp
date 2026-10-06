@@ -67,7 +67,7 @@ public class PointEntreePrets {
             String coutTotal, String totalInterets, String objet, String statut, String dateDebut, String dateFin) {
 
         static PretJson de(Pret pret) {
-            return new PretJson(pret.id(), pret.type().name(), pret.montant().toPlainString(),
+            return new PretJson(pret.id(), pret.type() == null ? null : pret.type().name(), pret.montant().toPlainString(),
                     pret.tauxAnnuel().toPlainString(), pret.dureeMois(), pret.mensualite().toPlainString(),
                     pret.coutTotal().toPlainString(), pret.totalInterets().toPlainString(), pret.objet(),
                     pret.statut().name(), pret.dateDebut().toString(), pret.dateFin().toString());

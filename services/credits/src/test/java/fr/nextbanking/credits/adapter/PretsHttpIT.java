@@ -34,6 +34,8 @@ class PretsHttpIT {
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
         Conteneurs.proprietes(registre);
+        // Ces tests constatent le prêt EN_ATTENTE : le scoring (écouteur) ne doit pas le décider.
+        registre.add("spring.kafka.listener.auto-startup", () -> "false");
     }
 
     @LocalServerPort

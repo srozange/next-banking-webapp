@@ -8,10 +8,11 @@ import fr.nextbanking.credits.application.port.out.Horloge;
 import fr.nextbanking.credits.application.port.out.PretRepository;
 import fr.nextbanking.credits.application.port.out.Transaction;
 import fr.nextbanking.credits.domain.DemandePretInvalide;
+import fr.nextbanking.credits.domain.EvenementSortant;
 import fr.nextbanking.credits.domain.DemandePretInvalide.Motif;
+import fr.nextbanking.credits.domain.EcheancePret;
 import fr.nextbanking.credits.domain.NouveauPret;
 import fr.nextbanking.credits.domain.Pret;
-import fr.nextbanking.credits.domain.PretDemande;
 import fr.nextbanking.credits.domain.StatutPret;
 import fr.nextbanking.credits.domain.TypePret;
 import java.time.Instant;
@@ -30,7 +31,7 @@ class DeposerDemandePretCasUsageTest {
 
     private final List<String> journal = new ArrayList<>();
     private final List<NouveauPret> prets = new ArrayList<>();
-    private final List<PretDemande> evenements = new ArrayList<>();
+    private final List<EvenementSortant> evenements = new ArrayList<>();
     private RuntimeException panneDepot;
     private RuntimeException panneConsigner;
     private RuntimeException pannePublier;
@@ -56,11 +57,21 @@ class DeposerDemandePretCasUsageTest {
             prets.add(pret);
             return 70L + prets.size();
         }
+
+        @Override
+        public boolean transitionner(long pretId, StatutPret de, StatutPret vers) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void creerEcheancier(long pretId, List<EcheancePret> echeances) {
+            throw new UnsupportedOperationException();
+        }
     };
 
     private final EvenementsSortants sortants = new EvenementsSortants() {
         @Override
-        public long consigner(PretDemande evenement) {
+        public long consigner(EvenementSortant evenement) {
             journal.add("consigner");
             if (panneConsigner != null) {
                 throw panneConsigner;

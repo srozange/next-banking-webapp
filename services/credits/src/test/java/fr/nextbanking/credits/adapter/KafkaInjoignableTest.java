@@ -28,6 +28,8 @@ class KafkaInjoignableTest {
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
         Conteneurs.proprietes(registre);
+        // Ces tests constatent le prêt EN_ATTENTE : le scoring (écouteur) ne doit pas le décider.
+        registre.add("spring.kafka.listener.auto-startup", () -> "false");
         registre.add("spring.kafka.bootstrap-servers", () -> "localhost:1");
         registre.add("spring.kafka.admin.auto-create", () -> "false");
     }

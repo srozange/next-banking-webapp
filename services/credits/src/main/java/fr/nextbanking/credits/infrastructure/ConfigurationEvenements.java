@@ -15,6 +15,13 @@ public class ConfigurationEvenements {
 
     static final String TOPIC_PRET_DEMANDE = "credits.pret-demande.v1";
 
+    static final String TOPIC_PRET_DECIDE = "credits.pret-decide.v1";
+
+    @Bean
+    NewTopic topicPretDecide() {
+        return TopicBuilder.name(TOPIC_PRET_DECIDE).partitions(3).replicas(1).build();
+    }
+
     @Bean
     NewTopic topicPretDemande() {
         return TopicBuilder.name(TOPIC_PRET_DEMANDE).partitions(3).replicas(1).build();

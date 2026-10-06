@@ -7,7 +7,7 @@ import java.util.UUID;
  * Événement : une demande de prêt a été déposée. Identifiant d'événement unique, prêt désigné par son identifiant
  * strictement positif, horodatage lu sur l'horloge.
  */
-public record PretDemande(UUID idEvenement, long pretId, Instant horodatage) {
+public record PretDemande(UUID idEvenement, long pretId, Instant horodatage) implements EvenementSortant {
 
     public PretDemande {
         if (idEvenement == null) {

@@ -1,6 +1,8 @@
 package fr.nextbanking.credits.adapter.out.evenements;
 
 import fr.nextbanking.credits.application.port.out.EvenementsSortants;
+import fr.nextbanking.credits.domain.EvenementSortant;
+import fr.nextbanking.credits.domain.PretDecide;
 import fr.nextbanking.credits.domain.PretDemande;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -33,12 +35,12 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
     }
 
     @Override
-    public long consigner(PretDemande evenement) {
+    public long consigner(EvenementSortant evenement) {
         return jdbc.sql("""
                 insert into outbox (id_evenement, topic, cle, charge)
                 values (:idEvenement, :topic, :cle, :charge) returning id""")
                 .param("idEvenement", evenement.idEvenement())
-                .param("topic", EnveloppePretDemande.TOPIC)
+                .param("topic", topic(evenement))
                 .param("cle", Long.toString(evenement.pretId()))
                 .param("charge", enJson(evenement))
                 .query(Long.class)
@@ -54,8 +56,18 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
                 .ifPresent(this::envoyer);
     }
 
-    String enJson(PretDemande evenement) {
-        return json.writeValueAsString(EnveloppePretDemande.de(evenement));
+    String enJson(EvenementSortant evenement) {
+        return json.writeValueAsString(switch (evenement) {
+            case PretDemande demande -> EnveloppePretDemande.de(demande);
+            case PretDecide decide -> EnveloppePretDecide.de(decide);
+        });
+    }
+
+    static String topic(EvenementSortant evenement) {
+        return switch (evenement) {
+            case PretDemande demande -> EnveloppePretDemande.TOPIC;
+            case PretDecide decide -> EnveloppePretDecide.TOPIC;
+        };
     }
 
     List<LigneOutbox> nonPubliees() {

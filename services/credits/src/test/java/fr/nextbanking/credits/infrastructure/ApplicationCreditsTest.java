@@ -63,6 +63,21 @@ class ApplicationCreditsTest {
         assertThat(topicPretDemande.replicationFactor()).isEqualTo((short) 1);
     }
 
+    @Autowired
+    private org.apache.kafka.clients.admin.NewTopic topicPretDecide;
+
+    @Autowired
+    private fr.nextbanking.credits.application.port.in.DecisionPret decisionPret;
+
+    @Test
+    @org.junit.jupiter.api.Tag("FR-024-06")
+    void le_topic_de_la_decision_est_declare_avec_trois_partitions_et_le_cas_d_usage_est_assemble() {
+        assertThat(topicPretDecide.name()).isEqualTo("credits.pret-decide.v1");
+        assertThat(topicPretDecide.numPartitions()).isEqualTo(3);
+        assertThat(topicPretDecide.replicationFactor()).isEqualTo((short) 1);
+        assertThat(decisionPret).isNotNull();
+    }
+
     @Test
     void l_horloge_est_dans_le_fuseau_metier() {
         assertThat(horloge.fuseau()).isEqualTo(java.time.ZoneId.of("Europe/Paris"));
