@@ -6,6 +6,7 @@ import type { ClientPrets } from '../../application/prets';
 import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
+import type { ClientTableauDeBord } from '../../application/consulterTableauDeBord';
 import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientVirement } from '../../application/virement';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
@@ -20,7 +21,7 @@ import { SectionRevueVirements } from '../ecrans/administration/SectionRevueVire
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
 import { EcranReleve } from '../ecrans/releve/EcranReleve';
 import { EcranVirement } from '../ecrans/virement/EcranVirement';
-import { SectionSuiviVirements } from '../ecrans/virement/SectionSuiviVirements';
+import { EcranTableauDeBord } from '../ecrans/tableauDeBord/EcranTableauDeBord';
 import { EcranPrets } from '../ecrans/prets/EcranPrets';
 import { TEXTES } from '../textes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
@@ -43,19 +44,19 @@ export interface Dependances {
   clientVirement: ClientVirement;
   clientRevue: ClientRevue;
   clientReleve: ClientReleve;
+  clientTableauDeBord: ClientTableauDeBord;
   clientPrets: ClientPrets;
 }
 
 /**
- * Routes protégées : déclarées ici ; le tableau de bord porte déjà la section « Suivi de mes virements »,
+ * Routes protégées : déclarées ici ; le tableau de bord a son écran (comptes, opérations, puis la section « Suivi de mes virements »),
  * l'administration la section de revue des virements suspendus et /prets l'écran Prêts ; le reste du contenu arrive
  * avec les stories suivantes.
  */
 export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets'] as const;
 
 /** Titre d'onglet des routes protégées sans écran (seul élément rendu en attendant le contenu, hissé dans <head>). */
-const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], '/prets'>, string>> = {
-  '/tableau-de-bord': TEXTES.titresOnglet.tableauDeBord,
+const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], '/prets' | '/tableau-de-bord'>, string>> = {
   '/espace-conseiller': TEXTES.titresOnglet.espaceConseiller,
   '/administration': TEXTES.titresOnglet.administration,
 };
@@ -74,6 +75,7 @@ export function creerRoutes({
   clientVirement,
   clientRevue,
   clientReleve,
+  clientTableauDeBord,
   clientPrets,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
@@ -106,10 +108,11 @@ export function creerRoutes({
               element:
                 path === '/prets' ? (
                   <EcranPrets client={clientPrets} stockage={stockageJeton} />
+                ) : path === '/tableau-de-bord' ? (
+                  <EcranTableauDeBord client={clientTableauDeBord} clientVirement={clientVirement} />
                 ) : (
                   <>
                     <title>{TITRES_ONGLET[path]}</title>
-                    {path === '/tableau-de-bord' && <SectionSuiviVirements client={clientVirement} testId="dashboard-virements-revue" />}
                     {path === '/administration' && <SectionRevueVirements client={clientRevue} />}
                   </>
                 ),

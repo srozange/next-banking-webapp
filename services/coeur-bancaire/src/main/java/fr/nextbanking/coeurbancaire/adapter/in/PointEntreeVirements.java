@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.adapter.in;
 
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterComptes;
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterReleve;
+import fr.nextbanking.coeurbancaire.application.port.in.ConsulterTableauDeBord;
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterSuiviVirements;
 import fr.nextbanking.coeurbancaire.application.port.in.ExecuterVirement;
 import fr.nextbanking.coeurbancaire.application.port.in.ExecuterVirement.Commande;
@@ -34,6 +35,7 @@ public class PointEntreeVirements {
     static final String CHEMIN_VIREMENTS = "/api/coeur-bancaire/virements";
     static final String CHEMIN_SUIVI = "/api/coeur-bancaire/virements/suivi";
     static final String CHEMIN_COMPTES = "/api/coeur-bancaire/comptes";
+    static final String CHEMIN_TABLEAU_DE_BORD = "/api/coeur-bancaire/tableau-de-bord";
     static final String EN_TETE_IDEMPOTENCE = "Idempotency-Key";
 
     private final ExecuterVirement executerVirement;
@@ -42,10 +44,13 @@ public class PointEntreeVirements {
     private final ResolveurAdresseIp resolveurAdresseIp;
     private final ConsulterSuiviVirements consulterSuivi;
     private final EnrichissementTrace trace;
+    private final ConsulterTableauDeBord consulterTableauDeBord;
 
     public PointEntreeVirements(ExecuterVirement executerVirement, ConsulterComptes consulterComptes,
             ResolveurAdresseIp resolveurAdresseIp, ConsulterSuiviVirements consulterSuivi,
-            EnrichissementTrace trace, ConsulterReleve consulterReleve) {
+            EnrichissementTrace trace, ConsulterReleve consulterReleve,
+            ConsulterTableauDeBord consulterTableauDeBord) {
+        this.consulterTableauDeBord = consulterTableauDeBord;
         this.executerVirement = executerVirement;
         this.consulterComptes = consulterComptes;
         this.consulterReleve = consulterReleve;
@@ -90,6 +95,15 @@ public class PointEntreeVirements {
                 .map(PointEntreeVirements::operation).toList();
     }
 
+    /** Tableau de bord du client du jeton ; aucun paramètre n'est lu : l'identité vient du jeton seul (NFR-SEC-03). */
+    @GetMapping(CHEMIN_TABLEAU_DE_BORD)
+    public TableauDeBordClient tableauDeBord(@AuthenticationPrincipal Jwt jeton) {
+        ConsulterTableauDeBord.TableauDeBord vue = consulterTableauDeBord.tableauDeBord(clientId(jeton));
+        return new TableauDeBordClient(vue.comptes().stream().map(PointEntreeVirements::compte).toList(),
+                vue.soldeTotal().toPlainString(),
+                vue.dernieresOperations().stream().map(PointEntreeVirements::operation).toList());
+    }
+
     private static long clientId(Jwt jeton) {
         return Long.parseLong(jeton.getSubject());
     }
@@ -127,5 +141,10 @@ public class PointEntreeVirements {
     /** Opération du relevé : date en instant ISO-8601 (UTC), montants en chaîne décimale à point. */
     public record OperationReleve(String date, String description, String type, String montant,
             String soldeApres) {
+    }
+
+    /** Tableau de bord : comptes, solde total (chaîne décimale à point) et dernières opérations du compte COURANT. */
+    public record TableauDeBordClient(List<CompteClient> comptes, String soldeTotal,
+            List<OperationReleve> dernieresOperations) {
     }
 }

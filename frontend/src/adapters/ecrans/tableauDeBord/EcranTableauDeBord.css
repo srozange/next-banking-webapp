@@ -1,0 +1,63 @@
+.ecran-tableau-de-bord {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  box-sizing: border-box;
+  max-width: calc(var(--spacing-4xl) * 8);
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.ecran-tableau-de-bord__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Capitales par le CSS (UX-DR156) : le texte source garde sa casse. */
+.ecran-tableau-de-bord__separateur,
+.ecran-tableau-de-bord__eyebrow,
+.ecran-tableau-de-bord__operations th {
+  margin: 0;
+  font-family: var(--font-eyebrow);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--font-weight-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.ecran-tableau-de-bord__titre {
+  margin: 0;
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
+
+.ecran-tableau-de-bord__montant {
+  margin: var(--spacing-sm) 0;
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
+
+.ecran-tableau-de-bord__sous-titre {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.ecran-tableau-de-bord__comptes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--spacing-4xl) * 3), 1fr));
+  gap: var(--spacing-md);
+}
+
+.ecran-tableau-de-bord__sens--credit {
+  color: var(--color-success);
+}
+
+.ecran-tableau-de-bord__sens--debit {
+  color: var(--color-error);
+}

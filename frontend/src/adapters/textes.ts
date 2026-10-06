@@ -125,6 +125,26 @@ export const TEXTES = {
     releve: 'BankApp Demo - Relevé de compte',
     comptesTiers: 'BankApp Demo - Comptes Tiers',
   },
+  /**
+   * Tableau de bord : FEAT-002 MESSAGES.md (MSG-002-050 à 067), orthographe du source sans accent ; les capitales
+   * (« MES COMPTES DEMO BANK ») viennent du CSS (UX-DR156), jamais du texte.
+   */
+  tableauDeBord: {
+    mesComptes: 'Mes comptes Demo Bank',
+    soldeTotal: 'Solde total Demo Bank',
+    soldeTotalSousTitre: 'Tous comptes Demo Bank confondus',
+    numeroCompte: (numero: string) => `N ${numero}`,
+    activiteRecente: 'Activite recente',
+    dernieresOperations: 'Dernieres operations',
+    colonnes: {
+      date: 'Date',
+      description: 'Description',
+      type: 'Type',
+      montant: 'Montant',
+      soldeApres: 'Solde apres',
+    },
+    voirReleve: 'Voir le releve complet',
+  },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {
     titre: 'Relevé de compte',

@@ -29,6 +29,7 @@ import tools.jackson.databind.json.JsonMapper;
 class ReleveIT {
 
     private static final String COMPTES = "/api/coeur-bancaire/comptes";
+    private static final String TABLEAU = "/api/coeur-bancaire/tableau-de-bord";
 
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
@@ -129,6 +130,59 @@ class ReleveIT {
         assertThat(inexistant.statusCode()).isEqualTo(404);
         assertThat(inexistant.body()).isEqualTo("{\"message\":\"Ressource introuvable\"}");
         assertThat(illisible.statusCode()).isEqualTo(400);
+    }
+
+    @Test
+    @Tag("FR-002-03")
+    void le_tableau_de_bord_sans_jeton_rend_401() throws Exception {
+        assertThat(Jetons.envoyer(port, "GET", TABLEAU, null, null).statusCode()).isEqualTo(401);
+    }
+
+    @Test
+    @Tag("FR-002-03")
+    @Tag("FR-002-04")
+    void le_tableau_de_bord_rend_les_comptes_le_solde_total_et_ignore_un_compte_d_autrui_en_parametre()
+            throws Exception {
+        operation(3, "CREDIT", "10.00", "510.00", "secrete", "2026-11-01 08:00:00+00");
+
+        HttpResponse<String> reponse = Jetons.envoyer(port, "GET", TABLEAU + "?compteId=3&clientId=8",
+                Jetons.pour(1, "CLIENT"), null);
+
+        assertThat(reponse.statusCode()).isEqualTo(200);
+        JsonNode vue = json.readTree(reponse.body());
+        assertThat(vue.get("comptes")).hasSize(2);
+        assertThat(vue.get("comptes").get(0).get("type").asString()).isEqualTo("COURANT");
+        assertThat(vue.get("soldeTotal").asString()).isEqualTo("17330.00");
+        assertThat(vue.get("dernieresOperations")).isEmpty();
+    }
+
+    @Test
+    @Tag("FR-002-05")
+    void un_utilisateur_sans_compte_a_un_tableau_de_bord_vide() throws Exception {
+        HttpResponse<String> reponse = Jetons.envoyer(port, "GET", TABLEAU, Jetons.pour(10, "CONSEILLER"), null);
+
+        assertThat(reponse.statusCode()).isEqualTo(200);
+        assertThat(reponse.body()).isEqualTo("{\"comptes\":[],\"soldeTotal\":\"0.00\",\"dernieresOperations\":[]}");
+    }
+
+    @Test
+    @Tag("FR-002-05")
+    @Tag("BUG-005")
+    void le_tableau_de_bord_rend_les_cinq_dernieres_operations_du_courant_meme_si_l_epargne_est_creee_avant()
+            throws Exception {
+        jdbc.sql("update comptes set type = 'EPARGNE' where id = 1").update();
+        jdbc.sql("update comptes set type = 'COURANT' where id = 2").update();
+        operation(1, "CREDIT", "1.00", "1.00", "epargne", "2026-11-20 08:00:00+00");
+        for (int jour = 1; jour <= 7; jour++) {
+            operation(2, "DEBIT", "1.00", "2.00", "courant " + jour, "2026-11-0" + jour + " 08:00:00+00");
+        }
+
+        HttpResponse<String> reponse = Jetons.envoyer(port, "GET", TABLEAU, Jetons.pour(1, "CLIENT"), null);
+
+        JsonNode operations = json.readTree(reponse.body()).get("dernieresOperations");
+        assertThat(operations).hasSize(5);
+        assertThat(operations.get(0).get("description").asString()).isEqualTo("courant 7");
+        assertThat(operations.get(4).get("description").asString()).isEqualTo("courant 3");
     }
 
     private void operation(long compteId, String type, String montant, String soldeApres, String description,

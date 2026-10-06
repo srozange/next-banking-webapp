@@ -86,7 +86,7 @@ class CoeurBancaireSecuriteIT {
         Instant maintenant = Instant.now();
         String valide = Jetons.jeton(Conteneurs.CLES, "ADMIN", maintenant, maintenant.plusSeconds(1800));
 
-        HttpResponse<String> reponse = Jetons.envoyer(port, "GET", "/api/coeur-bancaire/tableau-de-bord", valide,
+        HttpResponse<String> reponse = Jetons.envoyer(port, "GET", "/api/coeur-bancaire/inconnu", valide,
                 null);
 
         assertThat(reponse.statusCode()).isEqualTo(404);
