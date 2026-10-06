@@ -110,3 +110,27 @@ source_spec: `spec-2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adre
 severity: medium
 reason: Aucun DefaultErrorHandler configuré ; chaque essai attend le délai Hikari (30 s), puis l'offset est validé. Même motif que le consommateur notifications (story 1.4) : la politique de reprise (attente exponentielle, topic de rejet, exceptions non rejouables) est à décider pour tous les consommateurs (Edge Case Hunter).
 status: open
+
+### DW-12: Données de référence incomplètes : seuls les comptes 1 et 2 de user1 sont documentés dans docs/retro.
+origin: spec-deferred 9166a9e47f30
+location: services/coeur-bancaire/reference-data/reference-data.sql
+source_spec: `spec-3-1-executer-un-virement-entre-ses-comptes.md`
+severity: medium
+reason: Les 5 autres comptes du legacy et les 45 opérations (dont les 5 dernières du COURANT de user1, AR-80) ne figurent pas dans docs/retro ; le solde de l'EPARGNE (15 200,00) est déduit du total de FEAT-002. À compléter par la story « Socle du rejeu final ».
+status: open
+
+### DW-13: Texte « Issue » de l'audit VIREMENT quand la remise est impossible (BUG-073) : ECHEC_REMISE est un choix provisoire.
+origin: spec-deferred b14871e6f743
+location: n/a
+source_spec: `spec-3-1-executer-un-virement-entre-ses-comptes.md`
+severity: low
+reason: FR-026-03 ne fixe que EXECUTE, SUSPENDU et REFUSE_ERREUR_CONTROLE ; un texte manquant est un point ouvert à confirmer.
+status: open
+
+### DW-14: Format de HORLOGE_DECALAGE (durée ISO-8601) à confirmer au premier rejeu.
+origin: spec-deferred 7cbac841f38c
+location: n/a
+source_spec: `spec-3-1-executer-un-virement-entre-ses-comptes.md`
+severity: low
+reason: Retenu sans vérification en compose (make rejeu-up) ; à confirmer par la story « Socle du rejeu final ».
+status: open

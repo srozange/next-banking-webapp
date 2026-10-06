@@ -182,6 +182,10 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Clé publique du jeton : tout /api/** est authentifié sauf le témoin ; sans elle, refus de démarrer.
       NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
+      # Adresse IP d'origine de l'audit : même plage de confiance qu'identite-clients (le conteneur web).
+      NB_RESEAU_MANDATAIRES_DE_CONFIANCE: ${NB_SOUS_RESEAU:-172.30.0.0/24}
+      # Décalage de l'horloge réglée (durée ISO-8601), lu seulement en profil rejeu (compose.rejeu.yaml) ; vide sinon.
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
     ports:
       - "${NB_PORT_COEUR_BANCAIRE:-8082}:8080"
     networks: [nb]
@@ -251,8 +255,11 @@ services:
         condition: service_healthy
       otel-collector:
         condition: service_healthy
-      # Le topic identite-clients.audit.v1 est déclaré par son producteur (bean NewTopic) : il existe avant la souscription.
+      # Les topics identite-clients.audit.v1 et coeur-bancaire.audit.v1 sont déclarés par leur producteur (bean NewTopic) :
+      # ils existent avant la souscription.
       identite-clients:
+        condition: service_healthy
+      coeur-bancaire:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8080/actuator/health"]

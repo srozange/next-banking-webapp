@@ -18,8 +18,11 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
@@ -27,6 +30,7 @@ import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -54,6 +58,17 @@ class CoeurBancaireSecuriteIT {
 
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private JdbcClient jdbc;
+
+    @Autowired
+    private DataSource source;
+
+    @AfterEach
+    void nettoyer() {
+        DonneesDeReference.vider(jdbc);
+    }
 
     @Test
     void sans_jeton_ou_avec_un_jeton_invalide_les_points_proteges_rendent_401() throws Exception {
@@ -85,6 +100,25 @@ class CoeurBancaireSecuriteIT {
 
         assertThat(reponse.statusCode()).isEqualTo(404);
         assertThat(reponse.body()).isEqualTo(RESSOURCE_INTROUVABLE);
+    }
+
+    @Test
+    @Tag("FR-003-05")
+    void le_virement_sans_jeton_rend_401_puis_avec_un_compte_source_d_un_autre_client_403() throws Exception {
+        DonneesDeReference.recharger(source, jdbc);
+        String corps = "{\"compteSourceId\":3,\"compteDestinataireId\":2,\"montant\":\"100.00\"}";
+
+        HttpResponse<String> sansJeton = envoyer("POST", "/api/coeur-bancaire/virements", null, corps);
+        HttpResponse<String> autreClient = envoyer("POST", "/api/coeur-bancaire/virements",
+                Jetons.pour(1, "CLIENT"), corps);
+
+        assertThat(sansJeton.statusCode()).isEqualTo(401);
+        assertThat(sansJeton.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
+        assertThat(autreClient.statusCode()).isEqualTo(403);
+        assertThat(autreClient.body()).isEqualTo("{\"message\":\"Accès refusé\"}");
+        assertThat(jdbc.sql("select solde from comptes where id = 3").query(java.math.BigDecimal.class).single())
+                .isEqualByComparingTo("500.00");
+        assertThat(jdbc.sql("select count(*) from virements").query(Long.class).single()).isZero();
     }
 
     @Test

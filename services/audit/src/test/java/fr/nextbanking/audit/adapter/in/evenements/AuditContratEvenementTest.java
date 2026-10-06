@@ -13,19 +13,25 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * Contrat consommateur : l'exemple du schéma du producteur ({@code identite-clients.audit.v1}) se lit et produit
- * l'effet attendu.
+ * Contrat consommateur : l'exemple du schéma de chaque producteur ({@code identite-clients.audit.v1},
+ * {@code coeur-bancaire.audit.v1}) se lit et produit l'effet attendu.
  */
 @Tag("FR-026-01")
 class AuditContratEvenementTest {
 
-    private static final Path SCHEMA = Path.of("../../contrats/evenements/identite-clients.audit.v1.schema.json");
+    private static final List<Path> SCHEMAS = List.of(
+            Path.of("../../contrats/evenements/identite-clients.audit.v1.schema.json"),
+            Path.of("../../contrats/evenements/coeur-bancaire.audit.v1.schema.json"));
 
     private final JsonMapper json = JsonMapper.builder().build();
 
     @Test
-    void l_exemple_du_schema_est_lu_et_transmis_au_cas_d_usage() {
-        JsonNode exemple = json.readTree(SCHEMA.toFile()).get("examples").get(0);
+    void l_exemple_de_chaque_schema_est_lu_et_transmis_au_cas_d_usage() {
+        SCHEMAS.forEach(this::verifier);
+    }
+
+    private void verifier(Path schema) {
+        JsonNode exemple = json.readTree(schema.toFile()).get("examples").get(0);
         JsonNode donnees = exemple.get("donnees");
         List<String> recus = new ArrayList<>();
         RecepteurAudit recepteur = new RecepteurAudit((idEvenement, utilisateur, action, detail, adresseIp, h) -> {

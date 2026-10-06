@@ -81,4 +81,19 @@ describe('accessibilité (axe)', () => {
 
     expect(await reglesViolees()).toContain('label');
   });
+
+  it('[axe] /virement, vierge puis avec ses erreurs, ne relève aucune violation', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const utilisateur = userEvent.setup();
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    rendreApplication('/virement', undefined, undefined, undefined, undefined, {
+      lireComptes: () => Promise.resolve({ statut: 'comptes', comptes: [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001' }] }),
+    });
+    await screen.findByTestId('virement-executer');
+    await waitFor(() => expect((screen.getByTestId('virement-compte-source') as HTMLSelectElement).options).toHaveLength(2));
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('virement-executer'));
+    expect(await reglesViolees()).toEqual([]);
+  });
 });

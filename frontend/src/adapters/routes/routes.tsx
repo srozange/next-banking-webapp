@@ -1,10 +1,12 @@
 import type { RouteObject } from 'react-router';
 import { ROUTE_CONNEXION } from '../../domain/connexion';
 import type { ClientProfil } from '../../application/chargerProfil';
+import type { ClientVirement } from '../../application/virement';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
 import { Application } from '../Application';
 import type { Session } from '../session/session';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
+import { EcranVirement } from '../ecrans/virement/EcranVirement';
 import { TEXTES } from '../textes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { RedirectionAccueil } from './RedirectionAccueil';
@@ -17,6 +19,7 @@ export interface Dependances {
   decodeurJeton: DecodeurJeton;
   clientProfil: ClientProfil;
   session: Session;
+  clientVirement: ClientVirement;
 }
 
 /** Routes protégées : déclarées ici, leur contenu arrive avec les stories suivantes. */
@@ -29,7 +32,7 @@ const TITRES_ONGLET: Readonly<Record<(typeof ROUTES_PROTEGEES)[number], string>>
   '/administration': TEXTES.titresOnglet.administration,
 };
 
-export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, session }: Dependances): RouteObject[] {
+export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, session, clientVirement }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
   return [
     {
@@ -46,7 +49,10 @@ export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, cli
         {
           // Garde par session puis par rôle, puis gabarit authentifié (en-tête, contenu principal).
           element: <RouteProtegee stockage={stockageJeton} decodeur={decodeurJeton} clientProfil={clientProfil} session={session} />,
-          children: ROUTES_PROTEGEES.map((path) => ({ path, element: <title>{TITRES_ONGLET[path]}</title> })),
+          children: [
+            ...ROUTES_PROTEGEES.map((path) => ({ path, element: <title>{TITRES_ONGLET[path]}</title> })),
+            { path: '/virement', element: <EcranVirement client={clientVirement} /> },
+          ],
         },
         { path: '/', element: accueil },
         { path: '*', element: accueil },

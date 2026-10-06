@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 import type { ClientSession, ReponseRenouvellement } from '../../application/renouvelerSession';
 import type { ClientProfil, ReponseProfil } from '../../application/chargerProfil';
+import type { ClientVirement, ReponseComptes, ReponseVirement } from '../../application/virement';
 import type { ClientConnexion, ReponseConnexion } from '../../application/seConnecter';
 import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
 import { creerRoutes } from '../routes/routes';
@@ -23,11 +24,14 @@ export function rendreApplication(
   lireProfil: ClientProfil['lire'] = () => Promise.resolve<ReponseProfil>({ statut: 'profil', nomComplet: 'Jean Dupont' }),
   horloge: Horloge = horlogeSysteme,
   clientSession: Partial<ClientSession> = {},
+  clientVirement: Partial<ClientVirement> = {},
 ) {
   const deconnecter = vi.fn(clientSession.deconnecter ?? (() => Promise.resolve()));
   const renouveler = vi.fn(
     clientSession.renouveler ?? (() => Promise.resolve<ReponseRenouvellement>({ statut: 'technique' })),
   );
+  const lireComptes = vi.fn(clientVirement.lireComptes ?? (() => Promise.resolve<ReponseComptes>({ statut: 'comptes', comptes: [] })));
+  const executer = vi.fn(clientVirement.executer ?? (() => Promise.resolve<ReponseVirement>({ statut: 'erreur', message: null })));
   const signal = creerSignalExpiration();
   const connecter = vi.fn(repondre);
   const lire = vi.fn(lireProfil);
@@ -38,9 +42,10 @@ export function rendreApplication(
       decodeurJeton: decodeurJetonJwt,
       clientProfil: { lire },
       session: { client: { deconnecter, renouveler }, expiration: creerExpirationJeton(horloge), signal },
+      clientVirement: { lireComptes, executer },
     }),
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer };
 }

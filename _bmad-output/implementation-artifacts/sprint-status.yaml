@@ -55,7 +55,7 @@ development_status:
   epic-2-retrospective: optional
 
   epic-3: backlog
-  3-1-exécuter-un-virement-entre-ses-comptes: backlog
+  3-1-exécuter-un-virement-entre-ses-comptes: done
   3-2-évaluer-les-signaux-de-fraude-de-chaque-virement: backlog
   3-3-notifier-le-client-de-l-issue-de-son-virement: backlog
   3-4-suspendre-refuser-revoir-et-rejeter-à-l-échéance-un-virement: backlog
@@ -87,7 +87,7 @@ development_status:
   5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: backlog
   5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: backlog
   5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: backlog
-  5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: backlog
+  5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: optional
   5-5-consulter-l-échéancier-marquer-une-échéance-payée-et-supprim: backlog
   5-6-traiter-le-pipeline-des-prêts-en-attente-depuis-l-administra: backlog
   epic-5-retrospective: optional

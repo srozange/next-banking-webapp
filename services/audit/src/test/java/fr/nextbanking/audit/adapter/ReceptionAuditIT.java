@@ -50,6 +50,7 @@ import org.springframework.test.context.DynamicPropertySource;
 class ReceptionAuditIT {
 
     private static final String TOPIC = "identite-clients.audit.v1";
+    private static final String TOPIC_COEUR_BANCAIRE = "coeur-bancaire.audit.v1";
     private static final String HORODATAGE_PASSE = "2026-10-05T08:30:00Z";
 
     @DynamicPropertySource
@@ -74,10 +75,14 @@ class ReceptionAuditIT {
     static void creerLeTopic() throws Exception {
         try (Admin admin = Admin.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
                 Conteneurs.KAFKA.getBootstrapServers()))) {
-            admin.createTopics(List.of(new NewTopic(TOPIC, 3, (short) 1))).all().get();
-        } catch (ExecutionException e) {
-            if (!(e.getCause() instanceof TopicExistsException)) {
-                throw e;
+            for (String topic : List.of(TOPIC, TOPIC_COEUR_BANCAIRE)) {
+                try {
+                    admin.createTopics(List.of(new NewTopic(topic, 3, (short) 1))).all().get();
+                } catch (ExecutionException e) {
+                    if (!(e.getCause() instanceof TopicExistsException)) {
+                        throw e;
+                    }
+                }
             }
         }
     }
@@ -101,6 +106,21 @@ class ReceptionAuditIT {
         assertThat(login.details()).isEqualTo("Connexion réussie");
         assertThat(login.ipaddress()).isEqualTo("203.0.113.7");
         assertThat(login.actionDate().toInstant()).isEqualTo(java.time.Instant.parse(HORODATAGE_PASSE));
+    }
+
+    @Test
+    @Tag("FR-026-03")
+    void les_entrees_d_un_virement_du_coeur_bancaire_sont_ecrites_dans_l_ordre_de_leur_cle() throws Exception {
+        String virement = "v-" + UUID.randomUUID();
+        UUID idFin = UUID.randomUUID();
+
+        envoyerSur(TOPIC_COEUR_BANCAIRE, virement,
+                enveloppe(UUID.randomUUID(), "1", "VIREMENT", "Montant: 100.00 - Motif: loyer - Issue: EXECUTE"),
+                enveloppe(idFin, "1", "TRANSFER_EXECUTED", "Montant: 100.00 - Motif: loyer"));
+
+        await().atMost(Duration.ofSeconds(30)).until(() -> traite(idFin));
+        assertThat(lignesDe("1", "Montant: 100.00 - Motif: loyer%"))
+                .extracting(Ligne::action).containsSubsequence("VIREMENT", "TRANSFER_EXECUTED");
     }
 
     @Test
@@ -149,13 +169,27 @@ class ReceptionAuditIT {
                 .query(Long.class).single() == 1L;
     }
 
+    private List<Ligne> lignesDe(String utilisateur, String detailParmi) {
+        return jdbc.sql("select action, action_date, details, ipaddress from audit_logs where username = :u"
+                        + " and details like :d order by id")
+                .param("u", utilisateur).param("d", detailParmi)
+                .query((ligne, numero) -> new Ligne(ligne.getString("action"),
+                        ligne.getObject("action_date", OffsetDateTime.class), ligne.getString("details"),
+                        ligne.getString("ipaddress")))
+                .list();
+    }
+
     private static void envoyer(String cle, String... messages) throws Exception {
+        envoyerSur(TOPIC, cle, messages);
+    }
+
+    private static void envoyerSur(String topic, String cle, String... messages) throws Exception {
         try (KafkaProducer<String, String> producteur = new KafkaProducer<>(Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Conteneurs.KAFKA.getBootstrapServers(),
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class))) {
             for (String message : messages) {
-                producteur.send(new ProducerRecord<>(TOPIC, cle, message)).get();
+                producteur.send(new ProducerRecord<>(topic, cle, message)).get();
             }
         }
     }

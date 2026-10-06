@@ -20,6 +20,24 @@ export const TEXTES = {
     identifiantsIncorrects: 'Identifiants incorrects',
     verifiezLogin: 'Vérifiez votre login et mot de passe',
   },
+  /** Écran Virement (docs/retro/features/FEAT-003/FIELDS.md et MESSAGES.md ; textes-nouveaux.md pour les clés citées). */
+  virement: {
+    titreOnglet: 'BankApp Demo - Virement',
+    titre: 'Effectuer un virement',
+    compteSource: 'Compte source',
+    compteDestinataire: 'Compte destinataire',
+    choisirUnCompte: '-- Choisir un compte --',
+    montant: 'Montant (€)',
+    indiceMontant: 'Ex : 100,00 — Saisir plus de 5 000 € pour tester l\'alerte fraude',
+    motif: 'Motif',
+    executer: 'Exécuter le virement',
+    lienBeneficiaires: 'Virement SEPA externe — Gérer mes bénéficiaires',
+    /** virement.validation.comptes (message serveur du legacy, repris tel quel) */
+    validationComptes: 'Veuillez sélectionner les deux comptes',
+    /** virement.validation.montant */
+    validationMontant: 'Veuillez saisir le montant',
+    comptesIdentiques: 'Le compte source et destination doivent être différents',
+  },
   /** Titres d'onglet des pages déclarées (FEAT-002 MSG-002-001, FEAT-015, FEAT-016 MSG-016-001). */
   titresOnglet: {
     tableauDeBord: 'BankApp Demo - Tableau de bord',
