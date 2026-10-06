@@ -9,7 +9,7 @@ import java.util.UUID;
  * action du système) et horodatage lu sur le port Horloge. Le détail découle du code d'action.
  */
 public record EntreeAudit(UUID idEvenement, String utilisateur, ActionAudit action, String adresseIp,
-        Instant horodatage) {
+        Instant horodatage, String detail) {
 
     /**
      * Longueur maximale de l'identifiant saisi repris dans une tentative échouée : celle de {@code customers.username}.
@@ -18,6 +18,12 @@ public record EntreeAudit(UUID idEvenement, String utilisateur, ActionAudit acti
      * de l'outbox d'audit et toutes les entrées suivantes.
      */
     public static final int LONGUEUR_MAX_IDENTIFIANT_SAISI = 255;
+
+    /** Entrée dont le détail découle du code d'action. */
+    public EntreeAudit(UUID idEvenement, String utilisateur, ActionAudit action, String adresseIp,
+            Instant horodatage) {
+        this(idEvenement, utilisateur, action, adresseIp, horodatage, action == null ? null : action.detail());
+    }
 
     public EntreeAudit {
         if (idEvenement == null) {
@@ -32,6 +38,20 @@ public record EntreeAudit(UUID idEvenement, String utilisateur, ActionAudit acti
         if (horodatage == null) {
             throw new IllegalArgumentException("L'horodatage de l'entrée d'audit est obligatoire.");
         }
+    }
+
+    /** Désactivation d'un client par un administrateur : utilisateur = identifiant de l'administrateur. */
+    public static EntreeAudit desactivationClient(long administrateurId, long clientId, String adresseIp,
+            UUID idEvenement, Instant horodatage) {
+        return new EntreeAudit(idEvenement, Long.toString(administrateurId), ActionAudit.ADMIN_DEACTIVATE, adresseIp,
+                horodatage, ActionAudit.ADMIN_DEACTIVATE.detail(clientId));
+    }
+
+    /** Activation d'un client par un administrateur : utilisateur = identifiant de l'administrateur. */
+    public static EntreeAudit activationClient(long administrateurId, long clientId, String adresseIp,
+            UUID idEvenement, Instant horodatage) {
+        return new EntreeAudit(idEvenement, Long.toString(administrateurId), ActionAudit.ADMIN_ACTIVATE, adresseIp,
+                horodatage, ActionAudit.ADMIN_ACTIVATE.detail(clientId));
     }
 
     /** Connexion réussie : l'utilisateur est l'identifiant numérique du client, en texte. */
@@ -59,10 +79,5 @@ public record EntreeAudit(UUID idEvenement, String utilisateur, ActionAudit acti
                     : rogne;
         }
         return new EntreeAudit(idEvenement, utilisateur, ActionAudit.LOGIN_FAILED, adresseIp, horodatage);
-    }
-
-    /** Détail de l'entrée, tiré du code d'action. */
-    public String detail() {
-        return action.detail();
     }
 }

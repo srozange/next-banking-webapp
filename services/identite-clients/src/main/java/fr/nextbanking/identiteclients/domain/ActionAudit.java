@@ -6,7 +6,9 @@ package fr.nextbanking.identiteclients.domain;
 public enum ActionAudit {
     LOGIN("Connexion réussie"),
     LOGIN_FAILED("Tentative échouée"),
-    LOGOUT("Déconnexion");
+    LOGOUT("Déconnexion"),
+    ADMIN_DEACTIVATE("Désactivation client id=%d"),
+    ADMIN_ACTIVATE("Activation client id=%d");
 
     private final String detail;
 
@@ -14,8 +16,13 @@ public enum ActionAudit {
         this.detail = detail;
     }
 
-    /** Texte du champ {@code detail} de l'entrée d'audit. */
+    /** Texte du champ {@code detail} de l'entrée d'audit (modèle {@code %d} pour les actions sur un client). */
     public String detail() {
         return detail;
+    }
+
+    /** Détail d'une action portant sur le client donné. */
+    public String detail(long clientId) {
+        return String.format(detail, clientId);
     }
 }

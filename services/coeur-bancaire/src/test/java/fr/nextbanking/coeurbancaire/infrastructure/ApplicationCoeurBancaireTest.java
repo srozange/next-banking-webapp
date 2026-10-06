@@ -66,7 +66,7 @@ class ApplicationCoeurBancaireTest {
     @Test
     void main_demarre_le_service() {
         List<String> arguments = new ArrayList<>(Conteneurs.arguments());
-        arguments.add("--spring.main.web-application-type=none");
+        arguments.add("--server.port=0");
         arguments.add("--spring.main.sources=" + ContexteDemarre.class.getName());
         ApplicationCoeurBancaire.main(arguments.toArray(String[]::new));
 

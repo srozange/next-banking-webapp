@@ -82,13 +82,32 @@ public final class OutilsHttp {
 
     /** Jeton forgé avec la paire donnée : sujet, émission et expiration au choix. */
     public static String jeton(KeyPair cles, String sujet, Instant emission, Instant expiration) {
+        return jeton(cles, sujet, "CLIENT", emission, expiration);
+    }
+
+    /** Jeton forgé avec la paire donnée : sujet, rôle, émission et expiration au choix. */
+    public static String jeton(KeyPair cles, String sujet, String role, Instant emission, Instant expiration) {
         RSAKey cle = new RSAKey.Builder((RSAPublicKey) cles.getPublic()).privateKey((RSAPrivateKey) cles.getPrivate())
                 .build();
-        JwtClaimsSet revendications = JwtClaimsSet.builder().subject(sujet).claim("roles", List.of("CLIENT"))
+        JwtClaimsSet revendications = JwtClaimsSet.builder().subject(sujet).claim("roles", List.of(role))
                 .id(UUID.randomUUID().toString()).issuedAt(emission).expiresAt(expiration).build();
         return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(cle)))
                 .encode(JwtEncoderParameters.from(JwsHeader.with(SignatureAlgorithm.RS256).build(), revendications))
                 .getTokenValue();
+    }
+
+    /** Jeton valide du rôle donné, signé par la clé du service de test. */
+    public static String jetonValide(String sujet, String role) {
+        Instant maintenant = Instant.now();
+        return jeton(Conteneurs.CLES, sujet, role, maintenant, maintenant.plusSeconds(1800));
+    }
+
+    /** Requête POST sans corps avec jeton et en-têtes supplémentaires. */
+    public static HttpResponse<String> publier(int port, String chemin, String jeton, Map<String, String> entetes)
+            throws IOException, InterruptedException {
+        Map<String, String> tous = new java.util.HashMap<>(entetes);
+        tous.put("Authorization", "Bearer " + jeton);
+        return envoyer(port, "POST", chemin, null, tous);
     }
 
     /** Jeton valide, signé par la clé du service de test. */

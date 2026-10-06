@@ -35,6 +35,11 @@ class RenouvelerSessionCasUsageTest {
                 default -> Optional.empty();
             };
         }
+
+        @Override
+        public void changerActif(long clientId, boolean actif) {
+            throw new UnsupportedOperationException();
+        }
     };
 
     private final EmetteurJeton emetteur = client -> {

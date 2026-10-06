@@ -52,6 +52,11 @@ class SeConnecterCasUsageTest {
         public Optional<Client> parId(long clientId) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public void changerActif(long clientId, boolean actif) {
+            throw new UnsupportedOperationException();
+        }
     };
 
     // Empreinte de test : "h:" + mot de passe ; une empreinte absente ne correspond jamais.

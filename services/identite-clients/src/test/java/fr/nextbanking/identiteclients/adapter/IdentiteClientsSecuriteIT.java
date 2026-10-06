@@ -104,6 +104,28 @@ class IdentiteClientsSecuriteIT {
         assertThat(reponse.headers().firstValue("Set-Cookie")).isEmpty();
     }
 
+    @Test
+    @Tag("FR-030-07")
+    void un_jeton_client_ou_conseiller_est_refuse_en_403_sur_la_desactivation_et_l_activation() throws Exception {
+        for (String role : new String[] {"CLIENT", "CONSEILLER"}) {
+            String jeton = OutilsHttp.jetonValide("1", role);
+            for (String action : new String[] {"desactivation", "activation"}) {
+                HttpResponse<String> reponse = avecJeton(port, "POST", "/api/identite-clients/clients/1/" + action,
+                        jeton);
+                assertThat(reponse.statusCode()).as(role + " " + action).isEqualTo(403);
+                assertThat(reponse.body()).isEqualTo("{\"message\":\"Accès refusé\"}");
+                assertThat(reponse.headers().firstValue("Set-Cookie")).isEmpty();
+            }
+        }
+    }
+
+    @Test
+    @Tag("FR-030-07")
+    void sans_jeton_la_desactivation_et_l_activation_rendent_401() throws Exception {
+        assertRefus(envoyer(port, "POST", "/api/identite-clients/clients/1/desactivation", null, Map.of()));
+        assertRefus(envoyer(port, "POST", "/api/identite-clients/clients/1/activation", null, Map.of()));
+    }
+
     private static void assertRefus(HttpResponse<String> reponse) {
         assertThat(reponse.statusCode()).as(reponse.uri().toString()).isEqualTo(401);
         assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);

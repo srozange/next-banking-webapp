@@ -34,6 +34,7 @@ class KafkaInjoignableTest {
         registre.add("spring.datasource.password", Conteneurs.POSTGRES::getPassword);
         registre.add("spring.kafka.bootstrap-servers", () -> "localhost:1");
         registre.add("spring.kafka.admin.auto-create", () -> "false");
+        registre.add("nb.jeton.cle-publique", Conteneurs::clePublique);
     }
 
     @LocalServerPort

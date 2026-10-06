@@ -25,6 +25,16 @@ class GestionErreursTest {
     }
 
     @Test
+    void un_role_insuffisant_du_cas_d_usage_rend_403() {
+        assertReponse(gestion.accesRefuse(), 403, "Accès refusé");
+    }
+
+    @Test
+    void un_client_introuvable_rend_404() {
+        assertReponse(gestion.clientIntrouvable(), 404, "Ressource introuvable");
+    }
+
+    @Test
     void une_erreur_inattendue_rend_500_sans_detail() {
         assertReponse(gestion.autreErreur(new IllegalStateException("détail interne")), 500,
                 "Une erreur technique est survenue");

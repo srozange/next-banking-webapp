@@ -180,6 +180,8 @@ services:
       SPRING_DATASOURCE_USERNAME: coeur_bancaire
       SPRING_DATASOURCE_PASSWORD: ${NB_COEUR_BANCAIRE_BD_MOT_DE_PASSE:-}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      # Clé publique du jeton : tout /api/** est authentifié sauf le témoin ; sans elle, refus de démarrer.
+      NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
     ports:
       - "${NB_PORT_COEUR_BANCAIRE:-8082}:8080"
     networks: [nb]

@@ -13,4 +13,7 @@ public interface DepotClients {
 
     /** Client dont l'identifiant numérique est donné, s'il existe. */
     Optional<Client> parId(long clientId);
+
+    /** Fixe l'état actif du client ({@code customers.active}), dans la transaction courante. */
+    void changerActif(long clientId, boolean actif);
 }
