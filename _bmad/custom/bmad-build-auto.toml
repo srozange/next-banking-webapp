@@ -7,3 +7,17 @@ persistent_facts = [
   "Le golden master se rejoue une seule fois, en entier, à la fin du développement, avant la bascule : pas pendant les stories ni entre les epics. Ne modifie jamais un test généré (e2e/golden-master/), le dossier dérivé (docs/retro/golden-master/derived/) ni replay-mapping.json : si un scénario paraît faux, arrête-toi et signale-le. Seule exception : dans la story « Socle du rejeu final du golden master », applique la règle de docs/quality-gates.md (corrections par replay-mapping.json et les outils de dérivation et d'export, inscrites au registre des écarts voulus, jamais d'édition à la main ni de scénario ou de texte attendu retiré).",
   "file:{project-root}/docs/quality-gates.md",
 ]
+
+# Démonstration du 2026-10-07 : relecture réduite à l'alignement sur l'intention de la story
+# (contrôles déterministes inchangés). Instruction vide = couche désactivée.
+[[workflow.review_layers]]
+id = "blind-hunter"
+instruction = ""
+
+[[workflow.review_layers]]
+id = "edge-case-hunter"
+instruction = ""
+
+[[workflow.review_layers]]
+id = "verification-gap"
+instruction = ""
