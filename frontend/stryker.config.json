@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "mutate": [
+    "src/domain/**/*.ts",
+    "src/application/**/*.ts",
+    "!src/**/*.test.*"
+  ],
+  "coverageAnalysis": "perTest",
+  "reporters": ["clear-text", "progress", "html"],
+  "thresholds": { "high": 90, "low": 85, "break": 85 },
+  "incrementalFile": "reports/stryker-incremental.json"
+}

@@ -15,3 +15,4 @@ frontend/.vitest/
 _bmad/render/
 .env
 .secrets/
+.stryker-tmp/

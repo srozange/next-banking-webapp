@@ -119,4 +119,37 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Mutation à la demande (scripts/gates/mutation.sh) : PIT n'existe que dans ce profil. -->
+        <profile>
+            <id>mutation</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.22.1</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.pitest</groupId>
+                                <artifactId>pitest-junit5-plugin</artifactId>
+                                <version>1.2.3</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <targetClasses>
+                                <param>fr.nextbanking.*.domain.*</param>
+                                <param>fr.nextbanking.*.application.*</param>
+                            </targetClasses>
+                            <mutationThreshold>85</mutationThreshold>
+                            <historyInputFile>${user.home}/.cache/next-banking-webapp/pit/${project.artifactId}.history</historyInputFile>
+                            <historyOutputFile>${user.home}/.cache/next-banking-webapp/pit/${project.artifactId}.history</historyOutputFile>
+                            <timestampedReports>false</timestampedReports>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
