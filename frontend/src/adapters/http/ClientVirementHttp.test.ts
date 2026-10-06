@@ -6,7 +6,7 @@ const json = (corps: unknown, status: number) => Promise.resolve(new Response(JS
 
 describe('ClientVirementHttp', () => {
   it('lit les comptes du client', async () => {
-    const comptes = [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001' }];
+    const comptes = [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001', solde: '2130.00' }];
     const appeler = vi.fn((_e: unknown, _o?: unknown) => json(comptes, 200));
     const client = creerClientVirementHttp(appeler as unknown as typeof fetch);
 
@@ -18,6 +18,7 @@ describe('ClientVirementHttp', () => {
     ['un statut d’erreur', () => json({}, 500)],
     ['un corps qui n’est pas une liste', () => json({ a: 1 }, 200)],
     ['un compte mal formé', () => json([{ id: 'x' }], 200)],
+    ['un compte sans solde lisible', () => json([{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001', solde: '12' }], 200)],
     ['un corps illisible', () => Promise.resolve(new Response('pas du json', { status: 200 }))],
     ['une coupure', () => Promise.reject(new Error('réseau'))],
   ])('rend technique pour %s à la lecture des comptes', async (_nom, reponse) => {

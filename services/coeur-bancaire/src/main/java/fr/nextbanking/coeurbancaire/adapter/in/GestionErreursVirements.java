@@ -1,11 +1,14 @@
 package fr.nextbanking.coeurbancaire.adapter.in;
 
+import fr.nextbanking.coeurbancaire.domain.ErreurReleve;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /**
  * Erreurs de l'API des virements au format unique {@code {"message": "..."}}, sans pile, nom de classe ni code
  * interne (NFR-SEC-04) : le texte d'un refus est celui du domaine ; le détail technique d'un 5xx n'est que journalisé.
+ * Consulté avant le gestionnaire général {@link GestionErreurs}, qui capte aussi {@code Exception}.
  */
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class})
 public class GestionErreursVirements {
 
@@ -48,6 +53,12 @@ public class GestionErreursVirements {
             return corps(statut, new MessageAvecReference(TextesVirement.refusControle(reference), reference));
         }
         return corps(statut, new Message(refus.getMessage()));
+    }
+
+    @ExceptionHandler(ErreurReleve.class)
+    public ResponseEntity<Object> releveRefuse(ErreurReleve refus) {
+        return reponse(refus.motif() == ErreurReleve.Cause.COMPTE_ETRANGER ? HttpStatus.FORBIDDEN
+                : HttpStatus.NOT_FOUND, refus.getMessage());
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})

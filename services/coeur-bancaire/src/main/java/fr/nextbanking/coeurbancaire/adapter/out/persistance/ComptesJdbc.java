@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,14 @@ public class ComptesJdbc implements Comptes {
                 .param("clientId", clientId)
                 .query(ComptesJdbc::compte)
                 .list();
+    }
+
+    @Override
+    public Optional<Compte> trouver(long compteId) {
+        return jdbc.sql("select id, client_id, numero, type, solde from comptes where id = :id")
+                .param("id", compteId)
+                .query(ComptesJdbc::compte)
+                .optional();
     }
 
     @Override

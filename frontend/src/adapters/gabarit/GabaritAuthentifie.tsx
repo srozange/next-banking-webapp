@@ -95,7 +95,7 @@ export function GabaritAuthentifie({ roles, clientProfil, stockage, session }: P
         {sousNav !== null && <SousEnTete navigation={sousNav} />}
       </header>
       <ContenuPrincipal occupe={profil === null}>
-        <Outlet />
+        <Outlet context={profil} />
       </ContenuPrincipal>
     </>
   );

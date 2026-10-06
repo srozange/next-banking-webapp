@@ -1,0 +1,104 @@
+.ecran-produits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  box-sizing: border-box;
+  max-width: calc(var(--spacing-4xl) * 8);
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.ecran-produits__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.ecran-produits__entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.ecran-produits__titre,
+.ecran-produits__sous-titre {
+  margin: 0 0 var(--spacing-md);
+  font-family: var(--font-h4);
+  font-size: var(--text-h4);
+  font-weight: var(--font-weight-h4);
+}
+
+.ecran-produits__entete .ecran-produits__titre {
+  margin: 0;
+}
+
+/* Libellés rendus en capitales par le CSS, comme le legacy : le golden master compare innerText. */
+.ecran-produits__separateur,
+.ecran-produits__sous-titre,
+.ecran-produits__tableau th {
+  font-family: var(--font-eyebrow);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--font-weight-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.ecran-produits__separateur {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.ecran-produits__vide {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.ecran-produits__tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.ecran-produits__tableau th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface-inverse);
+  color: var(--color-on-surface-inverse);
+  text-align: left;
+}
+
+.ecran-produits__tableau td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ecran-produits__nom {
+  font-weight: var(--font-weight-label);
+}
+
+.ecran-produits__badge {
+  display: inline-block;
+  padding: 0 var(--spacing-sm);
+  font-weight: var(--font-weight-label);
+}
+
+.ecran-produits__badge--oui {
+  background-color: var(--color-success-container);
+  color: var(--color-success);
+}
+
+.ecran-produits__badge--non {
+  background-color: var(--color-error-container);
+  color: var(--color-error);
+}
+
+.ecran-produits__badge--partiel {
+  background-color: var(--color-warning-container);
+  color: var(--color-warning);
+}

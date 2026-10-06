@@ -1,9 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
+import { creerClientComptesTiersHttp } from '../adapters/http/ClientComptesTiersHttp';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
+import { creerClientConversationHttp } from '../adapters/http/ClientConversationHttp';
+import { creerClientPretsHttp } from '../adapters/http/ClientPretsHttp';
+import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
 import { creerClientRevueHttp } from '../adapters/http/ClientRevueHttp';
+import { creerClientReleveHttp } from '../adapters/http/ClientReleveHttp';
 import { creerClientVirementHttp } from '../adapters/http/ClientVirementHttp';
 import { creerClientSessionHttp } from '../adapters/http/ClientSessionHttp';
 import { decodeurJetonJwt } from '../adapters/jeton/DecodeurJetonJwt';
@@ -32,6 +38,10 @@ const routeur = createBrowserRouter(
     stockageJeton,
     decodeurJeton: decodeurJetonJwt,
     clientProfil: creerClientProfilHttp(fetchAuthentifie),
+    clientBourse: creerClientBourseHttp(fetchAuthentifie),
+    clientProduits: creerClientProduitsHttp(fetchAuthentifie),
+    clientConversation: creerClientConversationHttp(fetchAuthentifie),
+    clientComptesTiers: creerClientComptesTiersHttp(fetchAuthentifie),
     session: {
       client: creerClientSessionHttp(fetchAuthentifie),
       expiration: creerExpirationJeton(horlogeSysteme),
@@ -39,6 +49,8 @@ const routeur = createBrowserRouter(
     },
     clientVirement: creerClientVirementHttp(fetchAuthentifie),
     clientRevue: creerClientRevueHttp(fetchAuthentifie),
+    clientReleve: creerClientReleveHttp(fetchAuthentifie),
+    clientPrets: creerClientPretsHttp(fetchAuthentifie),
   }),
 );
 

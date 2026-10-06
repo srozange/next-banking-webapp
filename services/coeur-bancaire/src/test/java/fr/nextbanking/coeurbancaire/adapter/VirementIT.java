@@ -383,7 +383,8 @@ class VirementIT {
 
         assertThat(client.statusCode()).isEqualTo(200);
         assertThat(json.readTree(client.body())).isEqualTo(json.readTree("""
-                [{"id":1,"type":"COURANT","numero":"FR76-0001-0001"},{"id":2,"type":"EPARGNE","numero":"FR76-0001-0002"}]"""));
+                [{"id":1,"type":"COURANT","numero":"FR76-0001-0001","solde":"2130.00"},
+                {"id":2,"type":"EPARGNE","numero":"FR76-0001-0002","solde":"15200.00"}]"""));
         assertThat(admin.body()).isEqualTo("[]");
         assertThat(conseiller.body()).isEqualTo("[]");
         assertThat(anonyme.statusCode()).isEqualTo(401);

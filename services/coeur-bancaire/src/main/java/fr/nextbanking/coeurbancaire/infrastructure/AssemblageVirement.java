@@ -1,6 +1,7 @@
 package fr.nextbanking.coeurbancaire.infrastructure;
 
 import fr.nextbanking.coeurbancaire.application.ConsulterComptesCasUsage;
+import fr.nextbanking.coeurbancaire.application.ConsulterReleveCasUsage;
 import fr.nextbanking.coeurbancaire.application.ConsulterRevueCasUsage;
 import fr.nextbanking.coeurbancaire.application.ConsulterSuiviVirementsCasUsage;
 import fr.nextbanking.coeurbancaire.application.EcheanceRevueCasUsage;
@@ -19,6 +20,7 @@ import fr.nextbanking.coeurbancaire.application.ControleFraudeCasUsage;
 import fr.nextbanking.coeurbancaire.application.ExecuterVirementCasUsage;
 import fr.nextbanking.coeurbancaire.application.TraiterVirementATraiterCasUsage;
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterComptes;
+import fr.nextbanking.coeurbancaire.application.port.in.ConsulterReleve;
 import fr.nextbanking.coeurbancaire.application.port.in.ExecuterVirement;
 import fr.nextbanking.coeurbancaire.application.port.in.TraiterVirementATraiter;
 import fr.nextbanking.coeurbancaire.application.port.out.AlertesFraude;
@@ -60,6 +62,11 @@ public class AssemblageVirement {
     @Bean
     ConsulterComptes consulterComptes(Comptes comptes) {
         return new ConsulterComptesCasUsage(comptes);
+    }
+
+    @Bean
+    ConsulterReleve consulterReleve(Comptes comptes, Operations operations) {
+        return new ConsulterReleveCasUsage(comptes, operations);
     }
 
     @Bean

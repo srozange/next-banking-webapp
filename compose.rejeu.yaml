@@ -1,0 +1,9 @@
+# Surcouche du rejeu du golden master : `docker compose -f compose.yaml -f compose.rejeu.yaml ...`.
+# Active le profil Spring `rejeu` des services qui en ont un ; complétée par la story « Socle du rejeu final ».
+services:
+  bourse:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu
+  open-banking-conseiller:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu

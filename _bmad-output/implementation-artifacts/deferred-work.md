@@ -158,3 +158,71 @@ source_spec: `spec-3-4-suspendre-refuser-revoir-et-rejeter-a-l-echeance-un-virem
 severity: low
 reason: The dev session recorded deferred findings the orchestrator could not parse, so they were NOT filed as entries: item 1: not a mapping (got str); item 2: not a mapping (got str); item 3: not a mapping (got str); item 4: not a mapping (got str); item 5: not a mapping (got str); item 6: not a mapping (got str). Read `spec-3-4-suspendre-refuser-revoir-et-rejeter-a-l-echeance-un-virement.md`'s frontmatter and re-file them by hand.
 status: open
+
+### DW-18: Aucune commande outillée ne charge services/bourse/reference-data/reference-data.sql dans la pile compose : la watchlist reste vide après `docker compose up`.
+origin: spec-deferred 13e30c604155
+location: services/bourse/reference-data/reference-data.sql ; Makefile
+source_spec: `spec-7-1-ouvrir-le-service-bourse-et-gerer-la-watchlist-commune.md`
+severity: medium
+reason: Même constat que pour identite-clients (report de la story 2.1) : le chargement est prévu par `make reset-data` (spine AD-11, golden-master-architecture §5.2), livré par la story « Socle du rejeu final ». Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur une pile isolée.
+status: open
+
+### DW-19: Les vert et rouge de l'écran viennent des tokens `--color-success` (#0b7a3e) et `--color-error` (#c4122f), pas des teintes legacy #2e7d32 et #E3000F.
+origin: spec-deferred 69378a65b706
+location: frontend/src/adapters/ecrans/bourse/EcranBourse.css
+source_spec: `spec-7-4-afficher-l-ecran-bourse.md`
+severity: low
+reason: `tokens.css` est généré depuis DESIGN.md et le test `couleurs-hors-tokens` interdit toute couleur en dur dans `src` ; l'écart de teinte avec le legacy relève du design (UX-DR1), pas de cette story.
+status: open
+
+### DW-20: Le service bourse renvoie des prix à 4 décimales ("170.1600") ; le front les arrondit à 2 décimales (`centimesDepuisPrix`).
+origin: spec-deferred 01195b30c3e0
+location: frontend/src/domain/bourse.ts:44
+source_spec: `spec-7-4-afficher-l-ecran-bourse.md`
+severity: low
+reason: Contrat constaté dans le service (7.2/7.3) ; l'arrondi demi-supérieur est cohérent avec l'affichage legacy à 2 décimales, à confirmer par le métier si l'arrondi exact importe.
+status: open
+
+### DW-21: Aucune commande outillée ne charge services/open-banking-conseiller/reference-data/reference-data.sql dans la pile compose : le catalogue reste vide après `docker compose up`.
+origin: spec-deferred 21c0faa07fe4
+location: services/open-banking-conseiller/reference-data/reference-data.sql ; Makefile
+source_spec: `spec-7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata.md`
+severity: medium
+reason: Même constat que pour bourse et identite-clients : le chargement est prévu par `make reset-data` (story « Socle du rejeu final »). Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur la pile.
+status: open
+
+### DW-22: Le dépôt minimal s'affiche « 300,00 EUR » alors que le legacy affichait « EUR300 » (format monétaire JSF non spécifié par le PRD).
+origin: spec-deferred eb6630d0ba23
+location: frontend/src/domain/produits.ts
+source_spec: `spec-7-6-afficher-l-ecran-produits.md`
+severity: low
+reason: Choix de cette story (Design Notes), à confirmer par le métier ; le golden master SC-011-01 ne compare pas cette valeur.
+status: open
+
+### DW-23: trace-smoke.sh non exécuté pour la story 7.7.
+origin: spec-deferred fe5e50232b09
+location: n/a
+source_spec: `spec-7-7-raccorder-azure-openai-derriere-un-port-simule-et-exposer-l-echange-avec-sophie.md`
+reason: Le script exige la pile compose ; non lancé dans cette session.
+status: open
+
+### DW-24: trace-smoke.sh non exécuté pour la story 7.8.
+origin: spec-deferred a041d069f888
+location: n/a
+source_spec: `spec-7-8-dialoguer-avec-sophie-sur-l-ecran-mon-conseiller.md`
+reason: Le script exige la pile compose ; non lancé dans cette session. Story purement front : aucune trace de service modifiée.
+status: open
+
+### DW-25: Valeurs des lignes LOANS / LOAN_REPAYMENTS du legacy (import.sql) absentes du dépôt : reference-data.sql de credits est reconstitué (2 prêts EN_COURS de user1, 18 échéances) et à confirmer contre le
+origin: spec-deferred 09799692e09b
+location: n/a
+source_spec: `spec-5-1-ouvrir-la-page-prets-et-simuler-un-emprunt.md`
+reason: docs/retro/00-global/NFR.md (2 loans, 18 loan_repayments), DATA-DICTIONARY.md (colonnes), FIELDS.md (exemple 5 000 EUR / 4.9 % / 24 mois).
+status: open
+
+### DW-26: Prérequis de l'epic 4 (FR-004-05, « Montant invalide ») non livré : le message est livré ici pour la seule simulation ; la création de virement programmé et la demande de prêt (5.2) le reprendront.
+origin: spec-deferred 93fe4e36160d
+location: n/a
+source_spec: `spec-5-1-ouvrir-la-page-prets-et-simuler-un-emprunt.md`
+reason: sprint-status.yaml : epic 4 en backlog.
+status: open

@@ -2,14 +2,26 @@ import type { RouteObject } from 'react-router';
 import { ROUTE_CONNEXION } from '../../domain/connexion';
 import type { ClientProfil } from '../../application/chargerProfil';
 import type { ClientRevue } from '../../application/revue';
+import type { ClientPrets } from '../../application/prets';
+import type { ClientBourse } from '../../application/consulterBourse';
+import type { ClientConversation } from '../../application/dialoguerAvecSophie';
+import type { ClientProduits } from '../../application/consulterProduits';
+import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientVirement } from '../../application/virement';
+import type { ClientComptesTiers } from '../../application/comptesTiers';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
 import { Application } from '../Application';
 import type { Session } from '../session/session';
+import { EcranComptesTiers } from '../ecrans/comptesTiers/EcranComptesTiers';
+import { EcranBourse } from '../ecrans/bourse/EcranBourse';
+import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { SectionRevueVirements } from '../ecrans/administration/SectionRevueVirements';
+import { EcranProduits } from '../ecrans/produits/EcranProduits';
+import { EcranReleve } from '../ecrans/releve/EcranReleve';
 import { EcranVirement } from '../ecrans/virement/EcranVirement';
 import { SectionSuiviVirements } from '../ecrans/virement/SectionSuiviVirements';
+import { EcranPrets } from '../ecrans/prets/EcranPrets';
 import { TEXTES } from '../textes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { RedirectionAccueil } from './RedirectionAccueil';
@@ -21,25 +33,49 @@ export interface Dependances {
   stockageJeton: StockageJeton;
   decodeurJeton: DecodeurJeton;
   clientProfil: ClientProfil;
+  clientBourse: ClientBourse;
+  clientProduits: ClientProduits;
+  clientConversation: ClientConversation;
+  clientComptesTiers: ClientComptesTiers;
+  /** Envoie le navigateur à une adresse externe (Powens) ; défaut de l'écran Comptes Tiers si absent. */
+  allerVers?: (adresse: string) => void;
   session: Session;
   clientVirement: ClientVirement;
   clientRevue: ClientRevue;
+  clientReleve: ClientReleve;
+  clientPrets: ClientPrets;
 }
 
 /**
- * Routes protégées : déclarées ici, leur contenu arrive avec les stories suivantes ; le tableau de bord porte déjà la
- * section « Suivi de mes virements » et l'administration la section de revue des virements suspendus.
+ * Routes protégées : déclarées ici ; le tableau de bord porte déjà la section « Suivi de mes virements »,
+ * l'administration la section de revue des virements suspendus et /prets l'écran Prêts ; le reste du contenu arrive
+ * avec les stories suivantes.
  */
-export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration'] as const;
+export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets'] as const;
 
-/** Titre d'onglet de chaque route protégée (seul élément rendu en attendant le contenu, hissé dans <head>). */
-const TITRES_ONGLET: Readonly<Record<(typeof ROUTES_PROTEGEES)[number], string>> = {
+/** Titre d'onglet des routes protégées sans écran (seul élément rendu en attendant le contenu, hissé dans <head>). */
+const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], '/prets'>, string>> = {
   '/tableau-de-bord': TEXTES.titresOnglet.tableauDeBord,
   '/espace-conseiller': TEXTES.titresOnglet.espaceConseiller,
   '/administration': TEXTES.titresOnglet.administration,
 };
 
-export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, session, clientVirement, clientRevue }: Dependances): RouteObject[] {
+export function creerRoutes({
+  clientConnexion,
+  stockageJeton,
+  decodeurJeton,
+  clientProfil,
+  clientBourse,
+  clientProduits,
+  clientConversation,
+  clientComptesTiers,
+  allerVers,
+  session,
+  clientVirement,
+  clientRevue,
+  clientReleve,
+  clientPrets,
+}: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
   return [
     {
@@ -57,17 +93,30 @@ export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, cli
           // Garde par session puis par rôle, puis gabarit authentifié (en-tête, contenu principal).
           element: <RouteProtegee stockage={stockageJeton} decodeur={decodeurJeton} clientProfil={clientProfil} session={session} />,
           children: [
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-009-01).
+            { path: '/bourse', element: <EcranBourse client={clientBourse} stockage={stockageJeton} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-010-01).
+            { path: '/mon-conseiller', element: <EcranConseiller client={clientConversation} stockage={stockageJeton} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-011-01).
+            { path: '/produits', element: <EcranProduits client={clientProduits} stockage={stockageJeton} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-012-01).
+            { path: '/comptes-tiers', element: <EcranComptesTiers client={clientComptesTiers} stockage={stockageJeton} allerVers={allerVers} /> },
             ...ROUTES_PROTEGEES.map((path) => ({
               path,
-              element: (
-                <>
-                  <title>{TITRES_ONGLET[path]}</title>
-                  {path === '/tableau-de-bord' && <SectionSuiviVirements client={clientVirement} testId="dashboard-virements-revue" />}
-                  {path === '/administration' && <SectionRevueVirements client={clientRevue} />}
-                </>
-              ),
+              element:
+                path === '/prets' ? (
+                  <EcranPrets client={clientPrets} stockage={stockageJeton} />
+                ) : (
+                  <>
+                    <title>{TITRES_ONGLET[path]}</title>
+                    {path === '/tableau-de-bord' && <SectionSuiviVirements client={clientVirement} testId="dashboard-virements-revue" />}
+                    {path === '/administration' && <SectionRevueVirements client={clientRevue} />}
+                  </>
+                ),
             })),
             { path: '/virement', element: <EcranVirement client={clientVirement} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-005-01) : seuls les comptes du jeton sont proposés.
+            { path: '/releve', element: <EcranReleve comptes={clientVirement} releve={clientReleve} /> },
           ],
         },
         { path: '/', element: accueil },

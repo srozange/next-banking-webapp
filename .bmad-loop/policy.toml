@@ -10,7 +10,7 @@ max_dev_attempts = 2
 artifact_file_max_mb = 5    # raw-byte cap for each ignored artifact selected for publication
 artifact_payload_max_mb = 10 # raw-byte cap across all selected ignored publication artifacts
 max_followup_reviews = 1     # additional review rounds granted solely because a finalized (status: done) round still recommended a follow-up; once spent, such a round converges + refiles the recommendation instead of burning another cycle. 0 = never honor a pass's own recommendation
-session_timeout_min = 90
+session_timeout_min = 180
 git_timeout_s = 120          # bound on any single git subprocess; exceeding it pauses/degrades (never crashes the run) — raise on a loaded host or a very large worktree
 teardown_grace_s = 20        # verified teardown: poll a killed session window up to this long, then force-kill its pane pids and re-kill (#157). 0 = single unverified best-effort kill
 stop_without_result_nudges = 1
@@ -75,7 +75,7 @@ spec_folder = ""
 
 [adapter]
 name = "claude"              # claude | codex | gemini | copilot | antigravity | opencode-http (alias: opencode) | <custom .bmad-loop/profiles/*.toml>
-model = "claude-sonnet-5-5"  # démonstration : Sonnet ; empty = CLI default model (opencode-http wants "provider/model")
+model = "claude-sonnet-5-5"  # flux B : Sonnet ; empty = CLI default model (opencode-http wants "provider/model")
 effort = "medium"            # reasoning effort, free-form (e.g. "high", "max"); empty = provider default.
                              # Sent by opencode-http as the per-prompt `variant`; the tmux CLIs ignore it
 cleanup_session_on_finish = true  # kill the run's tmux session when it finishes (false keeps it for inspection)

@@ -22,6 +22,9 @@
         <module>services/notifications</module>
         <module>services/identite-clients</module>
         <module>services/audit</module>
+        <module>services/credits</module>
+        <module>services/bourse</module>
+        <module>services/open-banking-conseiller</module>
     </modules>
 
     <properties>
@@ -31,6 +34,8 @@
         <archunit.version>1.5.1</archunit.version>
         <jacoco.version>0.8.15</jacoco.version>
         <datasource-micrometer.version>2.3.0</datasource-micrometer.version>
+        <!-- Coupe-circuit des fournisseurs externes (AR-102, story 7.2) : Java pur, sans Spring. -->
+        <resilience4j.version>2.4.0</resilience4j.version>
         <!-- Correctifs de sécurité au-dessus du BOM Boot 4.1.1 (cve.sh, story 1.6) : retirer quand Boot les embarque. -->
         <tomcat.version>11.0.25</tomcat.version>
         <jackson-bom.version>3.1.7</jackson-bom.version>
@@ -48,6 +53,11 @@
                 <groupId>net.ttddyy.observation</groupId>
                 <artifactId>datasource-micrometer-spring-boot</artifactId>
                 <version>${datasource-micrometer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-circuitbreaker</artifactId>
+                <version>${resilience4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

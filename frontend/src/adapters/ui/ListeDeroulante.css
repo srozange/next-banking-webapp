@@ -4,6 +4,12 @@
   gap: var(--spacing-sm);
 }
 
+.liste-deroulante__entete {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
 .liste-deroulante__libelle {
   color: var(--color-ink);
   font-family: var(--font-label);
@@ -11,15 +17,24 @@
   font-weight: var(--font-weight-label);
 }
 
-.liste-deroulante__libelle::after {
+/* Astérisque visuel des listes obligatoires : hors innerText et, par le texte de remplacement vide, hors nom accessible. */
+.liste-deroulante__libelle--obligatoire::after {
   content: ' *';
   content: ' *' / '';
   color: var(--color-error);
 }
 
+.liste-deroulante__complement {
+  color: var(--color-text-secondary);
+  font-family: var(--font-caption);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-caption);
+}
+
 .liste-deroulante__saisie {
   box-sizing: border-box;
   width: 100%;
+  min-width: calc(var(--spacing-4xl) * 2);
   height: var(--spacing-2xl);
   padding: 0 var(--spacing-md);
   border: 1px solid var(--color-border-strong);

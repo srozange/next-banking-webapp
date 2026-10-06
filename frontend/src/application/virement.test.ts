@@ -22,7 +22,7 @@ const client = (
 
 describe('chargerComptes', () => {
   it('rend les comptes, ou null si le service est indisponible', async () => {
-    const comptes = [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001' }];
+    const comptes = [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001', solde: '2130.00' }];
     expect(await chargerComptes(client(() => Promise.reject(new Error()), () => Promise.resolve({ statut: 'comptes', comptes })))).toEqual(comptes);
     expect(await chargerComptes(client(() => Promise.reject(new Error())))).toBeNull();
     expect(await chargerComptes(client(() => Promise.reject(new Error()), () => Promise.reject(new Error('réseau'))))).toBeNull();

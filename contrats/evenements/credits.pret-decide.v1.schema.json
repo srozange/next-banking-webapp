@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "credits.pret-decide.v1",
+  "title": "Décision prise sur une demande de prêt (consommée par le centre de notifications)",
+  "description": "Publié par credits sur le topic credits.pret-decide.v1, clé pretId, chaîne JSON sans en-tête de type. La notification est rendue par credits : notifications la stocke sans règle métier.",
+  "type": "object",
+  "required": ["idEvenement", "type", "version", "horodatage", "producteur", "donnees"],
+  "additionalProperties": false,
+  "properties": {
+    "idEvenement": { "type": "string", "format": "uuid" },
+    "type": { "const": "pret-decide" },
+    "version": { "const": 1 },
+    "horodatage": { "type": "string", "format": "date-time", "description": "ISO 8601 UTC, lu sur le port Horloge du producteur." },
+    "producteur": { "const": "credits" },
+    "donnees": {
+      "type": "object",
+      "required": ["pretId", "clientId", "statut", "notification"],
+      "additionalProperties": false,
+      "properties": {
+        "pretId": { "type": "integer", "minimum": 1 },
+        "clientId": { "type": "integer", "minimum": 1 },
+        "statut": { "enum": ["EN_COURS", "REFUSE"] },
+        "notification": {
+          "type": "object",
+          "required": ["clientId", "type", "titre", "message"],
+          "additionalProperties": false,
+          "properties": {
+            "clientId": { "type": "integer", "minimum": 1 },
+            "type": { "enum": ["CONFIRMATION", "ALERTE"] },
+            "titre": { "type": "string", "minLength": 1 },
+            "message": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "idEvenement": "7a1d2c3b-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+      "type": "pret-decide",
+      "version": 1,
+      "horodatage": "2026-10-06T08:30:01Z",
+      "producteur": "credits",
+      "donnees": {
+        "pretId": 42,
+        "clientId": 5,
+        "statut": "EN_COURS",
+        "notification": {
+          "clientId": 5,
+          "type": "CONFIRMATION",
+          "titre": "Demande de prêt approuvée",
+          "message": "Votre demande de pret Consommation de 10000.00 EUR a ete approuvee par le service credit."
+        }
+      }
+    }
+  ]
+}

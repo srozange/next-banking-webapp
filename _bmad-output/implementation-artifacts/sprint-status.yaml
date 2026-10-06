@@ -61,7 +61,7 @@ development_status:
   3-4-suspendre-refuser-revoir-et-rejeter-à-l-échéance-un-virement: done
   3-5-suspendre-un-virement-qui-fait-dépasser-le-cumul-glissant-su: optional
   3-6-refaire-un-virement-refusé-depuis-un-formulaire-prérempli: optional
-  3-7-consulter-le-relevé-d-un-compte: backlog
+  3-7-consulter-le-relevé-d-un-compte: done
   3-8-voir-ses-comptes-et-ses-dernières-opérations-sur-le-tableau: backlog
   3-9-lire-et-gérer-ses-notifications-sur-le-tableau-de-bord: backlog
   3-10-lever-une-alerte-de-fraude-après-des-échecs-de-connexion-rép: optional
@@ -84,11 +84,11 @@ development_status:
   epic-4-retrospective: optional
 
   epic-5: backlog
-  5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: backlog
-  5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: backlog
-  5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: backlog
+  5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: done
+  5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: done
+  5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: done
   5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: optional
-  5-5-consulter-l-échéancier-marquer-une-échéance-payée-et-supprim: backlog
+  5-5-consulter-l-échéancier-marquer-une-échéance-payée-et-supprim: done
   5-6-traiter-le-pipeline-des-prêts-en-attente-depuis-l-administra: backlog
   epic-5-retrospective: optional
 
@@ -99,21 +99,21 @@ development_status:
   epic-6-retrospective: optional
 
   epic-7: backlog
-  7-1-ouvrir-le-service-bourse-et-gérer-la-watchlist-commune: backlog
-  7-2-raccorder-le-fournisseur-de-cotations-alphavantage-derrière: backlog
-  7-3-générer-le-graphique-d-évolution-du-cours-côté-serveur: backlog
-  7-4-afficher-l-écran-bourse: backlog
-  7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata: backlog
-  7-6-afficher-l-écran-produits: backlog
-  7-7-raccorder-azure-openai-derrière-un-port-simulé-et-exposer-l: backlog
-  7-8-dialoguer-avec-sophie-sur-l-écran-mon-conseiller: backlog
+  7-1-ouvrir-le-service-bourse-et-gérer-la-watchlist-commune: done
+  7-2-raccorder-le-fournisseur-de-cotations-alphavantage-derrière: done
+  7-3-générer-le-graphique-d-évolution-du-cours-côté-serveur: done
+  7-4-afficher-l-écran-bourse: done
+  7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata: done
+  7-6-afficher-l-écran-produits: done
+  7-7-raccorder-azure-openai-derrière-un-port-simulé-et-exposer-l: done
+  7-8-dialoguer-avec-sophie-sur-l-écran-mon-conseiller: done
   epic-7-retrospective: optional
 
   epic-8: backlog
-  8-1-raccorder-powens-derrière-un-port-et-lancer-la-connexion-à-u: backlog
-  8-2-traiter-le-retour-public-de-powens: backlog
-  8-3-consulter-sélectionner-rafraîchir-et-déconnecter-ses-comptes: backlog
-  8-4-afficher-l-écran-comptes-tiers: backlog
+  8-1-raccorder-powens-derrière-un-port-et-lancer-la-connexion-à-u: done
+  8-2-traiter-le-retour-public-de-powens: done
+  8-3-consulter-sélectionner-rafraîchir-et-déconnecter-ses-comptes: done
+  8-4-afficher-l-écran-comptes-tiers: done
   8-5-afficher-le-patrimoine-total-avec-les-comptes-externes-sur-l: backlog
   epic-8-retrospective: optional
 
