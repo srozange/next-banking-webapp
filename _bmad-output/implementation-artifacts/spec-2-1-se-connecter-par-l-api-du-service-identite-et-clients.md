@@ -2,7 +2,7 @@
 title: "Se connecter par l'API du service identité et clients"
 type: 'feature'
 created: '2026-10-06'
-status: 'awaiting-operator'
+status: done
 baseline_revision: 'f6ffdb47ea3beba04b2e9288c408b15d065c150e'
 review_loop_iteration: 0
 followup_review_recommended: true
@@ -201,3 +201,12 @@ Status: awaiting-operator
 **Vérification :** `scripts/gates/build.sh` 0 ; `scripts/gates/check-gates-exist.sh` 0, aucun KO, lignes identite-clients à OK ; `scripts/gates/golden-master.sh` 0 ; les deux `mvn … -Dgroups=` de l'AC 0 ; `scripts/gates/trace-smoke.sh` 0 ; curl SC-001-03 et `{"identifiant":"x",…}` par `localhost:8080` → 401 `{"message":"Identifiants incorrects"}` ; `docker compose config` : deux services listés, 0 sans healthcheck ; `git ls-files .env .secrets` vide ; `.env.example` sans valeur ; `git grep` de clé privée vide ; `trivy fs --scanners secret --exit-code 1 --skip-dirs .secrets .` 0, sans `--skip-dirs` 1 (clé de `.secrets/`, operator_actions) ; connexion de `user1` avec le mot de passe de démonstration sur la pile (reference-data chargé à la main) : 200 ; aucun mot de passe de démonstration du legacy dans les fichiers du service.
 
 **Risques résiduels :** critère Trivy en attente de décision humaine ; données de référence non chargées automatiquement avant `make reset-data` ; sur ce poste, la pile locale tourne avec `NB_SOUS_RESEAU=172.31.30.0/24` et `NB_PORT_COEUR_BANCAIRE=18082` (réseau 172.30.0.0/16 et port 8082 pris par d'autres projets), ce qui touchera aussi la plage de confiance supposée par la story 2.2 ; les mots de passe de démonstration du legacy ont servi à générer `reference-data.sql` (exportés dans un shell, jamais écrits) ; `docs/retro/00-global/PERMISSIONS.md` (corpus existant) contient déjà le mot de passe de démonstration d'`admin`, ce qui fera échouer un futur `git grep "$RETRO_ADMIN_PASSWORD"` (story 10.2).
+
+## Operator Confirmation
+
+Confirmed 2026-10-06: the external actions this story owed were carried out.
+
+- Trancher le critère Trivy de la story 2.1 : `trivy fs --scanners secret --exit-code 1 .` sort en 1 uniquement à cause de la clé privée .secrets/jeton-prive.pem que `make secrets` doit poser (fichier ignoré par git ; `trivy fs --scanners secret --exit-code 1 --skip-dirs .secrets .` sort en 0). Choisir : exclure .secrets/ par une configuration Trivy versionnée, déplacer la paire RSA hors de l'arbre analysé, ou amender le critère d'acceptation ; l'agent n'a pas le droit de modifier le contrôle.
+- Sur chaque poste qui a un .env créé avant la story 2.1, relancer `make secrets` (ajoute NB_IDENTITE_CLIENTS_BD_MOT_DE_PASSE, NB_JETON_CLE_PRIVEE et NB_JETON_CLE_PUBLIQUE sans toucher aux mots de passe existants) avant `docker compose up` ou scripts/gates/trace-smoke.sh.
+
+_Appended by the bmad-loop orchestrator (`bmad-loop confirm`, #335): a human confirmed these external actions out of band, and the story was advanced from `awaiting-operator` to `done`._

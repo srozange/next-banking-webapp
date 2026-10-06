@@ -45,9 +45,9 @@ development_status:
   epic-1-retrospective: optional
 
   epic-2: backlog
-  2-1-se-connecter-par-l-api-du-service-identité-et-clients: awaiting-operator
+  2-1-se-connecter-par-l-api-du-service-identité-et-clients: done
   2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adresse: done
-  2-3-se-connecter-depuis-l-écran-de-connexion-au-thème-demo-bank: backlog
+  2-3-se-connecter-depuis-l-écran-de-connexion-au-thème-demo-bank: done
   2-4-naviguer-dans-son-espace-selon-son-rôle: backlog
   2-5-se-déconnecter-et-retrouver-la-connexion-quand-la-session-ex: backlog
   2-6-faire-appliquer-les-rôles-par-les-services-eux-mêmes: backlog

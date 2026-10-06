@@ -1,0 +1,20 @@
+.lien-evitement {
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  z-index: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface);
+  color: var(--color-primary-hover);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: var(--font-weight-label);
+  transform: translateY(calc(-100% - var(--spacing-md)));
+}
+
+.lien-evitement:focus,
+.lien-evitement:focus-visible {
+  transform: none;
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
