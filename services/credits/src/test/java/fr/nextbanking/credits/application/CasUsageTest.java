@@ -33,6 +33,11 @@ class CasUsageTest {
         public Optional<Pret> parId(long pretId) {
             return List.of(DE_USER1, D_AUTRUI).stream().filter(pret -> pret.id() == pretId).findFirst();
         }
+
+        @Override
+        public long creer(fr.nextbanking.credits.domain.NouveauPret pret) {
+            throw new UnsupportedOperationException();
+        }
     };
 
     private static Pret pret(long id, long clientId) {

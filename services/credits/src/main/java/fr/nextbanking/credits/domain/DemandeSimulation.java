@@ -21,20 +21,32 @@ public record DemandeSimulation(BigDecimal montant, BigDecimal tauxAnnuel, int d
      * @throws SimulationInvalide au premier champ absent, non numérique ou hors limites
      */
     public static DemandeSimulation lire(String montant, String tauxAnnuel, String dureeMois) {
+        BigDecimal montantLu = lireMontant(montant);
+        BigDecimal tauxLu = lireTaux(tauxAnnuel);
+        int dureeLue = entier(dureeMois);
+        if (dureeLue <= 0 || dureeLue > DUREE_MAXIMUM) {
+            throw new SimulationInvalide(Motif.DUREE);
+        }
+        return new DemandeSimulation(montantLu, tauxLu, dureeLue);
+    }
+
+    /** Montant lu, arrondi à 2 décimales ; refusé s'il est absent, non numérique, trop grand ou nul à 2 décimales près. */
+    static BigDecimal lireMontant(String montant) {
         BigDecimal montantLu = nombre(montant);
         if (montantLu == null || montantLu.precision() - montantLu.scale() > CHIFFRES_ENTIERS_MAXIMUM
                 || montantLu.setScale(2, RoundingMode.HALF_UP).signum() <= 0) {
             throw new SimulationInvalide(Motif.MONTANT);
         }
+        return montantLu.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /** Taux annuel lu, de 0 à 30. */
+    static BigDecimal lireTaux(String tauxAnnuel) {
         BigDecimal tauxLu = nombre(tauxAnnuel);
         if (tauxLu == null || tauxLu.signum() < 0 || tauxLu.compareTo(TAUX_MAXIMUM) > 0) {
             throw new SimulationInvalide(Motif.TAUX);
         }
-        int dureeLue = entier(dureeMois);
-        if (dureeLue <= 0 || dureeLue > DUREE_MAXIMUM) {
-            throw new SimulationInvalide(Motif.DUREE);
-        }
-        return new DemandeSimulation(montantLu.setScale(2, RoundingMode.HALF_UP), tauxLu, dureeLue);
+        return tauxLu;
     }
 
     private static BigDecimal nombre(String valeur) {
@@ -49,7 +61,7 @@ public record DemandeSimulation(BigDecimal montant, BigDecimal tauxAnnuel, int d
     }
 
     /** Entier lu, ou 0 (refusé comme hors limites) si la valeur est absente, non entière ou trop grande. */
-    private static int entier(String valeur) {
+    static int entier(String valeur) {
         if (valeur == null) {
             return 0;
         }

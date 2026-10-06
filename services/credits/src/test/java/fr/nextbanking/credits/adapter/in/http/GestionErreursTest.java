@@ -3,8 +3,11 @@ package fr.nextbanking.credits.adapter.in.http;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.credits.application.AccesPretRefuse;
+import fr.nextbanking.credits.application.DemandePretEnEchec;
 import fr.nextbanking.credits.application.PretIntrouvable;
 import fr.nextbanking.credits.application.SimulationEnEchec;
+import fr.nextbanking.credits.application.TransmissionEnEchec;
+import fr.nextbanking.credits.domain.DemandePretInvalide;
 import fr.nextbanking.credits.domain.SimulationInvalide;
 import fr.nextbanking.credits.domain.SimulationInvalide.Motif;
 import java.util.Map;
@@ -33,6 +36,32 @@ class GestionErreursTest {
         assertReponse(gestion.simulationInvalide(new SimulationInvalide(Motif.TAUX)), 400, "Taux invalide (0-30%)");
         assertReponse(gestion.simulationInvalide(new SimulationInvalide(Motif.DUREE)), 400,
                 "Duree invalide (1-360 mois)");
+    }
+
+    @Test
+    @Tag("FR-007-05")
+    @Tag("FR-007-06")
+    void les_refus_de_demande_rendent_400_avec_les_textes_du_legacy_sans_plage() {
+        assertReponse(gestion.demandePretInvalide(new DemandePretInvalide(DemandePretInvalide.Motif.TYPE)), 400,
+                "Erreur : la demande de prêt n'a pas été enregistrée. Veuillez réessayer.");
+        assertReponse(gestion.demandePretInvalide(new DemandePretInvalide(DemandePretInvalide.Motif.MONTANT)), 400,
+                "Montant invalide");
+        assertReponse(gestion.demandePretInvalide(new DemandePretInvalide(DemandePretInvalide.Motif.TAUX)), 400,
+                "Taux invalide");
+        assertReponse(gestion.demandePretInvalide(new DemandePretInvalide(DemandePretInvalide.Motif.DUREE)), 400,
+                "Duree invalide");
+        assertReponse(gestion.demandePretInvalide(new DemandePretInvalide(DemandePretInvalide.Motif.OBJET)), 400,
+                "Veuillez indiquer un motif");
+    }
+
+    @Test
+    @Tag("FR-024-02")
+    @Tag("BUG-077")
+    void une_transmission_en_echec_rend_503_et_une_demande_en_echec_rend_500_sans_detail() {
+        assertReponse(gestion.transmissionEnEchec(new TransmissionEnEchec(new IllegalStateException("détail"))), 503,
+                "Service credit temporairement indisponible, veuillez reessayer plus tard");
+        assertReponse(gestion.demandePretEnEchec(new DemandePretEnEchec(new IllegalStateException("détail"))), 500,
+                "Erreur : la demande de prêt n'a pas été enregistrée. Veuillez réessayer.");
     }
 
     @Test
@@ -66,7 +95,9 @@ class GestionErreursTest {
     @Test
     void une_erreur_mvc_garde_son_statut_publie() {
         assertReponse(gestion.autreErreur(new HttpMediaTypeNotAcceptableException("x")), 400, "Requête invalide");
-        assertReponse(gestion.autreErreur(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE)), 500,
+        assertReponse(gestion.autreErreur(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE)), 503,
+                "Service credit temporairement indisponible, veuillez reessayer plus tard");
+        assertReponse(gestion.autreErreur(new ResponseStatusException(HttpStatus.BAD_GATEWAY)), 500,
                 "Une erreur technique est survenue");
         assertReponse(gestion.autreErreur(new ResponseStatusException(HttpStatus.FORBIDDEN)), 403, "Accès refusé");
         assertReponse(gestion.autreErreur(new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED)), 405,
@@ -79,7 +110,8 @@ class GestionErreursTest {
         assertThat(Textes.statutPublie(401)).isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(Textes.statutPublie(415)).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(Textes.statutPublie(200)).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-        assertThat(Textes.statutPublie(503)).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(Textes.statutPublie(503)).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+        assertThat(Textes.statutPublie(502)).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test

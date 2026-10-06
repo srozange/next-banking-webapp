@@ -287,6 +287,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-credits:5432/credits
       SPRING_DATASOURCE_USERNAME: credits
       SPRING_DATASOURCE_PASSWORD: ${NB_CREDITS_BD_MOT_DE_PASSE:-}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Clé publique du jeton : tout /api/** est authentifié ; sans elle, refus de démarrer.
       NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
     ports:
@@ -294,6 +295,8 @@ services:
     networks: [nb]
     depends_on:
       postgres-credits:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
       otel-collector:
         condition: service_healthy

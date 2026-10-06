@@ -3,7 +3,7 @@ import { cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { Pret, Simulation } from '../../../domain/pret';
-import type { ReponsePrets, ReponseSimulation } from '../../../application/prets';
+import type { ReponseDepot, ReponsePrets, ReponseSimulation } from '../../../application/prets';
 import { jetonDeTest } from '../../jeton/jetonDeTest';
 import { rendreApplication } from '../../test/rendreApplication';
 
@@ -236,10 +236,9 @@ describe('écran Prêts', () => {
     await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
   });
 
-  it('[FR-007-04] le formulaire « Nouveau pret » propose les cinq types, Consommation par défaut, et reste inerte', async () => {
+  it('[FR-007-04] le formulaire « Nouveau pret » propose les cinq types, Consommation par défaut, et ses libellés', async () => {
     connecter();
-    const utilisateur = userEvent.setup();
-    const { container, simuler } = rendreApplication('/prets');
+    const { container } = rendreApplication('/prets');
     await screen.findByTestId('pret-type');
 
     expect(screen.getByText('Nouveau pret')).toBeTruthy();
@@ -265,20 +264,170 @@ describe('écran Prêts', () => {
     }
     const soumettre = screen.getByTestId('pret-soumettre') as HTMLButtonElement;
     expect(soumettre.textContent).toBe('Soumettre la demande');
-    expect(soumettre.type).toBe('button');
+    expect(soumettre.type).toBe('submit');
+    expect(soumettre.disabled).toBe(false);
+    expect(screen.queryByTestId('pret-message-info')).toBeNull();
+    expect(screen.queryByTestId('pret-message-erreur')).toBeNull();
+  });
 
-    await utilisateur.selectOptions(type, 'TRAVAUX');
+  async function remplirDemande(utilisateur: ReturnType<typeof userEvent.setup>) {
+    await utilisateur.selectOptions(await screen.findByTestId('pret-type'), 'TRAVAUX');
     await utilisateur.type(champ('pret-montant'), '5000');
-    await utilisateur.type(champ('pret-objet'), 'Travaux{Enter}');
+    await utilisateur.type(champ('pret-objet'), 'Travaux');
     await utilisateur.clear(champ('pret-taux'));
     await utilisateur.type(champ('pret-taux'), '4.9');
     await utilisateur.clear(champ('pret-duree'));
-    await utilisateur.type(champ('pret-duree'), '24');
-    await utilisateur.click(soumettre);
+    await utilisateur.type(champ('pret-duree'), '300');
+  }
 
-    expect(type.value).toBe('TRAVAUX');
+  const DEMANDE_SAISIE = { type: 'TRAVAUX', montant: '5000', tauxAnnuel: '4.9', dureeMois: '300', objet: 'Travaux' };
+
+  it('[FR-007-07] soumettre envoie la saisie, affiche le message d’information et relit la liste', async () => {
+    connecter();
+    const utilisateur = userEvent.setup();
+    let listes = 0;
+    const { deposer, lister } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+      lister: () => {
+        listes += 1;
+        return Promise.resolve<ReponsePrets>({
+          statut: 'prets',
+          prets: listes === 1 ? [] : [pret(3, 'EN_ATTENTE', { objet: 'Travaux' })],
+        });
+      },
+      deposer: () => Promise.resolve<ReponseDepot>({ statut: 'deposee', pret: pret(3, 'EN_ATTENTE') }),
+    });
+    await remplirDemande(utilisateur);
+
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+
+    const info = await screen.findByTestId('pret-message-info');
+    expect(info.textContent).toBe(
+      'Demande transmise au service credit — traitement en cours (rechargez la page dans quelques secondes)',
+    );
+    expect(info.getAttribute('role')).toBe('status');
+    expect(deposer).toHaveBeenCalledWith(expect.any(String), DEMANDE_SAISIE);
+    expect(await screen.findByTestId('pret-statut-3')).toBeTruthy();
+    expect(lister).toHaveBeenCalledTimes(2);
+    expect(within(tableEmprunts()).getByText('En attente d approbation')).toBeTruthy();
+    expect(within(tableEmprunts()).getByText('En cours de traitement...')).toBeTruthy();
+    expect(screen.queryByTestId('pret-message-erreur')).toBeNull();
+  });
+
+  it('[FR-007-07] pendant l’envoi le bouton est désactivé avec aria-busy', async () => {
+    connecter();
+    const utilisateur = userEvent.setup();
+    let terminer: (reponse: ReponseDepot) => void = () => undefined;
+    rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+      deposer: () => new Promise<ReponseDepot>((resolve) => (terminer = resolve)),
+    });
+    await remplirDemande(utilisateur);
+
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+
+    const bouton = screen.getByTestId('pret-soumettre') as HTMLButtonElement;
+    expect(bouton.disabled).toBe(true);
+    expect(bouton.getAttribute('aria-busy')).toBe('true');
+
+    terminer({ statut: 'deposee', pret: pret(3, 'EN_ATTENTE') });
+
+    await waitFor(() => expect(bouton.disabled).toBe(false));
+    expect(bouton.getAttribute('aria-busy')).toBeNull();
+  });
+
+  it.each([
+    ['400', 'Duree invalide'],
+    ['503', 'Service credit temporairement indisponible, veuillez reessayer plus tard'],
+  ])('[FR-007-05] un refus %s affiche le message du service, conserve la saisie, sans message d’information', async (_statut, message) => {
+    connecter();
+    const utilisateur = userEvent.setup();
+    rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+      deposer: () => Promise.resolve<ReponseDepot>({ statut: 'refusee', message }),
+    });
+    await remplirDemande(utilisateur);
+
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+
+    const erreur = await screen.findByTestId('pret-message-erreur');
+    expect(erreur.textContent).toBe(message);
+    expect(screen.queryByTestId('pret-message-info')).toBeNull();
+    expect((screen.getByTestId('pret-type') as HTMLSelectElement).value).toBe('TRAVAUX');
     expect(champ('pret-montant').value).toBe('5000');
-    expect(simuler).not.toHaveBeenCalled();
+    expect(champ('pret-taux').value).toBe('4.9');
+    expect(champ('pret-duree').value).toBe('300');
+    expect(champ('pret-objet').value).toBe('Travaux');
+  });
+
+  it('[FR-024-02] une panne technique affiche le texte fixe de la demande, sans détail', async () => {
+    connecter();
+    const utilisateur = userEvent.setup();
+    rendreApplication('/prets');
+    await remplirDemande(utilisateur);
+
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+
+    expect((await screen.findByTestId('pret-message-erreur')).textContent).toBe(
+      "Erreur : la demande de prêt n'a pas été enregistrée. Veuillez réessayer.",
+    );
+    expect(screen.queryByTestId('pret-message-info')).toBeNull();
+  });
+
+  it('[FR-024-02] un échec après un succès remplace le message d’information par l’erreur, et inversement', async () => {
+    connecter();
+    const utilisateur = userEvent.setup();
+    const reponses: ReponseDepot[] = [
+      { statut: 'deposee', pret: pret(3, 'EN_ATTENTE') },
+      { statut: 'refusee', message: 'Taux invalide' },
+      { statut: 'deposee', pret: pret(4, 'EN_ATTENTE') },
+    ];
+    rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+      deposer: () => Promise.resolve(reponses.shift() as ReponseDepot),
+    });
+    await remplirDemande(utilisateur);
+
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+    await screen.findByTestId('pret-message-info');
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+    await screen.findByTestId('pret-message-erreur');
+    expect(screen.queryByTestId('pret-message-info')).toBeNull();
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+    await screen.findByTestId('pret-message-info');
+
+    expect(screen.queryByTestId('pret-message-erreur')).toBeNull();
+  });
+
+  it('[FR-007-01] une session perdue pendant l’envoi purge le jeton et mène à /login', async () => {
+    connecter();
+    const utilisateur = userEvent.setup();
+    const { routeur } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+      deposer: () => Promise.resolve<ReponseDepot>({ statut: 'nonAuthentifie' }),
+    });
+    await remplirDemande(utilisateur);
+
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+
+    await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+    expect(localStorage.getItem('nb.jeton')).toBeNull();
+  });
+
+  it('[FR-007-07] une relecture de liste en panne après un dépôt affiche l’erreur technique de la liste, puis la liste revenue l’efface', async () => {
+    connecter();
+    const utilisateur = userEvent.setup();
+    const listes: ReponsePrets[] = [
+      { statut: 'prets', prets: [] },
+      { statut: 'technique' },
+      { statut: 'prets', prets: [pret(3, 'EN_ATTENTE')] },
+    ];
+    rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+      lister: () => Promise.resolve(listes.shift() as ReponsePrets),
+      deposer: () => Promise.resolve<ReponseDepot>({ statut: 'deposee', pret: pret(3, 'EN_ATTENTE') }),
+    });
+    await remplirDemande(utilisateur);
+
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+    await waitFor(() => expect(screen.getAllByTestId('pret-message-erreur')).toHaveLength(1));
+    await utilisateur.click(screen.getByTestId('pret-soumettre'));
+
+    expect(await screen.findByTestId('pret-statut-3')).toBeTruthy();
     expect(screen.queryByTestId('pret-message-erreur')).toBeNull();
   });
 

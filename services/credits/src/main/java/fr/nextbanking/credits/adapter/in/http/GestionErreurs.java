@@ -1,8 +1,11 @@
 package fr.nextbanking.credits.adapter.in.http;
 
 import fr.nextbanking.credits.application.AccesPretRefuse;
+import fr.nextbanking.credits.application.DemandePretEnEchec;
 import fr.nextbanking.credits.application.PretIntrouvable;
 import fr.nextbanking.credits.application.SimulationEnEchec;
+import fr.nextbanking.credits.application.TransmissionEnEchec;
+import fr.nextbanking.credits.domain.DemandePretInvalide;
 import fr.nextbanking.credits.domain.SimulationInvalide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +40,29 @@ public class GestionErreurs {
     public ResponseEntity<Message> simulationEnEchec(SimulationEnEchec echec) {
         JOURNAL.error("Calcul de simulation en échec", echec);
         return reponse(HttpStatus.INTERNAL_SERVER_ERROR, Textes.ERREUR_SIMULATION);
+    }
+
+    @ExceptionHandler(DemandePretInvalide.class)
+    public ResponseEntity<Message> demandePretInvalide(DemandePretInvalide refus) {
+        return switch (refus.motif()) {
+            case TYPE -> reponse(HttpStatus.BAD_REQUEST, Textes.ERREUR_DEMANDE);
+            case MONTANT -> reponse(HttpStatus.BAD_REQUEST, Textes.MONTANT_INVALIDE);
+            case TAUX -> reponse(HttpStatus.BAD_REQUEST, Textes.TAUX_INVALIDE_DEMANDE);
+            case DUREE -> reponse(HttpStatus.BAD_REQUEST, Textes.DUREE_INVALIDE_DEMANDE);
+            case OBJET -> reponse(HttpStatus.BAD_REQUEST, Textes.MOTIF_REQUIS);
+        };
+    }
+
+    @ExceptionHandler(TransmissionEnEchec.class)
+    public ResponseEntity<Message> transmissionEnEchec(TransmissionEnEchec echec) {
+        JOURNAL.error("Écriture de l'outbox en échec : demande de prêt annulée", echec);
+        return reponse(HttpStatus.SERVICE_UNAVAILABLE, Textes.SERVICE_INDISPONIBLE);
+    }
+
+    @ExceptionHandler(DemandePretEnEchec.class)
+    public ResponseEntity<Message> demandePretEnEchec(DemandePretEnEchec echec) {
+        JOURNAL.error("Enregistrement de la demande de prêt en échec", echec);
+        return reponse(HttpStatus.INTERNAL_SERVER_ERROR, Textes.ERREUR_DEMANDE);
     }
 
     @ExceptionHandler(AuthentificationRequise.class)

@@ -114,3 +114,46 @@ describe('ClientPretsHttp.lister', () => {
     await expect(creerClientPretsHttp(appeler).lister('j')).resolves.toEqual({ statut: 'technique' });
   });
 });
+
+describe('ClientPretsHttp.deposer', () => {
+  const DEMANDE = { type: 'CONSOMMATION', montant: '10000', tauxAnnuel: '3.50', dureeMois: '300', objet: 'Voiture' };
+
+  it('[FR-007-07] poste la saisie en JSON avec le jeton en Bearer et rend le prêt créé sur 201', async () => {
+    const appeler = repondre(201, JSON.stringify(PRET));
+
+    await expect(creerClientPretsHttp(appeler).deposer('jeton', DEMANDE)).resolves.toEqual({ statut: 'deposee', pret: PRET });
+    expect(appeler).toHaveBeenCalledWith(CHEMIN_PRETS, {
+      method: 'POST',
+      headers: { Authorization: 'Bearer jeton', Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: '{"type":"CONSOMMATION","montant":"10000","tauxAnnuel":"3.50","dureeMois":"300","objet":"Voiture"}',
+    });
+  });
+
+  it.each([
+    [400, 'Duree invalide'],
+    [503, 'Service credit temporairement indisponible, veuillez reessayer plus tard'],
+  ])('[FR-007-05] rend le message du service sur %i', async (statut, message) => {
+    await expect(
+      creerClientPretsHttp(repondre(statut, JSON.stringify({ message }))).deposer('j', DEMANDE),
+    ).resolves.toEqual({ statut: 'refusee', message });
+  });
+
+  it('[FR-007-01] rend non authentifié sur 401', async () => {
+    await expect(
+      creerClientPretsHttp(repondre(401, '{"message":"Authentification requise"}')).deposer('j', DEMANDE),
+    ).resolves.toEqual({ statut: 'nonAuthentifie' });
+  });
+
+  it.each([
+    ['500', repondre(500, '{"message":"Erreur : la demande de prêt n\'a pas été enregistrée. Veuillez réessayer."}')],
+    ['403', repondre(403, '{"message":"Accès refusé"}')],
+    ['400 sans message textuel', repondre(400, '{"message":3}')],
+    ['400 au corps null', repondre(400, 'null')],
+    ['201 au JSON illisible', repondre(201, 'pas du json')],
+    ['201 au prêt mal formé', repondre(201, JSON.stringify({ ...PRET, montant: '5000' }))],
+    ['200 inattendu', repondre(200, JSON.stringify(PRET))],
+    ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
+  ])('[FR-024-02] rend une erreur technique : %s', async (_cas, appeler) => {
+    await expect(creerClientPretsHttp(appeler).deposer('j', DEMANDE)).resolves.toEqual({ statut: 'technique' });
+  });
+});

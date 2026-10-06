@@ -1,5 +1,5 @@
-import type { LigneEcheancier, Pret, SaisieSimulation, Simulation, StatutPret, TypePret } from '../../domain/pret';
-import type { ClientPrets, ReponsePrets, ReponseSimulation } from '../../application/prets';
+import type { LigneEcheancier, Pret, SaisieDemande, SaisieSimulation, Simulation, StatutPret, TypePret } from '../../domain/pret';
+import type { ClientPrets, ReponseDepot, ReponsePrets, ReponseSimulation } from '../../application/prets';
 
 export const CHEMIN_SIMULATIONS = '/api/credits/simulations';
 export const CHEMIN_PRETS = '/api/credits/prets';
@@ -83,7 +83,8 @@ function entetes(jeton: string, avecCorps: boolean): Record<string, string> {
 /**
  * Adaptateur HTTP du service credits. Simulation : 200 (simulation lisible) ; 400 `{"message"}` : refus avec le
  * message du service ; 401 : non authentifié ; tout le reste (autre statut, réseau coupé, JSON illisible ou de forme
- * inattendue) : erreur technique. Liste : 200 (tableau de prêts lisibles) ; 401 ; sinon erreur technique. Le jeton
+ * inattendue) : erreur technique. Dépôt : 201 (prêt lisible) ; 400 et 503 `{"message"}` : refus avec le message du
+ * service ; 401 ; tout le reste : erreur technique. Liste : 200 (tableau de prêts lisibles) ; 401 ; sinon erreur technique. Le jeton
  * n'est jamais journalisé.
  */
 export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientPrets {
@@ -105,6 +106,28 @@ export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) =
         }
         const lue = reponse.status === 200 ? simulation(corps) : null;
         return lue === null ? { statut: 'technique' } : { statut: 'simulation', simulation: lue };
+      } catch {
+        return { statut: 'technique' };
+      }
+    },
+
+    async deposer(jeton: string, saisie: SaisieDemande): Promise<ReponseDepot> {
+      try {
+        const reponse = await appeler(CHEMIN_PRETS, {
+          method: 'POST',
+          headers: entetes(jeton, true),
+          body: JSON.stringify(saisie),
+        });
+        if (reponse.status === 401) {
+          return { statut: 'nonAuthentifie' };
+        }
+        const corps: unknown = await reponse.json();
+        if (reponse.status === 400 || reponse.status === 503) {
+          const message = estObjet(corps) ? corps.message : undefined;
+          return typeof message === 'string' ? { statut: 'refusee', message } : { statut: 'technique' };
+        }
+        const lu = reponse.status === 201 ? pret(corps) : null;
+        return lu === null ? { statut: 'technique' } : { statut: 'deposee', pret: lu };
       } catch {
         return { statut: 'technique' };
       }

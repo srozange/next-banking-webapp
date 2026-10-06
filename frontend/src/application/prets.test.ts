@@ -1,6 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { Pret, Simulation } from '../domain/pret';
-import { listerPrets, simulerEmprunt, type ClientPrets, type ReponsePrets, type ReponseSimulation } from './prets';
+import {
+  deposerDemande,
+  listerPrets,
+  simulerEmprunt,
+  type ClientPrets,
+  type ReponseDepot,
+  type ReponsePrets,
+  type ReponseSimulation,
+} from './prets';
 import type { StockageJeton } from './seConnecter';
 
 function stockageEnMemoire(initial: string | null = null) {
@@ -33,11 +41,16 @@ const PRET: Pret = {
   dateFin: '2028-08-01',
 };
 
-function client(simulation: ReponseSimulation | Error, prets: ReponsePrets | Error = { statut: 'prets', prets: [] }) {
+function client(
+  simulation: ReponseSimulation | Error,
+  prets: ReponsePrets | Error = { statut: 'prets', prets: [] },
+  depot: ReponseDepot | Error = { statut: 'technique' },
+) {
   const repondre = <T>(reponse: T | Error) => (reponse instanceof Error ? Promise.reject(reponse) : Promise.resolve(reponse));
   return {
     simuler: vi.fn<ClientPrets['simuler']>(() => repondre(simulation)),
     lister: vi.fn<ClientPrets['lister']>(() => repondre(prets)),
+    deposer: vi.fn<ClientPrets['deposer']>(() => repondre(depot)),
   };
 }
 
@@ -119,5 +132,54 @@ describe('listerPrets', () => {
     await expect(
       listerPrets(client({ statut: 'technique' }, new Error('réseau')), stockageEnMemoire('jeton')),
     ).resolves.toEqual({ type: 'indisponible' });
+  });
+});
+
+describe('deposerDemande', () => {
+  const DEMANDE = { type: 'CONSOMMATION', montant: '10000', tauxAnnuel: '3.50', dureeMois: '300', objet: 'Voiture' };
+  const sansDepot = { statut: 'technique' } as const;
+
+  it('[FR-007-07] rend le prêt déposé, appelé avec le jeton et la saisie', async () => {
+    const c = client(sansDepot, undefined, { statut: 'deposee', pret: PRET });
+
+    await expect(deposerDemande(c, stockageEnMemoire('jeton'), DEMANDE)).resolves.toEqual({ type: 'deposee', pret: PRET });
+    expect(c.deposer).toHaveBeenCalledWith('jeton', DEMANDE);
+  });
+
+  it('[FR-007-05] rend le message du service sur un refus', async () => {
+    const c = client(sansDepot, undefined, { statut: 'refusee', message: 'Duree invalide' });
+
+    await expect(deposerDemande(c, stockageEnMemoire('jeton'), DEMANDE)).resolves.toEqual({
+      type: 'refus',
+      message: 'Duree invalide',
+    });
+  });
+
+  it('[FR-007-01] sans jeton : session terminée, sans appel', async () => {
+    const c = client(sansDepot);
+    const stockage = stockageEnMemoire();
+
+    await expect(deposerDemande(c, stockage, DEMANDE)).resolves.toEqual({ type: 'deconnecte' });
+    expect(c.deposer).not.toHaveBeenCalled();
+    expect(stockage.supprimer).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-007-01] sur 401 : jeton purgé et session terminée', async () => {
+    const stockage = stockageEnMemoire('jeton');
+
+    await expect(
+      deposerDemande(client(sansDepot, undefined, { statut: 'nonAuthentifie' }), stockage, DEMANDE),
+    ).resolves.toEqual({ type: 'deconnecte' });
+    expect(stockage.supprimer).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-024-02] sur une panne du service ou du réseau : indisponible, jeton conservé', async () => {
+    const stockage = stockageEnMemoire('jeton');
+
+    await expect(deposerDemande(client(sansDepot), stockage, DEMANDE)).resolves.toEqual({ type: 'indisponible' });
+    await expect(deposerDemande(client(sansDepot, undefined, new Error('réseau')), stockage, DEMANDE)).resolves.toEqual({
+      type: 'indisponible',
+    });
+    expect(stockage.supprimer).not.toHaveBeenCalled();
   });
 });

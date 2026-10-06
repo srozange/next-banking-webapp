@@ -96,6 +96,8 @@ export const TEXTES = {
       duree: 'Duree (mois)',
       objet: 'Objet du pret',
       soumettre: 'Soumettre la demande',
+      /** MSG-007-131 : tiret cadratin conservé du legacy. */
+      transmise: 'Demande transmise au service credit — traitement en cours (rechargez la page dans quelques secondes)',
     },
     emprunts: {
       titre: 'Emprunts en cours',
@@ -113,6 +115,8 @@ export const TEXTES = {
       enCoursDeTraitement: 'En cours de traitement...',
       aucun: 'Aucun emprunt enregistre',
     },
+    /** pret.erreur.demande */
+    erreurDemande: "Erreur : la demande de prêt n'a pas été enregistrée. Veuillez réessayer.",
     /** pret.erreur.simulation */
     erreurSimulation: "Erreur simulation : le calcul n'a pas pu être effectué. Veuillez réessayer.",
   },

@@ -39,11 +39,13 @@ public final class OutilsHttp {
     private OutilsHttp() {
     }
 
-    /** Remet les tables {@code loans} et {@code loan_repayments} aux données de référence. */
+    /** Remet les tables {@code loans}, {@code loan_repayments} et {@code outbox} aux données de référence. */
     public static void chargerDonnees(DataSource base) {
         try {
-            executer(base, "truncate table loan_repayments, loans restart identity;\n"
-                    + Files.readString(REFERENCE_DATA, StandardCharsets.UTF_8));
+            executer(base, "truncate table loan_repayments, loans, outbox restart identity;\n"
+                    + Files.readString(REFERENCE_DATA, StandardCharsets.UTF_8)
+                    // Les données de référence fixent leurs identifiants : la séquence reprend après le dernier.
+                    + "\nselect setval(pg_get_serial_sequence('loans', 'id'), (select max(id) from loans));");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

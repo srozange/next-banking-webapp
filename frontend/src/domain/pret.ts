@@ -30,6 +30,15 @@ export const LIBELLES_STATUT: Readonly<Record<StatutPret, string>> = {
   DEFAUT: 'En defaut',
 };
 
+/** Saisie du formulaire de demande : chaînes envoyées telles quelles au service. */
+export interface SaisieDemande {
+  type: string;
+  montant: string;
+  tauxAnnuel: string;
+  dureeMois: string;
+  objet: string;
+}
+
 /** Saisie du simulateur : chaînes envoyées telles quelles au service. */
 export interface SaisieSimulation {
   montant: string;

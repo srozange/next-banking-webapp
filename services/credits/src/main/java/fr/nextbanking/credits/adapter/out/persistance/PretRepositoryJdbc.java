@@ -1,6 +1,7 @@
 package fr.nextbanking.credits.adapter.out.persistance;
 
 import fr.nextbanking.credits.application.port.out.PretRepository;
+import fr.nextbanking.credits.domain.NouveauPret;
 import fr.nextbanking.credits.domain.Pret;
 import fr.nextbanking.credits.domain.StatutPret;
 import fr.nextbanking.credits.domain.TypePret;
@@ -40,6 +41,29 @@ public class PretRepositoryJdbc implements PretRepository {
                 .param("id", pretId)
                 .query(PretRepositoryJdbc::pret)
                 .optional();
+    }
+
+    @Override
+    public long creer(NouveauPret pret) {
+        return jdbc.sql("""
+                insert into loans (customer_id, type, montant, taux_annuel, duree_mois, mensualite, cout_total,
+                                   total_interets, motif, status, date_debut, date_fin)
+                values (:clientId, :type, :montant, :taux, :duree, :mensualite, :coutTotal, :totalInterets, :motif,
+                        :statut, :dateDebut, :dateFin) returning id""")
+                .param("clientId", pret.clientId())
+                .param("type", pret.type().name())
+                .param("montant", pret.montant())
+                .param("taux", pret.tauxAnnuel())
+                .param("duree", pret.dureeMois())
+                .param("mensualite", pret.mensualite())
+                .param("coutTotal", pret.coutTotal())
+                .param("totalInterets", pret.totalInterets())
+                .param("motif", pret.objet())
+                .param("statut", StatutPret.EN_ATTENTE.name())
+                .param("dateDebut", pret.dateDebut())
+                .param("dateFin", pret.dateFin())
+                .query(Long.class)
+                .single();
     }
 
     private static Pret pret(ResultSet ligne, int numero) throws SQLException {

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import fr.nextbanking.credits.application.port.in.ConsulterPret;
+import fr.nextbanking.credits.application.port.in.DeposerDemandePret;
 import fr.nextbanking.credits.application.port.in.ListerPrets;
 import fr.nextbanking.credits.application.port.in.SimulerEmprunt;
 import fr.nextbanking.credits.application.port.out.Horloge;
@@ -38,6 +39,9 @@ class ApplicationCreditsTest {
     private ConsulterPret consulterPret;
 
     @Autowired
+    private DeposerDemandePret deposerDemandePret;
+
+    @Autowired
     private Horloge horloge;
 
     @Test
@@ -45,6 +49,18 @@ class ApplicationCreditsTest {
         assertThat(simulerEmprunt).isNotNull();
         assertThat(listerPrets).isNotNull();
         assertThat(consulterPret).isNotNull();
+        assertThat(deposerDemandePret).isNotNull();
+    }
+
+    @Autowired
+    private org.apache.kafka.clients.admin.NewTopic topicPretDemande;
+
+    @Test
+    @org.junit.jupiter.api.Tag("FR-024-01")
+    void le_topic_de_la_demande_est_declare_avec_trois_partitions() {
+        assertThat(topicPretDemande.name()).isEqualTo("credits.pret-demande.v1");
+        assertThat(topicPretDemande.numPartitions()).isEqualTo(3);
+        assertThat(topicPretDemande.replicationFactor()).isEqualTo((short) 1);
     }
 
     @Test
