@@ -1,5 +1,6 @@
 package fr.nextbanking.bourse.adapter.in.http;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fr.nextbanking.bourse.application.port.in.ConsulterHistorique;
 import fr.nextbanking.bourse.domain.HistoriqueCours;
 import fr.nextbanking.bourse.domain.PointCotation;
@@ -31,11 +32,12 @@ public class PointEntreeHistorique {
     }
 
     /** Historique rendu en JSON ; la période est celle retenue (une période inconnue vaut 1M). */
-    public record Historique(String symbole, String periode, List<Point> points) {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public record Historique(String symbole, String periode, List<Point> points, String graphique) {
 
         static Historique depuis(HistoriqueCours historique) {
             return new Historique(historique.symbole(), historique.periode().code(),
-                    historique.points().stream().map(Point::depuis).toList());
+                    historique.points().stream().map(Point::depuis).toList(), historique.graphique().orElse(null));
         }
     }
 

@@ -11,17 +11,19 @@ import java.util.function.UnaryOperator;
  * (RG-029-003 : date limite d'un mois, série journalière comme le legacy).
  */
 public enum Periode {
-    SEMAINE("1W", TypeSerie.JOURNALIERE, jour -> jour.minusWeeks(1)),
-    MOIS("1M", TypeSerie.JOURNALIERE, jour -> jour.minusMonths(1)),
-    AN("1Y", TypeSerie.HEBDOMADAIRE, jour -> jour.minusYears(1)),
-    CINQ_ANS("5Y", TypeSerie.HEBDOMADAIRE, jour -> jour.minusYears(5));
+    SEMAINE("1W", "1 semaine (données journalières)", TypeSerie.JOURNALIERE, jour -> jour.minusWeeks(1)),
+    MOIS("1M", "1 mois (données journalières)", TypeSerie.JOURNALIERE, jour -> jour.minusMonths(1)),
+    AN("1Y", "1 an (données hebdomadaires)", TypeSerie.HEBDOMADAIRE, jour -> jour.minusYears(1)),
+    CINQ_ANS("5Y", "5 ans (données hebdomadaires)", TypeSerie.HEBDOMADAIRE, jour -> jour.minusYears(5));
 
     private final String code;
+    private final String libelle;
     private final TypeSerie serie;
     private final UnaryOperator<LocalDate> recul;
 
-    Periode(String code, TypeSerie serie, UnaryOperator<LocalDate> recul) {
+    Periode(String code, String libelle, TypeSerie serie, UnaryOperator<LocalDate> recul) {
         this.code = code;
+        this.libelle = libelle;
         this.serie = serie;
         this.recul = recul;
     }
@@ -38,6 +40,11 @@ public enum Periode {
 
     public String code() {
         return code;
+    }
+
+    /** Libellé du badge du graphique (MSG-029-070 à 073). */
+    public String libelle() {
+        return libelle;
     }
 
     public TypeSerie serie() {

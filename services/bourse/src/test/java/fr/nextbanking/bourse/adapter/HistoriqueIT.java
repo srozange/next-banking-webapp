@@ -142,6 +142,45 @@ class HistoriqueIT {
         assertThat(reponse.statusCode()).isEqualTo(401);
     }
 
+    @Test
+    @Tag("FR-009-05")
+    @Tag("FR-009-06")
+    @Tag("FR-029-08")
+    void la_reponse_porte_le_graphique_svg_de_la_periode() throws Exception {
+        JsonNode historique = historique("AI.PA", "1M");
+        String svg = historique.get("graphique").asString();
+        JsonNode points = historique.get("points");
+        boolean hausse = new java.math.BigDecimal(points.get(points.size() - 1).get("cloture").asString())
+                .compareTo(new java.math.BigDecimal(points.get(0).get("cloture").asString())) >= 0;
+
+        assertThat(svg).contains("width=\"800\"", "height=\"300\"", "viewBox=\"0 0 800 300\"");
+        assertThat(svg.split("<line ", -1)).hasSize(6);
+        assertThat(svg).contains("1 mois (données journalières)");
+        assertThat(svg.split("text-anchor=\"middle\"", -1)).hasSize(6);
+        assertThat(svg).contains(hausse ? "#2e7d32" : "#E3000F").doesNotContain(hausse ? "#E3000F" : "#2e7d32");
+    }
+
+    @Test
+    @Tag("FR-009-05")
+    void un_historique_vide_n_a_pas_de_graphique() throws Exception {
+        assertThat(historique("INCONNU.XX", "1M").has("graphique")).isFalse();
+    }
+
+    @Test
+    @Tag("FR-029-08")
+    void vingt_appels_sur_toutes_les_periodes_restent_sous_trois_secondes_au_95e_centile() throws Exception {
+        String[] periodes = {"1W", "1M", "1Y", "5Y"};
+        List<Long> durees = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            long debut = System.nanoTime();
+            historique("AI.PA", periodes[i % periodes.length]);
+            durees.add((System.nanoTime() - debut) / 1_000_000);
+        }
+        java.util.Collections.sort(durees);
+
+        assertThat(durees.get(18)).isLessThan(3_000L);
+    }
+
     private JsonNode historique(String symbole, String periode) throws Exception {
         HttpResponse<String> reponse = Jetons.envoyer(port, "GET",
                 CHEMIN + "?symbole=" + symbole + "&periode=" + periode, jeton("CLIENT"), null);

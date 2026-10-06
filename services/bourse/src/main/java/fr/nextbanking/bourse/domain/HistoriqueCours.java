@@ -1,6 +1,7 @@
 package fr.nextbanking.bourse.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Historique des cours d'une valeur sur une période : points filtrés et triés par date croissante ; liste vide quand
@@ -10,5 +11,10 @@ public record HistoriqueCours(String symbole, Periode periode, List<PointCotatio
 
     public HistoriqueCours {
         points = List.copyOf(points);
+    }
+
+    /** Graphique SVG d'évolution du cours ; absent quand l'historique est vide. */
+    public Optional<String> graphique() {
+        return points.isEmpty() ? Optional.empty() : Optional.of(GraphiqueCours.generer(periode, points));
     }
 }

@@ -76,11 +76,11 @@ class AlphaVantageReelIT {
 
         HttpResponse<String> mois = historique("AI.PA", "1M");
         assertThat(mois.statusCode()).isEqualTo(200);
-        assertThat(mois.body()).isEqualTo("{\"symbole\":\"AI.PA\",\"periode\":\"1M\",\"points\":["
+        assertThat(mois.body()).startsWith("{\"symbole\":\"AI.PA\",\"periode\":\"1M\",\"points\":["
                 + "{\"date\":\"2026-10-19\",\"ouverture\":\"170.1000\",\"haut\":\"171.0000\",\"bas\":\"169.9000\","
                 + "\"cloture\":\"170.7700\",\"volume\":987654},"
                 + "{\"date\":\"2026-11-17\",\"ouverture\":\"175.2000\",\"haut\":\"176.0500\",\"bas\":\"174.1000\","
-                + "\"cloture\":\"175.9000\",\"volume\":1234567}]}");
+                + "\"cloture\":\"175.9000\",\"volume\":1234567}],\"graphique\":\"<svg ");
         assertThat(historique("AI.PA", "1M").body()).isEqualTo(mois.body());
         assertThat(historique("AI.PA", "1W").body()).contains("\"periode\":\"1W\"", "2026-11-17")
                 .doesNotContain("2026-10-19");
