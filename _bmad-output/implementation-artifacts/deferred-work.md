@@ -110,3 +110,17 @@ source_spec: `spec-2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adre
 severity: medium
 reason: Aucun DefaultErrorHandler configuré ; chaque essai attend le délai Hikari (30 s), puis l'offset est validé. Même motif que le consommateur notifications (story 1.4) : la politique de reprise (attente exponentielle, topic de rejet, exceptions non rejouables) est à décider pour tous les consommateurs (Edge Case Hunter).
 status: open
+
+### DW-12: Valeurs des lignes LOANS / LOAN_REPAYMENTS du legacy (import.sql) absentes du dépôt : reference-data.sql de credits est reconstitué (2 prêts EN_COURS de user1, 18 échéances) et à confirmer contre le
+origin: spec-deferred 09799692e09b
+location: n/a
+source_spec: `spec-5-1-ouvrir-la-page-prets-et-simuler-un-emprunt.md`
+reason: docs/retro/00-global/NFR.md (2 loans, 18 loan_repayments), DATA-DICTIONARY.md (colonnes), FIELDS.md (exemple 5 000 EUR / 4.9 % / 24 mois).
+status: open
+
+### DW-13: Prérequis de l'epic 4 (FR-004-05, « Montant invalide ») non livré : le message est livré ici pour la seule simulation ; la création de virement programmé et la demande de prêt (5.2) le reprendront.
+origin: spec-deferred 93fe4e36160d
+location: n/a
+source_spec: `spec-5-1-ouvrir-la-page-prets-et-simuler-un-emprunt.md`
+reason: sprint-status.yaml : epic 4 en backlog.
+status: open

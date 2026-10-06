@@ -84,7 +84,7 @@ development_status:
   epic-4-retrospective: optional
 
   epic-5: backlog
-  5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: backlog
+  5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: done
   5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: backlog
   5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: backlog
   5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: backlog

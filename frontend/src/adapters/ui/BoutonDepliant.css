@@ -1,0 +1,15 @@
+.bouton-depliant {
+  padding: var(--spacing-xs) 0;
+  border: 0;
+  background-color: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-button);
+  font-size: var(--text-button);
+  font-weight: var(--font-weight-button);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.bouton-depliant:hover {
+  color: var(--color-primary-hover);
+}

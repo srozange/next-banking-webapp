@@ -1,0 +1,23 @@
+.section-emprunts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Séparateur rendu en capitales par CSS (le texte source garde sa casse). */
+.section-emprunts__separateur {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-eyebrow);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--font-weight-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.section-emprunts__titre {
+  margin: 0 0 var(--spacing-md);
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}

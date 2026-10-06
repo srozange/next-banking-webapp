@@ -1,6 +1,7 @@
 import { StrictMode, type ReactElement } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ClientProfil } from '../application/chargerProfil';
+import type { ClientPrets } from '../application/prets';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../application/seConnecter';
 
 const { render, createRoot, createBrowserRouter, routeur } = vi.hoisted(() => {
@@ -75,10 +76,12 @@ describe('main', () => {
       children: ReactElement<{ client: ClientConnexion; stockage: StockageJeton }>;
     };
     const connexion = contenu.children.props;
-    const protegee = enfants.find((route) => route.path === undefined)?.element.props as {
-      decodeur: DecodeurJeton;
-      clientProfil: ClientProfil;
+    const routeProtegee = enfants.find((route) => route.path === undefined) as unknown as {
+      element: ReactElement<{ decodeur: DecodeurJeton; clientProfil: ClientProfil }>;
+      children: Array<{ path: string; element: ReactElement<{ client: ClientPrets }> }>;
     };
+    const protegee = routeProtegee.element.props;
+    const clientPrets = routeProtegee.children.find((route) => route.path === '/prets')?.element.props.client as ClientPrets;
 
     connexion.stockage.enregistrer('jeton');
     expect(valeurs.get('nb.jeton')).toBe('jeton');
@@ -96,6 +99,12 @@ describe('main', () => {
     await expect(protegee.clientProfil.lire('jeton')).resolves.toEqual({ statut: 'nonAuthentifie' });
     expect(fetch).toHaveBeenLastCalledWith(
       '/api/identite-clients/moi',
+      expect.objectContaining({ method: 'GET', headers: expect.objectContaining({ Authorization: 'Bearer jeton' }) }),
+    );
+
+    await expect(clientPrets.lister('jeton')).resolves.toEqual({ statut: 'nonAuthentifie' });
+    expect(fetch).toHaveBeenLastCalledWith(
+      '/api/credits/prets',
       expect.objectContaining({ method: 'GET', headers: expect.objectContaining({ Authorization: 'Bearer jeton' }) }),
     );
   });

@@ -11,11 +11,11 @@ afterEach(() => {
 });
 
 describe('routes', () => {
-  it('déclare les trois routes protégées', () => {
-    expect(ROUTES_PROTEGEES).toEqual(['/tableau-de-bord', '/espace-conseiller', '/administration']);
+  it('déclare les quatre routes protégées', () => {
+    expect(ROUTES_PROTEGEES).toEqual(['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets']);
   });
 
-  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/route-inconnue'])(
+  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/prets', '/route-inconnue'])(
     '[FR-001-02][FR-030-01] sans jeton, %s mène à /login par remplacement',
     async (chemin) => {
       const { routeur } = rendreApplication(chemin);
@@ -26,7 +26,7 @@ describe('routes', () => {
     },
   );
 
-  it.each(ROUTES_PROTEGEES)('avec un jeton, %s reste affichée, sans contenu pour l’instant', async (chemin) => {
+  it.each(ROUTES_PROTEGEES.filter((route) => route !== '/prets'))('avec un jeton, %s reste affichée, sans contenu pour l’instant', async (chemin) => {
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
     const { routeur } = rendreApplication(chemin);
 
