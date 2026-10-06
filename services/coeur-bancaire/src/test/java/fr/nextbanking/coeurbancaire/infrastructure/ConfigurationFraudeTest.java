@@ -17,7 +17,8 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 class ConfigurationFraudeTest {
 
     private final ApplicationContextRunner contexte = new ApplicationContextRunner()
-            .withUserConfiguration(ConfigurationFraude.class);
+            .withUserConfiguration(ConfigurationFraude.class)
+            .withPropertyValues(ConfigurationFraudeSignauxTest.PROPRIETES_SIGNAUX);
 
     @Test
     void des_seuils_valides_sont_lus() {

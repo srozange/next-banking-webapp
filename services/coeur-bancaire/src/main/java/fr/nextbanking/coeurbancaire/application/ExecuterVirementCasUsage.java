@@ -10,6 +10,7 @@ import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
 import fr.nextbanking.coeurbancaire.domain.ActionAudit;
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.ControleFraude.Evaluation;
 import fr.nextbanking.coeurbancaire.domain.EntreeAudit;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
@@ -26,9 +27,9 @@ import java.util.logging.Logger;
 
 /**
  * Cas d'usage : virement immédiat. Une clé d'idempotence déjà servie rend le premier résultat. Sinon, la saisie est
- * contrôlée, puis une seule transaction verrouille les comptes, contrôle propriété et solde, débite (mise à jour
- * conditionnelle), crédite, enregistre le virement, ses deux opérations et la ligne d'outbox de la remise au traitement
- * asynchrone : un échec d'écriture annule tout. L'audit passe par l'outbox d'audit, dans des transactions indépendantes
+ * contrôlée, puis une seule transaction verrouille les comptes, contrôle propriété et solde, évalue les signaux de
+ * fraude (FEAT-027, avant tout débit), enregistre le virement et ses alertes, débite (mise à jour conditionnelle),
+ * crédite, enregistre ses deux opérations et la ligne d'outbox de la remise au traitement asynchrone : un échec d'écriture annule tout. L'audit passe par l'outbox d'audit, dans des transactions indépendantes
  * (FR-026-04) : il est conservé même quand le virement est annulé (BUG-073).
  */
 public class ExecuterVirementCasUsage implements ExecuterVirement {
@@ -45,10 +46,11 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
     private final Transaction transaction;
     private final Horloge horloge;
     private final SeuilsFraude seuils;
+    private final ControleFraudeCasUsage controle;
 
     public ExecuterVirementCasUsage(Comptes comptes, Operations operations, DepotVirements virements,
             EvenementsSortants evenements, JournalAudit audit, Transaction transaction, Horloge horloge,
-            SeuilsFraude seuils) {
+            SeuilsFraude seuils, ControleFraudeCasUsage controle) {
         this.comptes = comptes;
         this.operations = operations;
         this.virements = virements;
@@ -57,6 +59,7 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         this.transaction = transaction;
         this.horloge = horloge;
         this.seuils = seuils;
+        this.controle = controle;
     }
 
     @Override
@@ -103,7 +106,9 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         Virement.Execution execution = Virement.executer(virementId, commande.clientId(), source, destinataire,
                 montant, commande.motif(), seuils, soumisLe);
         Virement virement = execution.virement();
+        Evaluation evaluation = controle.evaluer(commande.clientId(), montant, destinataire.numero(), soumisLe);
         virements.enregistrer(virement, commande.cleIdempotence());
+        controle.enregistrerAlertes(evaluation, commande.clientId(), virementId, soumisLe);
         if (!comptes.debiter(sourceId, montant)) {
             throw new ErreurVirement(Cause.SOLDE_INSUFFISANT);
         }

@@ -134,3 +134,11 @@ source_spec: `spec-3-1-executer-un-virement-entre-ses-comptes.md`
 severity: low
 reason: Retenu sans vérification en compose (make rejeu-up) ; à confirmer par la story « Socle du rejeu final ».
 status: open
+
+### DW-15: Lignes de référence des bénéficiaires externes du legacy absentes : la table `beneficiaires_externes` est créée vide.
+origin: spec-deferred 1821f43cf8f5
+location: services/coeur-bancaire/reference-data/reference-data.sql
+source_spec: `spec-3-2-evaluer-les-signaux-de-fraude-de-chaque-virement.md`
+severity: low
+reason: Aucune ligne d'EXTERNAL_BENEFICIARIES ne figure dans docs/retro (seule la structure est dans DATA-DICTIONARY.md) et la spec interdit d'en inventer. Le parcours nominal SC-003-04 lève bien NEW_BENEFICIARY seul ; à compléter par la story « Socle du rejeu final » ou la gestion des bénéficiaires (epic 4).
+status: open

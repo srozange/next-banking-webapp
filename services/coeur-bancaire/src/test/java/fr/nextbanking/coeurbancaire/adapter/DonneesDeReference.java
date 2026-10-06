@@ -42,7 +42,7 @@ public final class DonneesDeReference {
      * d'outbox par leur clé.
      */
     public static void vider(JdbcClient jdbc) {
-        jdbc.sql("truncate table operations, virements, comptes, outbox, outbox_audit, evenements_traites "
+        jdbc.sql("truncate table operations, alertes_fraude, beneficiaires_externes, virements, comptes, outbox, outbox_audit, evenements_traites "
                 + "restart identity cascade").update();
     }
 

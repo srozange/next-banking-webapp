@@ -57,6 +57,52 @@ public final class TextesVirement {
         return "Montant: " + montant + " - Motif: " + motifOuVide(motif);
     }
 
+    /** Description d'alerte LARGE_AMOUNT à 40 (FEAT-027 MESSAGES.md §3). */
+    public static String descriptionMontantEleve(String montant, String seuil) {
+        return "Transaction amount " + montant + " exceeds the large threshold of " + seuil;
+    }
+
+    /** Description d'alerte LARGE_AMOUNT à 80. */
+    public static String descriptionMontantTresEleve(String montant, String seuil) {
+        return "Transaction amount " + montant + " exceeds the very-large threshold of " + seuil;
+    }
+
+    /** Description d'alerte HIGH_FREQUENCY. */
+    public static String descriptionFrequence(long nombre, int plafond) {
+        return "Customer has " + nombre + " transactions today, exceeding the daily limit of " + plafond;
+    }
+
+    /** Description d'alerte NEW_BENEFICIARY (le numéro est celui du legacy ; seul le journal le masque). */
+    public static String descriptionNouveauBeneficiaire(String iban) {
+        return "Target IBAN " + iban + " is not registered as a trusted beneficiary";
+    }
+
+    /** Description d'alerte UNUSUAL_HOURS. */
+    public static String descriptionHeureInhabituelle(int heure) {
+        return "Transaction initiated at hour " + heure + " which is outside normal operating hours (06:00-23:00)";
+    }
+
+    /** Description d'alerte ROUND_AMOUNT. */
+    public static String descriptionMontantRond(String montant) {
+        return "Transaction amount " + montant + " is a suspicious round figure (multiple of 1000)";
+    }
+
+    /** Description d'alerte FOREIGN_IBAN. */
+    public static String descriptionIbanEtranger(String iban) {
+        return "Target IBAN " + iban + " does not start with FR (possible foreign transfer)";
+    }
+
+    /** Description d'alerte RAPID_SUCCESSION. */
+    public static String descriptionSuccessionRapide(long secondes, int seuilSecondes) {
+        return "Previous transaction was only " + secondes + " seconds ago (threshold: " + seuilSecondes + "s)";
+    }
+
+    /** Description d'alerte VELOCITY_CHECK. */
+    public static String descriptionVelocite(long nombre, int fenetreMinutes, int nombreMax) {
+        return "Customer executed " + nombre + " transactions above 500 EUR in the last " + fenetreMinutes
+                + " minutes (limit: " + nombreMax + ")";
+    }
+
     private static String libelle(String base, String motif, StatutAffichage statut) {
         String avecMotif = motif == null || motif.isBlank() ? base : base + SEPARATEUR_MOTIF + motif;
         return statut == StatutAffichage.PENDING ? EN_ATTENTE + " " + avecMotif : avecMotif;

@@ -1,18 +1,23 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.application.port.out.AlertesFraude;
+import fr.nextbanking.coeurbancaire.application.port.out.Beneficiaires;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.application.port.out.DepotVirements;
 import fr.nextbanking.coeurbancaire.application.port.out.EvenementsSortants;
 import fr.nextbanking.coeurbancaire.application.port.out.EvenementsTraites;
+import fr.nextbanking.coeurbancaire.application.port.out.HistoriqueVirements;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalAudit;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
+import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.EntreeAudit;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.Operation;
+import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
 import fr.nextbanking.coeurbancaire.domain.Virement;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
@@ -35,7 +40,7 @@ import java.util.function.Supplier;
  * les écritures (comptes, opérations, virements, outbox) quand le travail échoue, et des défaillances programmables.
  */
 class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, EvenementsSortants, JournalAudit,
-        EvenementsTraites, Transaction, Horloge {
+        EvenementsTraites, Transaction, Horloge, HistoriqueVirements, Beneficiaires, AlertesFraude {
 
     static final Instant MAINTENANT = Instant.parse("2026-11-17T09:00:00Z");
 
@@ -49,6 +54,14 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final List<Long> auditPublie = new ArrayList<>();
     final Set<UUID> traites = new HashSet<>();
     final List<String> journal = new ArrayList<>();
+    final List<AlerteFraude> alertes = new ArrayList<>();
+    /** Numéros des bénéficiaires actifs, par client. */
+    final Map<Long, Set<String>> beneficiairesActifs = new HashMap<>();
+    /** Signaux d'historique forcés ; absents : calculés sur les opérations et virements écrits. */
+    Long operationsDuJour;
+    Optional<Instant> dernierVirement;
+    Long virementsImportants;
+    RuntimeException historiqueEnErreur;
 
     boolean outboxRefusee;
     boolean auditRefuse;
@@ -121,6 +134,54 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
+    public void verrouillerClient(long clientId) {
+        journal.add("verrou-client");
+        if (historiqueEnErreur != null) {
+            throw historiqueEnErreur;
+        }
+    }
+
+    @Override
+    public long operationsDepuis(long clientId, Instant debut) {
+        journal.add("historique");
+        if (operationsDuJour != null) {
+            return operationsDuJour;
+        }
+        return operations.stream().filter(o -> comptes.get(o.compteId()).clientId() == clientId)
+                .filter(o -> !o.date().isBefore(debut)).count();
+    }
+
+    @Override
+    public Optional<Instant> dernierVirement(long clientId) {
+        if (dernierVirement != null) {
+            return dernierVirement;
+        }
+        return virements.values().stream().filter(v -> v.clientId() == clientId).map(Virement::soumisLe)
+                .max(java.util.Comparator.naturalOrder());
+    }
+
+    @Override
+    public long virementsExecutesAuDessus(long clientId, BigDecimal montantMin, Instant depuis) {
+        if (virementsImportants != null) {
+            return virementsImportants;
+        }
+        return virements.values().stream().filter(v -> v.clientId() == clientId)
+                .filter(v -> v.etat() == EtatVirement.EXECUTE).filter(v -> v.montant().compareTo(montantMin) > 0)
+                .filter(v -> !v.soumisLe().isBefore(depuis)).count();
+    }
+
+    @Override
+    public boolean estActif(long clientId, String numero) {
+        return beneficiairesActifs.getOrDefault(clientId, Set.of()).contains(numero);
+    }
+
+    @Override
+    public void enregistrer(AlerteFraude alerte) {
+        journal.add("alerte");
+        alertes.add(alerte);
+    }
+
+    @Override
     public long consigner(TemoinEcrit evenement) {
         throw new UnsupportedOperationException();
     }
@@ -164,6 +225,7 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         Map<Long, Virement> virementsAvant = new HashMap<>(virements);
         Map<String, Long> clesAvant = new HashMap<>(cles);
         int outboxAvant = outbox.size();
+        int alertesAvant = alertes.size();
         try {
             return travail.get();
         } catch (RuntimeException e) {
@@ -178,6 +240,9 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             cles.putAll(clesAvant);
             while (outbox.size() > outboxAvant) {
                 outbox.removeLast();
+            }
+            while (alertes.size() > alertesAvant) {
+                alertes.removeLast();
             }
             throw e;
         }

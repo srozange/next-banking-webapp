@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import javax.sql.DataSource;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +22,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -36,6 +41,7 @@ import tools.jackson.databind.json.JsonMapper;
 @SpringBootTest(classes = ApplicationCoeurBancaire.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = "nb.reseau.mandataires-de-confiance=127.0.0.0/8")
 @DirtiesContext
+@Import(VirementIT.ConfigurationHorloge.class)
 class VirementIT {
 
     private static final String JETON_USER1 = "user1";
@@ -47,6 +53,18 @@ class VirementIT {
 
     @LocalServerPort
     private int port;
+
+    @TestConfiguration
+    static class ConfigurationHorloge {
+        @Bean
+        @Primary
+        HorlogeFixe horlogeFixe() {
+            return new HorlogeFixe();
+        }
+    }
+
+    @Autowired
+    private HorlogeFixe horloge;
 
     @Autowired
     private JdbcClient jdbc;
@@ -63,6 +81,7 @@ class VirementIT {
 
     @BeforeEach
     void recharger() throws Exception {
+        horloge.regler(HorlogeFixe.DIX_HEURES_PARIS);
         DonneesDeReference.recharger(source, jdbc);
     }
 
@@ -111,6 +130,115 @@ class VirementIT {
                 .query(Long.class).single()).isEqualTo(1L));
         assertThat(solde(1)).isEqualByComparingTo("2030.00");
         assertThat(count("outbox")).isEqualTo(1);
+    }
+
+    @Test
+    @Tag("FR-003-15")
+    @Tag("FR-003-25")
+    @Tag("FR-027-01")
+    @Tag("FR-027-03")
+    void le_parcours_nominal_de_sc_003_04_est_execute_sans_alerte() throws Exception {
+        HttpResponse<String> reponse = virement(1, 2, "100.00", null, null, user1());
+
+        assertThat(reponse.statusCode()).isEqualTo(201);
+        assertThat(json.readTree(reponse.body()).get("etat").asString()).isEqualTo("EXECUTE");
+        assertThat(count("alertes_fraude")).isZero();
+        assertThat(solde(1)).isEqualByComparingTo("2030.00");
+    }
+
+    @Test
+    @Tag("FR-003-25")
+    @Tag("FR-027-03")
+    void a_75_aucune_alerte_et_a_80_ou_plus_une_alerte_open_par_signal_leve_et_le_virement_reste_execute()
+            throws Exception {
+        jdbc.sql("update comptes set solde = 20000.00 where id = 1").update();
+
+        // 5000.50 : LARGE_AMOUNT 40 + NEW_BENEFICIARY 35 = 75, aucune alerte.
+        HttpResponse<String> a75 = virement(1, 2, "5000.50", null, null, user1());
+        assertThat(count("alertes_fraude")).isZero();
+
+        // 17/11 à 23:30 Paris : LARGE_AMOUNT 40 + NEW_BENEFICIARY 35 + UNUSUAL_HOURS 45 + ROUND_AMOUNT 20 = 140.
+        horloge.regler(HorlogeFixe.DIX_HEURES_PARIS.plusSeconds(13 * 3600 + 1800));
+        HttpResponse<String> a80 = virement(1, 2, "5000.00", null, null, user1());
+
+        assertThat(a75.statusCode()).isEqualTo(201);
+        assertThat(a80.statusCode()).isEqualTo(201);
+        long virementId = json.readTree(a80.body()).get("virementId").asLong();
+        assertThat(json.readTree(a80.body()).get("etat").asString()).isEqualTo("EXECUTE");
+        List<Map<String, Object>> alertes = jdbc.sql("""
+                select virement_id, client_id, regle, score, statut, description, cree_le, revu_le, revu_par
+                from alertes_fraude order by id""").query().listOfRows();
+        assertThat(alertes).extracting(a -> a.get("regle"), a -> a.get("score"), a -> a.get("statut"),
+                a -> a.get("virement_id"), a -> a.get("client_id"))
+                .containsExactly(
+                        org.assertj.core.groups.Tuple.tuple("LARGE_AMOUNT", 40, "OPEN", virementId, 1L),
+                        org.assertj.core.groups.Tuple.tuple("NEW_BENEFICIARY", 35, "OPEN", virementId, 1L),
+                        org.assertj.core.groups.Tuple.tuple("UNUSUAL_HOURS", 45, "OPEN", virementId, 1L),
+                        org.assertj.core.groups.Tuple.tuple("ROUND_AMOUNT", 20, "OPEN", virementId, 1L));
+        assertThat(alertes.getFirst().get("description"))
+                .isEqualTo("Transaction amount 5000.00 exceeds the large threshold of 5000");
+        assertThat(alertes.get(1).get("description"))
+                .isEqualTo("Target IBAN FR76-0001-0002 is not registered as a trusted beneficiary");
+        assertThat(alertes.getFirst().get("revu_le")).isNull();
+        assertThat(alertes.getFirst().get("revu_par")).isNull();
+        assertThat(alertes.getFirst().get("cree_le")).isNotNull();
+        assertThat(solde(1)).isEqualByComparingTo("9999.50");
+    }
+
+    @Test
+    @Tag("FR-003-19")
+    @Tag("FR-027-07")
+    void un_beneficiaire_actif_ne_leve_pas_new_beneficiary() throws Exception {
+        jdbc.sql("update comptes set solde = 20000.00 where id = 1").update();
+        jdbc.sql("""
+                insert into beneficiaires_externes (client_id, titulaire, iban, libelle, actif)
+                values (1, 'Titulaire', 'FR76-0001-0002', 'Mon épargne', true)""").update();
+
+        // LARGE_AMOUNT 40 + ROUND_AMOUNT 20 = 60 (35 de plus sans le bénéficiaire = 95 : des alertes).
+        virement(1, 2, "5000.00", null, null, user1());
+
+        assertThat(count("alertes_fraude")).isZero();
+    }
+
+    @Test
+    @Tag("FR-003-07")
+    @Tag("FR-027-01")
+    void un_virement_rejete_n_entre_pas_dans_la_succession_rapide_du_suivant() throws Exception {
+        assertRefus(corps(1, 2, "9999.00", null), 400, "Solde insuffisant sur le compte source");
+        jdbc.sql("update comptes set solde = 20000.00 where id = 1").update();
+
+        virement(1, 2, "5000.50", null, null, user1());
+
+        // NEW_BENEFICIARY + LARGE_AMOUNT = 75 : sans RAPID_SUCCESSION, aucune alerte.
+        assertThat(count("alertes_fraude")).isZero();
+    }
+
+    @Test
+    @Tag("FR-003-23")
+    @Tag("FR-027-01")
+    void deux_soumissions_simultanees_d_un_meme_client_sont_serialisees_et_la_seconde_voit_la_premiere()
+            throws Exception {
+        jdbc.sql("update comptes set solde = 20000.00 where id = 1").update();
+
+        CompletableFuture<HttpResponse<String>> premiere = CompletableFuture.supplyAsync(
+                () -> virementSansEchec("5000.50"));
+        CompletableFuture<HttpResponse<String>> seconde = CompletableFuture.supplyAsync(
+                () -> virementSansEchec("5000.50"));
+
+        assertThat(premiere.get().statusCode()).isEqualTo(201);
+        assertThat(seconde.get().statusCode()).isEqualTo(201);
+        // Un seul des deux voit l'autre (RAPID_SUCCESSION 55 : 130 au total) : exactement trois alertes.
+        assertThat(count("alertes_fraude")).isEqualTo(3);
+        assertThat(jdbc.sql("select count(distinct virement_id) from alertes_fraude").query(Long.class).single())
+                .isEqualTo(1L);
+    }
+
+    private HttpResponse<String> virementSansEchec(String montant) {
+        try {
+            return virement(1, 2, montant, null, null, user1());
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Test
