@@ -19,7 +19,7 @@ describe('fetchAuthentifie', () => {
     const reponse = await fetchAuthentifie('/api/credits/prets', { method: 'GET' });
 
     expect(reponse.status).toBe(401);
-    expect(appeler).toHaveBeenCalledWith('/api/credits/prets', { method: 'GET' });
+    expect(appeler).toHaveBeenCalledWith('/api/credits/prets', expect.objectContaining({ method: 'GET' }));
     expect(stockage.supprimer).toHaveBeenCalledOnce();
     expect(rappel).toHaveBeenCalledOnce();
   });
@@ -43,6 +43,46 @@ describe('fetchAuthentifie', () => {
 
     await expect(fetchAuthentifie('/x')).rejects.toThrow('Failed to fetch');
     expect(stockage.supprimer).not.toHaveBeenCalled();
+  });
+
+  it('[FR-030-05] ajoute le jeton stocké quand l’appel n’en porte pas', async () => {
+    const { appeler, fetchAuthentifie } = monter(200);
+
+    await fetchAuthentifie('/api/coeur-bancaire/tableau-de-bord', { headers: { Accept: 'application/json' } });
+
+    const entetes = new Headers(appeler.mock.calls[0]?.[1]?.headers);
+    expect(entetes.get('Authorization')).toBe('Bearer j');
+    expect(entetes.get('Accept')).toBe('application/json');
+  });
+
+  it('[FR-030-05] garde l’en-tête Authorization déjà posé par l’appelant', async () => {
+    const { appeler, fetchAuthentifie } = monter(200);
+
+    await fetchAuthentifie('/x', { headers: { Authorization: 'Bearer autre' } });
+
+    expect(new Headers(appeler.mock.calls[0]?.[1]?.headers).get('Authorization')).toBe('Bearer autre');
+  });
+
+  it.each([
+    ['un objet Headers', new Headers({ Accept: 'application/json' })],
+    ['un tableau', [['Accept', 'application/json']] as [string, string][]],
+  ])('[FR-030-05] ajoute le jeton à des en-têtes fournis sous forme d’%s', async (_forme, entetes) => {
+    const { appeler, fetchAuthentifie } = monter(200);
+
+    await fetchAuthentifie('/x', { headers: entetes });
+
+    const recus = new Headers(appeler.mock.calls[0]?.[1]?.headers);
+    expect(recus.get('Authorization')).toBe('Bearer j');
+    expect(recus.get('Accept')).toBe('application/json');
+  });
+
+  it('[FR-030-05] sans jeton stocké, n’ajoute aucun en-tête Authorization', async () => {
+    const appeler = vi.fn<typeof fetch>(() => Promise.resolve(new Response('{}', { status: 200 })));
+    const stockage: StockageJeton = { lire: () => null, enregistrer: vi.fn(), supprimer: vi.fn() };
+
+    await creerFetchAuthentifie(stockage, creerSignalExpiration(), appeler)('/x');
+
+    expect(new Headers(appeler.mock.calls[0]?.[1]?.headers).has('Authorization')).toBe(false);
   });
 
   it('appelle fetch global par défaut', async () => {
