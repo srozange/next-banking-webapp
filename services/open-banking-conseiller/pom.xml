@@ -52,7 +52,7 @@
             <groupId>net.ttddyy.observation</groupId>
             <artifactId>datasource-micrometer-spring-boot</artifactId>
         </dependency>
-        <!-- Fournisseur d'IA (adapter.out.fournisseur) : coupe-circuit, usage programmatique. -->
+        <!-- Fournisseurs d'IA et Powens (adapter.out.fournisseur) : coupe-circuit, usage programmatique (AR-102). -->
         <dependency>
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-circuitbreaker</artifactId>

@@ -1,20 +1,24 @@
 import type { RouteObject } from 'react-router';
 import { ROUTE_CONNEXION } from '../../domain/connexion';
 import type { ClientProfil } from '../../application/chargerProfil';
+import type { ClientPrets } from '../../application/prets';
 import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientVirement } from '../../application/virement';
+import type { ClientComptesTiers } from '../../application/comptesTiers';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
 import { Application } from '../Application';
 import type { Session } from '../session/session';
+import { EcranComptesTiers } from '../ecrans/comptesTiers/EcranComptesTiers';
 import { EcranBourse } from '../ecrans/bourse/EcranBourse';
 import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
 import { EcranReleve } from '../ecrans/releve/EcranReleve';
 import { EcranVirement } from '../ecrans/virement/EcranVirement';
+import { EcranPrets } from '../ecrans/prets/EcranPrets';
 import { TEXTES } from '../textes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { RedirectionAccueil } from './RedirectionAccueil';
@@ -29,16 +33,20 @@ export interface Dependances {
   clientBourse: ClientBourse;
   clientProduits: ClientProduits;
   clientConversation: ClientConversation;
+  clientComptesTiers: ClientComptesTiers;
+  /** Envoie le navigateur à une adresse externe (Powens) ; défaut de l'écran Comptes Tiers si absent. */
+  allerVers?: (adresse: string) => void;
   session: Session;
   clientVirement: ClientVirement;
   clientReleve: ClientReleve;
+  clientPrets: ClientPrets;
 }
 
 /** Routes protégées sans écran pour l'instant (un titre d'onglet seul) : leur contenu arrive avec les stories suivantes. */
-export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration'] as const;
+export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets'] as const;
 
-/** Titre d'onglet de chaque route protégée (seul élément rendu en attendant le contenu, hissé dans <head>). */
-const TITRES_ONGLET: Readonly<Record<(typeof ROUTES_PROTEGEES)[number], string>> = {
+/** Titre d'onglet des routes protégées sans écran (seul élément rendu en attendant le contenu, hissé dans <head>). */
+const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], '/prets'>, string>> = {
   '/tableau-de-bord': TEXTES.titresOnglet.tableauDeBord,
   '/espace-conseiller': TEXTES.titresOnglet.espaceConseiller,
   '/administration': TEXTES.titresOnglet.administration,
@@ -52,9 +60,12 @@ export function creerRoutes({
   clientBourse,
   clientProduits,
   clientConversation,
+  clientComptesTiers,
+  allerVers,
   session,
   clientVirement,
   clientReleve,
+  clientPrets,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
   return [
@@ -79,7 +90,12 @@ export function creerRoutes({
             { path: '/mon-conseiller', element: <EcranConseiller client={clientConversation} stockage={stockageJeton} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-011-01).
             { path: '/produits', element: <EcranProduits client={clientProduits} stockage={stockageJeton} /> },
-            ...ROUTES_PROTEGEES.map((path) => ({ path, element: <title>{TITRES_ONGLET[path]}</title> })),
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-012-01).
+            { path: '/comptes-tiers', element: <EcranComptesTiers client={clientComptesTiers} stockage={stockageJeton} allerVers={allerVers} /> },
+            ...ROUTES_PROTEGEES.map((path) => ({
+              path,
+              element: path === '/prets' ? <EcranPrets client={clientPrets} stockage={stockageJeton} /> : <title>{TITRES_ONGLET[path]}</title>,
+            })),
             { path: '/virement', element: <EcranVirement client={clientVirement} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-005-01) : seuls les comptes du jeton sont proposés.
             { path: '/releve', element: <EcranReleve comptes={clientVirement} releve={clientReleve} /> },

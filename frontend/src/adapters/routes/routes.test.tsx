@@ -11,11 +11,11 @@ afterEach(() => {
 });
 
 describe('routes', () => {
-  it('déclare les trois routes protégées sans écran ; /bourse et /produits ont le leur', () => {
-    expect(ROUTES_PROTEGEES).toEqual(['/tableau-de-bord', '/espace-conseiller', '/administration']);
+  it('déclare les quatre routes protégées hors /bourse, /produits et /comptes-tiers, qui ont leur écran', () => {
+    expect(ROUTES_PROTEGEES).toEqual(['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets']);
   });
 
-  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/bourse', '/produits', '/route-inconnue'])(
+  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/prets', '/bourse', '/produits', '/comptes-tiers', '/route-inconnue'])(
     '[FR-001-02][FR-030-01] sans jeton, %s mène à /login par remplacement',
     async (chemin) => {
       const { routeur } = rendreApplication(chemin);
@@ -26,7 +26,7 @@ describe('routes', () => {
     },
   );
 
-  it.each(ROUTES_PROTEGEES)('avec un jeton, %s reste affichée, sans contenu pour l’instant', async (chemin) => {
+  it.each(ROUTES_PROTEGEES.filter((route) => route !== '/prets'))('avec un jeton, %s reste affichée, sans contenu pour l’instant', async (chemin) => {
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
     const { routeur } = rendreApplication(chemin);
 
@@ -40,6 +40,7 @@ describe('routes', () => {
     ['/administration', 'BankApp Demo - Administration'],
     ['/bourse', 'BankApp Demo - Bourse'],
     ['/produits', 'BankApp Demo - Produits bancaires'],
+    ['/comptes-tiers', 'BankApp Demo - Comptes Tiers'],
   ])('%s porte le titre d’onglet du legacy', async (chemin, titre) => {
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
     rendreApplication(chemin);

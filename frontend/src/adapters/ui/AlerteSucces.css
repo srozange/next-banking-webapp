@@ -1,0 +1,13 @@
+.alerte-succes {
+  padding: var(--spacing-md);
+  border-left: 4px solid var(--color-success);
+  background-color: var(--color-success-container);
+  color: var(--color-success);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.alerte-succes > * {
+  margin: 0;
+}

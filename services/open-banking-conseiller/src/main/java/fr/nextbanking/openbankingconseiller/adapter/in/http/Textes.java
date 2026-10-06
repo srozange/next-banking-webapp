@@ -12,6 +12,9 @@ final class Textes {
     static final String AUTHENTIFICATION_REQUISE = "Authentification requise";
     static final String ACCES_REFUSE = "Accès refusé";
     static final String RESSOURCE_INTROUVABLE = "Ressource introuvable";
+    static final String CONNEXION_POWENS_IMPOSSIBLE = "Impossible d initialiser la connexion Powens.";
+    static final String POWENS_INDISPONIBLE =
+            "Service Powens temporairement indisponible. Veuillez reessayer dans quelques instants.";
     static final String ERREUR_TECHNIQUE = "Une erreur technique est survenue";
 
     // Legacy (MESSAGES.md), orthographe d'origine ; BUG-038 : aucun code 401/403 n'est exposé.

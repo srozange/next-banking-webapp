@@ -38,6 +38,25 @@ class GestionErreursTest {
         assertThat(message(reponse)).isEqualTo("Une erreur technique est survenue");
     }
 
+    @Test
+    @Tag("FR-028-01")
+    void une_connexion_powens_impossible_rend_503_au_texte_du_legacy() {
+        ResponseEntity<GestionErreurs.Message> reponse = gestion.connexionPowensImpossible();
+
+        assertThat(reponse.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+        assertThat(message(reponse)).isEqualTo("Impossible d initialiser la connexion Powens.");
+    }
+
+    @Test
+    @Tag("FR-028-12")
+    void une_panne_de_powens_rend_503_avec_le_message_d_indisponibilite() {
+        ResponseEntity<GestionErreurs.Message> reponse = gestion.powensIndisponible();
+
+        assertThat(reponse.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+        assertThat(message(reponse)).isEqualTo(
+                "Service Powens temporairement indisponible. Veuillez reessayer dans quelques instants.");
+    }
+
     private static String message(ResponseEntity<GestionErreurs.Message> reponse) {
         return reponse.getBody().message();
     }

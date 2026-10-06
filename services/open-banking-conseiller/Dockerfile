@@ -15,6 +15,7 @@ COPY services/coeur-bancaire/pom.xml services/coeur-bancaire/
 COPY services/notifications/pom.xml services/notifications/
 COPY services/identite-clients/pom.xml services/identite-clients/
 COPY services/audit/pom.xml services/audit/
+COPY services/credits/pom.xml services/credits/
 COPY services/bourse/pom.xml services/bourse/
 COPY services/open-banking-conseiller/pom.xml services/open-banking-conseiller/
 COPY services/open-banking-conseiller/src services/open-banking-conseiller/src

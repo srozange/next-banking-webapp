@@ -2,8 +2,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
-import { creerClientConversationHttp } from '../adapters/http/ClientConversationHttp';
+import { creerClientComptesTiersHttp } from '../adapters/http/ClientComptesTiersHttp';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
+import { creerClientConversationHttp } from '../adapters/http/ClientConversationHttp';
+import { creerClientPretsHttp } from '../adapters/http/ClientPretsHttp';
 import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
 import { creerClientReleveHttp } from '../adapters/http/ClientReleveHttp';
@@ -38,6 +40,7 @@ const routeur = createBrowserRouter(
     clientBourse: creerClientBourseHttp(fetchAuthentifie),
     clientProduits: creerClientProduitsHttp(fetchAuthentifie),
     clientConversation: creerClientConversationHttp(fetchAuthentifie),
+    clientComptesTiers: creerClientComptesTiersHttp(fetchAuthentifie),
     session: {
       client: creerClientSessionHttp(fetchAuthentifie),
       expiration: creerExpirationJeton(horlogeSysteme),
@@ -45,6 +48,7 @@ const routeur = createBrowserRouter(
     },
     clientVirement: creerClientVirementHttp(fetchAuthentifie),
     clientReleve: creerClientReleveHttp(fetchAuthentifie),
+    clientPrets: creerClientPretsHttp(fetchAuthentifie),
   }),
 );
 

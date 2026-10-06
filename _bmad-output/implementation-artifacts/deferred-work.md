@@ -188,3 +188,17 @@ location: n/a
 source_spec: `spec-7-8-dialoguer-avec-sophie-sur-l-ecran-mon-conseiller.md`
 reason: Le script exige la pile compose ; non lancé dans cette session. Story purement front : aucune trace de service modifiée.
 status: open
+
+### DW-22: Valeurs des lignes LOANS / LOAN_REPAYMENTS du legacy (import.sql) absentes du dépôt : reference-data.sql de credits est reconstitué (2 prêts EN_COURS de user1, 18 échéances) et à confirmer contre le
+origin: spec-deferred 09799692e09b
+location: n/a
+source_spec: `spec-5-1-ouvrir-la-page-prets-et-simuler-un-emprunt.md`
+reason: docs/retro/00-global/NFR.md (2 loans, 18 loan_repayments), DATA-DICTIONARY.md (colonnes), FIELDS.md (exemple 5 000 EUR / 4.9 % / 24 mois).
+status: open
+
+### DW-23: Prérequis de l'epic 4 (FR-004-05, « Montant invalide ») non livré : le message est livré ici pour la seule simulation ; la création de virement programmé et la demande de prêt (5.2) le reprendront.
+origin: spec-deferred 93fe4e36160d
+location: n/a
+source_spec: `spec-5-1-ouvrir-la-page-prets-et-simuler-un-emprunt.md`
+reason: sprint-status.yaml : epic 4 en backlog.
+status: open

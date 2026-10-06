@@ -26,9 +26,13 @@ final class Jetons {
     }
 
     static String jeton(KeyPair cles, String role, Instant emission, Instant expiration) {
+        return jeton(cles, "10", role, emission, expiration);
+    }
+
+    static String jeton(KeyPair cles, String sub, String role, Instant emission, Instant expiration) {
         RSAKey cle = new RSAKey.Builder((RSAPublicKey) cles.getPublic()).privateKey((RSAPrivateKey) cles.getPrivate())
                 .build();
-        JwtClaimsSet revendications = JwtClaimsSet.builder().subject("10").claim("roles", List.of(role))
+        JwtClaimsSet revendications = JwtClaimsSet.builder().subject(sub).claim("roles", List.of(role))
                 .id(UUID.randomUUID().toString()).issuedAt(emission).expiresAt(expiration).build();
         return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(cle)))
                 .encode(JwtEncoderParameters.from(JwsHeader.with(SignatureAlgorithm.RS256).build(), revendications))

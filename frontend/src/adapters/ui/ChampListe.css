@@ -1,0 +1,28 @@
+.champ-liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Libellé rendu en capitales par CSS (le texte source garde sa casse). */
+.champ-liste__libelle {
+  color: var(--color-ink);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: var(--font-weight-label);
+  text-transform: uppercase;
+}
+
+.champ-liste__liste {
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--spacing-2xl);
+  padding: 0 var(--spacing-md);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-none);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body-md);
+  font-size: var(--text-body-md);
+  font-weight: var(--font-weight-body-md);
+}

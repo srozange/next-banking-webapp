@@ -84,11 +84,11 @@ development_status:
   epic-4-retrospective: optional
 
   epic-5: backlog
-  5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: backlog
-  5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: backlog
-  5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: backlog
+  5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: done
+  5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: done
+  5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: done
   5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: optional
-  5-5-consulter-l-échéancier-marquer-une-échéance-payée-et-supprim: backlog
+  5-5-consulter-l-échéancier-marquer-une-échéance-payée-et-supprim: done
   5-6-traiter-le-pipeline-des-prêts-en-attente-depuis-l-administra: backlog
   epic-5-retrospective: optional
 
@@ -110,10 +110,10 @@ development_status:
   epic-7-retrospective: optional
 
   epic-8: backlog
-  8-1-raccorder-powens-derrière-un-port-et-lancer-la-connexion-à-u: backlog
-  8-2-traiter-le-retour-public-de-powens: backlog
-  8-3-consulter-sélectionner-rafraîchir-et-déconnecter-ses-comptes: backlog
-  8-4-afficher-l-écran-comptes-tiers: backlog
+  8-1-raccorder-powens-derrière-un-port-et-lancer-la-connexion-à-u: done
+  8-2-traiter-le-retour-public-de-powens: done
+  8-3-consulter-sélectionner-rafraîchir-et-déconnecter-ses-comptes: done
+  8-4-afficher-l-écran-comptes-tiers: done
   8-5-afficher-le-patrimoine-total-avec-les-comptes-externes-sur-l: backlog
   epic-8-retrospective: optional
 

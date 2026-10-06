@@ -1,8 +1,8 @@
 # Pile locale : une base par service, Kafka, collecteur OpenTelemetry, Jaeger v2, services et conteneur web.
 # Secrets : variables d'environnement (fichier .env généré par `make secrets`, jamais versionné).
 # En cas de conflit sur le poste (port ou sous-réseau déjà pris), NB_PORT_IDENTITE_CLIENTS, NB_PORT_COEUR_BANCAIRE,
-# NB_PORT_NOTIFICATIONS, NB_PORT_AUDIT, NB_PORT_BOURSE, NB_PORT_OPEN_BANKING_CONSEILLER et NB_SOUS_RESEAU remplacent les
-# valeurs par défaut (8081, 8082, 8085, 8086, 8087, 8088, 172.30.0.0/24).
+# NB_PORT_NOTIFICATIONS, NB_PORT_AUDIT, NB_PORT_CREDITS, NB_PORT_BOURSE, NB_PORT_OPEN_BANKING_CONSEILLER et
+# NB_SOUS_RESEAU remplacent les valeurs par défaut (8081, 8082, 8085, 8086, 8083, 8087, 8088, 172.30.0.0/24).
 name: next-banking-webapp
 
 networks:
@@ -16,6 +16,7 @@ volumes:
   pgdata-coeur-bancaire:
   pgdata-notifications:
   pgdata-audit:
+  pgdata-credits:
   pgdata-bourse:
   pgdata-open-banking-conseiller:
 
@@ -80,6 +81,22 @@ services:
     networks: [nb]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U audit -d audit"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  postgres-credits:
+    image: postgres:18.6
+    environment:
+      TZ: Europe/Paris
+      POSTGRES_DB: credits
+      POSTGRES_USER: credits
+      POSTGRES_PASSWORD: ${NB_CREDITS_BD_MOT_DE_PASSE:-}
+    volumes:
+      - pgdata-credits:/var/lib/postgresql
+    networks: [nb]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U credits -d credits"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -302,6 +319,35 @@ services:
       retries: 30
       start_period: 20s
 
+  credits:
+    build:
+      context: .
+      dockerfile: services/credits/Dockerfile
+    environment:
+      TZ: Europe/Paris
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-credits:5432/credits
+      SPRING_DATASOURCE_USERNAME: credits
+      SPRING_DATASOURCE_PASSWORD: ${NB_CREDITS_BD_MOT_DE_PASSE:-}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      # Clé publique du jeton : tout /api/** est authentifié ; sans elle, refus de démarrer.
+      NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
+    ports:
+      - "${NB_PORT_CREDITS:-8083}:8080"
+    networks: [nb]
+    depends_on:
+      postgres-credits:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      otel-collector:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
   bourse:
     build:
       context: .
@@ -349,6 +395,13 @@ services:
       AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-}
       AZURE_OPENAI_DEPLOYMENT: ${AZURE_OPENAI_DEPLOYMENT:-}
       AZURE_OPENAI_API_VERSION: ${AZURE_OPENAI_API_VERSION:-}
+      # Powens : vides par défaut (domaine, client et banques sandbox dans le code, secret sans valeur). L'adaptateur
+      # simulé reste actif tant que le mode réel n'est pas demandé hors des fichiers versionnés.
+      POWENS_CLIENT_SECRET: ${POWENS_CLIENT_SECRET:-}
+      POWENS_URL_RETOUR: ${POWENS_URL_RETOUR:-}
+      POWENS_DOMAINE: ${POWENS_DOMAINE:-}
+      POWENS_CLIENT_ID: ${POWENS_CLIENT_ID:-}
+      POWENS_CONNECTOR_ID: ${POWENS_CONNECTOR_ID:-}
     ports:
       - "${NB_PORT_OPEN_BANKING_CONSEILLER:-8088}:8080"
     networks: [nb]
@@ -379,6 +432,8 @@ services:
       coeur-bancaire:
         condition: service_healthy
       notifications:
+        condition: service_healthy
+      credits:
         condition: service_healthy
       bourse:
         condition: service_healthy

@@ -2,6 +2,7 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import axe from 'axe-core';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import type { ReponseSimulation } from '../application/prets';
 import { jetonDeTest } from './jeton/jetonDeTest';
 import { rendreApplication } from './test/rendreApplication';
 // index.html est hors de src : son import brut ne fausse pas la couverture.
@@ -57,6 +58,52 @@ describe('accessibilité (axe)', () => {
     rendreApplication(chemin);
     await screen.findByTestId('nav-salutation');
     await waitFor(() => expect(screen.getByTestId('application-racine').getAttribute('aria-busy')).toBeNull());
+
+    expect(await reglesViolees()).toEqual([]);
+  });
+
+  it('[axe] /prets avec résultat de simulation, échéancier déplié, liste de prêts et erreur ne relève aucune violation', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const utilisateur = userEvent.setup();
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    const pret = {
+      id: 1,
+      type: 'TRAVAUX' as const,
+      montant: '5000.00',
+      tauxAnnuel: '4.9000',
+      dureeMois: 24,
+      mensualite: '218.63',
+      coutTotal: '5247.12',
+      totalInterets: '247.12',
+      objet: null,
+      statut: 'EN_ATTENTE' as const,
+      dateDebut: '2026-08-01',
+      dateFin: '2028-08-01',
+    };
+    const reponses = [
+      { statut: 'simulation' as const, simulation: { mensualite: '293.02', coutTotal: '10548.72', totalInterets: '548.72', echeancier: [{ numero: 1, capital: '263.85', interets: '29.17', total: '293.02', capitalRestant: '0.00' }] } },
+      { statut: 'technique' as const },
+    ];
+    rendreApplication('/prets', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+      simuler: () => Promise.resolve(reponses.shift() as ReponseSimulation),
+      lister: () => Promise.resolve({ statut: 'prets' as const, prets: [pret] }),
+    });
+    await screen.findByTestId('pret-statut-1');
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('pret-sim-calculer'));
+    await utilisateur.click(await screen.findByTestId('pret-sim-echeancier-lien'));
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('pret-sim-calculer'));
+    await screen.findByTestId('pret-message-erreur');
+    expect(await reglesViolees()).toEqual([]);
+  });
+
+  it('[axe] /prets sans prêt (état vide) ne relève aucune violation', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
+    rendreApplication('/prets');
+    await screen.findByText('Aucun emprunt enregistre');
 
     expect(await reglesViolees()).toEqual([]);
   });
@@ -173,6 +220,28 @@ describe('accessibilité (axe)', () => {
       localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
       rendreApplication('/produits');
       await screen.findByTestId('produits-erreur-technique');
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+  });
+
+  describe('/comptes-tiers', () => {
+    const compte = (id: number, solde: string | null) => ({ id, nom: `Compte ${id}`, type: 'checking', solde, soldeAbsent: solde === null, iban: 'FR7612' });
+    const etat = (connecte: boolean) => ({
+      connecte,
+      comptes: connecte ? [compte(1, '10.00'), compte(2, null)] : [],
+      compteSelectionne: connecte ? 1 : null,
+      transactions: connecte ? [{ date: '2026-10-01', libelle: 'Cafe', montant: '-3.50' }] : [],
+      message: 'Session expiree. Veuillez recommencer la connexion.',
+      patrimoineTotal: '10.00',
+    });
+
+    it.each([false, true])('[axe] /comptes-tiers (connecté : %s) ne relève aucune violation', async (connecte) => {
+      localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+      rendreApplication('/comptes-tiers', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+        lireEtat: () => Promise.resolve({ statut: 'ok', donnees: etat(connecte) }),
+      });
+      await screen.findByTestId('tiers-message-erreur');
 
       expect(await reglesViolees()).toEqual([]);
     });

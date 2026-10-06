@@ -7,6 +7,7 @@
   color: var(--color-ink);
 }
 
-.carte--attenuee {
+.carte--attenuee,
+.carte.card-muted {
   background-color: var(--color-surface-alt);
 }
