@@ -42,6 +42,8 @@ public class GestionErreurs {
             return reponse(HttpStatus.BAD_GATEWAY, Textes.iaStatut(erreur.statutRecu()));
         }
         return reponse(HttpStatus.SERVICE_UNAVAILABLE, Textes.IA_INDISPONIBLE);
+    }
+
     /** Powens refuse ou n'initialise pas la connexion : 503, sans adresse (RG-028-004). */
     @ExceptionHandler(ConnexionPowensImpossible.class)
     public ResponseEntity<Message> connexionPowensImpossible() {
