@@ -22,6 +22,7 @@ class TraiterVirementATraiterCasUsageTest {
             new TraiterVirementATraiterCasUsage(memoire, memoire, memoire, memoire);
 
     @Test
+    @Tag("FR-023-03")
     void un_virement_deja_execute_n_est_pas_debite_a_nouveau_et_n_emet_rien() {
         memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("2030.00")));
         memoire.virements.put(12L, new Virement(12, 7, 1, 2, new BigDecimal("100.00"), "loyer",
@@ -33,6 +34,7 @@ class TraiterVirementATraiterCasUsageTest {
         assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2030.00");
         assertThat(memoire.journal).isEmpty();
         assertThat(memoire.outbox).isEmpty();
+        assertThat(memoire.decisions).isEmpty();
         assertThat(memoire.outboxAudit).isEmpty();
     }
 

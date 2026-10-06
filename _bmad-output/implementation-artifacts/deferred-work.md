@@ -142,3 +142,11 @@ source_spec: `spec-3-2-evaluer-les-signaux-de-fraude-de-chaque-virement.md`
 severity: low
 reason: Aucune ligne d'EXTERNAL_BENEFICIARIES ne figure dans docs/retro (seule la structure est dans DATA-DICTIONARY.md) et la spec interdit d'en inventer. Le parcours nominal SC-003-04 lève bien NEW_BENEFICIARY seul ; à compléter par la story « Socle du rejeu final » ou la gestion des bénéficiaires (epic 4).
 status: open
+
+### DW-16: Titre des notifications de virement : aucun texte défini, `titre` laissé à null dans l'événement et en base.
+origin: spec-deferred 9de69304b262
+location: services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/TextesVirement.java
+source_spec: `spec-3-3-notifier-le-client-de-l-issue-de-son-virement.md`
+severity: low
+reason: AD-25 prévoit un `titre` rendu par le producteur, mais le legacy n'en a pas pour un virement (MESSAGES.md) et textes-nouveaux.md n'en propose pas ; aucun texte inventé. À fixer par le métier (point ouvert) avant l'affichage de la story 3.9.
+status: open

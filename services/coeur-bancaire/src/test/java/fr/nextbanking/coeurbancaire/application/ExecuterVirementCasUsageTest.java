@@ -13,6 +13,7 @@ import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.SeuilsFraude;
 import fr.nextbanking.coeurbancaire.domain.StatutAffichage;
+import fr.nextbanking.coeurbancaire.domain.TypeNotification;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
 import fr.nextbanking.coeurbancaire.domain.TypeOperation;
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
  * Cas d'usage du virement immédiat sur un cœur bancaire en mémoire : contrôles dans l'ordre, atomicité, remise au
  * traitement asynchrone, audit indépendant, idempotence.
  */
+@Tag("FR-003-14")
 class ExecuterVirementCasUsageTest {
 
     private static final String IP = "203.0.113.7";
@@ -59,6 +61,7 @@ class ExecuterVirementCasUsageTest {
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.virements).isEmpty();
         assertThat(memoire.outbox).isEmpty();
+        assertThat(memoire.decisions).isEmpty();
     }
 
     @Test
@@ -109,6 +112,69 @@ class ExecuterVirementCasUsageTest {
             assertThat(remise.motif()).isEqualTo("loyer");
             assertThat(remise.horodatage()).isEqualTo(MemoireCoeurBancaire.MAINTENANT);
         });
+        assertThat(memoire.publies).containsExactly(101L);
+    }
+
+    @Test
+    @Tag("FR-003-14")
+    @Tag("FR-002-10")
+    void une_confirmation_sans_motif_ou_avec_motif_blanc_n_a_pas_de_mention_de_motif() {
+        cas.executer(commande(1L, 2L, "100", null, null));
+        cas.executer(commande(1L, 2L, "100", "   ", null));
+
+        assertThat(memoire.decisions).extracting(d -> d.notification().type(), d -> d.notification().message())
+                .containsExactly(
+                        org.assertj.core.groups.Tuple.tuple(TypeNotification.CONFIRMATION,
+                                "Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme"),
+                        org.assertj.core.groups.Tuple.tuple(TypeNotification.CONFIRMATION,
+                                "Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme"));
+    }
+
+    @Test
+    @Tag("FR-003-14")
+    @Tag("FR-002-10")
+    void une_confirmation_avec_motif_le_reprend() {
+        cas.executer(commande(1L, 2L, "100", "loyer", null));
+
+        assertThat(memoire.decisions).singleElement().satisfies(decision -> {
+            assertThat(decision.notification().message())
+                    .isEqualTo("Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme (motif : loyer)");
+            assertThat(decision.notification().titre()).isNull();
+            assertThat(decision.notification().clientId()).isEqualTo(7);
+            assertThat(decision.virementId()).isEqualTo(12);
+            assertThat(decision.clientId()).isEqualTo(7);
+            assertThat(decision.etat()).isEqualTo(EtatVirement.EXECUTE);
+            assertThat(decision.horodatage()).isEqualTo(MemoireCoeurBancaire.MAINTENANT);
+        });
+    }
+
+    @Test
+    @Tag("FR-003-26")
+    @Tag("FR-025-01")
+    @Tag("FR-025-02")
+    void a_5000_euros_la_notification_est_une_alerte_et_a_4999_99_une_confirmation() {
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
+
+        cas.executer(commande(1L, 2L, "5000.00", "loyer", null));
+        cas.executer(commande(1L, 2L, "4999.99", "loyer", null));
+
+        assertThat(memoire.decisions).extracting(d -> d.notification().type(), d -> d.notification().message())
+                .containsExactly(
+                        org.assertj.core.groups.Tuple.tuple(TypeNotification.ALERTE,
+                                "Virement de 5000.00 EUR en attente de validation - transaction importante, "
+                                        + "verification en cours."),
+                        org.assertj.core.groups.Tuple.tuple(TypeNotification.CONFIRMATION,
+                                "Virement de 4999.99 EUR vers le compte FR76-0001-0002 confirme (motif : loyer)"));
+    }
+
+    @Test
+    @Tag("FR-003-14")
+    void une_seule_decision_par_virement_ecrite_dans_la_transaction_et_publiee_avant_la_remise() {
+        cas.executer(commande(1L, 2L, "100", "loyer", null));
+
+        assertThat(memoire.decisions).hasSize(1);
+        assertThat(memoire.outbox).hasSize(1);
+        assertThat(memoire.decisionsPubliees).containsExactly(301L);
         assertThat(memoire.publies).containsExactly(101L);
     }
 

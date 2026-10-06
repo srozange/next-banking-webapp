@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
  * Invariants des objets-valeurs du virement : comptes, opérations, seuils, entrées d'audit et remise au traitement.
  */
 @Tag("FR-003-09")
+@Tag("FR-003-14")
 class ModelesDuDomaineTest {
 
     private static final Instant T = Instant.parse("2026-11-17T09:00:00Z");
@@ -77,6 +78,47 @@ class ModelesDuDomaineTest {
         assertThatThrownBy(() -> new VirementATraiter(id, 1, BigDecimal.ONE, 1, 2, null, null))
                 .isInstanceOf(IllegalArgumentException.class);
         assertThat(new VirementATraiter(id, 1, BigDecimal.ONE, 1, 2, "loyer", T).motif()).isEqualTo("loyer");
+    }
+
+    @Test
+    @Tag("FR-003-14")
+    void une_notification_et_une_decision_exigent_leurs_champs() {
+        NotificationVirement notification = new NotificationVirement(1, TypeNotification.CONFIRMATION, null, "x");
+        assertThatThrownBy(() -> new NotificationVirement(1, null, null, "x"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new NotificationVirement(1, TypeNotification.ALERTE, null, null))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new NotificationVirement(1, TypeNotification.ALERTE, null, " "))
+                .isInstanceOf(IllegalArgumentException.class);
+        UUID id = UUID.randomUUID();
+        assertThatThrownBy(() -> new VirementDecide(null, 1, 1, EtatVirement.EXECUTE, notification, T))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new VirementDecide(id, 1, 1, null, notification, T))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new VirementDecide(id, 1, 1, EtatVirement.EXECUTE, null, T))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new VirementDecide(id, 1, 1, EtatVirement.EXECUTE, notification, null))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(new VirementDecide(id, 1, 1, EtatVirement.EXECUTE, notification, T).notification())
+                .isEqualTo(notification);
+    }
+
+    @Test
+    @Tag("FR-003-14")
+    void les_messages_de_notification_et_les_descriptions_d_alerte_sont_ceux_du_legacy() {
+        assertThat(TextesVirement.confirmation("100.00", "FR76-0001-0002", null))
+                .isEqualTo("Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme");
+        assertThat(TextesVirement.confirmation("100.00", "FR76-0001-0002", " "))
+                .isEqualTo("Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme");
+        assertThat(TextesVirement.confirmation("100.00", "FR76-0001-0002", "loyer"))
+                .isEqualTo("Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme (motif : loyer)");
+        assertThat(TextesVirement.transactionImportante("5000.00")).startsWith("Virement de 5000.00 EUR en attente");
+        assertThat(TextesVirement.descriptionMontantTresEleve("20000.00", "15000"))
+                .isEqualTo("Transaction amount 20000.00 exceeds the very-large threshold of 15000");
+        assertThat(TextesVirement.descriptionHeureInhabituelle(3)).isEqualTo(
+                "Transaction initiated at hour 3 which is outside normal operating hours (06:00-23:00)");
+        assertThat(TextesVirement.descriptionIbanEtranger("DE89")).isEqualTo(
+                "Target IBAN DE89 does not start with FR (possible foreign transfer)");
     }
 
     @Test

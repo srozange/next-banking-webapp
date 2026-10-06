@@ -15,9 +15,11 @@ import fr.nextbanking.coeurbancaire.domain.EntreeAudit;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.SeuilsFraude;
+import fr.nextbanking.coeurbancaire.domain.NotificationVirement;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
 import fr.nextbanking.coeurbancaire.domain.Virement;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
+import fr.nextbanking.coeurbancaire.domain.VirementDecide;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -29,7 +31,8 @@ import java.util.logging.Logger;
  * Cas d'usage : virement immédiat. Une clé d'idempotence déjà servie rend le premier résultat. Sinon, la saisie est
  * contrôlée, puis une seule transaction verrouille les comptes, contrôle propriété et solde, évalue les signaux de
  * fraude (FEAT-027, avant tout débit), enregistre le virement et ses alertes, débite (mise à jour conditionnelle),
- * crédite, enregistre ses deux opérations et la ligne d'outbox de la remise au traitement asynchrone : un échec d'écriture annule tout. L'audit passe par l'outbox d'audit, dans des transactions indépendantes
+ * crédite, enregistre ses deux opérations, la ligne d'outbox de la décision (notification) et celle de la remise au
+ * traitement asynchrone : un échec d'écriture annule tout. L'audit passe par l'outbox d'audit, dans des transactions indépendantes
  * (FR-026-04) : il est conservé même quand le virement est annulé (BUG-073).
  */
 public class ExecuterVirementCasUsage implements ExecuterVirement {
@@ -87,7 +90,8 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
                     TextesVirement.detailVirement(montant.toPlainString(), commande.motif(), ISSUE_ECHEC_REMISE))));
             throw new ErreurVirement(Cause.REMISE_IMPOSSIBLE, echec);
         }
-        evenements.publier(ecriture.ligneOutbox());
+        evenements.publier(ecriture.ligneDecision());
+        evenements.publier(ecriture.ligneRemise());
         String montantTexte = montant.toPlainString();
         auditer(commande, virementId, soumisLe, List.of(
                 new Entree(ActionAudit.VIREMENT,
@@ -115,9 +119,13 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         comptes.crediter(destinataireId, montant);
         operations.enregistrer(execution.debit());
         operations.enregistrer(execution.credit());
-        long ligne = evenements.consigner(new VirementATraiter(UUID.randomUUID(), virementId, montant,
+        // Une seule notification par virement, à la décision : jamais à la remise asynchrone.
+        long decision = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId, commande.clientId(),
+                virement.etat(), NotificationVirement.pourExecution(virement, destinataire.numero(), seuils),
+                soumisLe));
+        long remise = evenements.consigner(new VirementATraiter(UUID.randomUUID(), virementId, montant,
                 commande.clientId(), destinataireId, virement.motif(), soumisLe));
-        return new Ecriture(virement, ligne);
+        return new Ecriture(virement, decision, remise);
     }
 
     private static Compte trouver(List<Compte> comptes, long id) {
@@ -147,6 +155,6 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
     private record Entree(ActionAudit action, String detail) {
     }
 
-    private record Ecriture(Virement virement, long ligneOutbox) {
+    private record Ecriture(Virement virement, long ligneDecision, long ligneRemise) {
     }
 }

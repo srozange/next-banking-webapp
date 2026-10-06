@@ -34,6 +34,7 @@ import org.springframework.test.context.DynamicPropertySource;
 @DirtiesContext
 @Tag("FR-023-01")
 @Tag("FR-003-13")
+@Tag("FR-023-03")
 class ReceptionVirementATraiterIT {
 
     private static final String TOPIC = "coeur-bancaire.virement-a-traiter.v1";

@@ -30,11 +30,27 @@ public final class TextesVirement {
     public static final String TRANSACTION_IMPORTANTE =
             "Virement de %s EUR en attente de validation - transaction importante, verification en cours.";
 
+    /** Texte de la notification CONFIRMATION du legacy ({@code {montant}}, {@code {numCompte}}). */
+    private static final String CONFIRMATION = "Virement de %s EUR vers le compte %s confirme";
+    /** Suffixe du message de confirmation quand le virement a un motif. */
+    private static final String CONFIRMATION_MOTIF = " (motif : %s)";
+
     private static final String VERS = "Virement vers ";
     private static final String DEPUIS = "Virement depuis ";
     private static final String SEPARATEUR_MOTIF = " - ";
 
     private TextesVirement() {
+    }
+
+    /** Message de la notification ALERTE. */
+    public static String transactionImportante(String montant) {
+        return String.format(TRANSACTION_IMPORTANTE, montant);
+    }
+
+    /** Message de la notification CONFIRMATION ; un motif absent ou blanc n'est pas repris. */
+    public static String confirmation(String montant, String numeroDestinataire, String motif) {
+        String message = String.format(CONFIRMATION, montant, numeroDestinataire);
+        return motif == null || motif.isBlank() ? message : message + String.format(CONFIRMATION_MOTIF, motif);
     }
 
     /** Libellé de l'opération DEBIT du compte source. */

@@ -3,6 +3,7 @@ package fr.nextbanking.coeurbancaire.adapter.out.evenements;
 import fr.nextbanking.coeurbancaire.application.port.out.EvenementsSortants;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
+import fr.nextbanking.coeurbancaire.domain.VirementDecide;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +47,12 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
                 Long.toString(evenement.virementId()), enJson(evenement));
     }
 
+    @Override
+    public long consigner(VirementDecide evenement) {
+        return inserer(evenement.idEvenement(), EnveloppeVirementDecide.TOPIC,
+                Long.toString(evenement.virementId()), enJson(evenement));
+    }
+
     private long inserer(UUID idEvenement, String topic, String cle, String charge) {
         return jdbc.sql("""
                 insert into outbox (id_evenement, topic, cle, charge)
@@ -73,6 +80,10 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
 
     String enJson(VirementATraiter evenement) {
         return json.writeValueAsString(EnveloppeVirementATraiter.de(evenement));
+    }
+
+    String enJson(VirementDecide evenement) {
+        return json.writeValueAsString(EnveloppeVirementDecide.de(evenement));
     }
 
     List<LigneOutbox> nonPubliees() {

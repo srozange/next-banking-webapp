@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "coeur-bancaire.virement-decide.v1",
+  "title": "Décision d'un virement et notification rendue",
+  "description": "Publié par coeur-bancaire sur le topic coeur-bancaire.virement-decide.v1 par l'outbox, dans la même transaction que la décision (le débit), clé = identifiant du virement, chaîne JSON sans en-tête de type. Consommé par notifications, qui stocke la notification telle que rendue (AD-25) sans composer de texte ni lire de seuil. Une seule notification par virement : aucun événement pour la remise asynchrone, la libération, le rejet ou le refus pour erreur.",
+  "type": "object",
+  "required": ["idEvenement", "type", "version", "horodatage", "producteur", "donnees"],
+  "additionalProperties": false,
+  "properties": {
+    "idEvenement": { "type": "string", "format": "uuid" },
+    "type": { "const": "virement-decide" },
+    "version": { "const": 1 },
+    "horodatage": { "type": "string", "format": "date-time", "description": "ISO 8601 UTC, lu sur le port Horloge du producteur." },
+    "producteur": { "const": "coeur-bancaire" },
+    "donnees": {
+      "type": "object",
+      "required": ["virementId", "clientId", "etat", "notification"],
+      "additionalProperties": false,
+      "properties": {
+        "virementId": { "type": "integer", "minimum": 1 },
+        "clientId": { "type": "integer", "minimum": 1 },
+        "etat": { "enum": ["EXECUTE"], "description": "Seul état produit aujourd'hui ; les autres arrivent avec la story 3.4." },
+        "notification": {
+          "type": "object",
+          "required": ["clientId", "type", "titre", "message"],
+          "additionalProperties": false,
+          "properties": {
+            "clientId": { "type": "integer", "minimum": 1, "description": "Destinataire de la notification." },
+            "type": { "enum": ["CONFIRMATION", "ALERTE"] },
+            "titre": { "type": ["string", "null"], "description": "Aucun texte défini pour un virement : null (point ouvert)." },
+            "message": { "type": "string", "minLength": 1, "description": "Texte déjà rendu par le producteur." }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "idEvenement": "6a9b2c3d-4e5f-4a6b-b7c8-9d0e1f2a3b4c",
+      "type": "virement-decide",
+      "version": 1,
+      "horodatage": "2026-11-17T09:00:00Z",
+      "producteur": "coeur-bancaire",
+      "donnees": {
+        "virementId": 12,
+        "clientId": 1,
+        "etat": "EXECUTE",
+        "notification": {
+          "clientId": 1,
+          "type": "CONFIRMATION",
+          "titre": null,
+          "message": "Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme (motif : loyer)"
+        }
+      }
+    }
+  ]
+}

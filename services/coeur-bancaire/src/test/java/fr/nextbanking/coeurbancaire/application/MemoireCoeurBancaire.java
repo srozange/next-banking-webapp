@@ -21,6 +21,7 @@ import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
 import fr.nextbanking.coeurbancaire.domain.Virement;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
+import fr.nextbanking.coeurbancaire.domain.VirementDecide;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -49,6 +50,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final Map<Long, Virement> virements = new HashMap<>();
     final Map<String, Long> cles = new HashMap<>();
     final List<VirementATraiter> outbox = new ArrayList<>();
+    final List<VirementDecide> decisions = new ArrayList<>();
+    final List<Long> decisionsPubliees = new ArrayList<>();
     final List<Long> publies = new ArrayList<>();
     final List<EntreeAudit> outboxAudit = new ArrayList<>();
     final List<Long> auditPublie = new ArrayList<>();
@@ -196,8 +199,19 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
+    public long consigner(VirementDecide evenement) {
+        if (outboxRefusee) {
+            throw new IllegalStateException("outbox refusée");
+        }
+        decisions.add(evenement);
+        return 300L + decisions.size();
+    }
+
+    @Override
     public void publier(long idLigne) {
-        if (idLigne >= 200) {
+        if (idLigne >= 300) {
+            decisionsPubliees.add(idLigne);
+        } else if (idLigne >= 200) {
             auditPublie.add(idLigne);
         } else {
             publies.add(idLigne);
@@ -225,6 +239,7 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         Map<Long, Virement> virementsAvant = new HashMap<>(virements);
         Map<String, Long> clesAvant = new HashMap<>(cles);
         int outboxAvant = outbox.size();
+        int decisionsAvant = decisions.size();
         int alertesAvant = alertes.size();
         try {
             return travail.get();
@@ -240,6 +255,9 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             cles.putAll(clesAvant);
             while (outbox.size() > outboxAvant) {
                 outbox.removeLast();
+            }
+            while (decisions.size() > decisionsAvant) {
+                decisions.removeLast();
             }
             while (alertes.size() > alertesAvant) {
                 alertes.removeLast();

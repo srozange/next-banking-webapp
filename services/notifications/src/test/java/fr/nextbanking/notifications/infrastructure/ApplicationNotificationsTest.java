@@ -7,6 +7,7 @@ import fr.nextbanking.notifications.application.port.out.Horloge;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
@@ -41,6 +42,19 @@ class ApplicationNotificationsTest {
 
         assertThatThrownBy(() -> demarrer(arguments.toArray(String[]::new)))
                 .hasStackTraceContaining("nb.fuseau n'est pas un fuseau valide : Mars/Olympus");
+    }
+
+    @Test
+    @Tag("FR-023-05")
+    @Tag("FR-025-04")
+    void refuse_de_demarrer_avec_un_plafond_de_notifications_nul_ou_negatif() {
+        for (String plafond : List.of("0", "-3")) {
+            List<String> arguments = new ArrayList<>(Conteneurs.arguments());
+            arguments.add("--nb.notifications.plafond=" + plafond);
+
+            assertThatThrownBy(() -> demarrer(arguments.toArray(String[]::new)))
+                    .hasStackTraceContaining("nb.notifications.plafond doit être strictement positive");
+        }
     }
 
     @Test

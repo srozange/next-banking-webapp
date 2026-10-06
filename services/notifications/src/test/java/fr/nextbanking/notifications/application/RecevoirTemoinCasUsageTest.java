@@ -11,8 +11,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("FR-002-09")
+@Tag("BUG-007")
 class RecevoirTemoinCasUsageTest {
 
     private static final UUID ID = UUID.fromString("3f2c1a9e-8b7d-4c6e-9f10-2a3b4c5d6e7f");

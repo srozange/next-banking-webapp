@@ -3,8 +3,11 @@ package fr.nextbanking.notifications.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("FR-002-09")
+@Tag("BUG-007")
 class TemoinRecuTest {
 
     @Test

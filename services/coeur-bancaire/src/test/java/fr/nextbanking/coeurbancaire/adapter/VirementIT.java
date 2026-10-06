@@ -115,7 +115,9 @@ class VirementIT {
         assertThat((BigDecimal) operations.get(1).get("solde_apres")).isEqualByComparingTo("15300.00");
         assertThat(jdbc.sql("select etat || '/' || statut from virements where id = :id").param("id", virementId)
                 .query(String.class).single()).isEqualTo("EXECUTE/SUCCESS");
-        Map<String, Object> remise = jdbc.sql("select topic, cle, charge, id_evenement from outbox where cle = :cle")
+        Map<String, Object> remise = jdbc.sql("""
+                select topic, cle, charge, id_evenement from outbox
+                where cle = :cle and topic = 'coeur-bancaire.virement-a-traiter.v1'""")
                 .param("cle", Long.toString(virementId)).query().singleRow();
         assertThat(remise.get("topic")).isEqualTo("coeur-bancaire.virement-a-traiter.v1");
         JsonNode donnees = json.readTree((String) remise.get("charge")).get("donnees");
@@ -129,7 +131,10 @@ class VirementIT {
                 "select count(*) from evenements_traites where id_evenement = :id").param("id", remise.get("id_evenement"))
                 .query(Long.class).single()).isEqualTo(1L));
         assertThat(solde(1)).isEqualByComparingTo("2030.00");
-        assertThat(count("outbox")).isEqualTo(1);
+        // La remise et la décision : une ligne chacune, la notification n'étant écrite qu'à la décision.
+        assertThat(count("outbox")).isEqualTo(2);
+        assertThat(jdbc.sql("select count(*) from outbox where topic = 'coeur-bancaire.virement-decide.v1'")
+                .query(Long.class).single()).isEqualTo(1L);
     }
 
     @Test

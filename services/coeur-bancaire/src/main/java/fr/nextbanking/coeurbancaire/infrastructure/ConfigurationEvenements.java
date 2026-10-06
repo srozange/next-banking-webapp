@@ -20,6 +20,9 @@ public class ConfigurationEvenements {
     /** Topic interne : produit et consommé par le cœur bancaire (remplace la file JMS « virements »). */
     static final String TOPIC_VIREMENT_A_TRAITER = "coeur-bancaire.virement-a-traiter.v1";
 
+    /** Décision d'un virement et notification rendue : consommé par le service notifications. */
+    static final String TOPIC_VIREMENT_DECIDE = "coeur-bancaire.virement-decide.v1";
+
     @Bean
     NewTopic topicTemoinEcrit() {
         return TopicBuilder.name(TOPIC_TEMOIN_ECRIT).partitions(3).replicas(1).build();
@@ -33,5 +36,10 @@ public class ConfigurationEvenements {
     @Bean
     NewTopic topicVirementATraiter() {
         return TopicBuilder.name(TOPIC_VIREMENT_A_TRAITER).partitions(3).replicas(1).build();
+    }
+
+    @Bean
+    NewTopic topicVirementDecide() {
+        return TopicBuilder.name(TOPIC_VIREMENT_DECIDE).partitions(3).replicas(1).build();
     }
 }
