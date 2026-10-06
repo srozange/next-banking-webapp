@@ -2,6 +2,13 @@ package fr.nextbanking.openbankingconseiller.infrastructure;
 
 import fr.nextbanking.openbankingconseiller.application.ConnecterPowensCasUsage;
 import fr.nextbanking.openbankingconseiller.application.ConsulterEtatPowensCasUsage;
+import fr.nextbanking.openbankingconseiller.application.DeconnecterPowensCasUsage;
+import fr.nextbanking.openbankingconseiller.application.RafraichirComptesExternesCasUsage;
+import fr.nextbanking.openbankingconseiller.application.SelectionnerCompteExterneCasUsage;
+import fr.nextbanking.openbankingconseiller.application.port.in.DeconnecterPowens;
+import fr.nextbanking.openbankingconseiller.application.port.in.RafraichirComptesExternes;
+import fr.nextbanking.openbankingconseiller.application.port.in.SelectionnerCompteExterne;
+import fr.nextbanking.openbankingconseiller.application.port.out.DepotComptesExternes;
 import fr.nextbanking.openbankingconseiller.application.TraiterRetourPowensCasUsage;
 import fr.nextbanking.openbankingconseiller.application.port.in.ConnecterPowens;
 import fr.nextbanking.openbankingconseiller.application.port.in.ConsulterEtatPowens;
@@ -25,8 +32,25 @@ public class AssemblagePowens {
     }
 
     @Bean
-    ConsulterEtatPowens consulterEtatPowens(DepotEtatPowens depot) {
-        return new ConsulterEtatPowensCasUsage(depot);
+    ConsulterEtatPowens consulterEtatPowens(DepotEtatPowens depot, DepotComptesExternes comptes) {
+        return new ConsulterEtatPowensCasUsage(depot, comptes);
+    }
+
+    @Bean
+    SelectionnerCompteExterne selectionnerCompteExterne(Powens powens, DepotEtatPowens depot,
+            DepotComptesExternes comptes, ConsulterEtatPowens consulter) {
+        return new SelectionnerCompteExterneCasUsage(powens, depot, comptes, consulter);
+    }
+
+    @Bean
+    RafraichirComptesExternes rafraichirComptesExternes(Powens powens, DepotEtatPowens depot,
+            DepotComptesExternes comptes, ConsulterEtatPowens consulter) {
+        return new RafraichirComptesExternesCasUsage(powens, depot, comptes, consulter);
+    }
+
+    @Bean
+    DeconnecterPowens deconnecterPowens(DepotEtatPowens depot) {
+        return new DeconnecterPowensCasUsage(depot);
     }
 
     @Bean

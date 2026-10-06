@@ -1,7 +1,9 @@
 package fr.nextbanking.openbankingconseiller.adapter.in.http;
 
+import fr.nextbanking.openbankingconseiller.application.CompteExterneIntrouvable;
 import fr.nextbanking.openbankingconseiller.application.ConnexionPowensImpossible;
 import fr.nextbanking.openbankingconseiller.application.PowensIndisponible;
+import fr.nextbanking.openbankingconseiller.application.PowensNonConnecte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -30,6 +32,18 @@ public class GestionErreurs {
     @ExceptionHandler(ConnexionPowensImpossible.class)
     public ResponseEntity<Message> connexionPowensImpossible() {
         return reponse(HttpStatus.SERVICE_UNAVAILABLE, Textes.CONNEXION_POWENS_IMPOSSIBLE);
+    }
+
+    /** Compte absent des comptes externes du client, dont celui d'un autre client. */
+    @ExceptionHandler(CompteExterneIntrouvable.class)
+    public ResponseEntity<Message> compteExterneIntrouvable() {
+        return reponse(HttpStatus.NOT_FOUND, Textes.RESSOURCE_INTROUVABLE);
+    }
+
+    /** Rafraîchissement sans jeton Powens. */
+    @ExceptionHandler(PowensNonConnecte.class)
+    public ResponseEntity<Message> powensNonConnecte() {
+        return reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
     }
 
     /** Powens en panne : jamais une liste vide (BUG-043, BUG-089). */

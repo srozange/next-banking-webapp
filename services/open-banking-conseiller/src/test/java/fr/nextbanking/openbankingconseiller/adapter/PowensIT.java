@@ -124,7 +124,8 @@ class PowensIT {
 
             assertThat(reponse.statusCode()).as(role).isEqualTo(200);
             assertThat(reponse.body()).isEqualTo(
-                    "{\"connecte\":false,\"comptes\":[],\"transactions\":[],\"message\":null}");
+                    "{\"connecte\":false,\"comptes\":[],\"compteSelectionne\":null,\"transactions\":[],"
+                            + "\"message\":null,\"patrimoineTotal\":\"0.00\"}");
         }
     }
 
