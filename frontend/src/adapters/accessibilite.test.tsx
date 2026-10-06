@@ -106,6 +106,35 @@ describe('accessibilité (axe)', () => {
     });
   });
 
+  describe('/mon-conseiller', () => {
+    function ouvrirConseiller() {
+      localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+      rendreApplication('/mon-conseiller', undefined, undefined, undefined, undefined, undefined, undefined, {
+        envoyer: () => Promise.resolve({ statut: 'ok', reponse: 'Réponse de Sophie' }),
+      });
+    }
+
+    it('[axe] /mon-conseiller avec une conversation neuve ne relève aucune violation', async () => {
+      ouvrirConseiller();
+      await screen.findByTestId('chat-saisie');
+      await waitFor(() => expect(screen.getByTestId('chat-contenu').getAttribute('aria-busy')).toBeNull());
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+
+    it('[axe] /mon-conseiller avec des échanges ne relève aucune violation', async () => {
+      const { default: userEvent } = await import('@testing-library/user-event');
+      const utilisateur = userEvent.setup();
+      ouvrirConseiller();
+      await screen.findByTestId('chat-saisie');
+
+      await utilisateur.type(screen.getByTestId('chat-saisie'), 'Bonjour{Enter}');
+      await screen.findByText('Réponse de Sophie');
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+  });
+
   describe('/produits', () => {
     const CATALOGUE = {
       epargne: [{ id: 1, nom: 'Livret A', description: 'Epargne', taux: '0.0300', depotMin: '10.00', capitalGaranti: true, dureeMaxMois: null }],

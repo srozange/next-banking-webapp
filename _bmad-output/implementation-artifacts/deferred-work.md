@@ -157,3 +157,10 @@ location: n/a
 source_spec: `spec-7-7-raccorder-azure-openai-derriere-un-port-simule-et-exposer-l-echange-avec-sophie.md`
 reason: Le script exige la pile compose ; non lancé dans cette session.
 status: open
+
+### DW-18: trace-smoke.sh non exécuté pour la story 7.8.
+origin: spec-deferred a041d069f888
+location: n/a
+source_spec: `spec-7-8-dialoguer-avec-sophie-sur-l-ecran-mon-conseiller.md`
+reason: Le script exige la pile compose ; non lancé dans cette session. Story purement front : aucune trace de service modifiée.
+status: open

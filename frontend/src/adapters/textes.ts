@@ -26,6 +26,8 @@ export const TEXTES = {
     espaceConseiller: 'BankApp Demo - Espace Conseiller',
     administration: 'BankApp Demo - Administration',
     bourse: 'BankApp Demo - Bourse',
+    /** FEAT-010 MESSAGES.md, titre de navigateur. */
+    monConseiller: 'BankApp Demo - Mon Conseiller',
     /** MSG-011-001 */
     produits: 'BankApp Demo - Produits bancaires',
   },
@@ -71,6 +73,29 @@ export const TEXTES = {
       details: 'Details',
       aucun: 'Aucun traitement nocturne enregistre — les jobs s executent a 02h00, 02h30 et le 1er du mois a 03h00',
     },
+  },
+  /**
+   * Écran Mon Conseiller : FEAT-010 MESSAGES.md (casse et absence d'accents comprises) ; bandeau IA supprimé.
+   * Le message de bienvenue substitue « cher client » au prénom d'un profil indisponible.
+   */
+  conseiller: {
+    nom: 'Sophie — Conseillère Demo Bank',
+    statut: 'En ligne · Répond en quelques secondes',
+    nouvelleConversation: 'Nouvelle conversation',
+    bienvenue: (prenom: string | null) =>
+      `Bonjour ${prenom ?? 'cher client'} ! Je suis Sophie, votre conseillere Demo Bank. Je suis la pour repondre a vos questions sur vos comptes, vos placements ou tout projet financier. Comment puis-je vous aider aujourd'hui ?`,
+    /** Libellé du bouton d'action rapide et message envoyé ; `cle` forme le data-testid `chat-action-{cle}`. */
+    actions: [
+      { cle: 'optimiser-epargne', libelle: 'Optimiser mon epargne', message: 'Je voudrais optimiser mon epargne, que me conseillez-vous ?' },
+      { cle: 'projet-immobilier', libelle: 'Projet immobilier', message: 'Je souhaite acheter un appartement, comment preparer mon dossier ?' },
+      { cle: 'investir-bourse', libelle: 'Investir en bourse', message: 'Je veux commencer a investir en bourse, par ou commencer ?' },
+      { cle: 'preparer-retraite', libelle: 'Preparer ma retraite', message: 'Comment preparer ma retraite efficacement ?' },
+    ],
+    placeholder: 'Posez votre question a Sophie...',
+    envoyer: 'Envoyer',
+    envoiEnCours: '...',
+    /** RG-010-021 : réponse de Sophie quand le service est en échec sans message exploitable. */
+    indisponible: 'Je suis momentanement indisponible. Veuillez reessayer ou contacter votre conseiller en agence.',
   },
   /**
    * Écran Bourse : FEAT-009 et FEAT-029 MESSAGES.md (casse comprise) ; nom accessible du graphique :

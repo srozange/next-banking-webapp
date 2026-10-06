@@ -106,7 +106,7 @@ development_status:
   7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata: done
   7-6-afficher-l-écran-produits: done
   7-7-raccorder-azure-openai-derrière-un-port-simulé-et-exposer-l: done
-  7-8-dialoguer-avec-sophie-sur-l-écran-mon-conseiller: backlog
+  7-8-dialoguer-avec-sophie-sur-l-écran-mon-conseiller: done
   epic-7-retrospective: optional
 
   epic-8: backlog
