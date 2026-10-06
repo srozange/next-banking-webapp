@@ -175,7 +175,8 @@ describe('écran de connexion', () => {
       expect(connecter).toHaveBeenCalledWith(login, 'secret');
       expect(localStorage.getItem('nb.jeton')).toBe(jeton);
       expect(sessionStorage.length).toBe(0);
-      expect(screen.queryByTestId('login-identifiant')).toBeNull();
+      // Le routeur change d'état avant que React n'ait rendu la page suivante (en-tête compris).
+      await waitFor(() => expect(screen.queryByTestId('login-identifiant')).toBeNull());
     },
   );
 

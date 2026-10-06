@@ -1,28 +1,17 @@
-import { useRef } from 'react';
 import { Outlet } from 'react-router';
 import { TEXTES } from './textes';
+import { ID_CONTENU_PRINCIPAL } from './ui/ContenuPrincipal';
 import { LienEvitement } from './ui/LienEvitement';
-import './Application.css';
 
-const ID_CONTENU_PRINCIPAL = 'contenu-principal';
-
-/** Mise en page commune à toutes les pages : lien d'évitement, puis contenu principal (route courante). */
+/**
+ * Mise en page commune à toutes les pages : lien d'évitement, puis la branche courante (connexion ou
+ * gabarit authentifié), qui rend elle-même le contenu principal, après l'en-tête le cas échéant.
+ */
 export function Application() {
-  const contenuPrincipal = useRef<HTMLElement>(null);
   return (
     <>
-      <LienEvitement cible={contenuPrincipal} idCible={ID_CONTENU_PRINCIPAL}>
-        {TEXTES.lienEvitement}
-      </LienEvitement>
-      <main
-        ref={contenuPrincipal}
-        id={ID_CONTENU_PRINCIPAL}
-        className="application-contenu"
-        tabIndex={-1}
-        data-testid="application-racine"
-      >
-        <Outlet />
-      </main>
+      <LienEvitement idCible={ID_CONTENU_PRINCIPAL}>{TEXTES.lienEvitement}</LienEvitement>
+      <Outlet />
     </>
   );
 }

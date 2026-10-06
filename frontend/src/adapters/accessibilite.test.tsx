@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import axe from 'axe-core';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { jetonDeTest } from './jeton/jetonDeTest';
 import { rendreApplication } from './test/rendreApplication';
 // index.html est hors de src : son import brut ne fausse pas la couverture.
 import indexHtml from '../../index.html?raw';
@@ -17,6 +18,7 @@ beforeAll(() => {
 
 afterEach(() => {
   cleanup();
+  localStorage.clear();
 });
 
 /** Identifiants des règles axe violées par le document courant. */
@@ -44,6 +46,26 @@ describe('accessibilité (axe)', () => {
     await utilisateur.type(screen.getByTestId('login-identifiant'), 'user1');
     await utilisateur.type(screen.getByTestId('login-mot-de-passe'), 'faux{Enter}');
     await screen.findByTestId('login-message-erreur');
+    expect(await reglesViolees()).toEqual([]);
+  });
+
+  it.each([
+    ['CLIENT', '/tableau-de-bord'],
+    ['ADMIN', '/administration'],
+  ])('[axe] %s sur %s (en-tête, badge, sous-en-tête) ne relève aucune violation', async (role, chemin) => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: [role] }));
+    rendreApplication(chemin);
+    await screen.findByTestId('nav-salutation');
+    await waitFor(() => expect(screen.getByTestId('application-racine').getAttribute('aria-busy')).toBeNull());
+
+    expect(await reglesViolees()).toEqual([]);
+  });
+
+  it('[axe] profil en attente (aria-busy) ne relève aucune violation', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CONSEILLER'] }));
+    rendreApplication('/espace-conseiller', undefined, () => new Promise(() => {}));
+
+    expect(screen.getByTestId('application-racine').getAttribute('aria-busy')).toBe('true');
     expect(await reglesViolees()).toEqual([]);
   });
 

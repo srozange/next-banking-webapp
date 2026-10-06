@@ -1,0 +1,11 @@
+.bouton-texte {
+  padding: var(--spacing-xs) 0;
+  border: 0;
+  background-color: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: var(--font-weight-label);
+  cursor: pointer;
+  white-space: nowrap;
+}

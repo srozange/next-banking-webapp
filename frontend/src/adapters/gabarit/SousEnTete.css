@@ -1,0 +1,18 @@
+.sous-en-tete {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-height: var(--spacing-2xl);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.sous-en-tete__liens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

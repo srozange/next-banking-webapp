@@ -17,7 +17,8 @@ public final class Conteneurs {
 
     public static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18.6")
             .withDatabaseName("audit").withUsername("audit").withPassword("mot-de-passe-de-test");
-    public static final KafkaContainer KAFKA = new KafkaContainer("apache/kafka:4.2.2");
+    /** Plusieurs tentatives : sur un poste chargé (pile compose en marche), le premier démarrage de Kafka échoue parfois. */
+    public static final KafkaContainer KAFKA = new KafkaContainer("apache/kafka:4.2.2").withStartupAttempts(3);
     public static final KeyPair CLES = paireRsa();
 
     static {

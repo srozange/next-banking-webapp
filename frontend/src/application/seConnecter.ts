@@ -1,4 +1,5 @@
 import { accueilDuRole, ROUTE_CONNEXION, validerIdentifiants, type ChampConnexion } from '../domain/connexion';
+import { rolesDeLaSession } from './chargerProfil';
 
 /** Réponse de l'API de connexion, traduite par l'adaptateur HTTP (rôles lus dans le jeton). */
 export type ReponseConnexion =
@@ -69,15 +70,7 @@ export async function seConnecter(
  * ou sans rôle connu est supprimé et mène aussi à la connexion.
  */
 export function accueilDeLaSession(stockage: StockageJeton, decodeur: DecodeurJeton): string {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    return ROUTE_CONNEXION;
-  }
-  const roles = decodeur.roles(jeton);
-  const route = roles === null ? null : accueilDuRole(roles);
-  if (route === null) {
-    stockage.supprimer();
-    return ROUTE_CONNEXION;
-  }
-  return route;
+  const roles = rolesDeLaSession(stockage, decodeur);
+  // rolesDeLaSession ne rend que des rôles dont l'accueil est connu.
+  return roles === null ? ROUTE_CONNEXION : (accueilDuRole(roles) as string);
 }

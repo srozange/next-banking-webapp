@@ -35,6 +35,17 @@ describe('routes', () => {
   });
 
   it.each([
+    ['/tableau-de-bord', 'BankApp Demo - Tableau de bord'],
+    ['/espace-conseiller', 'BankApp Demo - Espace Conseiller'],
+    ['/administration', 'BankApp Demo - Administration'],
+  ])('%s porte le titre d’onglet du legacy', async (chemin, titre) => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
+    rendreApplication(chemin);
+
+    await waitFor(() => expect(document.title).toBe(titre));
+  });
+
+  it.each([
     ['ADMIN', '/administration'],
     ['CONSEILLER', '/espace-conseiller'],
     ['CLIENT', '/tableau-de-bord'],

@@ -1,5 +1,6 @@
 import { StrictMode, type ReactElement } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ClientProfil } from '../application/chargerProfil';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../application/seConnecter';
 
 const { render, createRoot, createBrowserRouter, routeur } = vi.hoisted(() => {
@@ -52,7 +53,7 @@ describe('main', () => {
     expect(element.props.children.props.router).toBe(routeur);
   });
 
-  it('assemble le vrai client HTTP, le stockage localStorage nb.jeton et le décodeur JWT', async () => {
+  it('assemble les vrais clients HTTP, le stockage localStorage nb.jeton et le décodeur JWT', async () => {
     simulerDocument({});
     const valeurs = new Map<string, string>();
     vi.stubGlobal('localStorage', {
@@ -60,7 +61,9 @@ describe('main', () => {
       setItem: (cle: string, valeur: string) => valeurs.set(cle, valeur),
       removeItem: (cle: string) => valeurs.delete(cle),
     });
-    const fetch = vi.fn(() => Promise.resolve(new Response('{"message":"Identifiants incorrects"}', { status: 401 })));
+    const fetch = vi.fn((_entree: unknown, _options?: unknown) =>
+      Promise.resolve(new Response('{"message":"Identifiants incorrects"}', { status: 401 })),
+    );
     vi.stubGlobal('fetch', fetch);
 
     await import('./main');
@@ -68,11 +71,14 @@ describe('main', () => {
       children: Array<{ path?: string; element: ReactElement<Record<string, unknown>> }>;
     }>;
     const enfants = routes[0]?.children ?? [];
-    const connexion = enfants.find((route) => route.path === '/login')?.element.props as {
-      client: ClientConnexion;
-      stockage: StockageJeton;
+    const contenu = enfants.find((route) => route.path === '/login')?.element.props as {
+      children: ReactElement<{ client: ClientConnexion; stockage: StockageJeton }>;
     };
-    const protegee = enfants.find((route) => route.path === undefined)?.element.props as { decodeur: DecodeurJeton };
+    const connexion = contenu.children.props;
+    const protegee = enfants.find((route) => route.path === undefined)?.element.props as {
+      decodeur: DecodeurJeton;
+      clientProfil: ClientProfil;
+    };
 
     connexion.stockage.enregistrer('jeton');
     expect(valeurs.get('nb.jeton')).toBe('jeton');
@@ -86,6 +92,12 @@ describe('main', () => {
 
     const charge = btoa(JSON.stringify({ roles: ['CLIENT'] }));
     expect(protegee.decodeur.roles(`entete.${charge}.signature`)).toEqual(['CLIENT']);
+
+    await expect(protegee.clientProfil.lire('jeton')).resolves.toEqual({ statut: 'nonAuthentifie' });
+    expect(fetch).toHaveBeenLastCalledWith(
+      '/api/identite-clients/moi',
+      expect.objectContaining({ method: 'GET', headers: expect.objectContaining({ Authorization: 'Bearer jeton' }) }),
+    );
   });
 
   it('lève une erreur si #root est absent', async () => {

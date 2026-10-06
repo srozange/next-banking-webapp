@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
+import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
 import { decodeurJetonJwt } from '../adapters/jeton/DecodeurJetonJwt';
 import { creerRoutes } from '../adapters/routes/routes';
 import { creerStockageJetonLocal } from '../adapters/stockage/StockageJetonLocal';
@@ -18,6 +19,7 @@ const routeur = createBrowserRouter(
     clientConnexion: creerClientConnexionHttp(decodeurJetonJwt),
     stockageJeton: creerStockageJetonLocal(),
     decodeurJeton: decodeurJetonJwt,
+    clientProfil: creerClientProfilHttp(),
   }),
 );
 

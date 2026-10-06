@@ -1,9 +1,8 @@
-import type { ReactNode, RefObject } from 'react';
+import type { ReactNode } from 'react';
 import './LienEvitement.css';
 
 interface Proprietes {
-  /** Contenu principal, focalisable (tabIndex -1), qui reçoit le focus à l'activation. */
-  cible: RefObject<HTMLElement | null>;
+  /** Identifiant du contenu principal, focalisable (tabIndex -1), qui reçoit le focus à l'activation. */
   idCible: string;
   children: ReactNode;
 }
@@ -12,7 +11,7 @@ interface Proprietes {
  * Lien d'évitement, premier élément au clavier, visible au focus. Le focus est posé par script :
  * le focus par ancre n'est fiable ni avec le routeur ni partout.
  */
-export function LienEvitement({ cible, idCible, children }: Proprietes) {
+export function LienEvitement({ idCible, children }: Proprietes) {
   return (
     <a
       className="lien-evitement"
@@ -20,7 +19,7 @@ export function LienEvitement({ cible, idCible, children }: Proprietes) {
       data-testid="application-lien-evitement"
       onClick={(evenement) => {
         evenement.preventDefault();
-        cible.current?.focus();
+        document.getElementById(idCible)?.focus();
       }}
     >
       {children}
