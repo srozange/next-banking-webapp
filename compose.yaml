@@ -287,6 +287,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${NB_BOURSE_BD_MOT_DE_PASSE:-}
       # Clé publique du jeton : tout /api/** est authentifié ; sans elle, refus de démarrer.
       NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
+      # Fournisseur de cotations AlphaVantage : vides par défaut (adresse publique, aucune clé). L'adaptateur simulé
+      # reste actif tant que le mode réel n'est pas demandé hors des fichiers versionnés.
+      ALPHA_VANTAGE_API_KEY: ${ALPHA_VANTAGE_API_KEY:-}
+      ALPHA_VANTAGE_BASE_URL: ${ALPHA_VANTAGE_BASE_URL:-}
     ports:
       - "${NB_PORT_BOURSE:-8087}:8080"
     networks: [nb]

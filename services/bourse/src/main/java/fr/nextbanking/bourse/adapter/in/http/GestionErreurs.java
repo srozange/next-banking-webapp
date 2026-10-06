@@ -1,6 +1,7 @@
 package fr.nextbanking.bourse.adapter.in.http;
 
 import fr.nextbanking.bourse.domain.AjoutRefuse;
+import fr.nextbanking.bourse.domain.SymboleManquant;
 import fr.nextbanking.bourse.domain.ValeurIntrouvable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class GestionErreurs {
         return reponse(HttpStatus.NOT_FOUND, Textes.RESSOURCE_INTROUVABLE);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class, SymboleManquant.class})
     public ResponseEntity<Message> requeteInvalide() {
         return reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
     }
