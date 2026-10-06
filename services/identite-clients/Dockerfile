@@ -15,6 +15,7 @@ COPY services/coeur-bancaire/pom.xml services/coeur-bancaire/
 COPY services/notifications/pom.xml services/notifications/
 COPY services/identite-clients/pom.xml services/identite-clients/
 COPY services/audit/pom.xml services/audit/
+COPY services/bourse/pom.xml services/bourse/
 COPY services/identite-clients/src services/identite-clients/src
 # Les tests (Testcontainers) tournent dans scripts/gates/build.sh, pas dans l'image.
 RUN --mount=type=cache,target=/root/.m2 \

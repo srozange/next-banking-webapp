@@ -99,7 +99,7 @@ development_status:
   epic-6-retrospective: optional
 
   epic-7: backlog
-  7-1-ouvrir-le-service-bourse-et-gérer-la-watchlist-commune: backlog
+  7-1-ouvrir-le-service-bourse-et-gérer-la-watchlist-commune: done
   7-2-raccorder-le-fournisseur-de-cotations-alphavantage-derrière: backlog
   7-3-générer-le-graphique-d-évolution-du-cours-côté-serveur: backlog
   7-4-afficher-l-écran-bourse: backlog

@@ -110,3 +110,11 @@ source_spec: `spec-2-2-tracer-les-connexions-dans-le-journal-d-audit-avec-l-adre
 severity: medium
 reason: Aucun DefaultErrorHandler configuré ; chaque essai attend le délai Hikari (30 s), puis l'offset est validé. Même motif que le consommateur notifications (story 1.4) : la politique de reprise (attente exponentielle, topic de rejet, exceptions non rejouables) est à décider pour tous les consommateurs (Edge Case Hunter).
 status: open
+
+### DW-12: Aucune commande outillée ne charge services/bourse/reference-data/reference-data.sql dans la pile compose : la watchlist reste vide après `docker compose up`.
+origin: spec-deferred 13e30c604155
+location: services/bourse/reference-data/reference-data.sql ; Makefile
+source_spec: `spec-7-1-ouvrir-le-service-bourse-et-gerer-la-watchlist-commune.md`
+severity: medium
+reason: Même constat que pour identite-clients (report de la story 2.1) : le chargement est prévu par `make reset-data` (spine AD-11, golden-master-architecture §5.2), livré par la story « Socle du rejeu final ». Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur une pile isolée.
+status: open
