@@ -75,7 +75,7 @@ spec_folder = ""
 
 [adapter]
 name = "claude"              # claude | codex | gemini | copilot | antigravity | opencode-http (alias: opencode) | <custom .bmad-loop/profiles/*.toml>
-model = "claude-sonnet-5-5"  # démonstration : Sonnet ; empty = CLI default model (opencode-http wants "provider/model")
+model = "claude-sonnet-5-5"  # flux B : Sonnet ; empty = CLI default model (opencode-http wants "provider/model")
 effort = "medium"            # reasoning effort, free-form (e.g. "high", "max"); empty = provider default.
                              # Sent by opencode-http as the per-prompt `variant`; the tmux CLIs ignore it
 cleanup_session_on_finish = true  # kill the run's tmux session when it finishes (false keeps it for inspection)

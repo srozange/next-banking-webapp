@@ -11,11 +11,11 @@ afterEach(() => {
 });
 
 describe('routes', () => {
-  it('déclare les quatre routes protégées', () => {
+  it('déclare les quatre routes protégées hors /bourse, qui a son écran', () => {
     expect(ROUTES_PROTEGEES).toEqual(['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets']);
   });
 
-  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/prets', '/route-inconnue'])(
+  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/prets', '/bourse', '/route-inconnue'])(
     '[FR-001-02][FR-030-01] sans jeton, %s mène à /login par remplacement',
     async (chemin) => {
       const { routeur } = rendreApplication(chemin);
@@ -38,6 +38,7 @@ describe('routes', () => {
     ['/tableau-de-bord', 'BankApp Demo - Tableau de bord'],
     ['/espace-conseiller', 'BankApp Demo - Espace Conseiller'],
     ['/administration', 'BankApp Demo - Administration'],
+    ['/bourse', 'BankApp Demo - Bourse'],
   ])('%s porte le titre d’onglet du legacy', async (chemin, titre) => {
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
     rendreApplication(chemin);

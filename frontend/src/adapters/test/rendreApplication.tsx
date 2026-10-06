@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 import type { ClientSession, ReponseRenouvellement } from '../../application/renouvelerSession';
 import type { ClientProfil, ReponseProfil } from '../../application/chargerProfil';
+import type { ClientBourse } from '../../application/consulterBourse';
 import type {
   ClientPrets,
   ReponseAction,
@@ -23,8 +24,8 @@ import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
  * Outil des tests DOM (jsdom) : rend l'application complète sur un chemin, avec un routeur en mémoire,
  * le vrai stockage localStorage, un client de connexion simulé et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
- * technique), une horloge réelle ou simulée et un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
- * en panne).
+ * technique), une horloge réelle ou simulée, un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
+ * en panne) et un client bourse simulé (par défaut, panne technique).
  */
 export function rendreApplication(
   chemin: string,
@@ -33,11 +34,19 @@ export function rendreApplication(
   horloge: Horloge = horlogeSysteme,
   clientSession: Partial<ClientSession> = {},
   clientPrets: Partial<ClientPrets> = {},
+  clientBourse: Partial<ClientBourse> = {},
 ) {
   const deconnecter = vi.fn(clientSession.deconnecter ?? (() => Promise.resolve()));
   const renouveler = vi.fn(
     clientSession.renouveler ?? (() => Promise.resolve<ReponseRenouvellement>({ statut: 'technique' })),
   );
+  const technique = () => Promise.resolve({ statut: 'technique' as const });
+  const bourse: ClientBourse = {
+    lireWatchlist: vi.fn(clientBourse.lireWatchlist ?? technique),
+    lireHistorique: vi.fn(clientBourse.lireHistorique ?? technique),
+    ajouter: vi.fn(clientBourse.ajouter ?? technique),
+    retirer: vi.fn(clientBourse.retirer ?? technique),
+  };
   const signal = creerSignalExpiration();
   const simuler = vi.fn(clientPrets.simuler ?? (() => Promise.resolve<ReponseSimulation>({ statut: 'technique' })));
   const deposer = vi.fn(clientPrets.deposer ?? (() => Promise.resolve<ReponseDepot>({ statut: 'technique' })));
@@ -53,11 +62,12 @@ export function rendreApplication(
       stockageJeton: creerStockageJetonLocal(),
       decodeurJeton: decodeurJetonJwt,
       clientProfil: { lire },
+      clientBourse: bourse,
       session: { client: { deconnecter, renouveler }, expiration: creerExpirationJeton(horloge), signal },
       clientPrets: { simuler, lister, deposer, echeances, payer, supprimer },
     }),
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, simuler, lister, deposer, echeances, payer, supprimer };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, bourse, simuler, lister, deposer, echeances, payer, supprimer };
 }

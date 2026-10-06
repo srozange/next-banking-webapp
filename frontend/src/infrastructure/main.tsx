@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
 import { creerClientPretsHttp } from '../adapters/http/ClientPretsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
@@ -31,6 +32,7 @@ const routeur = createBrowserRouter(
     stockageJeton,
     decodeurJeton: decodeurJetonJwt,
     clientProfil: creerClientProfilHttp(fetchAuthentifie),
+    clientBourse: creerClientBourseHttp(fetchAuthentifie),
     session: {
       client: creerClientSessionHttp(fetchAuthentifie),
       expiration: creerExpirationJeton(horlogeSysteme),

@@ -116,6 +116,43 @@ describe('accessibilité (axe)', () => {
     expect(await reglesViolees()).toEqual([]);
   });
 
+  describe('/bourse', () => {
+    const SVG = '<svg viewBox="0 0 800 300"><text x="790" y="292">1 mois (données journalières)</text></svg>';
+    const valeur = (id: number, symbole: string, nom: string) => ({ id, symbole, nom, marche: 'Euronext Paris', devise: 'EUR' });
+    const point = (date: string, cloture: string) => ({ date, ouverture: '100.0000', haut: '110.0000', bas: '90.0000', cloture, volume: 10 });
+
+    function ouvrirBourse(points: ReturnType<typeof point>[]) {
+      localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+      return rendreApplication('/bourse', undefined, undefined, undefined, undefined, {
+        lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [valeur(1, 'AI.PA', 'Air Liquide'), valeur(2, 'BNP.PA', 'BNP Paribas')] }),
+        lireHistorique: (_jeton, symbole, periode) =>
+          Promise.resolve({ statut: 'ok', donnees: { symbole, periode, points, graphique: points.length > 0 ? SVG : null } }),
+        ajouter: () => Promise.resolve({ statut: 'refusee', message: 'Le symbole est obligatoire (ex: AMZN, SG.PA)' }),
+      });
+    }
+
+    it('[axe] /bourse avec indicateurs, graphique, séances et watchlist ne relève aucune violation', async () => {
+      ouvrirBourse([point('2026-09-30', '100.0000'), point('2026-10-01', '98.5000'), point('2026-10-02', '101.0000')]);
+      await screen.findByTestId('bourse-valeur');
+      await waitFor(() => expect(screen.getByTestId('bourse-contenu').getAttribute('aria-busy')).toBeNull());
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+
+    it('[axe] /bourse sans données et avec le formulaire d’ajout refusé ne relève aucune violation', async () => {
+      const { default: userEvent } = await import('@testing-library/user-event');
+      const utilisateur = userEvent.setup();
+      ouvrirBourse([]);
+      await screen.findByTestId('bourse-aucune-donnee');
+
+      await utilisateur.click(screen.getByTestId('bourse-ajouter'));
+      await utilisateur.click(screen.getByTestId('bourse-formulaire-ajouter'));
+      await screen.findByTestId('bourse-ajout-erreur');
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+  });
+
   it('[axe] cas témoin : un champ sans <label for> viole la règle label', async () => {
     render(
       <main>

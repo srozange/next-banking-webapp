@@ -1,0 +1,39 @@
+.liste-deroulante {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.liste-deroulante__entete {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.liste-deroulante__libelle {
+  color: var(--color-ink);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: var(--font-weight-label);
+}
+
+.liste-deroulante__complement {
+  color: var(--color-text-secondary);
+  font-family: var(--font-caption);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-caption);
+}
+
+.liste-deroulante__saisie {
+  box-sizing: border-box;
+  min-width: calc(var(--spacing-4xl) * 2);
+  height: var(--spacing-2xl);
+  padding: calc(var(--spacing-sm) + var(--spacing-xs)) var(--spacing-md);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-none);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body-md);
+  font-size: var(--text-body-md);
+  font-weight: var(--font-weight-body-md);
+}

@@ -5,9 +5,18 @@ interface Proprietes {
   children: ReactNode;
   /** `muted` : carte discrète sur le fond alternatif, pour un détail sous une liste. */
   variante?: 'muted';
+  /** Carte qui tient lieu d'image (graphique) : `role="img"`, avec son nom accessible. */
+  image?: { nom: string };
 }
 
 /** Carte : fond surface, bordure fine, angles vifs, sans ombre ; variante `card-muted` sur le fond alternatif. */
-export function Carte({ children, variante }: Proprietes) {
-  return <div className={variante === 'muted' ? 'carte card-muted' : 'carte'}>{children}</div>;
+export function Carte({ children, variante, image }: Proprietes) {
+  const classe = variante === 'muted' ? 'carte card-muted' : 'carte';
+  return image === undefined ? (
+    <div className={classe}>{children}</div>
+  ) : (
+    <div className={classe} role="img" aria-label={image.nom}>
+      {children}
+    </div>
+  );
 }

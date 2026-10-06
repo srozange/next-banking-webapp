@@ -6,12 +6,14 @@ interface Proprietes {
   children: ReactNode;
   /** Action du bouton ; sans elle, le bouton reste inerte. */
   onClick?: () => void;
+  /** Infobulle, reprise comme nom accessible quand le texte du bouton est un simple symbole. */
+  titre?: string;
 }
 
 /** Bouton secondaire présenté comme un lien de navigation (typographie label, texte ink) ; son action est portée par l'appelant. */
-export function BoutonTexte({ 'data-testid': testId, children, onClick }: Proprietes) {
+export function BoutonTexte({ 'data-testid': testId, children, onClick, titre }: Proprietes) {
   return (
-    <button type="button" className="bouton-texte" data-testid={testId} onClick={onClick}>
+    <button type="button" className="bouton-texte" data-testid={testId} onClick={onClick} title={titre} aria-label={titre}>
       {children}
     </button>
   );
