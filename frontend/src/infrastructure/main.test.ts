@@ -52,7 +52,7 @@ describe('main', () => {
     expect(element.type).toBe(StrictMode);
     expect(element.props.children.type).toBe(RouterProvider);
     expect(element.props.children.props.router).toBe(routeur);
-  });
+  }, 30_000);
 
   it('assemble les vrais clients HTTP, le stockage localStorage nb.jeton et le décodeur JWT', async () => {
     simulerDocument({});

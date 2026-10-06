@@ -27,6 +27,7 @@ export const TEXTES = {
     administration: 'BankApp Demo - Administration',
     prets: 'BankApp Demo - Prets',
     bourse: 'BankApp Demo - Bourse',
+    comptesTiers: 'BankApp Demo - Comptes Tiers',
   },
   /**
    * Écran Bourse : FEAT-009 et FEAT-029 MESSAGES.md (casse comprise) ; nom accessible du graphique :
@@ -103,6 +104,40 @@ export const TEXTES = {
     },
     aucuneDonnee: (symbole: string, periode: string) =>
       `⚠️ Aucune donnée reçue pour « ${symbole} » sur ${periode}. Causes possibles : symbole invalide pour cette place boursière (vérifiez le suffixe, ex: .PA pour Euronext), ou limite de 25 requêtes/jour atteinte (plan gratuit Alpha Vantage). Réessayez dans quelques minutes ou changez de valeur.`,
+  },
+  /**
+   * Écran Comptes Tiers : docs/retro/features/FEAT-012/MESSAGES.md (casse et absence d'accents comprises) ; messages de
+   * l'epic 8 (epic-8-context.md) pour l'indisponibilité de Powens et l'échec de la connexion.
+   */
+  comptesTiers: {
+    /** MSG-012-050 à MSG-012-058 */
+    connexion: {
+      titre: 'Agregez vos comptes bancaires',
+      explication:
+        'Connectez vos comptes d autres banques pour avoir une vue complete de votre patrimoine financier. Connexion securisee via le protocole OAuth2 PSD2.',
+      banques: ['BNP Paribas', 'Credit Agricole', 'La Banque Postale', 'CIC', 'LCL', '+ 1800 banques'],
+      connecter: 'Connecter une banque',
+    },
+    /** MSG-012-040 (503 à la connexion) */
+    connexionImpossible: 'Impossible d initialiser la connexion Powens.',
+    /** Message de l'epic 8 (A-012-3) : Powens indisponible, jamais une liste vide. */
+    powensIndisponible: 'Service Powens temporairement indisponible. Veuillez reessayer dans quelques instants.',
+    /** MSG-012-060, MSG-012-061 et bouton exposé par A-012-5 */
+    statut: 'Connected via Powens',
+    deconnecter: 'Deconnecter',
+    rafraichir: 'Rafraichir',
+    /** MSG-012-062, MSG-012-063 */
+    patrimoine: { libelle: 'Patrimoine total (tous comptes)', fournisseur: 'via Powens Open Banking API' },
+    /** MSG-012-064, MSG-012-065 */
+    comptes: { titre: (nombre: number) => `Mes comptes externes (${nombre})`, banque: 'Banque externe' },
+    /** MSG-012-080 à MSG-012-084 */
+    transactions: {
+      titre: (nom: string) => `Transactions — ${nom}`,
+      aucune: 'Aucune transaction disponible.',
+      date: 'Date',
+      libelle: 'Libelle',
+      montant: 'Montant',
+    },
   },
   navigation: {
     logo: 'DB',

@@ -3,9 +3,11 @@ import { ROUTE_CONNEXION } from '../../domain/connexion';
 import type { ClientProfil } from '../../application/chargerProfil';
 import type { ClientPrets } from '../../application/prets';
 import type { ClientBourse } from '../../application/consulterBourse';
+import type { ClientComptesTiers } from '../../application/comptesTiers';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
 import { Application } from '../Application';
 import type { Session } from '../session/session';
+import { EcranComptesTiers } from '../ecrans/comptesTiers/EcranComptesTiers';
 import { EcranBourse } from '../ecrans/bourse/EcranBourse';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { EcranPrets } from '../ecrans/prets/EcranPrets';
@@ -21,6 +23,9 @@ export interface Dependances {
   decodeurJeton: DecodeurJeton;
   clientProfil: ClientProfil;
   clientBourse: ClientBourse;
+  clientComptesTiers: ClientComptesTiers;
+  /** Envoie le navigateur à une adresse externe (Powens) ; défaut de l'écran Comptes Tiers si absent. */
+  allerVers?: (adresse: string) => void;
   session: Session;
   clientPrets: ClientPrets;
 }
@@ -35,7 +40,7 @@ const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], 
   '/administration': TEXTES.titresOnglet.administration,
 };
 
-export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, clientBourse, session, clientPrets }: Dependances): RouteObject[] {
+export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, clientBourse, clientComptesTiers, allerVers, session, clientPrets }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
   return [
     {
@@ -55,6 +60,8 @@ export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, cli
           children: [
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-009-01).
             { path: '/bourse', element: <EcranBourse client={clientBourse} stockage={stockageJeton} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-012-01).
+            { path: '/comptes-tiers', element: <EcranComptesTiers client={clientComptesTiers} stockage={stockageJeton} allerVers={allerVers} /> },
             ...ROUTES_PROTEGEES.map((path) => ({
               path,
               element: path === '/prets' ? <EcranPrets client={clientPrets} stockage={stockageJeton} /> : <title>{TITRES_ONGLET[path]}</title>,

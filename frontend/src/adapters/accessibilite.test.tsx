@@ -153,6 +153,28 @@ describe('accessibilité (axe)', () => {
     });
   });
 
+  describe('/comptes-tiers', () => {
+    const compte = (id: number, solde: string | null) => ({ id, nom: `Compte ${id}`, type: 'checking', solde, soldeAbsent: solde === null, iban: 'FR7612' });
+    const etat = (connecte: boolean) => ({
+      connecte,
+      comptes: connecte ? [compte(1, '10.00'), compte(2, null)] : [],
+      compteSelectionne: connecte ? 1 : null,
+      transactions: connecte ? [{ date: '2026-10-01', libelle: 'Cafe', montant: '-3.50' }] : [],
+      message: 'Session expiree. Veuillez recommencer la connexion.',
+      patrimoineTotal: '10.00',
+    });
+
+    it.each([false, true])('[axe] /comptes-tiers (connecté : %s) ne relève aucune violation', async (connecte) => {
+      localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+      rendreApplication('/comptes-tiers', undefined, undefined, undefined, undefined, undefined, undefined, {
+        lireEtat: () => Promise.resolve({ statut: 'ok', donnees: etat(connecte) }),
+      });
+      await screen.findByTestId('tiers-message-erreur');
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+  });
+
   it('[axe] cas témoin : un champ sans <label for> viole la règle label', async () => {
     render(
       <main>
