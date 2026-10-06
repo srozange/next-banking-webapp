@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import {
+  aUnEcheancier,
   formaterDuree,
   formaterMontantListe,
   formaterTaux,
@@ -9,6 +10,8 @@ import {
 } from '../../../domain/pret';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
+import { AlerteSucces } from '../../ui/AlerteSucces';
+import { BoutonTexte } from '../../ui/BoutonTexte';
 import { Carte } from '../../ui/Carte';
 import { Etiquette } from '../../ui/Etiquette';
 import { Tableau } from '../../ui/Tableau';
@@ -21,13 +24,19 @@ interface Proprietes {
   prets: readonly Pret[] | null;
   /** La lecture a échoué : texte d'erreur technique, sans détail. */
   indisponible: boolean;
+  /** Message de succès d'une action (paiement d'une échéance), sinon null. */
+  succes: string | null;
+  /** Texte fixe d'une action en échec (paiement, suppression, lecture de l'échéancier), sinon null. */
+  erreur: string | null;
+  surVoir: (pretId: number) => void;
+  surSupprimer: (pretId: number) => void;
 }
 
 /**
  * Section « Mes emprunts » (FR-007-08) : prêts de l'utilisateur, statuts en étiquettes, « En cours de traitement... »
- * pour une demande en attente, ligne « Aucun emprunt enregistre » sous les en-têtes conservés si la liste est vide.
+ * pour une demande en attente, « Voir » (prêts EN_COURS et REMBOURSE) et « Supprimer » par ligne, ligne « Aucun emprunt enregistre » sous les en-têtes conservés si la liste est vide.
  */
-export function SectionEmprunts({ prets, indisponible }: Proprietes) {
+export function SectionEmprunts({ prets, indisponible, succes, erreur, surVoir, surSupprimer }: Proprietes) {
   const idTitre = useId();
   const C = T.colonnes;
 
@@ -38,9 +47,14 @@ export function SectionEmprunts({ prets, indisponible }: Proprietes) {
       </h2>
       <Carte>
         <h3 className="section-emprunts__titre">{T.titre}</h3>
-        {indisponible && (
+        {succes !== null && (
+          <AlerteSucces testId="pret-message-succes">
+            <p>{succes}</p>
+          </AlerteSucces>
+        )}
+        {(indisponible || erreur !== null) && (
           <AlerteErreur testId="pret-message-erreur">
-            <p>{TEXTES.erreurTechnique}</p>
+            <p>{indisponible ? TEXTES.erreurTechnique : erreur}</p>
           </AlerteErreur>
         )}
         <Tableau libelle={T.titre}>
@@ -74,8 +88,19 @@ export function SectionEmprunts({ prets, indisponible }: Proprietes) {
                 <td>
                   <Etiquette data-testid={`pret-statut-${pret.id}`}>{LIBELLES_STATUT[pret.statut]}</Etiquette>
                 </td>
-                <td>{pret.statut === 'EN_ATTENTE' ? T.enCoursDeTraitement : null}</td>
-                <td />
+                <td>
+                  {pret.statut === 'EN_ATTENTE' ? T.enCoursDeTraitement : null}
+                  {aUnEcheancier(pret.statut) && (
+                    <BoutonTexte data-testid={`pret-voir-${pret.id}`} onClick={() => surVoir(pret.id)}>
+                      {T.voir}
+                    </BoutonTexte>
+                  )}
+                </td>
+                <td>
+                  <BoutonTexte data-testid={`pret-supprimer-${pret.id}`} onClick={() => surSupprimer(pret.id)}>
+                    {T.supprimer}
+                  </BoutonTexte>
+                </td>
               </tr>
             ))}
           </tbody>

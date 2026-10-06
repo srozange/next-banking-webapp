@@ -22,6 +22,10 @@ final class Textes {
     static final String MOTIF_REQUIS = "Veuillez indiquer un motif";
     /** pret.erreur.demande (textes-nouveaux.md). */
     static final String ERREUR_DEMANDE = "Erreur : la demande de prêt n'a pas été enregistrée. Veuillez réessayer.";
+    /** pret.erreur.paiement (textes-nouveaux.md). */
+    static final String ERREUR_PAIEMENT = "Erreur : l'échéance n'a pas été marquée comme payée. Veuillez réessayer.";
+    /** pret.erreur.suppression (textes-nouveaux.md). */
+    static final String ERREUR_SUPPRESSION = "Erreur suppression : le prêt n'a pas été supprimé. Veuillez réessayer.";
     /** A-024-1 : transmission de la demande impossible. */
     static final String SERVICE_INDISPONIBLE = "Service credit temporairement indisponible, veuillez reessayer plus tard";
     static final String ERREUR_TECHNIQUE = "Une erreur technique est survenue";

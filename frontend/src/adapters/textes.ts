@@ -114,7 +114,33 @@ export const TEXTES = {
       },
       enCoursDeTraitement: 'En cours de traitement...',
       aucun: 'Aucun emprunt enregistre',
+      voir: 'Voir',
+      supprimer: 'Supprimer',
     },
+    /** Section d'échéancier (MSG-007-080 à 092) ; le séparateur est mis en capitales par CSS. */
+    echeancier: {
+      separateur: 'Echeancier du pret selectionne',
+      titre: 'Detail des echeances',
+      colonnes: {
+        numero: '#',
+        dateEcheance: 'Date echeance',
+        capital: 'Capital',
+        interets: 'Interets',
+        total: 'Total',
+        capitalRestant: 'Capital restant',
+        statut: 'Statut',
+        action: 'Action',
+      },
+      paye: 'Paye',
+      enAttente: 'En attente',
+      marquerPaye: 'Marquer paye',
+    },
+    /** MSG-007-132 */
+    succesPaiement: 'Echeance marquee comme payee',
+    /** pret.erreur.paiement */
+    erreurPaiement: "Erreur : l'échéance n'a pas été marquée comme payée. Veuillez réessayer.",
+    /** pret.erreur.suppression */
+    erreurSuppression: "Erreur suppression : le prêt n'a pas été supprimé. Veuillez réessayer.",
     /** pret.erreur.demande */
     erreurDemande: "Erreur : la demande de prêt n'a pas été enregistrée. Veuillez réessayer.",
     /** pret.erreur.simulation */

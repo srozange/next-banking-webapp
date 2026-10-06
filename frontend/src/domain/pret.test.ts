@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  aUnEcheancier,
   formaterCentimes,
+  formaterDateEcheance,
   formaterDuree,
   formaterMontantLigne,
   formaterMontantListe,
@@ -78,5 +80,18 @@ describe('libellés du legacy', () => {
 
   it('[FR-007-02] préremplit le simulateur à 10000, 3.50 et 36', () => {
     expect(SAISIE_SIMULATION_DEFAUT).toEqual({ montant: '10000', tauxAnnuel: '3.50', dureeMois: '36' });
+  });
+
+  it('[FR-007-11] seuls les prêts EN_COURS et REMBOURSE ont un échéancier à voir', () => {
+    expect(aUnEcheancier('EN_COURS')).toBe(true);
+    expect(aUnEcheancier('REMBOURSE')).toBe(true);
+    for (const statut of ['EN_ATTENTE', 'REFUSE', 'DEFAUT'] as const) {
+      expect(aUnEcheancier(statut)).toBe(false);
+    }
+  });
+
+  it('[FR-007-11] met la date d’échéance en jj/MM/aaaa par manipulation de chaîne', () => {
+    expect(formaterDateEcheance('2026-07-01')).toBe('01/07/2026');
+    expect(formaterDateEcheance('2027-12-31')).toBe('31/12/2027');
   });
 });

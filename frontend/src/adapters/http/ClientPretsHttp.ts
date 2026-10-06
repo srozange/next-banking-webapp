@@ -1,5 +1,5 @@
-import type { LigneEcheancier, Pret, SaisieDemande, SaisieSimulation, Simulation, StatutPret, TypePret } from '../../domain/pret';
-import type { ClientPrets, ReponseDepot, ReponsePrets, ReponseSimulation } from '../../application/prets';
+import type { Echeance, LigneEcheancier, Pret, SaisieDemande, SaisieSimulation, Simulation, StatutPret, TypePret } from '../../domain/pret';
+import type { ClientPrets, ReponseAction, ReponseDepot, ReponseEcheances, ReponsePrets, ReponseSimulation } from '../../application/prets';
 
 export const CHEMIN_SIMULATIONS = '/api/credits/simulations';
 export const CHEMIN_PRETS = '/api/credits/prets';
@@ -75,6 +75,29 @@ function pret(valeur: unknown): Pret | null {
     : null;
 }
 
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+function echeance(valeur: unknown): Echeance | null {
+  if (!estObjet(valeur)) {
+    return null;
+  }
+  const { id, numero, dateEcheance, capital, interets, total, capitalRestant, paye, datePaiement } = valeur;
+  const valide =
+    Number.isInteger(id) &&
+    Number.isInteger(numero) &&
+    typeof dateEcheance === 'string' &&
+    DATE.test(dateEcheance) &&
+    estMontant(capital) &&
+    estMontant(interets) &&
+    estMontant(total) &&
+    estMontant(capitalRestant) &&
+    typeof paye === 'boolean' &&
+    (datePaiement === null || typeof datePaiement === 'string');
+  return valide
+    ? { id: id as number, numero: numero as number, dateEcheance, capital, interets, total, capitalRestant, paye, datePaiement }
+    : null;
+}
+
 function entetes(jeton: string, avecCorps: boolean): Record<string, string> {
   const communs = { Authorization: `Bearer ${jeton}`, Accept: 'application/json' };
   return avecCorps ? { ...communs, 'Content-Type': 'application/json' } : communs;
@@ -87,6 +110,8 @@ function entetes(jeton: string, avecCorps: boolean): Record<string, string> {
  * service ; 401 ; tout le reste : erreur technique. Liste : 200 (tableau de prêts lisibles) ; 401 ; sinon erreur technique. Le jeton
  * n'est jamais journalisé.
  */
+export const CHEMIN_ECHEANCES = '/api/credits/echeances';
+
 export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientPrets {
   return {
     async simuler(jeton: string, saisie: SaisieSimulation): Promise<ReponseSimulation> {
@@ -145,6 +170,51 @@ export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) =
         const corps: unknown = await reponse.json();
         const prets = Array.isArray(corps) ? corps.map(pret) : [null];
         return prets.includes(null) ? { statut: 'technique' } : { statut: 'prets', prets: prets as Pret[] };
+      } catch {
+        return { statut: 'technique' };
+      }
+    },
+
+    async echeances(jeton: string, pretId: number): Promise<ReponseEcheances> {
+      try {
+        const reponse = await appeler(`${CHEMIN_PRETS}/${pretId}/echeances`, { method: 'GET', headers: entetes(jeton, false) });
+        if (reponse.status === 401) {
+          return { statut: 'nonAuthentifie' };
+        }
+        if (reponse.status !== 200) {
+          return { statut: 'technique' };
+        }
+        const corps: unknown = await reponse.json();
+        const echeances = Array.isArray(corps) ? corps.map(echeance) : [null];
+        return echeances.includes(null) ? { statut: 'technique' } : { statut: 'echeances', echeances: echeances as Echeance[] };
+      } catch {
+        return { statut: 'technique' };
+      }
+    },
+
+    async payer(jeton: string, echeanceId: number): Promise<ReponseAction> {
+      try {
+        const reponse = await appeler(`${CHEMIN_ECHEANCES}/${echeanceId}/paiement`, { method: 'POST', headers: entetes(jeton, false) });
+        if (reponse.status === 401) {
+          return { statut: 'nonAuthentifie' };
+        }
+        if (reponse.status !== 200) {
+          return { statut: 'technique' };
+        }
+        const corps: unknown = await reponse.json();
+        return echeance(corps) === null ? { statut: 'technique' } : { statut: 'faite' };
+      } catch {
+        return { statut: 'technique' };
+      }
+    },
+
+    async supprimer(jeton: string, pretId: number): Promise<ReponseAction> {
+      try {
+        const reponse = await appeler(`${CHEMIN_PRETS}/${pretId}`, { method: 'DELETE', headers: entetes(jeton, false) });
+        if (reponse.status === 401) {
+          return { statut: 'nonAuthentifie' };
+        }
+        return reponse.status === 204 ? { statut: 'faite' } : { statut: 'technique' };
       } catch {
         return { statut: 'technique' };
       }

@@ -76,6 +76,30 @@ export interface Pret {
   dateFin: string;
 }
 
+/** Échéance d'un prêt lue auprès du service : montants en chaînes, date `yyyy-MM-dd`, paiement en instant ISO ou null. */
+export interface Echeance {
+  id: number;
+  numero: number;
+  dateEcheance: string;
+  capital: string;
+  interets: string;
+  total: string;
+  capitalRestant: string;
+  paye: boolean;
+  datePaiement: string | null;
+}
+
+/** Seuls les prêts EN_COURS et REMBOURSE ont un échéancier à voir (RG-007-033). */
+export function aUnEcheancier(statut: StatutPret): boolean {
+  return statut === 'EN_COURS' || statut === 'REMBOURSE';
+}
+
+/** Date d'échéance « jj/MM/aaaa » depuis « aaaa-MM-jj », par manipulation de chaîne (jamais de `Date`). */
+export function formaterDateEcheance(date: string): string {
+  const [annee, mois, jour] = date.split('-');
+  return `${jour}/${mois}/${annee}`;
+}
+
 /** Libellé d'un type de prêt. */
 export function libelleType(type: TypePret): string {
   return (TYPES_PRET.find(({ valeur }) => valeur === type) as { libelle: string }).libelle;

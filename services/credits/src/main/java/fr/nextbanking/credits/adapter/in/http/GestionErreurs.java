@@ -2,8 +2,13 @@ package fr.nextbanking.credits.adapter.in.http;
 
 import fr.nextbanking.credits.application.AccesPretRefuse;
 import fr.nextbanking.credits.application.DemandePretEnEchec;
+import fr.nextbanking.credits.application.EcheanceIntrouvable;
+import fr.nextbanking.credits.application.PaiementEnEchec;
+import fr.nextbanking.credits.application.PaiementRefuse;
 import fr.nextbanking.credits.application.PretIntrouvable;
 import fr.nextbanking.credits.application.SimulationEnEchec;
+import fr.nextbanking.credits.application.SuppressionEnEchec;
+import fr.nextbanking.credits.application.SuppressionRefusee;
 import fr.nextbanking.credits.application.TransmissionEnEchec;
 import fr.nextbanking.credits.domain.DemandePretInvalide;
 import fr.nextbanking.credits.domain.SimulationInvalide;
@@ -65,6 +70,28 @@ public class GestionErreurs {
         return reponse(HttpStatus.INTERNAL_SERVER_ERROR, Textes.ERREUR_DEMANDE);
     }
 
+    @ExceptionHandler(PaiementRefuse.class)
+    public ResponseEntity<Message> paiementRefuse() {
+        return reponse(HttpStatus.FORBIDDEN, Textes.ERREUR_PAIEMENT);
+    }
+
+    @ExceptionHandler(SuppressionRefusee.class)
+    public ResponseEntity<Message> suppressionRefusee() {
+        return reponse(HttpStatus.FORBIDDEN, Textes.ERREUR_SUPPRESSION);
+    }
+
+    @ExceptionHandler(PaiementEnEchec.class)
+    public ResponseEntity<Message> paiementEnEchec(PaiementEnEchec echec) {
+        JOURNAL.error("Paiement de l'échéance en échec", echec);
+        return reponse(HttpStatus.INTERNAL_SERVER_ERROR, Textes.ERREUR_PAIEMENT);
+    }
+
+    @ExceptionHandler(SuppressionEnEchec.class)
+    public ResponseEntity<Message> suppressionEnEchec(SuppressionEnEchec echec) {
+        JOURNAL.error("Suppression du prêt en échec", echec);
+        return reponse(HttpStatus.INTERNAL_SERVER_ERROR, Textes.ERREUR_SUPPRESSION);
+    }
+
     @ExceptionHandler(AuthentificationRequise.class)
     public ResponseEntity<Message> authentificationRequise() {
         return reponse(HttpStatus.UNAUTHORIZED, Textes.AUTHENTIFICATION_REQUISE);
@@ -75,7 +102,7 @@ public class GestionErreurs {
         return reponse(HttpStatus.FORBIDDEN, Textes.ACCES_REFUSE);
     }
 
-    @ExceptionHandler(PretIntrouvable.class)
+    @ExceptionHandler({PretIntrouvable.class, EcheanceIntrouvable.class})
     public ResponseEntity<Message> pretIntrouvable() {
         return reponse(HttpStatus.NOT_FOUND, Textes.RESSOURCE_INTROUVABLE);
     }

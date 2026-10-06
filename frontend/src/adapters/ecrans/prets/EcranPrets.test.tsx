@@ -2,8 +2,14 @@
 import { cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
-import type { Pret, Simulation } from '../../../domain/pret';
-import type { ReponseDepot, ReponsePrets, ReponseSimulation } from '../../../application/prets';
+import type { Echeance, Pret, Simulation } from '../../../domain/pret';
+import type {
+  ReponseAction,
+  ReponseDepot,
+  ReponseEcheances,
+  ReponsePrets,
+  ReponseSimulation,
+} from '../../../application/prets';
 import { jetonDeTest } from '../../jeton/jetonDeTest';
 import { rendreApplication } from '../../test/rendreApplication';
 
@@ -454,8 +460,8 @@ describe('écran Prêts', () => {
     ]);
     const lignes = within(table).getAllByRole('row');
     expect(lignes).toHaveLength(3);
-    expect(lignes[1]?.textContent).toBe('AutomobileEUR9,000.003.9000%6 moisEUR218.63EUR247.12En attente d approbationEn cours de traitement...');
-    expect(lignes[2]?.textContent).toBe('TravauxEUR5,000.004.9000%24 moisEUR218.63EUR247.12En cours');
+    expect(lignes[1]?.textContent).toBe('AutomobileEUR9,000.003.9000%6 moisEUR218.63EUR247.12En attente d approbationEn cours de traitement...Supprimer');
+    expect(lignes[2]?.textContent).toBe('TravauxEUR5,000.004.9000%24 moisEUR218.63EUR247.12En coursVoirSupprimer');
     expect(statut.textContent).toBe('En cours');
     expect(statut.className).toBe('etiquette');
     expect(screen.getByTestId('pret-statut-2').textContent).toBe('En attente d approbation');
@@ -510,5 +516,266 @@ describe('écran Prêts', () => {
     expect(alerte.textContent).toBe('Une erreur technique est survenue');
     expect(screen.queryByText('Aucun emprunt enregistre')).toBeNull();
     expect(within(tableEmprunts()).getAllByRole('columnheader')).toHaveLength(9);
+  });
+
+  describe('échéancier, paiement et suppression', () => {
+    function echeance(id: number, numero: number, paye: boolean, extra: Partial<Echeance> = {}): Echeance {
+      return {
+        id,
+        numero,
+        dateEcheance: `2026-${String(numero + 6).padStart(2, '0')}-01`,
+        capital: '407.39',
+        interets: '20.42',
+        total: '427.81',
+        capitalRestant: '4592.61',
+        paye,
+        datePaiement: paye ? '2026-07-01T08:00:00Z' : null,
+        ...extra,
+      };
+    }
+
+    const reponseEcheances = (echeances: Echeance[]) => () =>
+      Promise.resolve<ReponseEcheances>({ statut: 'echeances', echeances });
+    const faite = () => Promise.resolve<ReponseAction>({ statut: 'faite' });
+    const panne = () => Promise.resolve<ReponseAction>({ statut: 'technique' });
+    const ECHEANCES = [echeance(1, 1, true), echeance(2, 2, false), echeance(3, 3, false, { total: '1517.11' })];
+
+    it('[FR-007-11] « Voir » n’existe que pour les prêts EN_COURS et REMBOURSE, « Supprimer » sur chaque ligne', async () => {
+      connecter();
+      rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([
+          pret(1, 'EN_COURS'),
+          pret(2, 'REMBOURSE'),
+          pret(3, 'EN_ATTENTE'),
+          pret(4, 'REFUSE'),
+          pret(5, 'DEFAUT'),
+        ]),
+      });
+
+      await screen.findByTestId('pret-statut-1');
+
+      expect(screen.getByTestId('pret-voir-1').textContent).toBe('Voir');
+      expect(screen.getByTestId('pret-voir-2')).toBeTruthy();
+      for (const id of [3, 4, 5]) {
+        expect(screen.queryByTestId(`pret-voir-${id}`)).toBeNull();
+      }
+      for (const id of [1, 2, 3, 4, 5]) {
+        expect(screen.getByTestId(`pret-supprimer-${id}`).textContent).toBe('Supprimer');
+      }
+      expect(screen.getByText('En cours de traitement...')).toBeTruthy();
+    });
+
+    it('[FR-007-11] « Voir » ouvre la section sous la liste, focus au titre, colonnes, dates jj/MM/aaaa et statuts', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const { container, echeances } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([pret(1, 'EN_COURS')]),
+        echeances: reponseEcheances(ECHEANCES),
+      });
+      expect(container.querySelector('.section-echeancier')).toBeNull();
+
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+
+      const titre = await screen.findByRole('heading', { name: 'Detail des echeances' });
+      expect(echeances).toHaveBeenCalledWith(expect.any(String), 1);
+      expect(document.activeElement).toBe(titre);
+      expect(container.querySelector('.card-muted')?.contains(titre)).toBe(true);
+      const separateurs = Array.from(container.querySelectorAll('h2')).map((h) => h.textContent);
+      expect(separateurs).toEqual(['Simulateur de pret', 'Demande de pret', 'Mes emprunts', 'Echeancier du pret selectionne']);
+      const tableau = within(screen.getByRole('region', { name: 'Detail des echeances' })).getByRole('table');
+      expect(within(tableau).getAllByRole('columnheader').map((th) => th.textContent)).toEqual([
+        '#',
+        'Date echeance',
+        'Capital',
+        'Interets',
+        'Total',
+        'Capital restant',
+        'Statut',
+        'Action',
+      ]);
+      const lignes = within(tableau).getAllByRole('row').slice(1);
+      expect(lignes.map((l) => within(l).getAllByRole('cell').map((c) => c.textContent))).toEqual([
+        ['1', '01/07/2026', '407.39', '20.42', '427.81', '4,592.61', 'Paye', ''],
+        ['2', '01/08/2026', '407.39', '20.42', '427.81', '4,592.61', 'En attente', 'Marquer paye'],
+        ['3', '01/09/2026', '407.39', '20.42', '1,517.11', '4,592.61', 'En attente', 'Marquer paye'],
+      ]);
+      expect(screen.queryByTestId('pret-marquer-paye-1')).toBeNull();
+      expect(screen.getByTestId('pret-marquer-paye-2')).toBeTruthy();
+    });
+
+    it('[FR-007-11] une lecture d’échéancier en panne affiche l’erreur technique sans ouvrir la section', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      rendreApplication('/prets', undefined, undefined, undefined, undefined, { lister: listePrets([pret(1, 'EN_COURS')]) });
+
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+
+      expect((await screen.findByTestId('pret-message-erreur')).textContent).toBe('Une erreur technique est survenue');
+      expect(screen.queryByText('Detail des echeances')).toBeNull();
+    });
+
+    it('[FR-007-11] une session perdue à la lecture de l’échéancier mène à /login', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const { routeur } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([pret(1, 'EN_COURS')]),
+        echeances: () => Promise.resolve<ReponseEcheances>({ statut: 'nonAuthentifie' }),
+      });
+
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+
+      await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+      expect(localStorage.getItem('nb.jeton')).toBeNull();
+    });
+
+    it('[FR-007-12] « Marquer paye » paie l’échéance, affiche le succès et relit l’échéancier et la liste', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const echeancier = [
+        [echeance(1, 1, false)],
+        [echeance(1, 1, true, { datePaiement: '2026-10-06T08:30:01Z' })],
+      ];
+      const listes = [[pret(1, 'EN_COURS')], [pret(1, 'REMBOURSE')]];
+      const { payer, lister, echeances } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: () => Promise.resolve<ReponsePrets>({ statut: 'prets', prets: listes.shift() as Pret[] }),
+        echeances: () => Promise.resolve<ReponseEcheances>({ statut: 'echeances', echeances: echeancier.shift() as Echeance[] }),
+        payer: faite,
+      });
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+
+      await utilisateur.click(await screen.findByTestId('pret-marquer-paye-1'));
+
+      expect((await screen.findByTestId('pret-message-succes')).textContent).toBe('Echeance marquee comme payee');
+      expect(payer).toHaveBeenCalledWith(expect.any(String), 1);
+      await waitFor(() => expect(screen.queryByTestId('pret-marquer-paye-1')).toBeNull());
+      expect(screen.getByTestId('pret-statut-1').textContent).toBe('Rembourse');
+      expect(echeances).toHaveBeenCalledTimes(2);
+      expect(lister).toHaveBeenCalledTimes(2);
+      expect(screen.queryByTestId('pret-message-erreur')).toBeNull();
+    });
+
+    it('[FR-007-12] une erreur de paiement affiche le texte fixe, sans succès, et laisse l’échéancier', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const { lister } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([pret(1, 'EN_COURS')]),
+        echeances: reponseEcheances(ECHEANCES),
+        payer: panne,
+      });
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+
+      await utilisateur.click(await screen.findByTestId('pret-marquer-paye-2'));
+
+      expect((await screen.findByTestId('pret-message-erreur')).textContent).toBe(
+        'Erreur : l\'échéance n\'a pas été marquée comme payée. Veuillez réessayer.',
+      );
+      expect(screen.queryByTestId('pret-message-succes')).toBeNull();
+      expect(screen.getByTestId('pret-marquer-paye-2')).toBeTruthy();
+      expect(lister).toHaveBeenCalledTimes(1);
+    });
+
+    it('[FR-007-12] une session perdue au paiement mène à /login', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const { routeur } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([pret(1, 'EN_COURS')]),
+        echeances: reponseEcheances(ECHEANCES),
+        payer: () => Promise.resolve<ReponseAction>({ statut: 'nonAuthentifie' }),
+      });
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+
+      await utilisateur.click(await screen.findByTestId('pret-marquer-paye-2'));
+
+      await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+    });
+
+    it('[FR-007-12] un succès de paiement puis une erreur de suppression remplacent le message', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([pret(1, 'EN_COURS')]),
+        echeances: reponseEcheances(ECHEANCES),
+        payer: faite,
+        supprimer: panne,
+      });
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+      await utilisateur.click(await screen.findByTestId('pret-marquer-paye-2'));
+      await screen.findByTestId('pret-message-succes');
+
+      await utilisateur.click(screen.getByTestId('pret-supprimer-1'));
+
+      expect((await screen.findByTestId('pret-message-erreur')).textContent).toBe(
+        'Erreur suppression : le prêt n\'a pas été supprimé. Veuillez réessayer.',
+      );
+      expect(screen.queryByTestId('pret-message-succes')).toBeNull();
+    });
+
+    it('[FR-007-13] « Supprimer » relit la liste et ferme la section de ce prêt', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const listes = [[pret(1, 'EN_COURS'), pret(2, 'EN_COURS')], [pret(2, 'EN_COURS')]];
+      const { supprimer } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: () => Promise.resolve<ReponsePrets>({ statut: 'prets', prets: listes.shift() as Pret[] }),
+        echeances: reponseEcheances(ECHEANCES),
+        supprimer: faite,
+      });
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+      await screen.findByText('Detail des echeances');
+
+      await utilisateur.click(screen.getByTestId('pret-supprimer-1'));
+
+      await waitFor(() => expect(screen.queryByTestId('pret-statut-1')).toBeNull());
+      expect(supprimer).toHaveBeenCalledWith(expect.any(String), 1);
+      expect(screen.getByTestId('pret-statut-2')).toBeTruthy();
+      expect(screen.queryByText('Detail des echeances')).toBeNull();
+      expect(screen.queryByTestId('pret-message-erreur')).toBeNull();
+    });
+
+    it('[FR-007-13] supprimer un autre prêt laisse l’échéancier ouvert', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const listes = [[pret(1, 'EN_COURS'), pret(2, 'EN_COURS')], [pret(1, 'EN_COURS')]];
+      rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: () => Promise.resolve<ReponsePrets>({ statut: 'prets', prets: listes.shift() as Pret[] }),
+        echeances: reponseEcheances(ECHEANCES),
+        supprimer: faite,
+      });
+      await utilisateur.click(await screen.findByTestId('pret-voir-1'));
+      await screen.findByText('Detail des echeances');
+
+      await utilisateur.click(screen.getByTestId('pret-supprimer-2'));
+
+      await waitFor(() => expect(screen.queryByTestId('pret-statut-2')).toBeNull());
+      expect(screen.getByText('Detail des echeances')).toBeTruthy();
+    });
+
+    it('[FR-007-13] une erreur de suppression affiche le texte fixe et garde la ligne', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([pret(1, 'EN_ATTENTE')]),
+        supprimer: panne,
+      });
+
+      await utilisateur.click(await screen.findByTestId('pret-supprimer-1'));
+
+      expect((await screen.findByTestId('pret-message-erreur')).textContent).toBe(
+        'Erreur suppression : le prêt n\'a pas été supprimé. Veuillez réessayer.',
+      );
+      expect(screen.getByTestId('pret-statut-1')).toBeTruthy();
+    });
+
+    it('[FR-007-13] une session perdue à la suppression mène à /login', async () => {
+      connecter();
+      const utilisateur = userEvent.setup();
+      const { routeur } = rendreApplication('/prets', undefined, undefined, undefined, undefined, {
+        lister: listePrets([pret(1, 'EN_ATTENTE')]),
+        supprimer: () => Promise.resolve<ReponseAction>({ statut: 'nonAuthentifie' }),
+      });
+
+      await utilisateur.click(await screen.findByTestId('pret-supprimer-1'));
+
+      await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+    });
   });
 });

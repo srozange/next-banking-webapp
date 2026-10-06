@@ -4,7 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.credits.application.AccesPretRefuse;
 import fr.nextbanking.credits.application.DemandePretEnEchec;
+import fr.nextbanking.credits.application.EcheanceIntrouvable;
+import fr.nextbanking.credits.application.PaiementEnEchec;
+import fr.nextbanking.credits.application.PaiementRefuse;
 import fr.nextbanking.credits.application.PretIntrouvable;
+import fr.nextbanking.credits.application.SuppressionEnEchec;
+import fr.nextbanking.credits.application.SuppressionRefusee;
 import fr.nextbanking.credits.application.SimulationEnEchec;
 import fr.nextbanking.credits.application.TransmissionEnEchec;
 import fr.nextbanking.credits.domain.DemandePretInvalide;
@@ -79,6 +84,25 @@ class GestionErreursTest {
         assertReponse(gestion.pretIntrouvable(), 404, "Ressource introuvable");
         assertThat(new AccesPretRefuse(1L)).isNotNull();
         assertThat(new PretIntrouvable(1L)).isNotNull();
+    }
+
+    @Test
+    @Tag("FR-007-12")
+    @Tag("FR-007-13")
+    void paiement_et_suppression_ont_leurs_textes_propres_sans_detail_technique() {
+        String paiement = "Erreur : l'échéance n'a pas été marquée comme payée. Veuillez réessayer.";
+        String suppression = "Erreur suppression : le prêt n'a pas été supprimé. Veuillez réessayer.";
+
+        assertReponse(gestion.paiementRefuse(), 403, paiement);
+        assertReponse(gestion.suppressionRefusee(), 403, suppression);
+        assertReponse(gestion.paiementEnEchec(new PaiementEnEchec(new IllegalStateException("détail"))), 500,
+                paiement);
+        assertReponse(gestion.suppressionEnEchec(new SuppressionEnEchec(new IllegalStateException("détail"))), 500,
+                suppression);
+        assertReponse(gestion.pretIntrouvable(), 404, "Ressource introuvable");
+        assertThat(new EcheanceIntrouvable(1L)).isNotNull();
+        assertThat(new PaiementRefuse(1L)).isNotNull();
+        assertThat(new SuppressionRefusee(1L)).isNotNull();
     }
 
     @Test

@@ -1,11 +1,16 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { Pret, Simulation } from '../domain/pret';
+import type { Echeance, Pret, Simulation } from '../domain/pret';
 import {
+  consulterEcheances,
   deposerDemande,
   listerPrets,
+  payerEcheance,
   simulerEmprunt,
+  supprimerPret,
   type ClientPrets,
+  type ReponseAction,
   type ReponseDepot,
+  type ReponseEcheances,
   type ReponsePrets,
   type ReponseSimulation,
 } from './prets';
@@ -45,12 +50,17 @@ function client(
   simulation: ReponseSimulation | Error,
   prets: ReponsePrets | Error = { statut: 'prets', prets: [] },
   depot: ReponseDepot | Error = { statut: 'technique' },
+  echeances: ReponseEcheances | Error = { statut: 'echeances', echeances: [] },
+  action: ReponseAction | Error = { statut: 'faite' },
 ) {
   const repondre = <T>(reponse: T | Error) => (reponse instanceof Error ? Promise.reject(reponse) : Promise.resolve(reponse));
   return {
     simuler: vi.fn<ClientPrets['simuler']>(() => repondre(simulation)),
     lister: vi.fn<ClientPrets['lister']>(() => repondre(prets)),
     deposer: vi.fn<ClientPrets['deposer']>(() => repondre(depot)),
+    echeances: vi.fn<ClientPrets['echeances']>(() => repondre(echeances)),
+    payer: vi.fn<ClientPrets['payer']>(() => repondre(action)),
+    supprimer: vi.fn<ClientPrets['supprimer']>(() => repondre(action)),
   };
 }
 
@@ -180,6 +190,102 @@ describe('deposerDemande', () => {
     await expect(deposerDemande(client(sansDepot, undefined, new Error('réseau')), stockage, DEMANDE)).resolves.toEqual({
       type: 'indisponible',
     });
+    expect(stockage.supprimer).not.toHaveBeenCalled();
+  });
+});
+
+const ECHEANCE: Echeance = {
+  id: 5,
+  numero: 5,
+  dateEcheance: '2026-11-01',
+  capital: '414.09',
+  interets: '13.72',
+  total: '427.81',
+  capitalRestant: '2946.33',
+  paye: false,
+  datePaiement: null,
+};
+const sansEcheances = { statut: 'technique' } as const;
+
+describe('consulterEcheances', () => {
+  it('[FR-007-11] rend les échéances du prêt, appelées avec le jeton et l’identifiant', async () => {
+    const c = client(sansEcheances, undefined, undefined, { statut: 'echeances', echeances: [ECHEANCE] });
+
+    await expect(consulterEcheances(c, stockageEnMemoire('jeton'), 1)).resolves.toEqual({
+      type: 'echeances',
+      echeances: [ECHEANCE],
+    });
+    expect(c.echeances).toHaveBeenCalledWith('jeton', 1);
+  });
+
+  it('[FR-007-11] sans jeton : session terminée, sans appel', async () => {
+    const c = client(sansEcheances);
+    const stockage = stockageEnMemoire();
+
+    await expect(consulterEcheances(c, stockage, 1)).resolves.toEqual({ type: 'deconnecte' });
+    expect(c.echeances).not.toHaveBeenCalled();
+    expect(stockage.supprimer).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-007-11] sur 401 : jeton purgé et session terminée', async () => {
+    const stockage = stockageEnMemoire('jeton');
+
+    await expect(
+      consulterEcheances(client(sansEcheances, undefined, undefined, { statut: 'nonAuthentifie' }), stockage, 1),
+    ).resolves.toEqual({ type: 'deconnecte' });
+    expect(stockage.supprimer).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-007-11] sur une panne du service ou du réseau : indisponible, jeton conservé', async () => {
+    const stockage = stockageEnMemoire('jeton');
+
+    await expect(
+      consulterEcheances(client(sansEcheances, undefined, undefined, { statut: 'technique' }), stockage, 1),
+    ).resolves.toEqual({ type: 'indisponible' });
+    await expect(
+      consulterEcheances(client(sansEcheances, undefined, undefined, new Error('réseau')), stockage, 1),
+    ).resolves.toEqual({ type: 'indisponible' });
+    expect(stockage.supprimer).not.toHaveBeenCalled();
+  });
+});
+
+describe.each([
+  ['FR-007-12', 'payerEcheance', payerEcheance, 'payer'],
+  ['FR-007-13', 'supprimerPret', supprimerPret, 'supprimer'],
+] as const)('[%s] %s', (etiquette, _nom, cas, methode) => {
+  it(`[${etiquette}] réussit avec le jeton et l’identifiant`, async () => {
+    const c = client(sansEcheances);
+
+    await expect(cas(c, stockageEnMemoire('jeton'), 7)).resolves.toEqual({ type: 'faite' });
+    expect(c[methode]).toHaveBeenCalledWith('jeton', 7);
+  });
+
+  it(`[${etiquette}] sans jeton : session terminée, sans appel`, async () => {
+    const c = client(sansEcheances);
+    const stockage = stockageEnMemoire();
+
+    await expect(cas(c, stockage, 7)).resolves.toEqual({ type: 'deconnecte' });
+    expect(c[methode]).not.toHaveBeenCalled();
+    expect(stockage.supprimer).toHaveBeenCalledOnce();
+  });
+
+  it(`[${etiquette}] sur 401 : jeton purgé et session terminée`, async () => {
+    const stockage = stockageEnMemoire('jeton');
+    const c = client(sansEcheances, undefined, undefined, undefined, { statut: 'nonAuthentifie' });
+
+    await expect(cas(c, stockage, 7)).resolves.toEqual({ type: 'deconnecte' });
+    expect(stockage.supprimer).toHaveBeenCalledOnce();
+  });
+
+  it(`[${etiquette}] sur toute panne : indisponible, jeton conservé`, async () => {
+    const stockage = stockageEnMemoire('jeton');
+
+    await expect(
+      cas(client(sansEcheances, undefined, undefined, undefined, { statut: 'technique' }), stockage, 7),
+    ).resolves.toEqual({ type: 'indisponible' });
+    await expect(
+      cas(client(sansEcheances, undefined, undefined, undefined, new Error('réseau')), stockage, 7),
+    ).resolves.toEqual({ type: 'indisponible' });
     expect(stockage.supprimer).not.toHaveBeenCalled();
   });
 });

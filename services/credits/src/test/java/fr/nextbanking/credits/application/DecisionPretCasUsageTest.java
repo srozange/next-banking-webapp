@@ -69,6 +69,36 @@ class DecisionPretCasUsageTest {
             journal.add("echeancier");
             echeances.addAll(lignes);
         }
+
+        @Override
+        public List<fr.nextbanking.credits.domain.Echeance> echeances(long pretId) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Optional<fr.nextbanking.credits.domain.Echeance> echeanceParId(long echeanceId) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean payerEcheance(long echeanceId, Instant datePaiement) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long nombreEcheancesNonPayees(long pretId) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void verrouiller(long pretId) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean supprimer(long pretId) {
+            throw new UnsupportedOperationException();
+        }
     };
 
     private final EvenementsTraites registre = id -> {

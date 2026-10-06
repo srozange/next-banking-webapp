@@ -4,6 +4,7 @@ import './BoutonTexte.css';
 interface Proprietes {
   'data-testid': string;
   children: ReactNode;
+  /** Action du bouton ; sans elle, le bouton reste inerte. */
   onClick?: () => void;
 }
 

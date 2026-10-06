@@ -6,3 +6,7 @@
   background-color: var(--color-surface);
   color: var(--color-ink);
 }
+
+.carte.card-muted {
+  background-color: var(--color-surface-alt);
+}

@@ -1,6 +1,7 @@
 package fr.nextbanking.credits.adapter.out.persistance;
 
 import fr.nextbanking.credits.application.port.out.PretRepository;
+import fr.nextbanking.credits.domain.Echeance;
 import fr.nextbanking.credits.domain.EcheancePret;
 import fr.nextbanking.credits.domain.NouveauPret;
 import fr.nextbanking.credits.domain.Pret;
@@ -8,6 +9,8 @@ import fr.nextbanking.credits.domain.StatutPret;
 import fr.nextbanking.credits.domain.TypePret;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +25,9 @@ public class PretRepositoryJdbc implements PretRepository {
 
     private static final String COLONNES = "select id, customer_id, type, montant, taux_annuel, duree_mois, mensualite,"
             + " cout_total, total_interets, motif, status, date_debut, date_fin from loans";
+
+    private static final String ECHEANCES = "select id, loan_id, numero_echeance, date_echeance, montant_capital,"
+            + " montant_interets, montant_total, capital_restant, paye, date_paiement from loan_repayments";
 
     private final JdbcClient jdbc;
     private final JdbcTemplate modele;
@@ -93,6 +99,57 @@ public class PretRepositoryJdbc implements PretRepository {
             instruction.setBigDecimal(6, echeance.total());
             instruction.setBigDecimal(7, echeance.capitalRestant());
         });
+    }
+
+    @Override
+    public List<Echeance> echeances(long pretId) {
+        return jdbc.sql(ECHEANCES + " where loan_id = :pretId order by numero_echeance")
+                .param("pretId", pretId)
+                .query(PretRepositoryJdbc::echeance)
+                .list();
+    }
+
+    @Override
+    public Optional<Echeance> echeanceParId(long echeanceId) {
+        return jdbc.sql(ECHEANCES + " where id = :id")
+                .param("id", echeanceId)
+                .query(PretRepositoryJdbc::echeance)
+                .optional();
+    }
+
+    @Override
+    public boolean payerEcheance(long echeanceId, Instant datePaiement) {
+        return jdbc.sql("update loan_repayments set paye = true, date_paiement = :date where id = :id and paye = false")
+                .param("date", OffsetDateTime.ofInstant(datePaiement, java.time.ZoneOffset.UTC))
+                .param("id", echeanceId)
+                .update() == 1;
+    }
+
+    @Override
+    public long nombreEcheancesNonPayees(long pretId) {
+        return jdbc.sql("select count(*) from loan_repayments where loan_id = :pretId and not paye")
+                .param("pretId", pretId)
+                .query(Long.class)
+                .single();
+    }
+
+    @Override
+    public void verrouiller(long pretId) {
+        jdbc.sql("select id from loans where id = :id for update").param("id", pretId).query(Long.class).optional();
+    }
+
+    @Override
+    public boolean supprimer(long pretId) {
+        return jdbc.sql("delete from loans where id = :id").param("id", pretId).update() == 1;
+    }
+
+    private static Echeance echeance(ResultSet ligne, int numero) throws SQLException {
+        OffsetDateTime paiement = ligne.getObject("date_paiement", OffsetDateTime.class);
+        return new Echeance(ligne.getLong("id"), ligne.getLong("loan_id"), ligne.getInt("numero_echeance"),
+                ligne.getObject("date_echeance", java.time.LocalDate.class), ligne.getBigDecimal("montant_capital"),
+                ligne.getBigDecimal("montant_interets"), ligne.getBigDecimal("montant_total"),
+                ligne.getBigDecimal("capital_restant"), ligne.getBoolean("paye"),
+                paiement == null ? null : paiement.toInstant());
     }
 
     private static Pret pret(ResultSet ligne, int numero) throws SQLException {

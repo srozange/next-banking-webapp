@@ -1,4 +1,4 @@
-import type { Pret, SaisieDemande, SaisieSimulation, Simulation } from '../domain/pret';
+import type { Echeance, Pret, SaisieDemande, SaisieSimulation, Simulation } from '../domain/pret';
 import type { StockageJeton } from './seConnecter';
 
 /** Réponse de `POST /api/credits/simulations`, traduite par l'adaptateur HTTP ; `refusee` porte le message du service (400). */
@@ -21,11 +21,23 @@ export type ReponseDepot =
   | { statut: 'nonAuthentifie' }
   | { statut: 'technique' };
 
+/** Réponse de `GET /api/credits/prets/{id}/echeances`, traduite par l'adaptateur HTTP. */
+export type ReponseEcheances =
+  | { statut: 'echeances'; echeances: readonly Echeance[] }
+  | { statut: 'nonAuthentifie' }
+  | { statut: 'technique' };
+
+/** Réponse du paiement d'une échéance ou de la suppression d'un prêt : `faite` (succès), 401, ou tout le reste `technique`. */
+export type ReponseAction = { statut: 'faite' } | { statut: 'nonAuthentifie' } | { statut: 'technique' };
+
 /** Port sortant : service credits. */
 export interface ClientPrets {
   simuler(jeton: string, saisie: SaisieSimulation): Promise<ReponseSimulation>;
   lister(jeton: string): Promise<ReponsePrets>;
   deposer(jeton: string, saisie: SaisieDemande): Promise<ReponseDepot>;
+  echeances(jeton: string, pretId: number): Promise<ReponseEcheances>;
+  payer(jeton: string, echeanceId: number): Promise<ReponseAction>;
+  supprimer(jeton: string, pretId: number): Promise<ReponseAction>;
 }
 
 export type ResultatSimulation =
@@ -41,6 +53,14 @@ export type ResultatDepot =
   | { type: 'refus'; message: string }
   | { type: 'deconnecte' }
   | { type: 'indisponible' };
+
+export type ResultatEcheances =
+  | { type: 'echeances'; echeances: readonly Echeance[] }
+  | { type: 'deconnecte' }
+  | { type: 'indisponible' };
+
+/** Issue d'une action sur un prêt : faite, session perdue, ou panne quelle qu'en soit la cause (403, 404, 500, réseau). */
+export type ResultatAction = { type: 'faite' } | { type: 'deconnecte' } | { type: 'indisponible' };
 
 const DECONNECTE = { type: 'deconnecte' } as const;
 const INDISPONIBLE = { type: 'indisponible' } as const;
@@ -131,4 +151,58 @@ export async function deposerDemande(
   } catch {
     return INDISPONIBLE;
   }
+}
+
+/** Cas d'usage : échéancier d'un prêt de l'utilisateur (FR-007-11), même traitement de la session que la liste. */
+export async function consulterEcheances(
+  client: ClientPrets,
+  stockage: StockageJeton,
+  pretId: number,
+): Promise<ResultatEcheances> {
+  const jeton = stockage.lire();
+  if (jeton === null) {
+    stockage.supprimer();
+    return DECONNECTE;
+  }
+  try {
+    const reponse = await client.echeances(jeton, pretId);
+    if (reponse.statut === 'nonAuthentifie') {
+      stockage.supprimer();
+      return DECONNECTE;
+    }
+    return reponse.statut === 'technique' ? INDISPONIBLE : { type: 'echeances', echeances: reponse.echeances };
+  } catch {
+    return INDISPONIBLE;
+  }
+}
+
+async function agir(
+  stockage: StockageJeton,
+  action: (jeton: string) => Promise<ReponseAction>,
+): Promise<ResultatAction> {
+  const jeton = stockage.lire();
+  if (jeton === null) {
+    stockage.supprimer();
+    return DECONNECTE;
+  }
+  try {
+    const reponse = await action(jeton);
+    if (reponse.statut === 'nonAuthentifie') {
+      stockage.supprimer();
+      return DECONNECTE;
+    }
+    return reponse.statut === 'technique' ? INDISPONIBLE : { type: 'faite' };
+  } catch {
+    return INDISPONIBLE;
+  }
+}
+
+/** Cas d'usage : marque une échéance payée (FR-007-12). Sans jeton ou sur 401, la session est terminée. */
+export function payerEcheance(client: ClientPrets, stockage: StockageJeton, echeanceId: number): Promise<ResultatAction> {
+  return agir(stockage, (jeton) => client.payer(jeton, echeanceId));
+}
+
+/** Cas d'usage : supprime un prêt de l'utilisateur (FR-007-13). Sans jeton ou sur 401, la session est terminée. */
+export function supprimerPret(client: ClientPrets, stockage: StockageJeton, pretId: number): Promise<ResultatAction> {
+  return agir(stockage, (jeton) => client.supprimer(jeton, pretId));
 }

@@ -157,3 +157,96 @@ describe('ClientPretsHttp.deposer', () => {
     await expect(creerClientPretsHttp(appeler).deposer('j', DEMANDE)).resolves.toEqual({ statut: 'technique' });
   });
 });
+
+const ECHEANCE = {
+  id: 5,
+  numero: 5,
+  dateEcheance: '2026-11-01',
+  capital: '414.09',
+  interets: '13.72',
+  total: '427.81',
+  capitalRestant: '2946.33',
+  paye: false,
+  datePaiement: null,
+};
+const ECHEANCE_PAYEE = { ...ECHEANCE, paye: true, datePaiement: '2026-10-06T08:30:01Z' };
+const ENTETES_LECTURE = { Authorization: 'Bearer jeton', Accept: 'application/json' };
+
+describe('ClientPretsHttp.echeances', () => {
+  it('[FR-007-11] lit les échéances du prêt avec le jeton en Bearer', async () => {
+    const appeler = repondre(200, JSON.stringify([ECHEANCE, ECHEANCE_PAYEE]));
+
+    await expect(creerClientPretsHttp(appeler).echeances('jeton', 7)).resolves.toEqual({
+      statut: 'echeances',
+      echeances: [ECHEANCE, ECHEANCE_PAYEE],
+    });
+    expect(appeler).toHaveBeenCalledWith('/api/credits/prets/7/echeances', { method: 'GET', headers: ENTETES_LECTURE });
+  });
+
+  it('[FR-007-11] rend non authentifié sur 401', async () => {
+    await expect(creerClientPretsHttp(repondre(401, '{}')).echeances('j', 7)).resolves.toEqual({ statut: 'nonAuthentifie' });
+  });
+
+  it.each([
+    ['403', repondre(403, '{"message":"Accès refusé"}')],
+    ['404', repondre(404, '{"message":"Ressource introuvable"}')],
+    ['200 au JSON illisible', repondre(200, 'pas du json')],
+    ['200 hors tableau', repondre(200, '{}')],
+    ['200 au corps null', repondre(200, '[null]')],
+    ['200 à l’échéance non objet', repondre(200, '[3]')],
+    ['200 à la date mal formée', repondre(200, JSON.stringify([{ ...ECHEANCE, dateEcheance: '01/11/2026' }]))],
+    ['200 au montant mal formé', repondre(200, JSON.stringify([{ ...ECHEANCE, total: '427.8' }]))],
+    ['200 au paiement mal typé', repondre(200, JSON.stringify([{ ...ECHEANCE, datePaiement: 3 }]))],
+    ['200 à l’indicateur mal typé', repondre(200, JSON.stringify([{ ...ECHEANCE, paye: 'oui' }]))],
+    ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
+  ])('[FR-007-11] rend une erreur technique : %s', async (_cas, appeler) => {
+    await expect(creerClientPretsHttp(appeler).echeances('j', 7)).resolves.toEqual({ statut: 'technique' });
+  });
+});
+
+describe('ClientPretsHttp.payer', () => {
+  it('[FR-007-12] poste le paiement de l’échéance sans corps et rend le succès', async () => {
+    const appeler = repondre(200, JSON.stringify(ECHEANCE_PAYEE));
+
+    await expect(creerClientPretsHttp(appeler).payer('jeton', 5)).resolves.toEqual({ statut: 'faite' });
+    expect(appeler).toHaveBeenCalledWith('/api/credits/echeances/5/paiement', { method: 'POST', headers: ENTETES_LECTURE });
+  });
+
+  it('[FR-007-12] rend non authentifié sur 401', async () => {
+    await expect(creerClientPretsHttp(repondre(401, '{}')).payer('j', 5)).resolves.toEqual({ statut: 'nonAuthentifie' });
+  });
+
+  it.each([
+    ['403', repondre(403, '{"message":"Erreur : l\'échéance n\'a pas été marquée comme payée. Veuillez réessayer."}')],
+    ['404', repondre(404, '{"message":"Ressource introuvable"}')],
+    ['500', repondre(500, '{"message":"x"}')],
+    ['200 au JSON illisible', repondre(200, 'pas du json')],
+    ['200 à l’échéance mal formée', repondre(200, '{"id":5}')],
+    ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
+  ])('[FR-007-12] rend une erreur technique : %s', async (_cas, appeler) => {
+    await expect(creerClientPretsHttp(appeler).payer('j', 5)).resolves.toEqual({ statut: 'technique' });
+  });
+});
+
+describe('ClientPretsHttp.supprimer', () => {
+  it('[FR-007-13] envoie DELETE sur le prêt et rend le succès sur 204', async () => {
+    const appeler = vi.fn<typeof fetch>(() => Promise.resolve(new Response(null, { status: 204 })));
+
+    await expect(creerClientPretsHttp(appeler).supprimer('jeton', 7)).resolves.toEqual({ statut: 'faite' });
+    expect(appeler).toHaveBeenCalledWith('/api/credits/prets/7', { method: 'DELETE', headers: ENTETES_LECTURE });
+  });
+
+  it('[FR-007-13] rend non authentifié sur 401', async () => {
+    await expect(creerClientPretsHttp(repondre(401, '{}')).supprimer('j', 7)).resolves.toEqual({ statut: 'nonAuthentifie' });
+  });
+
+  it.each([
+    ['403', repondre(403, '{"message":"x"}')],
+    ['404', repondre(404, '{"message":"x"}')],
+    ['500', repondre(500, '{"message":"x"}')],
+    ['200 inattendu', repondre(200, '{}')],
+    ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
+  ])('[FR-007-13] rend une erreur technique : %s', async (_cas, appeler) => {
+    await expect(creerClientPretsHttp(appeler).supprimer('j', 7)).resolves.toEqual({ statut: 'technique' });
+  });
+});

@@ -3,7 +3,14 @@ import { createMemoryRouter, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 import type { ClientSession, ReponseRenouvellement } from '../../application/renouvelerSession';
 import type { ClientProfil, ReponseProfil } from '../../application/chargerProfil';
-import type { ClientPrets, ReponseDepot, ReponsePrets, ReponseSimulation } from '../../application/prets';
+import type {
+  ClientPrets,
+  ReponseAction,
+  ReponseDepot,
+  ReponseEcheances,
+  ReponsePrets,
+  ReponseSimulation,
+} from '../../application/prets';
 import type { ClientConnexion, ReponseConnexion } from '../../application/seConnecter';
 import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
 import { creerRoutes } from '../routes/routes';
@@ -35,6 +42,9 @@ export function rendreApplication(
   const simuler = vi.fn(clientPrets.simuler ?? (() => Promise.resolve<ReponseSimulation>({ statut: 'technique' })));
   const deposer = vi.fn(clientPrets.deposer ?? (() => Promise.resolve<ReponseDepot>({ statut: 'technique' })));
   const lister = vi.fn(clientPrets.lister ?? (() => Promise.resolve<ReponsePrets>({ statut: 'prets', prets: [] })));
+  const echeances = vi.fn(clientPrets.echeances ?? (() => Promise.resolve<ReponseEcheances>({ statut: 'technique' })));
+  const payer = vi.fn(clientPrets.payer ?? (() => Promise.resolve<ReponseAction>({ statut: 'technique' })));
+  const supprimer = vi.fn(clientPrets.supprimer ?? (() => Promise.resolve<ReponseAction>({ statut: 'technique' })));
   const connecter = vi.fn(repondre);
   const lire = vi.fn(lireProfil);
   const routeur = createMemoryRouter(
@@ -44,10 +54,10 @@ export function rendreApplication(
       decodeurJeton: decodeurJetonJwt,
       clientProfil: { lire },
       session: { client: { deconnecter, renouveler }, expiration: creerExpirationJeton(horloge), signal },
-      clientPrets: { simuler, lister, deposer },
+      clientPrets: { simuler, lister, deposer, echeances, payer, supprimer },
     }),
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, simuler, lister, deposer };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, simuler, lister, deposer, echeances, payer, supprimer };
 }
