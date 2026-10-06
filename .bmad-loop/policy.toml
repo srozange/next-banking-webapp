@@ -1,11 +1,11 @@
 # bmad-loop orchestration policy. All keys optional; defaults shown.
 
 [gates]
-mode = "per-epic"            # none | per-epic | per-story-spec-approval
+mode = "none"            # none | per-epic | per-story-spec-approval
 retrospective = "notify"     # never | notify | auto — auto runs a headless /bmad-retrospective -H session at each epic boundary and for a finished last epic at run end ([adapter.retro]) and commits its doc + board
 
 [limits]
-max_review_cycles = 3
+max_review_cycles = 2
 max_dev_attempts = 2
 artifact_file_max_mb = 5    # raw-byte cap for each ignored artifact selected for publication
 artifact_payload_max_mb = 10 # raw-byte cap across all selected ignored publication artifacts
@@ -27,7 +27,7 @@ session_budget_grace_s = 240 # enforce mode: seconds a tripped session gets to w
 
 [verify]
 # Deterministic gates run by the orchestrator after a clean review, before commit.
-commands = ["mvn -B -q verify", "cd frontend && npm ci --silent && npx vitest run"]  # epic 1 : contrôles réduits (pilote, étape 8) ; contrôles complets à l'étape 10
+commands = ["scripts/gates/build.sh", "scripts/gates/golden-master.sh"]  # après l'epic 1 : contrôles complets (trace-smoke.sh et empreinte à l'étape 10)
 stream_capture_kb = 256      # per-stream cap (KiB) on the verifier stdout/stderr retained under the run's verify/ directory; the TAIL is kept and the journal records the full byte count plus a truncation flag. 0 = capture nothing (records still land, with null pointers)
 
 [notify]
@@ -48,7 +48,7 @@ enabled = true
 # The loop is bounded by limits.max_review_cycles (hard cap) and damped by
 # limits.max_followup_reviews (a round that finalizes the story yet keeps
 # recommending a follow-up converges + refiles once the grant is spent) either way.
-trigger = "always"
+trigger = "recommended"
 # What a timeout-like review verdict (timeout/stalled/over_budget) costs:
 #   "retry"           -> burn a review cycle per timeout until max_review_cycles (default).
 #   "salvage-if-done" -> if the dev product is already finalized and verify passes,
@@ -60,7 +60,7 @@ on_timeout = "retry"
 # re-advances the board, so every remaining cycle re-reads the same failure:
 #   "escalate" -> pause the run naming both sides of the disagreement (default).
 #   "retry"    -> legacy: burn review cycles to max_review_cycles, then defer.
-on_status_contradiction = "escalate"
+on_status_contradiction = "retry"
 
 [stories]
 # Story-queue source. "sprint-status" (default) walks sprint-status.yaml written
@@ -137,7 +137,7 @@ target_branch = ""           # "" = the branch checked out at run start
 merge_strategy = "merge"     # ff | merge | squash (worktree mode merges the unit branch into target locally)
 delete_branch = true         # delete the unit branch after a successful merge
 keep_failed = true           # keep a failed unit's worktree+branch for inspection
-rollback_on_failure = false  # in-place (isolation="none") recovery after a failed attempt. false = never touch the tree; pause with manual recovery steps. true = auto-revert the attempt's tracked changes + remove only the untracked files this run created (WARNING: discards the attempt's uncommitted work; never a blanket git clean). Governs unattended/stopped attempts only: a resolved escalation's re-drive always auto-recovers regardless (reverts the failed source, keeps the corrected spec). Prefer isolation="worktree" to avoid touching your main checkout.
+rollback_on_failure = true   # in-place (isolation="none") recovery after a failed attempt. false = never touch the tree; pause with manual recovery steps. true = auto-revert the attempt's tracked changes + remove only the untracked files this run created (WARNING: discards the attempt's uncommitted work; never a blanket git clean). Governs unattended/stopped attempts only: a resolved escalation's re-drive always auto-recovers regardless (reverts the failed source, keeps the corrected spec). Prefer isolation="worktree" to avoid touching your main checkout.
 preserve_keep = 20           # attempt-preserve/* recovery branches, attempt-preserve-dirty/* rollback snapshots and merge-preflight-preserve/* merge pre-flight snapshots kept at run start (per family), newest by committer date; the tail is deleted (0 = never prune)
 failed_diff_max_mb = 5       # per-file size cap (MB) for untracked files in a kept-failed unit's changes.patch; oversized files are skipped with a marker
 failed_diff_unlimited = false # true = capture the failed-unit diff with no size cap (may produce very large patches; warns when active)

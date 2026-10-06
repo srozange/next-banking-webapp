@@ -75,17 +75,11 @@ Recommandation : A, à porter par la story 1.4 (conteneurs).
 
 Recommandation : A.
 
-## Métier
-
-### D10. Expiration de session sur inactivité (avant la story 2.5)
-
-Le legacy expire la session après 30 minutes d'inactivité (NFR-SEC-07). Le jeton JWT de la cible n'a pas de notion d'inactivité : il faut choisir un mécanisme (renouvellement glissant du jeton, ou minuterie côté front qui déconnecte). Bloque la story 2.5 (se déconnecter et retrouver la connexion quand la session expire).
-
-### D11. Police Graphik (avant la story 2.3)
-
-Licence d'auto-hébergement à confirmer ; sinon Inter seule. La story 2.3 (écran de connexion au thème Demo Bank) livre le thème.
-
 ## Tranchées
 
 - **D2 (2026-10-05)** : poste préparé pour la story 1.6 (bloquer les dépendances vulnérables). Trivy 0.75.0 installé (archive officielle, empreinte SHA-256 vérifiée), bases Trivy (vulnérabilités et Java) et Dependency-Check à jour le 2026-10-05. La base Trivy principale est à rafraîchir après le 2026-10-06 01:10 UTC si la story 1.6 démarre plus tard.
 - **D3 (2026-10-05)** : `.bmad-loop/policy.toml` versionné (commit `581282f`).
+- **D10 (2026-10-05)** : expiration de session — mécanisme d'AD-16 confirmé (jeton 30 minutes renouvelé sur activité, expiration sans activité). Reporté dans `epics.md` (story 2.5) et la spine.
+- **D11 (2026-10-05)** : Inter seule, Graphik non utilisée. Reporté dans `epics.md` (story 2.3) et la spine.
+- **Nuit du 2026-10-05** : pas de pause en fin d'epic (`gates.mode = "none"`), vérification à chaque story par `build.sh` et `golden-master.sh`, relance automatique des pauses. Empreinte (étape 10), hook (étape 11) et D4 à D7 reportés après la démo.
+- **Arbitrages du 2026-10-05 (délégation du propriétaire)** : suppositions A-xxx confirmées, RP-01, RP-02, RP-05, mots-clés du budget, `pretId`, report de l'empreinte (AR-94), textes de la story 10.1. Détail dans la section « Arbitrages du 2026-10-05 » d'`epics.md`. Politique de la boucle : `rollback_on_failure = true`, `on_status_contradiction = "retry"` ; pour tenir le délai de la démonstration, revue indépendante seulement sur recommandation de l'agent de développement (`trigger = "recommended"`) et `max_review_cycles = 2`.

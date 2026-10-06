@@ -22,6 +22,21 @@ inputDocuments:
 
 Ce document découpe en epics et stories les exigences du PRD, du contrat UX et de l'architecture de next-banking-webapp (rénovation de l'application bancaire legacy), avec la traçabilité vers le golden master dérivé.
 
+## Arbitrages du 2026-10-05
+
+Arbitrages pris le 2026-10-05 par délégation du propriétaire, pour lever les prérequis « à confirmer » des stories :
+
+- Toutes les suppositions A-xxx de « Suppositions à reprendre avant une story » sont confirmées telles qu'elles sont rédigées.
+- RP-01 : le journal des traitements de l'administration garde les 50 dernières entrées et ajoute un filtre par traitement (liste des traitements, « Tous » par défaut) ; critère ajouté à FR-016-17.
+- RP-02 : aucun reclassement en risque élevé.
+- RP-05 : pas de verrouillage du compte ni de politique de mot de passe nouvelle (comportement du legacy conservé) ; l'alerte MULTIPLE_FAILED_AUTH (story 3.10) couvre les échecs répétés. Accessibilité, navigateurs et mobile restent hors démonstrateur.
+- Mots-clés des catégories du budget (story 4.12) : la proposition du lot « Stories » de `textes-nouveaux.md` est confirmée.
+- Champ de `credits.pret-demande.v1` (story 5.2) : la proposition `pretId` est retenue ; la story l'inscrit au catalogue AD-22.
+- AR-94 : l'empreinte des contrôles (`.bmad-loop/gates.sha256`) et le hook de protection sont reportés après la démonstration ; les stories de l'epic 2 démarrent sans.
+- AR-106 (D10) : mécanisme d'AD-16 confirmé (jeton de 30 minutes renouvelé sur activité, expiration sans activité).
+- AR-107 (D11) : Inter seule, Graphik non utilisée.
+- Story 10.1 : le PRD (FR-003-29) fait foi pour les trois textes ; la story reste après la démonstration (décision B1).
+
 ## Requirements Inventory
 
 ### Functional Requirements
@@ -622,8 +637,8 @@ Abréviations de fichier : `spine` = ARCHITECTURE-SPINE.md ; `gm` = golden-maste
 - AR-103 : [OPEN] Configuration Playwright générée (`timezoneId`, `locale` absents de `playwright.config.ts`) → story « Socle du rejeu final du golden master » (source : spine:627, AD-11, AD-23)
 - AR-104 : [OPEN] Date de référence du rejeu `2026-11-17T10:00:00` (postérieure à `import.sql`, `user1` ≤ 8 opérations ce jour-là) → story « Socle du rejeu final du golden master » (source : spine:628, AD-11)
 - AR-105 : [OPEN] Observation Micrometer et « span créé à la main » : confirmer que l'enrichissement de l'observation courante est admis et la création d'une Observation interdite → story du socle RG-027-003 (contrôle de fraude) (source : spine:629, AD-12)
-- AR-106 : [OPEN] Inactivité et renouvellement du jeton : mécanisme d'expiration sur inactivité à confirmer par le métier → story de connexion / renouvellement du jeton (FEAT-001, FR-030-05) (source : spine:630, spine:257, AD-16)
-- AR-107 : [OPEN] Police Graphik : licence d'auto-hébergement à confirmer, sinon Inter seule → première story d'écran (connexion, FEAT-001) qui livre le thème (source : spine:631, AD-13)
+- AR-106 : [TRANCHÉ 2026-10-05, D10 : mécanisme de la spine confirmé] Inactivité et renouvellement du jeton : mécanisme d'expiration sur inactivité à confirmer par le métier → story de connexion / renouvellement du jeton (FEAT-001, FR-030-05) (source : spine:630, spine:257, AD-16)
+- AR-107 : [TRANCHÉ 2026-10-05, D11 : Inter seule] Police Graphik : licence d'auto-hébergement à confirmer, sinon Inter seule → première story d'écran (connexion, FEAT-001) qui livre le thème (source : spine:631, AD-13)
 
 ### Contraintes du PRD (périmètre, décisions, suppositions, addendum)
 
@@ -1751,7 +1766,7 @@ afin d'ouvrir une session authentifiée sans que mon mot de passe soit jamais st
 
 **Exigences :** FR-001-03, FR-001-04, FR-001-06, FR-001-07, FR-001-08, FR-001-09, FR-030-01, FR-030-08, NFR-SEC-01, NFR-SEC-02, NFR-SEC-04, NFR-SEC-06, NFR-PAR-02, NFR-PAR-04, AR-17, AR-18, AR-26, AR-33, AR-34, AR-36, AR-37, AR-46, AR-47, AR-51, AR-53, AR-55, AR-56, AR-57, AR-69, AR-85, AR-96
 **Scénarios golden master :** SC-001-03
-**Prérequis :** epic 1 terminé et empreinte `.bmad-loop/gates.sha256` figée (AR-94) ; A-001-1 (compte désactivé refusé avec le message générique et audit LOGIN_FAILED) — à confirmer par le métier avant de démarrer ; A-030-1 (écrans publics exemptés sur leur chemin exact seulement) — à confirmer par le métier avant de démarrer ; RP-05 (verrouillage du compte après échecs, politique de mot de passe) — à trancher par le PM avant de démarrer.
+**Prérequis :** epic 1 terminé (empreinte `.bmad-loop/gates.sha256` reportée après la démonstration, décision du 2026-10-05 ; AR-94) ; A-001-1 (compte désactivé refusé avec le message générique et audit LOGIN_FAILED) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; A-030-1 (écrans publics exemptés sur leur chemin exact seulement) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; RP-05 (verrouillage du compte après échecs, politique de mot de passe) — tranché le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -1833,7 +1848,7 @@ afin de disposer d'une trace fiable des accès, conservée même si l'opération
 
 **Exigences :** FR-001-12, FR-001-13, FR-026-01, FR-026-04, FR-026-05, FR-026-06, NFR-OBS-01, NFR-QG-09, NFR-PAR-02, AR-17, AR-23, AR-26, AR-29, AR-31, AR-37, AR-38, AR-39, AR-40, AR-41, AR-48, AR-53, AR-54, AR-91
 **Scénarios golden master :** aucun
-**Prérequis :** story 2.1 ; A-026-1 (noms et détails des codes d'audit) — à confirmer par le métier avant de démarrer.
+**Prérequis :** story 2.1 ; A-026-1 (noms et détails des codes d'audit) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -1895,7 +1910,7 @@ afin de me connecter au clavier ou à la souris et d'arriver directement sur l'�
 
 **Exigences :** FR-001-01, FR-001-02, FR-001-03, FR-001-04, FR-001-05, FR-001-06, FR-030-01, FR-030-03, NFR-UI-01, NFR-UI-02, NFR-SEC-04, AR-45, AR-54, AR-59, AR-76, AR-77, AR-78, AR-79, AR-101, AR-107, UX-DR1, UX-DR2, UX-DR3, UX-DR4, UX-DR5, UX-DR6, UX-DR7, UX-DR8, UX-DR9, UX-DR10, UX-DR11, UX-DR12, UX-DR13, UX-DR14, UX-DR15, UX-DR20, UX-DR22, UX-DR24, UX-DR42, UX-DR44, UX-DR45, UX-DR51, UX-DR57, UX-DR69, UX-DR73, UX-DR78, UX-DR81, UX-DR82, UX-DR83, UX-DR84, UX-DR85, UX-DR86, UX-DR88, UX-DR92, UX-DR95, UX-DR100, UX-DR102, UX-DR103, UX-DR106, UX-DR114, UX-DR135, UX-DR148, UX-DR152, UX-DR155
 **Scénarios golden master :** SC-001-01
-**Prérequis :** story 2.1 ; AR-107 (licence d'auto-hébergement de la police Graphik) — à confirmer avant de démarrer, sinon Inter seule.
+**Prérequis :** story 2.1. AR-107 tranché le 2026-10-05 (décision D11) : **Inter seule**, auto-hébergée ; Graphik n'est pas utilisée (pas de licence d'auto-hébergement). La pile de polices devient Inter, Arial, sans-serif.
 
 **Acceptance Criteria:**
 
@@ -2039,7 +2054,7 @@ afin que personne ne puisse continuer ma session sur le poste après mon départ
 
 **Exigences :** FR-001-10, FR-001-12, FR-026-01, FR-026-05, FR-030-05, NFR-SEC-02, NFR-SEC-07, AR-34, AR-35, AR-45, AR-106, UX-DR34, UX-DR76
 **Scénarios golden master :** SC-001-05
-**Prérequis :** stories 2.2 et 2.4 ; AR-106 (mécanisme d'expiration sur inactivité et renouvellement du jeton) — à confirmer par le métier avant de démarrer.
+**Prérequis :** stories 2.2 et 2.4. AR-106 tranché le 2026-10-05 (décision D10) : mécanisme de la spine confirmé — jeton de 30 minutes, renouvelé par `POST /api/identite-clients/renouvellement` sur activité quand il reste moins de 10 minutes ; sans activité, le jeton expire et le front affiche `/login` (comme le legacy : 30 minutes d'inactivité).
 
 **Acceptance Criteria:**
 
@@ -2194,7 +2209,7 @@ afin de déplacer mon argent sans passer par mon agence.
 
 **Exigences :** FR-003-01, FR-003-02, FR-003-03, FR-003-04, FR-003-05, FR-003-06, FR-003-07, FR-003-08, FR-003-09, FR-003-10, FR-003-11, FR-003-12, FR-003-13, FR-023-01, FR-023-02, FR-026-03, FR-030-07, NFR-SEC-03, NFR-SEC-04, NFR-SEC-08, NFR-PAR-02, NFR-PAR-04, NFR-PAR-05, NFR-UI-01, NFR-UI-02, NFR-BATCH-03, AR-19, AR-26, AR-29, AR-30, AR-31, AR-37, AR-38, AR-39, AR-40, AR-41, AR-42, AR-43, AR-44, AR-46, AR-49, AR-50, AR-57, AR-68, AR-71, AR-86, UX-DR15, UX-DR22, UX-DR23, UX-DR24, UX-DR27, UX-DR44, UX-DR57, UX-DR85, UX-DR86, UX-DR100, UX-DR102, UX-DR103, UX-DR105, UX-DR109, UX-DR116, UX-DR140, UX-DR150, UX-DR154
 **Scénarios golden master :** SC-003-01, SC-003-02, SC-003-04
-**Prérequis :** A-003-1 et A-003-2 (messages non techniques pour montant invalide et solde insuffisant) et A-023-1 (texte d'échec de remise d'un virement), à confirmer par le métier avant de démarrer ; epic 2 terminé (connexion par JWT, format d'erreur `{"message"}`, adresse IP, service `audit`, gabarit, routeur et route `/tableau-de-bord`, `scripts/golden-master/verifier-scenario.sh`) ; story 1.2 (port `application.port.out.Horloge` et son adaptateur en horloge système, AD-19, AR-8) ; refus d'un motif de plus de 100 caractères : 400 « Le motif ne doit pas dépasser 100 caractères » (clé `virement.validation.motif.longueur`, `textes-nouveaux.md`, lot « Stories »).
+**Prérequis :** A-003-1 et A-003-2 (messages non techniques pour montant invalide et solde insuffisant) et A-023-1 (texte d'échec de remise d'un virement), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; epic 2 terminé (connexion par JWT, format d'erreur `{"message"}`, adresse IP, service `audit`, gabarit, routeur et route `/tableau-de-bord`, `scripts/golden-master/verifier-scenario.sh`) ; story 1.2 (port `application.port.out.Horloge` et son adaptateur en horloge système, AD-19, AR-8) ; refus d'un motif de plus de 100 caractères : 400 « Le motif ne doit pas dépasser 100 caractères » (clé `virement.validation.motif.longueur`, `textes-nouveaux.md`, lot « Stories »).
 
 **Acceptance Criteria:**
 
@@ -2306,7 +2321,7 @@ afin que les virements suspects soient repérés avant que mon argent parte.
 
 **Exigences :** FR-027-01, FR-027-03, FR-027-05, FR-027-06, FR-027-07, FR-027-08, FR-027-09, FR-027-10, FR-027-15, FR-003-07, FR-003-15, FR-003-17, FR-003-18, FR-003-19, FR-003-20, FR-003-21, FR-003-22, FR-003-23, FR-003-24, FR-003-25, NFR-SEC-05, NFR-SEC-08, NFR-BATCH-03, NFR-PAR-02, AR-44, AR-47, AR-50, AR-51, AR-66, AR-68
 **Scénarios golden master :** aucun
-**Prérequis :** A-027-11 (HIGH_FREQUENCY compte les opérations au relevé), A-027-1 (heure inhabituelle au fuseau de l'application), A-003-4 (un seul signal LARGE_AMOUNT, 40 puis 80), A-003-5 (RAPID_SUCCESSION compare au précédent virement), A-003-9 (VELOCITY_CHECK compte les virements exécutés), à confirmer par le métier avant de démarrer ; RP-03 appliqué : chaque signal est livré avec sa FR de FEAT-003 et sa FR de FEAT-027 ; story 3.1.
+**Prérequis :** A-027-11 (HIGH_FREQUENCY compte les opérations au relevé), A-027-1 (heure inhabituelle au fuseau de l'application), A-003-4 (un seul signal LARGE_AMOUNT, 40 puis 80), A-003-5 (RAPID_SUCCESSION compare au précédent virement), A-003-9 (VELOCITY_CHECK compte les virements exécutés), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; RP-03 appliqué : chaque signal est livré avec sa FR de FEAT-003 et sa FR de FEAT-027 ; story 3.1.
 
 **Acceptance Criteria:**
 
@@ -2443,7 +2458,7 @@ afin qu'aucun argent ne parte sur un virement suspect ou non contrôlé.
 
 **Exigences :** FR-027-02, FR-027-04, FR-027-16, FR-027-17, FR-016-19, FR-026-02, FR-026-03, FR-023-01, FR-023-02, FR-023-04, FR-002-10, FR-003-07, FR-003-08, FR-003-09, FR-003-12, FR-003-13, FR-003-15, FR-003-16, FR-003-27, FR-030-07, NFR-SEC-03, NFR-SEC-04, NFR-SEC-08, NFR-SEC-09, NFR-OBS-02, NFR-BATCH-01, NFR-BATCH-02, NFR-PAR-02, AR-28, AR-32, AR-41, AR-43, AR-46, AR-52, AR-63, AR-64, AR-66, AR-89, AR-105, UX-DR17, UX-DR43, UX-DR50, UX-DR53, UX-DR94, UX-DR107, UX-DR111, UX-DR117, UX-DR118, UX-DR119, UX-DR133, UX-DR134, UX-DR136, UX-DR137, UX-DR138, UX-DR139, UX-DR144, UX-DR145, UX-DR146, UX-DR147, UX-DR153
 **Scénarios golden master :** aucun
-**Prérequis :** A-003-3 (contrôles de saisie et de solde avant le contrôle de fraude), A-003-8 (refus pour erreur sans notification), A-025-3 (plafond de notifications appliqué à l'avis de suspension), A-027-4 (texte de l'avis de suspension), A-027-10 (le client voit l'état de ses virements passés en revue), à confirmer par le métier avant de démarrer ; A-016-3 (file triée par heure butoir), A-016-5 (seules les alertes OPEN passent à REVIEWED), A-016-6 (rejet admin sans objet à l'heure butoir), A-016-7 (historique des virements traités), à confirmer par le métier avant de démarrer (reprise avant la story de FR-016-19) ; A-027-9 (rejet automatique tracé au journal d'audit), à confirmer avant de démarrer (reprise avant la story de FR-027-17) ; RP-02 (reclassement possible en risque élevé de A-027-7, A-003-3, A-021-5, A-019-1, A-027-10), à trancher par le PM avant de démarrer ; AR-105 réglé par cette story ; stories 3.1 à 3.3 ; epic 2 (route `/administration` réservée à l'ADMIN, topic `identite-clients.client-modifie.v1` produit) ; (format décidé : `{date}` en `dd/MM/yyyy` et `{heure}` en `HH:mm`, comme les dates du legacy, FR-002-06 ; heure en Europe/Paris) ; historique des virements traités décidé le 2026-10-05 (voir le critère de l'historique).
+**Prérequis :** A-003-3 (contrôles de saisie et de solde avant le contrôle de fraude), A-003-8 (refus pour erreur sans notification), A-025-3 (plafond de notifications appliqué à l'avis de suspension), A-027-4 (texte de l'avis de suspension), A-027-10 (le client voit l'état de ses virements passés en revue), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; A-016-3 (file triée par heure butoir), A-016-5 (seules les alertes OPEN passent à REVIEWED), A-016-6 (rejet admin sans objet à l'heure butoir), A-016-7 (historique des virements traités), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») (reprise avant la story de FR-016-19) ; A-027-9 (rejet automatique tracé au journal d'audit), confirmé le 2026-10-05 (reprise avant la story de FR-027-17) ; RP-02 (reclassement possible en risque élevé de A-027-7, A-003-3, A-021-5, A-019-1, A-027-10), tranché le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; AR-105 réglé par cette story ; stories 3.1 à 3.3 ; epic 2 (route `/administration` réservée à l'ADMIN, topic `identite-clients.client-modifie.v1` produit) ; (format décidé : `{date}` en `dd/MM/yyyy` et `{heure}` en `HH:mm`, comme les dates du legacy, FR-002-06 ; heure en Europe/Paris) ; historique des virements traités décidé le 2026-10-05 (voir le critère de l'historique).
 
 **Acceptance Criteria:**
 
@@ -2582,7 +2597,7 @@ afin qu'un découpage en petits virements ne contourne pas le contrôle.
 
 **Exigences :** FR-027-18, FR-027-02, NFR-SEC-08, NFR-PAR-02, AR-50, AR-66, UX-DR145
 **Scénarios golden master :** aucun
-**Prérequis :** A-027-7 (le cumul compte les virements exécutés et suspendus, pas les rejetés ni les refusés), à confirmer par le métier avant de démarrer ; story 3.4 (cette story la suit immédiatement, D10, risque R-1 levé).
+**Prérequis :** A-027-7 (le cumul compte les virements exécutés et suspendus, pas les rejetés ni les refusés), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; story 3.4 (cette story la suit immédiatement, D10, risque R-1 levé).
 
 **Acceptance Criteria:**
 
@@ -2630,7 +2645,7 @@ afin de renouveler ma demande facilement.
 
 **Exigences :** FR-003-28, FR-003-27, NFR-PAR-02, AR-42, AR-66, UX-DR139
 **Scénarios golden master :** aucun
-**Prérequis :** A-003-11 (la reprise reprend compte source, compte destinataire, montant et motif), à confirmer par le métier avant de démarrer ; stories 3.4 et 3.5 (D12).
+**Prérequis :** A-003-11 (la reprise reprend compte source, compte destinataire, montant et motif), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; stories 3.4 et 3.5 (D12).
 
 **Acceptance Criteria:**
 
@@ -2729,7 +2744,7 @@ afin d'avoir une vue d'ensemble dès ma connexion.
 
 **Exigences :** FR-002-01, FR-002-02, FR-002-03, FR-002-04, FR-002-05, FR-002-06, FR-002-11, FR-003-12, NFR-SEC-03, NFR-PERF-01, NFR-PAR-02, NFR-UI-01, AR-27, AR-45, AR-47, AR-49, AR-85, UX-DR29, UX-DR39, UX-DR47, UX-DR48, UX-DR54, UX-DR56, UX-DR70, UX-DR77, UX-DR99, UX-DR115, UX-DR153, UX-DR156, UX-DR157
 **Scénarios golden master :** SC-002-01, SC-003-04
-**Prérequis :** A-002-3 (client sans compte COURANT : tableau d'opérations vide), à confirmer par le métier avant de démarrer ; stories 3.1, 3.4 et 3.7 ; epic 2 (gabarit, « Bonjour, {fullName} », lien « Deconnexion »).
+**Prérequis :** A-002-3 (client sans compte COURANT : tableau d'opérations vide), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; stories 3.1, 3.4 et 3.7 ; epic 2 (gabarit, « Bonjour, {fullName} », lien « Deconnexion »).
 
 **Acceptance Criteria:**
 
@@ -2844,7 +2859,7 @@ afin de repérer une tentative d'accès frauduleux.
 
 **Exigences :** FR-027-11, FR-027-01, FR-027-03, AR-29, AR-31, AR-39, AR-41, AR-67
 **Scénarios golden master :** aucun
-**Prérequis :** A-027-2 (MULTIPLE_FAILED_AUTH évalué à la connexion au 5e échec consécutif, hors score du virement) et A-027-12 (échecs d'un compte désactivé comptés), à confirmer par le métier avant de démarrer ; story 3.2 (`FRAUD_ALERTS`) ; epic 2 (connexion, LOGIN_FAILED).
+**Prérequis :** A-027-2 (MULTIPLE_FAILED_AUTH évalué à la connexion au 5e échec consécutif, hors score du virement) et A-027-12 (échecs d'un compte désactivé comptés), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; story 3.2 (`FRAUD_ALERTS`) ; epic 2 (connexion, LOGIN_FAILED).
 
 **Acceptance Criteria:**
 
@@ -2899,7 +2914,7 @@ afin de garder à jour mes destinataires de virements SEPA sans exposer leurs co
 
 **Exigences :** FR-013-01, FR-013-02, FR-013-03, FR-013-09, FR-013-10, NFR-SEC-03, NFR-SEC-04, NFR-SEC-05, NFR-PAR-02, NFR-UI-01, NFR-UI-02, AR-19, AR-36, AR-43, AR-46, AR-47, AR-51, AR-78, AR-79, AR-80, UX-DR17, UX-DR40, UX-DR47, UX-DR48, UX-DR78, UX-DR89, UX-DR101, UX-DR106, UX-DR130
 **Scénarios golden master :** SC-013-01
-**Prérequis :** A-013-1 (message de refus générique « Erreur lors de la suppression. » sur le bénéficiaire d'un autre client) — à confirmer par le métier avant de démarrer ; epics 2 et 3 terminés (gabarit, navigation, route `/beneficiaires` protégée, vérification du jeton et `*SecuriteIT` du cœur bancaire, table des bénéficiaires lue par le signal NEW_BENEFICIARY, FR-027-07 — la story la crée par migration Flyway si elle n'existe pas encore) ; bénéficiaire `FR76***` de `user1` présent dans `services/coeur-bancaire/reference-data/reference-data.sql` (AR-80).
+**Prérequis :** A-013-1 (message de refus générique « Erreur lors de la suppression. » sur le bénéficiaire d'un autre client) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; epics 2 et 3 terminés (gabarit, navigation, route `/beneficiaires` protégée, vérification du jeton et `*SecuriteIT` du cœur bancaire, table des bénéficiaires lue par le signal NEW_BENEFICIARY, FR-027-07 — la story la crée par migration Flyway si elle n'existe pas encore) ; bénéficiaire `FR76***` de `user1` présent dans `services/coeur-bancaire/reference-data/reference-data.sql` (AR-80).
 
 **Acceptance Criteria:**
 
@@ -3018,7 +3033,7 @@ afin d'automatiser mes versements réguliers.
 
 **Exigences :** FR-004-01, FR-004-02, FR-004-03, FR-004-04, FR-004-05, FR-004-06, FR-004-07, FR-004-08, FR-004-13, NFR-SEC-03, NFR-SEC-04, NFR-PAR-02, NFR-UI-01, NFR-UI-02, AR-19, AR-44, AR-46, AR-49, AR-78, AR-79, AR-80, UX-DR15, UX-DR27, UX-DR47, UX-DR48, UX-DR57, UX-DR78, UX-DR100, UX-DR101, UX-DR102, UX-DR106, UX-DR109, UX-DR120, UX-DR141, UX-DR154
 **Scénarios golden master :** SC-004-01, SC-004-02, SC-004-03
-**Prérequis :** A-004-4 (texte « Compte destinataire introuvable » et contrôle dès la création) — à confirmer par le métier avant de démarrer ; epics 2 et 3 terminés (route `/virements-programmes` protégée, comptes du cœur bancaire) ; comptes `1` de `user1` et compte interne `FR76-0001-0002` présents dans les données de référence (AR-80).
+**Prérequis :** A-004-4 (texte « Compte destinataire introuvable » et contrôle dès la création) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; epics 2 et 3 terminés (route `/virements-programmes` protégée, comptes du cœur bancaire) ; comptes `1` de `user1` et compte interne `FR76-0001-0002` présents dans les données de référence (AR-80).
 
 **Acceptance Criteria:**
 
@@ -3093,7 +3108,7 @@ afin d'interrompre ou d'arrêter un versement récurrent sans passer par la banq
 
 **Exigences :** FR-004-09, FR-004-10, NFR-SEC-03, NFR-SEC-04, NFR-PAR-02, AR-36, AR-43, AR-46, AR-78, UX-DR17, UX-DR40, UX-DR107, UX-DR141
 **Scénarios golden master :** aucun
-**Prérequis :** A-004-1 (message de refus générique sur le virement programmé d'un autre client) — à confirmer par le métier avant de démarrer ; story 4.3.
+**Prérequis :** A-004-1 (message de refus générique sur le virement programmé d'un autre client) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; story 4.3.
 
 **Acceptance Criteria:**
 
@@ -3192,7 +3207,7 @@ afin que mes versements réguliers partent à la date prévue sans dériver.
 
 **Exigences :** FR-004-07, FR-004-11, FR-004-14, FR-021-01, FR-021-02, FR-021-03, FR-021-05, FR-021-06, FR-021-07, FR-021-08, FR-021-10, FR-026-03, FR-026-05, NFR-BATCH-01, NFR-BATCH-02, NFR-BATCH-03, NFR-PAR-02, AR-38, AR-40, AR-44, AR-63, AR-64, AR-66
 **Scénarios golden master :** aucun
-**Prérequis :** A-021-4 (une seule exécution par passage pour un virement en retard de plusieurs périodes), A-004-5 (correction de BUG-069 appliquée à RG-004-064), A-021-7 (échéance exécutée sans notification), A-026-1 (échéances auditées au nom du titulaire, sans IP) — à confirmer par le métier avant de démarrer ; stories 4.3 et 4.5 ; socle RG-027-003 et cumul glissant FR-027-18 livrés en epic 3 (cas d'usage de contrôle de fraude, machine à 5 états, `virement-a-traiter.v1`).
+**Prérequis :** A-021-4 (une seule exécution par passage pour un virement en retard de plusieurs périodes), A-004-5 (correction de BUG-069 appliquée à RG-004-064), A-021-7 (échéance exécutée sans notification), A-026-1 (échéances auditées au nom du titulaire, sans IP) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; stories 4.3 et 4.5 ; socle RG-027-003 et cumul glissant FR-027-18 livrés en epic 3 (cas d'usage de contrôle de fraude, machine à 5 états, `virement-a-traiter.v1`).
 
 **Acceptance Criteria:**
 
@@ -3244,7 +3259,7 @@ afin de réagir au lieu de découvrir trop tard qu'un versement n'a pas eu lieu.
 
 **Exigences :** FR-004-12, FR-004-13, FR-004-15, FR-021-04, FR-021-09, NFR-PAR-02, NFR-QG-09, AR-29, AR-31, AR-38, AR-39, AR-41, AR-65, UX-DR55
 **Scénarios golden master :** aucun
-**Prérequis :** A-004-2 (une seule notification par échéance non exécutée), A-004-3 (notification ALERTE de solde insuffisant à l'échéance), A-021-1 (texte de refus, compte introuvable), A-021-2 (refus « compte introuvable » avant le report pour solde insuffisant), A-021-3 (virement programmé désactivé après ce refus) — à confirmer par le métier avant de démarrer ; textes décidés (`textes-nouveaux.md`, lot « Stories ») : solde insuffisant — type ALERTE, titre « Virement programmé non exécuté », message « Virement programmé vers {beneficiaire} non exécuté : solde insuffisant, rien n'a été débité » ; compte introuvable — type ALERTE, titre « Virement programmé refusé », message « Virement programmé vers {beneficiaire} refusé : compte destinataire introuvable, rien n'a été débité » ; story 4.6 ; centre de notifications du tableau de bord livré en epic 3.
+**Prérequis :** A-004-2 (une seule notification par échéance non exécutée), A-004-3 (notification ALERTE de solde insuffisant à l'échéance), A-021-1 (texte de refus, compte introuvable), A-021-2 (refus « compte introuvable » avant le report pour solde insuffisant), A-021-3 (virement programmé désactivé après ce refus) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; textes décidés (`textes-nouveaux.md`, lot « Stories ») : solde insuffisant — type ALERTE, titre « Virement programmé non exécuté », message « Virement programmé vers {beneficiaire} non exécuté : solde insuffisant, rien n'a été débité » ; compte introuvable — type ALERTE, titre « Virement programmé refusé », message « Virement programmé vers {beneficiaire} refusé : compte destinataire introuvable, rien n'a été débité » ; story 4.6 ; centre de notifications du tableau de bord livré en epic 3.
 
 **Acceptance Criteria:**
 
@@ -3285,7 +3300,7 @@ afin qu'un virement programmé ne contourne pas le contrôle de fraude (décisio
 
 **Exigences :** FR-021-10, FR-004-11, FR-027-02, FR-027-04, FR-027-16, FR-027-17, FR-026-03, NFR-OBS-02, AR-43, AR-66, UX-DR112
 **Scénarios golden master :** aucun
-**Prérequis :** A-021-6 (pendant la suspension, la prochaine date avance, le compteur ne change qu'après libération, échéance rejetée non rattrapée), A-021-7 (seule une échéance suspendue notifie ; une échéance refusée pour erreur du contrôle est retentée au passage suivant, sans notification) — à confirmer par le métier avant de démarrer ; stories 4.6 et 4.7 ; file de revue de l'administrateur, rejet automatique et cumul glissant livrés en epic 3.
+**Prérequis :** A-021-6 (pendant la suspension, la prochaine date avance, le compteur ne change qu'après libération, échéance rejetée non rattrapée), A-021-7 (seule une échéance suspendue notifie ; une échéance refusée pour erreur du contrôle est retentée au passage suivant, sans notification) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; stories 4.6 et 4.7 ; file de revue de l'administrateur, rejet automatique et cumul glissant livrés en epic 3.
 
 **Acceptance Criteria:**
 
@@ -3337,7 +3352,7 @@ afin que mon épargne soit rémunérée au bon taux, sans le crédit quotidien e
 
 **Exigences :** FR-018-01, FR-018-02, FR-018-03, FR-018-04, NFR-BATCH-01, NFR-BATCH-02, NFR-BATCH-03, NFR-PAR-02, AR-44, AR-49, AR-63, AR-64
 **Scénarios golden master :** aucun
-**Prérequis :** A-018-1 (crédit à l'exécution de 2 h du 1er du mois, rien les autres nuits), A-018-2 (pas de second crédit dans le même mois) — à confirmer par le métier avant de démarrer ; story 4.5.
+**Prérequis :** A-018-1 (crédit à l'exécution de 2 h du 1er du mois, rien les autres nuits), A-018-2 (pas de second crédit dans le même mois) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; story 4.5.
 
 **Acceptance Criteria:**
 
@@ -3429,7 +3444,7 @@ afin d'approvisionner mon compte à temps.
 
 **Exigences :** FR-022-01, FR-022-02, FR-022-03, FR-022-04, FR-022-05, FR-022-06, FR-025-08, NFR-BATCH-01, NFR-BATCH-02, NFR-BATCH-03, NFR-PAR-02, NFR-QG-09, AR-29, AR-31, AR-38, AR-39, AR-41, AR-44, AR-63, AR-64, AR-65, UX-DR55, UX-DR91, UX-DR115, UX-DR149
 **Scénarios golden master :** aucun
-**Prérequis :** A-022-1 (plafond de 20 par jour calendaire, heure de Paris), A-025-1 (type ACCOUNT_BALANCE, priorité HIGH, icône ⚠️, comptée dans le plafond par utilisateur) — à confirmer par le métier avant de démarrer ; story 4.5 ; centre de notifications et plafond par utilisateur livrés en epic 3 ; RP-01 (saturation du journal par 48 entrées par jour) reste ouvert jusqu'à la story de FR-016-17 (epic 9).
+**Prérequis :** A-022-1 (plafond de 20 par jour calendaire, heure de Paris), A-025-1 (type ACCOUNT_BALANCE, priorité HIGH, icône ⚠️, comptée dans le plafond par utilisateur) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; story 4.5 ; centre de notifications et plafond par utilisateur livrés en epic 3 ; RP-01 (saturation du journal par 48 entrées par jour) reste ouvert jusqu'à la story de FR-016-17 (epic 9).
 
 **Acceptance Criteria:**
 
@@ -3490,7 +3505,7 @@ afin de comprendre où va mon argent.
 
 **Exigences :** FR-006-01, FR-006-02, FR-006-03, FR-006-04, NFR-SEC-03, NFR-UI-01, NFR-UI-02, AR-19, AR-44, AR-45, AR-49, AR-78, AR-79, UX-DR27, UX-DR39, UX-DR56, UX-DR78, UX-DR101, UX-DR108, UX-DR122, UX-DR154, UX-DR156
 **Scénarios golden master :** SC-006-01
-**Prérequis :** mots-clés des catégories proposés dans `textes-nouveaux.md`, lot « Stories » (clés `budget.motscles.*`), à confirmer par le métier avant de démarrer ; epics 2 et 3 terminés (route `/budget`, opérations du cœur bancaire).
+**Prérequis :** mots-clés des catégories proposés dans `textes-nouveaux.md`, lot « Stories » (clés `budget.motscles.*`), confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; epics 2 et 3 terminés (route `/budget`, opérations du cœur bancaire).
 
 **Acceptance Criteria:**
 
@@ -3546,7 +3561,7 @@ afin de tenir mon budget.
 
 **Exigences :** FR-006-05, FR-006-06, FR-006-07, FR-006-08, FR-006-09, FR-006-10, FR-006-11, NFR-F006, NFR-SEC-04, NFR-PAR-02, NFR-UI-01, NFR-UI-02, AR-49, AR-78, UX-DR17, UX-DR27, UX-DR42, UX-DR47, UX-DR57, UX-DR66, UX-DR90, UX-DR107, UX-DR122
 **Scénarios golden master :** aucun
-**Prérequis :** A-006-1 (message générique « Une erreur est survenue. Veuillez reessayer. » à la place des erreurs techniques du plafond) — à confirmer par le métier avant de démarrer ; story 4.12.
+**Prérequis :** A-006-1 (message générique « Une erreur est survenue. Veuillez reessayer. » à la place des erreurs techniques du plafond) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; story 4.12.
 
 **Acceptance Criteria:**
 
@@ -3610,7 +3625,7 @@ afin de connaître la mensualité et le coût d'un prêt avant de le demander.
 
 **Exigences :** FR-007-01, FR-007-02, FR-007-03, FR-007-04, FR-007-08, FR-004-05 (contexte simulation), NFR-F007 (simulation), NFR-SEC-03, NFR-SEC-04, NFR-UI-01, NFR-UI-02, NFR-PAR-04, AR-17, AR-20, AR-26, AR-36, AR-37, AR-44, AR-45, AR-46, AR-47, AR-49, AR-57, AR-76, AR-78, AR-79, AR-87, UX-DR123, UX-DR60, UX-DR22, UX-DR27, UX-DR39, UX-DR40, UX-DR47, UX-DR48, UX-DR54, UX-DR57, UX-DR78, UX-DR142, UX-DR156, UX-DR157
 **Scénarios golden master :** SC-007-01, SC-007-02
-**Prérequis :** A-007-1 (durée de 301 à 360 mois refusée avec « Duree invalide ») — à confirmer par le métier avant de démarrer ; epic 2 terminé (vérification du jeton, format d'erreur `{"message"}`, gabarit, navigation, garde des routes du front, `scripts/golden-master/verifier-scenario.sh`) ; story de l'epic 4 qui livre FR-004-05 (message « Montant invalide »).
+**Prérequis :** A-007-1 (durée de 301 à 360 mois refusée avec « Duree invalide ») — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; epic 2 terminé (vérification du jeton, format d'erreur `{"message"}`, gabarit, navigation, garde des routes du front, `scripts/golden-master/verifier-scenario.sh`) ; story de l'epic 4 qui livre FR-004-05 (message « Montant invalide »).
 
 **Acceptance Criteria:**
 
@@ -3689,7 +3704,7 @@ afin d'obtenir une décision sans attendre devant l'écran.
 
 **Exigences :** FR-007-05, FR-007-06, FR-007-07, FR-024-01, FR-024-02, FR-004-05 (contexte demande de prêt), NFR-F007 (demande), NFR-PAR-02, NFR-SEC-04, AR-30, AR-31, AR-38, AR-39, AR-44, AR-46, AR-49, AR-90, AR-97, UX-DR15, UX-DR57, UX-DR100, UX-DR102, UX-DR123, UX-DR142
 **Scénarios golden master :** aucun
-**Prérequis :** A-007-1 (durée de 301 à 360 mois refusée avec « Duree invalide »), A-024-1 (texte « Service credit temporairement indisponible, veuillez reessayer plus tard ») et A-024-2 (demande non transmise annulée, absente de la liste) — à confirmer par le métier avant de démarrer ; champs de `credits.pret-demande.v1` inscrits au catalogue AD-22 de la spine avant la story (AR-31 ; proposition : `pretId`) ; story 5.1.
+**Prérequis :** A-007-1 (durée de 301 à 360 mois refusée avec « Duree invalide »), A-024-1 (texte « Service credit temporairement indisponible, veuillez reessayer plus tard ») et A-024-2 (demande non transmise annulée, absente de la liste) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; champs de `credits.pret-demande.v1` inscrits au catalogue AD-22 de la spine avant la story (AR-31 ; proposition : `pretId`) ; story 5.1.
 
 **Acceptance Criteria:**
 
@@ -3890,7 +3905,7 @@ afin de traiter manuellement les demandes et de garder une vue complète du port
 
 **Exigences :** FR-016-03, FR-016-04, FR-016-05, FR-016-07, FR-016-12, FR-016-06 (codes ADMIN_LOAN_APPROVE et ADMIN_LOAN_REFUSE), FR-026-02 (codes des prêts), FR-026-04, FR-026-05 (IP des actions de prêt), FR-030-07 (actions de prêt de l'administration), NFR-PAR-02, NFR-SEC-03, NFR-SEC-04, AR-28, AR-29, AR-31, AR-32, AR-36, AR-40, AR-41, AR-43, AR-48, AR-58, AR-89, AR-97, UX-DR17, UX-DR47, UX-DR48, UX-DR57, UX-DR132, UX-DR153
 **Scénarios golden master :** aucun
-**Prérequis :** A-016-1 (texte « Erreur lors du traitement du prêt. Veuillez réessayer. ») — à confirmer par le métier avant de démarrer ; stories 5.3 et 5.5 ; epic 2 (page `/administration` réservée à ADMIN, producteur de `identite-clients.client-modifie.v1`, service `audit`) ; story de l'epic 3 qui ajoute la file de revue à `/administration`.
+**Prérequis :** A-016-1 (texte « Erreur lors du traitement du prêt. Veuillez réessayer. ») — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; stories 5.3 et 5.5 ; epic 2 (page `/administration` réservée à ADMIN, producteur de `identite-clients.client-modifie.v1`, service `audit`) ; story de l'epic 3 qui ajoute la file de revue à `/administration`.
 
 **Acceptance Criteria:**
 
@@ -3962,7 +3977,7 @@ afin de les fournir à un tiers, sans qu'aucun autre client ne puisse obtenir le
 
 **Exigences :** FR-017-01, FR-017-02, FR-017-03, FR-017-05, FR-017-06, FR-017-08, FR-017-09, FR-017-10, FR-017-11, FR-008-02, FR-008-04, FR-008-08, FR-008-09, FR-008-11, FR-008-12, FR-030-06 (contrôle côté service), NFR-PAR-02, NFR-PAR-04, NFR-SEC-03, NFR-SEC-04, NFR-UI-01, AR-17, AR-19, AR-21, AR-26, AR-28, AR-29, AR-31, AR-32, AR-36, AR-37, AR-38, AR-39, AR-41, AR-44, AR-46, AR-49, AR-57, AR-58, AR-75, AR-87, AR-97, AR-101, UX-DR80
 **Scénarios golden master :** SC-017-01
-**Prérequis :** A-008-1 et A-017-1 (document d'un autre client refusé en HTTP 403 sans message métier), A-008-2 (compteur de téléchargements implémenté), A-017-2 (compte inexistant = 404 et non 500, écart attendu au golden master) — à confirmer par le métier avant de démarrer ; AR-101 (bibliothèque PDF choisie et vérifiée par cette story avant tout PDF) ; epic 2 (producteur de `identite-clients.client-modifie.v1`, vérification du jeton, format d'erreur) ; epics 3 et 4 (chemins d'écriture des comptes du cœur bancaire).
+**Prérequis :** A-008-1 et A-017-1 (document d'un autre client refusé en HTTP 403 sans message métier), A-008-2 (compteur de téléchargements implémenté), A-017-2 (compte inexistant = 404 et non 500, écart attendu au golden master) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; AR-101 (bibliothèque PDF choisie et vérifiée par cette story avant tout PDF) ; epic 2 (producteur de `identite-clients.client-modifie.v1`, vérification du jeton, format d'erreur) ; epics 3 et 4 (chemins d'écriture des comptes du cœur bancaire).
 
 **Acceptance Criteria:**
 
@@ -4154,7 +4169,7 @@ afin de suivre les valeurs qui m'intéressent.
 
 **Exigences :** FR-009-01, FR-009-10, FR-009-11, FR-009-12, FR-009-13, FR-029-09, FR-029-10, FR-029-11, FR-029-13, FR-029-14, NFR-SEC-04, NFR-PAR-04, NFR-QG-01, NFR-QG-03, AR-17, AR-24, AR-26, AR-36, AR-46, AR-47, AR-57, AR-71, AR-88
 **Scénarios golden master :** aucun
-**Prérequis :** Epic 2 terminé (story de connexion : vérification du jeton, format d'erreur `{"message"}`, renvoi `/api/{identifiant}/**` par le proxy Vite et le conteneur web) ; A-029-2 (symbole ou nom trop long bloqué par la limite du champ, sans message) — à confirmer par le métier avant de démarrer.
+**Prérequis :** Epic 2 terminé (story de connexion : vérification du jeton, format d'erreur `{"message"}`, renvoi `/api/{identifiant}/**` par le proxy Vite et le conteneur web) ; A-029-2 (symbole ou nom trop long bloqué par la limite du champ, sans message) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -4315,7 +4330,7 @@ afin de suivre les marchés depuis mon espace bancaire.
 
 **Exigences :** FR-009-01, FR-009-02, FR-009-03, FR-009-04, FR-009-05, FR-009-06, FR-009-07, FR-009-09, FR-009-10, FR-009-11, FR-009-12, FR-009-13, FR-029-03, FR-029-06, FR-029-07, FR-029-08, FR-029-09, FR-029-10, FR-029-11, FR-029-12, FR-029-13, FR-029-14, NFR-UI-01, NFR-UI-02, NFR-INT-02, AR-76, AR-78, AR-88, UX-DR16, UX-DR64, UX-DR65, UX-DR76, UX-DR78, UX-DR94, UX-DR99, UX-DR104, UX-DR108, UX-DR125, UX-DR151, UX-DR161
 **Scénarios golden master :** SC-009-01
-**Prérequis :** Stories 7.1, 7.2 et 7.3 ; A-029-2 (symbole ou nom trop long bloqué par la limite du champ, sans message) — à confirmer par le métier avant de démarrer.
+**Prérequis :** Stories 7.1, 7.2 et 7.3 ; A-029-2 (symbole ou nom trop long bloqué par la limite du champ, sans message) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -4450,7 +4465,7 @@ afin de connaître l'offre de la banque et l'état des traitements de nuit.
 
 **Exigences :** FR-010-01, FR-011-01, FR-011-02, FR-011-03, FR-011-04, FR-011-05, FR-011-06, FR-011-08, FR-011-09, NFR-UI-01, NFR-UI-02, NFR-PERF-01, AR-47, AR-76, AR-78, AR-88, UX-DR76, UX-DR78, UX-DR99, UX-DR127
 **Scénarios golden master :** SC-011-01
-**Prérequis :** Story 7.5 ; A-011-1 (message « aucun produit » par type de produit vide) — à confirmer par le métier avant de démarrer.
+**Prérequis :** Story 7.5 ; A-011-1 (message « aucun produit » par type de produit vide) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -4513,7 +4528,7 @@ afin d'obtenir une réponse ou de savoir que je dois réessayer.
 
 **Exigences :** FR-010-05, FR-010-06, FR-010-07, FR-010-08, FR-010-09, NFR-F010, NFR-INT-01, NFR-INT-02, NFR-INT-03, NFR-SEC-04, NFR-SEC-06, NFR-PAR-02, AR-27, AR-46, AR-60, AR-61, AR-62, AR-75
 **Scénarios golden master :** aucun (SC-010-02 exclu du golden master, remplacé par le test de FR-010-09 avec l'adaptateur simulé en mode refus 401/403, AR-75)
-**Prérequis :** Stories 7.2 (bibliothèque de coupe-circuit retenue pour AR-102, réutilisée ici) et 7.5 (service open-banking-conseiller) ; A-010-1 (« erreur d'authentification » du service d'IA couvre 401 et 403) — à confirmer par le métier avant de démarrer.
+**Prérequis :** Stories 7.2 (bibliothèque de coupe-circuit retenue pour AR-102, réutilisée ici) et 7.5 (service open-banking-conseiller) ; A-010-1 (« erreur d'authentification » du service d'IA couvre 401 et 403) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -4579,7 +4594,7 @@ afin de poser mes questions sur mes comptes, mes placements ou mes projets.
 
 **Exigences :** FR-010-01, FR-010-02, FR-010-03, FR-010-04, FR-010-05, FR-010-06, FR-010-09, FR-010-10, FR-010-11, NFR-UI-01, NFR-UI-02, NFR-SEC-04, NFR-PAR-02, AR-62, AR-76, AR-78, AR-88, UX-DR17, UX-DR61, UX-DR62, UX-DR76, UX-DR78, UX-DR87, UX-DR104, UX-DR126
 **Scénarios golden master :** SC-010-01
-**Prérequis :** Story 7.7 ; A-010-1 (« erreur d'authentification » couvre 401 et 403), A-010-2 (champ du chat non vidé après l'envoi, comme le legacy) et A-010-3 (actions rapides masquées pour la conversation en cours, réaffichées par « Nouvelle conversation ») — à confirmer par le métier avant de démarrer.
+**Prérequis :** Story 7.7 ; A-010-1 (« erreur d'authentification » couvre 401 et 403), A-010-2 (champ du chat non vidé après l'envoi, comme le legacy) et A-010-3 (actions rapides masquées pour la conversation en cours, réaffichées par « Nouvelle conversation ») — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -4708,7 +4723,7 @@ afin de voir mes comptes externes ou la raison de l'échec, même si mon navigat
 
 **Exigences :** FR-014-01, FR-014-02, FR-014-03, FR-014-04, FR-014-05, FR-014-06, FR-014-07, FR-014-08, FR-012-02, FR-012-06, FR-012-07 (partie service), FR-012-08, FR-012-09 (partie service), FR-028-03, FR-028-04, FR-028-05, FR-028-06, FR-028-11 (lecture des comptes), FR-030-01 (chemin public exact), NFR-PAR-02, AR-36, AR-62, AR-76, UX-DR129
 **Scénarios golden master :** SC-014-01
-**Prérequis :** story 8.1 ; A-014-1 (retour Powens avec seul `code` traité comme incomplet) à confirmer par le métier avant de démarrer ; A-012-1 (texte du retour Powens en erreur), A-012-3 (message d'indisponibilité de Powens) et A-012-4 (message après échec de chargement des comptes) à confirmer par le métier avant de démarrer ; A-030-1 (exemption sur le chemin exact) déjà reprise par l'architecture (AD-16, liste fermée des chemins publics).
+**Prérequis :** story 8.1 ; A-014-1 (retour Powens avec seul `code` traité comme incomplet) confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; A-012-1 (texte du retour Powens en erreur), A-012-3 (message d'indisponibilité de Powens) et A-012-4 (message après échec de chargement des comptes) confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; A-030-1 (exemption sur le chemin exact) déjà reprise par l'architecture (AD-16, liste fermée des chemins publics).
 
 **Acceptance Criteria:**
 
@@ -4772,7 +4787,7 @@ afin de suivre mes comptes d'autres banques sans me reconnecter, en distinguant 
 
 **Exigences :** FR-028-07, FR-028-08, FR-028-09, FR-028-10, FR-028-11, FR-012-10, FR-012-12 (partie service), FR-012-13 (partie service), FR-012-14 (partie service), FR-012-15 (partie service), FR-012-16 (partie service), FR-014-07, FR-014-08, NFR-SEC-03, NFR-INT-02, NFR-PAR-02, AR-47, AR-49, AR-62
 **Scénarios golden master :** aucun
-**Prérequis :** story 8.2 ; A-012-2 (« Solde indisponible ») et A-012-3 (message d'indisponibilité de Powens) à confirmer par le métier avant de démarrer.
+**Prérequis :** story 8.2 ; A-012-2 (« Solde indisponible ») et A-012-3 (message d'indisponibilité de Powens) confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -4827,7 +4842,7 @@ afin d'agréger mes comptes d'autres banques et de comprendre ce qui se passe qu
 
 **Exigences :** FR-012-01, FR-012-03, FR-012-04, FR-012-05, FR-012-07, FR-012-08, FR-012-09, FR-012-10, FR-012-11, FR-012-12, FR-012-13, FR-012-14, FR-012-15, FR-012-16, NFR-UI-01, NFR-UI-02, NFR-PAR-02, AR-76, AR-78, UX-DR74, UX-DR104, UX-DR128, UX-DR161
 **Scénarios golden master :** SC-012-01
-**Prérequis :** stories 8.1, 8.2 et 8.3 ; gabarit, navigation et routeur du front livrés par l'epic 2 ; `scripts/golden-master/verifier-scenario.sh` livré par l'epic 2 ; A-012-1 (texte du retour Powens en erreur), A-012-2 (« Solde indisponible »), A-012-3 (message d'indisponibilité de Powens), A-012-4 (message après échec de chargement des comptes) et A-012-5 (bouton « Rafraichir » exposé) à confirmer par le métier avant de démarrer.
+**Prérequis :** stories 8.1, 8.2 et 8.3 ; gabarit, navigation et routeur du front livrés par l'epic 2 ; `scripts/golden-master/verifier-scenario.sh` livré par l'epic 2 ; A-012-1 (texte du retour Powens en erreur), A-012-2 (« Solde indisponible »), A-012-3 (message d'indisponibilité de Powens), A-012-4 (message après échec de chargement des comptes) et A-012-5 (bouton « Rafraichir » exposé) confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 »).
 
 **Acceptance Criteria:**
 
@@ -5100,7 +5115,7 @@ afin de piloter la banque depuis une seule page.
 
 **Exigences :** FR-016-02, FR-016-08, FR-016-09, FR-016-10, FR-016-13, FR-016-01, FR-030-07, NFR-SEC-03, NFR-UI-01, NFR-UI-02, NFR-PERF-01, AR-18, AR-20, AR-36, AR-37, AR-46, AR-47, AR-49, AR-76, AR-78, AR-79, AR-89, UX-DR16, UX-DR47, UX-DR48, UX-DR56, UX-DR58, UX-DR67, UX-DR94, UX-DR132, UX-DR153, UX-DR156
 **Scénarios golden master :** SC-016-01, SC-016-02
-**Prérequis :** A-016-2 (« Client depuis » = date de création de la fiche client, affichée pour tout client) — à confirmer par le métier avant de démarrer ; route `/administration` réservée ADMIN (epic 2, FR-016-01) ; section « Pipeline Prets — En attente d approbation » (epic 5) et section de revue des virements suspendus (epic 3) déjà sur la page.
+**Prérequis :** A-016-2 (« Client depuis » = date de création de la fiche client, affichée pour tout client) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; route `/administration` réservée ADMIN (epic 2, FR-016-01) ; section « Pipeline Prets — En attente d approbation » (epic 5) et section de revue des virements suspendus (epic 3) déjà sur la page.
 
 **Acceptance Criteria:**
 
@@ -5230,7 +5245,7 @@ afin de qualifier les alertes du moteur sans libérer ni rejeter un virement par
 
 **Exigences :** FR-016-14, FR-016-15, FR-016-16, FR-027-12, FR-027-13, FR-027-14, FR-016-19, NFR-PAR-02, NFR-SEC-03, AR-19, AR-36, AR-37, AR-43, AR-44, AR-46, AR-78, UX-DR17, UX-DR40, UX-DR47, UX-DR48, UX-DR132
 **Scénarios golden master :** aucun
-**Prérequis :** A-016-4 (auteur de la revue enregistré par identifiant, affiché par nom complet) — à confirmer par le métier avant de démarrer ; alertes `FRAUD_ALERTS` et machine d'états de l'alerte (OPEN → REVIEWED) livrées par le socle RG-027-003 (epic 3) ; story 9.3.
+**Prérequis :** A-016-4 (auteur de la revue enregistré par identifiant, affiché par nom complet) — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; alertes `FRAUD_ALERTS` et machine d'états de l'alerte (OPEN → REVIEWED) livrées par le socle RG-027-003 (epic 3) ; story 9.3.
 
 **Acceptance Criteria:**
 
@@ -5298,7 +5313,7 @@ afin de vérifier les traitements de la nuit et l'offre active sans changer d'é
 
 **Exigences :** FR-016-17, FR-016-18, FR-016-01, NFR-BATCH-02, NFR-UI-01, NFR-PERF-01, AR-25, AR-47, AR-64, AR-79, UX-DR47, UX-DR48, UX-DR77, UX-DR132, UX-DR153
 **Scénarios golden master :** SC-016-01
-**Prérequis :** RP-01 (journal saturé par les 48 entrées par jour du contrôle des soldes faibles : pagination, filtre par traitement ou nombre d'entrées, et critère à ajouter à FR-016-17) — à confirmer par le PM avant de démarrer ; lecture du journal `GET /api/coeur-bancaire/traitements?limite=50` ouverte à l'ADMIN (epic 4, FR-018-05) ; catalogue des produits du service `open-banking-conseiller` (epic 7, FEAT-011) ; stories 9.3 à 9.5.
+**Prérequis :** RP-01 (journal saturé par les 48 entrées par jour du contrôle des soldes faibles : pagination, filtre par traitement ou nombre d'entrées, et critère à ajouter à FR-016-17) — tranché le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; lecture du journal `GET /api/coeur-bancaire/traitements?limite=50` ouverte à l'ADMIN (epic 4, FR-018-05) ; catalogue des produits du service `open-banking-conseiller` (epic 7, FEAT-011) ; stories 9.3 à 9.5.
 
 **Acceptance Criteria:**
 
@@ -5360,7 +5375,7 @@ afin de ne pas croire que mon argent n'est pas encore parti.
 
 **Exigences :** FR-003-29, FR-003-10, FR-003-09, FR-003-14, FR-005-07, FR-023-03, FR-025-01, FR-002-10, NFR-PAR-02, NFR-UI-01, AR-65, AR-68, AR-98, UX-DR111, UX-DR121, UX-DR150
 **Scénarios golden master :** aucun
-**Prérequis :** démonstration faite (décision B1 révisée, risque R-4) ; formulation des textes de FR-003-29 (« Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. », « [TRANSACTION IMPORTANTE] », badge « Transaction importante ») — à confirmer par le métier avant de démarrer ; [À ARBITRER : ces trois textes sont donnés par le PRD (FR-003-29) mais absents de textes-nouveaux.md, qui renvoie la reformulation « hors lot » ; les ajouter à textes-nouveaux.md avant la story ou admettre le PRD comme source] ; toutes les stories des epics 3 à 9 terminées.
+**Prérequis :** démonstration faite (décision B1 révisée, risque R-4) ; formulation des textes de FR-003-29 (« Virement de {montant} EUR vers le compte {numCompte} execute - transaction importante. », « [TRANSACTION IMPORTANTE] », badge « Transaction importante ») — confirmé le 2026-10-05 (voir « Arbitrages du 2026-10-05 ») ; (arbitré le 2026-10-05 : le PRD, FR-003-29, fait foi pour ces trois textes) ; toutes les stories des epics 3 à 9 terminées.
 
 **Acceptance Criteria:**
 
