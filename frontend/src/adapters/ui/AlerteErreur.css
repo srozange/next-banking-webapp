@@ -1,0 +1,17 @@
+.alerte-erreur {
+  padding: var(--spacing-md);
+  border-left: 4px solid var(--color-error);
+  background-color: var(--color-error-container);
+  color: var(--color-error);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.alerte-erreur > * {
+  margin: 0;
+}
+
+.alerte-erreur > :first-child {
+  font-weight: var(--font-weight-label);
+}

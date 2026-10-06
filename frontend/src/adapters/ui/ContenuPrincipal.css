@@ -1,0 +1,4 @@
+/* Le contenu principal reçoit le focus du lien d'évitement sans anneau sur toute la page. */
+.contenu-principal:focus {
+  outline: none;
+}

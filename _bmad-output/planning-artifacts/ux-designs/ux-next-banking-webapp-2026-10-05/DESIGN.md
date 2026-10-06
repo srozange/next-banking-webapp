@@ -35,66 +35,66 @@ colors:
   info-container: "#F3E6FF"
 typography:
   display:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 3.5rem
     fontWeight: 700
     lineHeight: 1.05
     letterSpacing: -0.02em
   h1:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 2.5rem
     fontWeight: 700
     lineHeight: 1.1
     letterSpacing: -0.015em
   h2:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 2rem
     fontWeight: 700
     lineHeight: 1.15
     letterSpacing: -0.01em
   h3:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 1.5rem
     fontWeight: 600
     lineHeight: 1.2
   h4:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 1.25rem
     fontWeight: 600
     lineHeight: 1.3
   body-lg:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 1.125rem
     fontWeight: 400
     lineHeight: 1.6
   body-md:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 1rem
     fontWeight: 400
     lineHeight: 1.5
   body-sm:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 0.875rem
     fontWeight: 400
     lineHeight: 1.45
   label:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 0.875rem
     fontWeight: 600
     lineHeight: 1.3
   button:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 1rem
     fontWeight: 600
     lineHeight: 1.25
   eyebrow:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 0.75rem
     fontWeight: 600
     lineHeight: 1.3
     letterSpacing: 0.08em
   caption:
-    fontFamily: Graphik, Inter, Arial, sans-serif
+    fontFamily: Inter, Arial, sans-serif
     fontSize: 0.75rem
     fontWeight: 400
     lineHeight: 1.4
@@ -523,7 +523,7 @@ Palette inchangée (voir le design system). Rappels bancaires : violet `{colors.
 
 ## Typography
 
-Familles et échelle du design system (Graphik, repli Inter). Extension : tous les montants et colonnes numériques utilisent des chiffres tabulaires (`tabular-nums`) pour l'alignement vertical des décimales.
+Familles et échelle du design system, police Inter seule, auto-hébergée (décision D11 : Graphik non utilisée, faute de licence d'auto-hébergement). Extension : tous les montants et colonnes numériques utilisent des chiffres tabulaires (`tabular-nums`) pour l'alignement vertical des décimales.
 
 ## Layout & Spacing
 

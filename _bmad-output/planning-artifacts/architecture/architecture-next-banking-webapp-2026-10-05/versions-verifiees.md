@@ -1,6 +1,6 @@
 # Versions vérifiées — next-banking-webapp
 
-Vérification faite le 2026-10-05 (lignes datées du 2026-10-06 ajoutées par les stories 1.5, 1.6 et 7.2) en interrogeant directement les registres officiels : Maven Central (`maven-metadata.xml`, POM, `spring-configuration-metadata.json` des jars), registre npm, API Docker Hub, API GitHub Releases, API Adoptium, endoflife.date, et la documentation officielle (Jaeger, Playwright, Adoptium).
+Vérification faite le 2026-10-05 (lignes datées du 2026-10-06 ajoutées par les stories 1.5, 1.6, 2.3 et 7.2) en interrogeant directement les registres officiels : Maven Central (`maven-metadata.xml`, POM, `spring-configuration-metadata.json` des jars), registre npm, API Docker Hub, API GitHub Releases, API Adoptium, endoflife.date, et la documentation officielle (Jaeger, Playwright, Adoptium).
 
 | composant | version ou propriété retenue | source (URL) | vérifié le | remarque |
 |---|---|---|---|---|
@@ -59,6 +59,12 @@ Vérification faite le 2026-10-05 (lignes datées du 2026-10-06 ajoutées par le
 | API de requête de Jaeger 2.21.0 | seule l'API **v3** répond (`/api/v3/services`, `/api/v3/traces/{traceId}`, format OTLP JSON) ; l'ancienne API interne `/api/services`, `/api/traces` renvoie 404 | constaté sur `cr.jaegertracing.io/jaegertracing/jaeger:2.21.0` (configuration par défaut) | 2026-10-05 | Constaté à la story 1.4 ; `scripts/gates/trace-smoke.sh` lit l'API v3. |
 | Image `eclipse-temurin:21-jre` | présente | https://hub.docker.com/v2/repositories/library/eclipse-temurin/tags/21-jre | 2026-10-05 | Vérifié par le relecteur des versions. Image d'exécution des services ; un JRE suffit. |
 | `@vitejs/plugin-react` | **6.1.2**, peer `vite ^8.0.0` (compatible avec Vite 8.3.2) | https://registry.npmjs.org/@vitejs/plugin-react/latest | 2026-10-05 | Vérifié par le relecteur des versions. |
+| axe-core | **4.14.0**, engines `node >=4`, sans dépendance ni peer | https://registry.npmjs.org/axe-core/4.14.0 | 2026-10-06 | Ajouté par la story 2.3 (test `axe` de `/login` sous Vitest + jsdom, AR-101). Licence MPL-2.0. En jsdom, `color-contrast` reste « incomplete » (pas de rendu) ; le contraste est garanti par les tokens. |
+| jsdom | **30.1.2**, engines `node ^22.22.2 \|\| ^24.15.0 \|\| >=26.0.0`, peer optionnel `canvas ^3.2.3` (non installé) | https://registry.npmjs.org/jsdom/30.1.2 | 2026-10-06 | Ajouté par la story 2.3 : environnement des tests DOM, activé fichier par fichier (`// @vitest-environment jsdom`), l'environnement global reste `node`. Node 24.21.0 (image de construction) satisfait l'engine ; un poste en Node 24.14 n'a qu'un avertissement. |
+| @testing-library/react | **16.3.3**, engines `node >=18`, peers `react`/`react-dom` `^18 \|\| ^19`, `@types/react`/`@types/react-dom` `^18 \|\| ^19`, `@testing-library/dom ^10.0.0` | https://registry.npmjs.org/@testing-library/react/16.3.3 | 2026-10-06 | Ajouté par la story 2.3 (tests de l'écran de connexion). Peers satisfaits par React 19.3.0 et `@testing-library/dom` 10.4.2. |
+| @testing-library/dom | **10.4.2**, engines `node >=18` | https://registry.npmjs.org/@testing-library/dom/10.4.2 | 2026-10-06 | Ajouté par la story 2.3, peer de `@testing-library/react` et de `user-event`. |
+| @testing-library/user-event | **14.6.7**, engines `node >=12`, peer `@testing-library/dom >=7.21.4` | https://registry.npmjs.org/@testing-library/user-event/14.6.7 | 2026-10-06 | Ajouté par la story 2.3 (Tab, Entrée, double appui). |
+| @fontsource/inter | **5.3.0**, sans engines ni peer ; fichiers `woff2` dans le paquet | https://registry.npmjs.org/@fontsource/inter/5.3.0 | 2026-10-06 | Ajouté par la story 2.3 : Inter auto-hébergée (D11, AR-107), graisses 400, 600 et 700 importées ; Vite copie les `woff2` dans `dist/assets/`, servis par le conteneur web. Licence OFL-1.1. |
 | Tailwind CSS | 4.3.3 (2026-07-16) ; `@tailwindcss/vite` 4.3.3 | https://endoflife.date/api/tailwind-css.json ; https://registry.npmjs.org/tailwindcss/latest | 2026-10-05 | Vérifié par le relecteur des versions, **non retenu** : le bloc `@theme` de l'export `css-tailwind` est converti en `:root` (AD-13). |
 
 ## Écarts avec le prompt de l'utilisateur

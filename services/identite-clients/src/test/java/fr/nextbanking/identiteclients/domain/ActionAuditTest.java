@@ -11,8 +11,10 @@ class ActionAuditTest {
 
     @Test
     void les_codes_de_connexion_portent_le_detail_du_legacy() {
-        assertThat(ActionAudit.values()).containsExactly(ActionAudit.LOGIN, ActionAudit.LOGIN_FAILED);
+        assertThat(ActionAudit.values()).containsExactly(ActionAudit.LOGIN, ActionAudit.LOGIN_FAILED,
+                ActionAudit.LOGOUT);
         assertThat(ActionAudit.LOGIN.detail()).isEqualTo("Connexion réussie");
         assertThat(ActionAudit.LOGIN_FAILED.detail()).isEqualTo("Tentative échouée");
+        assertThat(ActionAudit.LOGOUT.detail()).isEqualTo("Déconnexion");
     }
 }
