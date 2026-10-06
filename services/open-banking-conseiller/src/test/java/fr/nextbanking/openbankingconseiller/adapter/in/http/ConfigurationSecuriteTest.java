@@ -41,6 +41,12 @@ class ConfigurationSecuriteTest {
     }
 
     @Test
+    void le_chemin_public_du_retour_est_le_chemin_exact_du_point_d_entree() {
+        assertThat(PointEntreePowens.CHEMIN_RETOUR).isEqualTo("/api/open-banking-conseiller/powens/retour");
+        assertThat(PointEntreePowens.DESTINATION_RETOUR).isEqualTo("/comptes-tiers");
+    }
+
+    @Test
     void ramene_chaque_statut_a_un_statut_publie_et_a_son_texte() {
         assertThat(Textes.statutPublie(404)).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(Textes.statutPublie(415)).isEqualTo(HttpStatus.BAD_REQUEST);

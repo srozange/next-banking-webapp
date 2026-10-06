@@ -8,6 +8,7 @@ import fr.nextbanking.openbankingconseiller.domain.UtilisateurPowens;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Adaptateur simulé de Powens, actif par défaut : aucun appel réseau, réponses fixes. L'adresse rendue est celle du
@@ -33,11 +34,13 @@ public class PowensSimule implements Powens {
         TRANSACTIONS_500,
         COMPTE_SANS_SOLDE,
         COMPTE_SOLDE_NUL,
-        AUCUN_COMPTE
+        AUCUN_COMPTE,
+        TRANSACTIONS_25
     }
 
     private final String retour;
     private volatile ModeErreur mode = ModeErreur.AUCUNE;
+    private final java.util.concurrent.atomic.AtomicInteger appels = new java.util.concurrent.atomic.AtomicInteger();
 
     public PowensSimule(String retour) {
         this.retour = retour;
@@ -47,6 +50,11 @@ public class PowensSimule implements Powens {
         this.mode = mode;
     }
 
+    /** Nombre d'appels reçus depuis la création : les tests vérifient qu'un retour invalide n'appelle pas Powens. */
+    public int nombreAppels() {
+        return appels.get();
+    }
+
     /** Banques proposées par la page web simulée. */
     public List<String> connecteurs() {
         return List.of("BNP Paribas", "Credit Agricole");
@@ -54,6 +62,7 @@ public class PowensSimule implements Powens {
 
     @Override
     public UtilisateurPowens creerUtilisateur() {
+        appels.incrementAndGet();
         return switch (mode) {
             case REFUS_CREATION -> throw new PowensIndisponible("création de l'utilisateur refusée");
             case REPONSE_SANS_JETON -> new UtilisateurPowens(0, null);
@@ -63,16 +72,19 @@ public class PowensSimule implements Powens {
 
     @Override
     public String codeTemporaire(String jeton) {
+        appels.incrementAndGet();
         return CODE_FIXE;
     }
 
     @Override
     public String adresseConnexion(String code, String state) {
+        appels.incrementAndGet();
         return retour + "?connection_id=" + CONNECTION_ID_FIXE + "&state=" + ConstructeurAdresse.encoder(state);
     }
 
     @Override
     public List<CompteExterne> comptes(String jeton) {
+        appels.incrementAndGet();
         return switch (mode) {
             case COMPTES_500 -> throw new PowensIndisponible("statut 500");
             case COMPTES_503 -> throw new PowensIndisponible("statut 503");
@@ -90,9 +102,12 @@ public class PowensSimule implements Powens {
 
     @Override
     public List<TransactionExterne> transactions(String jeton, long compteId) {
+        appels.incrementAndGet();
         return switch (mode) {
             case TRANSACTIONS_404 -> throw new PowensIndisponible("statut 404");
             case TRANSACTIONS_500 -> throw new PowensIndisponible("statut 500");
+            case TRANSACTIONS_25 -> IntStream.rangeClosed(1, 25).mapToObj(i -> new TransactionExterne(i,
+                    LocalDate.of(2026, 10, 1).plusDays(i), "Operation " + i, new BigDecimal("-" + i + ".00"))).toList();
             default -> List.of(
                     new TransactionExterne(1, LocalDate.of(2026, 10, 1), "Salaire", new BigDecimal("2100.00")),
                     new TransactionExterne(2, LocalDate.of(2026, 10, 2), "Courses", new BigDecimal("-54.30")));

@@ -5,6 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import fr.nextbanking.openbankingconseiller.application.port.out.DepotEtatPowens;
 import fr.nextbanking.openbankingconseiller.domain.EtatPowens;
 import fr.nextbanking.openbankingconseiller.domain.StatePowens;
+import fr.nextbanking.openbankingconseiller.domain.CompteExterne;
+import fr.nextbanking.openbankingconseiller.domain.TransactionExterne;
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -26,6 +30,27 @@ class ConsulterEtatPowensTest {
 
             @Override
             public void enregistrerState(StatePowens state) {
+                throw new AssertionError("non attendu");
+            }
+
+            @Override
+            public boolean consommerState(StatePowens state, Instant maintenant) {
+                throw new AssertionError("non attendu");
+            }
+
+            @Override
+            public void remettreAZero(String sub) {
+                throw new AssertionError("non attendu");
+            }
+
+            @Override
+            public void poserMessage(String sub, String message) {
+                throw new AssertionError("non attendu");
+            }
+
+            @Override
+            public void enregistrerConnexion(String sub, List<CompteExterne> comptes, Long selectionne,
+                    List<TransactionExterne> transactions, String message) {
                 throw new AssertionError("non attendu");
             }
         };

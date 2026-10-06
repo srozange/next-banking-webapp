@@ -26,6 +26,7 @@ import org.springframework.test.context.DynamicPropertySource;
 @Tag("FR-010-01")
 @Tag("FR-012-17")
 @Tag("FR-012-05")
+@Tag("FR-014-01")
 class ProduitsSecuriteIT {
 
     private static final String AUTHENTIFICATION_REQUISE = "{\"message\":\"Authentification requise\"}";
@@ -52,6 +53,9 @@ class ProduitsSecuriteIT {
                 new String[] {"POST", "/api/open-banking-conseiller/produits", "{}"},
                 new String[] {"POST", "/api/open-banking-conseiller/powens/connexion", null},
                 new String[] {"GET", "/api/open-banking-conseiller/powens", null},
+                new String[] {"GET", "/api/open-banking-conseiller/powens/retour/x", null},
+                new String[] {"GET", "/api/open-banking-conseiller/powens/retour-x", null},
+                new String[] {"POST", "/api/open-banking-conseiller/powens/retour", null},
                 new String[] {"GET", "/api/open-banking-conseiller/inconnu", null},
                 new String[] {"GET", "/actuator/info", null});
 

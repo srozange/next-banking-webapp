@@ -84,6 +84,27 @@ class ConnecterPowensTest {
             appels.add("state");
             stateEnregistre = state;
         }
+
+        @Override
+        public boolean consommerState(StatePowens state, Instant maintenant) {
+            throw new AssertionError("non attendu");
+        }
+
+        @Override
+        public void remettreAZero(String sub) {
+            throw new AssertionError("non attendu");
+        }
+
+        @Override
+        public void poserMessage(String sub, String message) {
+            throw new AssertionError("non attendu");
+        }
+
+        @Override
+        public void enregistrerConnexion(String sub, List<CompteExterne> comptes, Long selectionne,
+                List<TransactionExterne> transactions, String message) {
+            throw new AssertionError("non attendu");
+        }
     };
 
     private final EmetteurState emetteur = new EmetteurState() {

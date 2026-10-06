@@ -26,7 +26,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * Sécurité du service open-banking-conseiller : API sans état à jeton porteur (ni session, ni cookie, ni CSRF), tout authentifié sauf
- * {@code GET /actuator/health}, sans restriction de rôle (CLIENT, CONSEILLER et ADMIN identiques, FR-010-01). Le jeton
+ * {@code GET /actuator/health} et le chemin exact du retour public de Powens, sans restriction de rôle (CLIENT, CONSEILLER et ADMIN identiques, FR-010-01). Le jeton
  * est vérifié par la clé publique {@code nb.jeton.cle-publique}. Refus en JSON : 401 « Authentification requise ».
  */
 @Configuration
@@ -35,6 +35,8 @@ public class ConfigurationSecurite {
     static final String PROPRIETE_CLE_PUBLIQUE = "nb.jeton.cle-publique";
 
     private static final RequestMatcher SANTE = PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/actuator/health");
+    private static final RequestMatcher RETOUR_POWENS =
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, PointEntreePowens.CHEMIN_RETOUR);
 
     @Bean
     SecurityFilterChain chaineDeSecurite(HttpSecurity http) throws Exception {
@@ -49,7 +51,7 @@ public class ConfigurationSecurite {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(acces -> acces
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                        .requestMatchers(SANTE).permitAll()
+                        .requestMatchers(SANTE, RETOUR_POWENS).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(serveur -> serveur
                         .jwt(jwt -> { })
