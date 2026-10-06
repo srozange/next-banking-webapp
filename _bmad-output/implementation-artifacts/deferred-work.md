@@ -118,3 +118,19 @@ source_spec: `spec-7-1-ouvrir-le-service-bourse-et-gerer-la-watchlist-commune.md
 severity: medium
 reason: Même constat que pour identite-clients (report de la story 2.1) : le chargement est prévu par `make reset-data` (spine AD-11, golden-master-architecture §5.2), livré par la story « Socle du rejeu final ». Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur une pile isolée.
 status: open
+
+### DW-13: Les vert et rouge de l'écran viennent des tokens `--color-success` (#0b7a3e) et `--color-error` (#c4122f), pas des teintes legacy #2e7d32 et #E3000F.
+origin: spec-deferred 69378a65b706
+location: frontend/src/adapters/ecrans/bourse/EcranBourse.css
+source_spec: `spec-7-4-afficher-l-ecran-bourse.md`
+severity: low
+reason: `tokens.css` est généré depuis DESIGN.md et le test `couleurs-hors-tokens` interdit toute couleur en dur dans `src` ; l'écart de teinte avec le legacy relève du design (UX-DR1), pas de cette story.
+status: open
+
+### DW-14: Le service bourse renvoie des prix à 4 décimales ("170.1600") ; le front les arrondit à 2 décimales (`centimesDepuisPrix`).
+origin: spec-deferred 01195b30c3e0
+location: frontend/src/domain/bourse.ts:44
+source_spec: `spec-7-4-afficher-l-ecran-bourse.md`
+severity: low
+reason: Contrat constaté dans le service (7.2/7.3) ; l'arrondi demi-supérieur est cohérent avec l'affichage legacy à 2 décimales, à confirmer par le métier si l'arrondi exact importe.
+status: open

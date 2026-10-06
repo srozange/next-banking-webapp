@@ -25,6 +25,83 @@ export const TEXTES = {
     tableauDeBord: 'BankApp Demo - Tableau de bord',
     espaceConseiller: 'BankApp Demo - Espace Conseiller',
     administration: 'BankApp Demo - Administration',
+    bourse: 'BankApp Demo - Bourse',
+  },
+  /**
+   * Écran Bourse : FEAT-009 et FEAT-029 MESSAGES.md (casse comprise) ; nom accessible du graphique :
+   * textes-nouveaux.md, lot « Stories » (bourse.graphique.nom).
+   */
+  bourse: {
+    valeur: 'Valeur',
+    nombreDeValeurs: (nombre: number) => `(${nombre} valeurs)`,
+    periode: 'Période',
+    /** Libellés du sélecteur de période, puis libellés de période du message d'absence de données et du badge du graphique. */
+    periodes: {
+      '1W': { selecteur: '1 Semaine', libelle: '1 semaine (données journalières)' },
+      '1M': { selecteur: '1 Mois', libelle: '1 mois (données journalières)' },
+      '1Y': { selecteur: '1 An', libelle: '1 an (données hebdomadaires)' },
+      '5Y': { selecteur: '5 Ans', libelle: '5 ans (données hebdomadaires)' },
+    },
+    ajouterUneValeur: '+ Ajouter une valeur',
+    formulaire: {
+      titre: '➕ Ajouter une valeur à la watchlist',
+      symbole: 'Symbole',
+      symboleExemple: 'ex: AMZN',
+      symboleAide: 'Symbole Alpha Vantage',
+      nom: 'Nom',
+      nomExemple: 'ex: Amazon',
+      marche: 'Marché',
+      devise: 'Devise',
+      ajouter: 'Ajouter',
+      annuler: 'Annuler',
+    },
+    /** Valeur envoyée au service et libellé affiché (« London SE » pour la valeur LSE). */
+    marches: [
+      { valeur: 'Euronext Paris', libelle: 'Euronext Paris' },
+      { valeur: 'NASDAQ', libelle: 'NASDAQ' },
+      { valeur: 'NYSE', libelle: 'NYSE' },
+      { valeur: 'LSE', libelle: 'London SE' },
+      { valeur: 'Autre', libelle: 'Autre' },
+    ],
+    devises: ['EUR', 'USD', 'GBP'],
+    valeurAjoutee: 'Valeur ajoutée !',
+    kpi: {
+      variation: 'Variation sur la période',
+      performance: 'Performance %',
+      marche: 'Marché',
+      titre: (nom: string, symbole: string) => `${nom} — ${symbole}`,
+      hausse: '▲ +',
+      baisse: '▼ ',
+      plus: '+',
+    },
+    graphique: {
+      titre: '📈 Évolution du cours',
+      /** bourse.graphique.nom */
+      nom: (symbole: string, periode: string) => `Évolution du cours de ${symbole} sur ${periode}`,
+    },
+    seances: {
+      titre: '📋 Dernières séances',
+      date: 'Date',
+      ouverture: 'Ouverture',
+      haut: 'Haut',
+      bas: 'Bas',
+      cloture: 'Clôture',
+      volume: 'Volume',
+      variationJour: 'Var. J',
+      plus: '+',
+    },
+    watchlist: {
+      titre: (nombre: number) => `⭐ Ma Watchlist (${nombre} valeurs)`,
+      symbole: 'Symbole',
+      nom: 'Nom',
+      marche: 'Marché',
+      devise: 'Devise',
+      supprimer: 'Suppr.',
+      retirer: '✕',
+      infobulle: (nom: string) => `Supprimer ${nom} de la watchlist`,
+    },
+    aucuneDonnee: (symbole: string, periode: string) =>
+      `⚠️ Aucune donnée reçue pour « ${symbole} » sur ${periode}. Causes possibles : symbole invalide pour cette place boursière (vérifiez le suffixe, ex: .PA pour Euronext), ou limite de 25 requêtes/jour atteinte (plan gratuit Alpha Vantage). Réessayez dans quelques minutes ou changez de valeur.`,
   },
   navigation: {
     logo: 'DB',
