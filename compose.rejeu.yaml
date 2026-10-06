@@ -4,3 +4,6 @@ services:
   bourse:
     environment:
       SPRING_PROFILES_ACTIVE: rejeu
+  open-banking-conseiller:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu

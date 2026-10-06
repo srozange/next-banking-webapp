@@ -103,7 +103,7 @@ development_status:
   7-2-raccorder-le-fournisseur-de-cotations-alphavantage-derrière: done
   7-3-générer-le-graphique-d-évolution-du-cours-côté-serveur: done
   7-4-afficher-l-écran-bourse: done
-  7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata: backlog
+  7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata: done
   7-6-afficher-l-écran-produits: backlog
   7-7-raccorder-azure-openai-derrière-un-port-simulé-et-exposer-l: backlog
   7-8-dialoguer-avec-sophie-sur-l-écran-mon-conseiller: backlog

@@ -23,6 +23,7 @@
         <module>services/identite-clients</module>
         <module>services/audit</module>
         <module>services/bourse</module>
+        <module>services/open-banking-conseiller</module>
     </modules>
 
     <properties>

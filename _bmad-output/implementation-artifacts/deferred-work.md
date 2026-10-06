@@ -134,3 +134,11 @@ source_spec: `spec-7-4-afficher-l-ecran-bourse.md`
 severity: low
 reason: Contrat constaté dans le service (7.2/7.3) ; l'arrondi demi-supérieur est cohérent avec l'affichage legacy à 2 décimales, à confirmer par le métier si l'arrondi exact importe.
 status: open
+
+### DW-15: Aucune commande outillée ne charge services/open-banking-conseiller/reference-data/reference-data.sql dans la pile compose : le catalogue reste vide après `docker compose up`.
+origin: spec-deferred 21c0faa07fe4
+location: services/open-banking-conseiller/reference-data/reference-data.sql ; Makefile
+source_spec: `spec-7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata.md`
+severity: medium
+reason: Même constat que pour bourse et identite-clients : le chargement est prévu par `make reset-data` (story « Socle du rejeu final »). Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur la pile.
+status: open
