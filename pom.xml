@@ -20,6 +20,7 @@
     <modules>
         <module>services/coeur-bancaire</module>
         <module>services/notifications</module>
+        <module>services/identite-clients</module>
     </modules>
 
     <properties>
@@ -52,6 +53,20 @@
 
     <build>
         <plugins>
+            <!-- Surefire lance aussi les *IT.java (tests d'intégration Testcontainers, dont *SecuriteIT) dans mvn verify. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/Test*.java</include>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*IT.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

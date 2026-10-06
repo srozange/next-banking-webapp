@@ -70,3 +70,27 @@ source_spec: `spec-1-6-bloquer-les-dependances-vulnerables.md`
 severity: medium
 reason: Seuls un commentaire du POM et versions-verifiees.md disent de les retirer quand Boot embarque Tomcat >= 11.0.25, Jackson >= 3.1.7 et Kotlin >= 2.4.20. Lors d'une montée de Boot, ces surcharges figées pourraient rétrograder une version plus récente gérée par le BOM, sans qu'aucun contrôle ne le signale.
 status: open
+
+### DW-7: reference-data.sql n'est chargé par aucune commande : sur la pile compose, la table customers reste vide et aucun utilisateur du legacy ne peut se connecter.
+origin: spec-deferred 2df70ae16762
+location: services/identite-clients/reference-data/reference-data.sql ; Makefile
+source_spec: `spec-2-1-se-connecter-par-l-api-du-service-identite-et-clients.md`
+severity: medium
+reason: Aucun make, init compose ni migration ne charge services/identite-clients/reference-data/reference-data.sql (Blind Hunter, Verification Gap). Le chargement est prévu par `make reset-data` (AR-56, AR-72, golden-master-architecture §5.2), pas encore livré ; la story 2.3 (écran /login) en aura besoin pour une démonstration locale.
+status: open
+
+### DW-8: Le comportement de `make secrets` (idempotence des mots de passe, forme DER des clés, cohérence de la paire) n'a aucun contrôle automatique.
+origin: spec-deferred 142d9f67ffb1
+location: Makefile (cible secrets)
+source_spec: `spec-2-1-se-connecter-par-l-api-du-service-identite-et-clients.md`
+severity: medium
+reason: Aucun test ne lance la cible ; build.sh ne lance pas make ; trace-smoke.sh ne lance make secrets que si .env manque. Vérifié à la main (deux lancements, .env identique ; échec simulé d'openssl rand). Il faudrait un petit script de test (hors scripts/gates/, protégé).
+status: open
+
+### DW-9: Un .env antérieur à la story 2.1 n'a pas les variables NB_IDENTITE_CLIENTS_BD_MOT_DE_PASSE ni NB_JETON_CLE_* : identite-clients refuse de démarrer et trace-smoke.sh échoue (« la pile ne démarre pas »)
+origin: spec-deferred 99c0a025169c
+location: scripts/gates/trace-smoke.sh:21 ; Makefile
+source_spec: `spec-2-1-se-connecter-par-l-api-du-service-identite-et-clients.md`
+severity: medium
+reason: scripts/gates/trace-smoke.sh:21 ne lance `make secrets` que si .env est absent ; script protégé. Le .env de ce poste a été complété ; les autres postes doivent relancer `make secrets` (inscrit en operator_actions).
+status: open

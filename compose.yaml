@@ -1,7 +1,7 @@
 # Pile locale : une base par service, Kafka, collecteur OpenTelemetry, Jaeger v2, services et conteneur web.
 # Secrets : variables d'environnement (fichier .env généré par `make secrets`, jamais versionné).
-# En cas de conflit sur le poste (port ou sous-réseau déjà pris), NB_PORT_COEUR_BANCAIRE, NB_PORT_NOTIFICATIONS
-# et NB_SOUS_RESEAU remplacent les valeurs par défaut (8082, 8085, 172.30.0.0/24).
+# En cas de conflit sur le poste (port ou sous-réseau déjà pris), NB_PORT_IDENTITE_CLIENTS, NB_PORT_COEUR_BANCAIRE,
+# NB_PORT_NOTIFICATIONS et NB_SOUS_RESEAU remplacent les valeurs par défaut (8081, 8082, 8085, 172.30.0.0/24).
 name: next-banking-webapp
 
 networks:
@@ -11,10 +11,27 @@ networks:
         - subnet: ${NB_SOUS_RESEAU:-172.30.0.0/24}
 
 volumes:
+  pgdata-identite-clients:
   pgdata-coeur-bancaire:
   pgdata-notifications:
 
 services:
+  postgres-identite-clients:
+    image: postgres:18.6
+    environment:
+      TZ: Europe/Paris
+      POSTGRES_DB: identite_clients
+      POSTGRES_USER: identite_clients
+      POSTGRES_PASSWORD: ${NB_IDENTITE_CLIENTS_BD_MOT_DE_PASSE:-}
+    volumes:
+      - pgdata-identite-clients:/var/lib/postgresql
+    networks: [nb]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U identite_clients -d identite_clients"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   postgres-coeur-bancaire:
     image: postgres:18.6
     environment:
@@ -101,6 +118,33 @@ services:
       timeout: 5s
       retries: 20
 
+  identite-clients:
+    build:
+      context: .
+      dockerfile: services/identite-clients/Dockerfile
+    environment:
+      TZ: Europe/Paris
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-identite-clients:5432/identite_clients
+      SPRING_DATASOURCE_USERNAME: identite_clients
+      SPRING_DATASOURCE_PASSWORD: ${NB_IDENTITE_CLIENTS_BD_MOT_DE_PASSE:-}
+      # Paire RSA du jeton (DER en base64), dérivée de .secrets/ par `make secrets` ; sans elle, refus de démarrer.
+      NB_JETON_CLE_PRIVEE: ${NB_JETON_CLE_PRIVEE:-}
+      NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
+    ports:
+      - "${NB_PORT_IDENTITE_CLIENTS:-8081}:8080"
+    networks: [nb]
+    depends_on:
+      postgres-identite-clients:
+        condition: service_healthy
+      otel-collector:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
   coeur-bancaire:
     build:
       context: .
@@ -168,6 +212,8 @@ services:
       - "8080:8080"
     networks: [nb]
     depends_on:
+      identite-clients:
+        condition: service_healthy
       coeur-bancaire:
         condition: service_healthy
       notifications:

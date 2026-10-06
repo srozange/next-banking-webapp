@@ -14,5 +14,6 @@ frontend/.vitest/
 .bmad-loop/cache/
 _bmad/render/
 .env
+.env.tmp
 .secrets/
 .stryker-tmp/

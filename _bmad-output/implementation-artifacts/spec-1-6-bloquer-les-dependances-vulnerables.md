@@ -2,7 +2,7 @@
 title: 'Bloquer les dépendances vulnérables'
 type: 'chore'
 created: '2026-10-06'
-status: 'awaiting-operator'
+status: done
 baseline_revision: '95cc18cf78f376f0293c2c2eba904b813ad32157'
 review_loop_iteration: 0
 followup_review_recommended: false
@@ -143,3 +143,11 @@ Status: awaiting-operator
 - `.trivyignore` vide, aucun `<suppress>`, `sha256sum` des fichiers de l'empreinte en 0, aucun fichier protégé modifié depuis `95cc18cf78f376f0293c2c2eba904b813ad32157`.
 
 **Risques résiduels :** surcharges à retirer à la prochaine montée de Boot (report) ; Dependency-Check journalise une erreur sur l'analyseur .NET (sans `dotnet`), sans effet sur le code de sortie ; la base Trivy principale expire le 2026-10-07 01:08 UTC.
+
+## Operator Confirmation
+
+Confirmed 2026-10-06: the external actions this story owed were carried out.
+
+- Valider ou refuser les trois surcharges de version de sécurité ajoutées au POM parent par la story 1.6 (tomcat.version 11.0.25, jackson-bom.version 3.1.7, kotlin.version 2.4.20), inscrites dans versions-verifiees.md en attente de validation : sans elles, scripts/gates/cve.sh sort en 1 sur Spring Boot 4.1.1 ; si refus, choisir l'alternative (autre version, attendre Boot 4.1.2) et relancer cve.sh.
+
+_Appended by the bmad-loop orchestrator (`bmad-loop confirm`, #335): a human confirmed these external actions out of band, and the story was advanced from `awaiting-operator` to `done`._
