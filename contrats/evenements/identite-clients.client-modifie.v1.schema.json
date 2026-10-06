@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "identite-clients.client-modifie.v1",
+  "title": "État d'un client d'identite-clients après une modification",
+  "description": "Publié par identite-clients sur le topic identite-clients.client-modifie.v1 par l'outbox (outbox), clé = clientId en texte, chaîne JSON sans en-tête de type. Porte l'état complet du client ; le consommateur ignore un événement dont versionAgregat n'est pas supérieur à celui de sa projection. Consommé plus tard par coeur-bancaire, credits et documents.",
+  "type": "object",
+  "required": ["idEvenement", "type", "version", "horodatage", "producteur", "donnees"],
+  "additionalProperties": false,
+  "properties": {
+    "idEvenement": { "type": "string", "format": "uuid" },
+    "type": { "const": "client-modifie" },
+    "version": { "const": 1 },
+    "horodatage": { "type": "string", "format": "date-time", "description": "ISO 8601 UTC, lu sur le port Horloge du producteur." },
+    "producteur": { "const": "identite-clients" },
+    "donnees": {
+      "type": "object",
+      "required": ["clientId", "login", "nomComplet", "role", "actif", "conseillerId", "dateCreation", "supprime", "versionAgregat"],
+      "additionalProperties": false,
+      "properties": {
+        "clientId": { "type": "integer", "minimum": 1, "description": "Identifiant numérique du client, identique à la clé du message." },
+        "login": { "type": "string", "minLength": 1 },
+        "nomComplet": { "type": "string" },
+        "role": { "enum": ["CLIENT", "CONSEILLER", "ADMIN"] },
+        "actif": { "type": "boolean" },
+        "conseillerId": { "type": ["integer", "null"], "description": "Identifiant numérique du conseiller ; null quand le client n'en a pas." },
+        "dateCreation": { "type": "string", "format": "date", "description": "Absente du legacy : valeur de référence posée à la migration pour les clients existants." },
+        "supprime": { "type": "boolean", "description": "Toujours faux : aucune suppression n'existe." },
+        "versionAgregat": { "type": "integer", "minimum": 1, "description": "Strictement croissant à chaque changement du client." }
+      }
+    }
+  },
+  "examples": [
+    {
+      "idEvenement": "3c9d7e1b-2a4f-4b6c-9d8e-1f0a2b3c4d5e",
+      "type": "client-modifie",
+      "version": 1,
+      "horodatage": "2026-10-06T09:00:00Z",
+      "producteur": "identite-clients",
+      "donnees": {
+        "clientId": 1,
+        "login": "user1",
+        "nomComplet": "Jean Dupont",
+        "role": "CLIENT",
+        "actif": false,
+        "conseillerId": 11,
+        "dateCreation": "2026-10-06",
+        "supprime": false,
+        "versionAgregat": 2
+      }
+    }
+  ]
+}

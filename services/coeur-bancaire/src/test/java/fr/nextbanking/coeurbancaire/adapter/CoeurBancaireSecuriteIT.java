@@ -17,15 +17,23 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 /**
- * Contrôle d'accès du cœur bancaire : sans jeton valide (absent, mal signé, expiré, illisible), tout {@code /api/**}
- * rend 401 « Authentification requise », sans pile ni cookie ; la santé et le témoin restent publics.
+ * Contrôle d'accès de coeur-bancaire : tout est authentifié sauf {@code POST /api/coeur-bancaire/temoin} et
+ * {@code GET /actuator/health} ; sans jeton valide (absent, mal signé, expiré, illisible), 401 « Authentification
+ * requise » en JSON, sans pile, redirection ni cookie ; avec un jeton valide, une route inconnue rend 404
+ * « Ressource introuvable ».
  */
 @SpringBootTest(classes = ApplicationCoeurBancaire.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
 @Tag("FR-011-09")
+@Tag("FR-030-01")
 class CoeurBancaireSecuriteIT {
 
     private static final String AUTHENTIFICATION_REQUISE = "{\"message\":\"Authentification requise\"}";
+    private static final String RESSOURCE_INTROUVABLE = "{\"message\":\"Ressource introuvable\"}";
+    private static final List<String> CHEMINS = List.of("/api/coeur-bancaire/traitements",
+            "/api/coeur-bancaire/traitements?limite=50", "/api/coeur-bancaire/tableau-de-bord",
+            "/api/coeur-bancaire/temoin", "/api/coeur-bancaire/temoin/", "/api/coeur-bancaire/inconnu",
+            "/actuator/info");
 
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
@@ -36,28 +44,37 @@ class CoeurBancaireSecuriteIT {
     private int port;
 
     @Test
-    void sans_jeton_valide_tout_rend_401_sauf_le_temoin() throws Exception {
+    void sans_jeton_ou_avec_un_jeton_invalide_les_points_proteges_rendent_401() throws Exception {
         Instant maintenant = Instant.now();
         KeyPairGenerator generateur = KeyPairGenerator.getInstance("RSA");
         generateur.initialize(2048);
         String malSigne = Jetons.jeton(generateur.generateKeyPair(), "ADMIN", maintenant, maintenant.plusSeconds(1800));
         String expire = Jetons.jeton(Conteneurs.CLES, "ADMIN", maintenant.minusSeconds(7200),
                 maintenant.minusSeconds(3600));
-        List<String[]> requetes = List.of(
-                new String[] {"GET", "/api/coeur-bancaire/traitements", null},
-                new String[] {"GET", "/api/coeur-bancaire/traitements?limite=50", null},
-                new String[] {"GET", "/api/coeur-bancaire/temoin", null},
-                new String[] {"GET", "/api/coeur-bancaire/inconnu", null},
-                new String[] {"GET", "/actuator/info", null});
 
-        for (String[] requete : requetes) {
+        for (String chemin : CHEMINS) {
             for (String jeton : new String[] {null, malSigne, expire, "illisible"}) {
-                HttpResponse<String> reponse = Jetons.envoyer(port, requete[0], requete[1], jeton, requete[2]);
-                assertThat(reponse.statusCode()).as(requete[0] + " " + requete[1]).isEqualTo(401);
+                HttpResponse<String> reponse = Jetons.envoyer(port, "GET", chemin, jeton, null);
+                assertThat(reponse.statusCode()).as(chemin).isEqualTo(401);
                 assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
+                assertThat(reponse.headers().firstValue("Content-Type")).hasValueSatisfying(type ->
+                        assertThat(type).startsWith("application/json"));
+                assertThat(reponse.headers().firstValue("Location")).isEmpty();
                 assertThat(reponse.headers().firstValue("Set-Cookie")).isEmpty();
             }
         }
+    }
+
+    @Test
+    void avec_un_jeton_valide_une_route_inconnue_rend_404() throws Exception {
+        Instant maintenant = Instant.now();
+        String valide = Jetons.jeton(Conteneurs.CLES, "ADMIN", maintenant, maintenant.plusSeconds(1800));
+
+        HttpResponse<String> reponse = Jetons.envoyer(port, "GET", "/api/coeur-bancaire/tableau-de-bord", valide,
+                null);
+
+        assertThat(reponse.statusCode()).isEqualTo(404);
+        assertThat(reponse.body()).isEqualTo(RESSOURCE_INTROUVABLE);
     }
 
     @Test

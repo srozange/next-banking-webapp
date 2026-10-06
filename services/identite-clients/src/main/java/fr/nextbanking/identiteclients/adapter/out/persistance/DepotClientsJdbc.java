@@ -39,6 +39,14 @@ public class DepotClientsJdbc implements DepotClients {
                 .optional();
     }
 
+    @Override
+    public void changerActif(long clientId, boolean actif) {
+        jdbc.sql("update customers set active = :actif, version_agregat = version_agregat + 1 where id = :id")
+                .param("actif", actif)
+                .param("id", clientId)
+                .update();
+    }
+
     private static Client client(ResultSet ligne, int numero) throws SQLException {
         return new Client(ligne.getLong("id"), ligne.getString("username"), ligne.getString("full_name"),
                 Role.valueOf(ligne.getString("role")), ligne.getBoolean("active"), ligne.getString("password"));

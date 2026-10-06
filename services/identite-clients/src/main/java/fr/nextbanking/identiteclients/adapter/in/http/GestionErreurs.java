@@ -1,5 +1,7 @@
 package fr.nextbanking.identiteclients.adapter.in.http;
 
+import fr.nextbanking.identiteclients.domain.AccesRefuse;
+import fr.nextbanking.identiteclients.domain.ClientIntrouvable;
 import fr.nextbanking.identiteclients.domain.ConnexionRefusee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +37,14 @@ public class GestionErreurs {
         return reponse(HttpStatus.UNAUTHORIZED, Textes.AUTHENTIFICATION_REQUISE);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
+    @ExceptionHandler({AccessDeniedException.class, AccesRefuse.class})
     public ResponseEntity<Message> accesRefuse() {
         return reponse(HttpStatus.FORBIDDEN, Textes.ACCES_REFUSE);
+    }
+
+    @ExceptionHandler(ClientIntrouvable.class)
+    public ResponseEntity<Message> clientIntrouvable() {
+        return reponse(HttpStatus.NOT_FOUND, Textes.RESSOURCE_INTROUVABLE);
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})

@@ -22,6 +22,11 @@ class ConsulterProfilCasUsageTest {
         public Optional<Client> parId(long clientId) {
             return clientId == 1L ? Optional.of(USER1) : Optional.empty();
         }
+
+        @Override
+        public void changerActif(long clientId, boolean actif) {
+            throw new UnsupportedOperationException();
+        }
     };
 
     private final ConsulterProfilCasUsage casUsage = new ConsulterProfilCasUsage(depot);

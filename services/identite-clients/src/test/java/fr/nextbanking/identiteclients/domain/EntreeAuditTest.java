@@ -39,6 +39,21 @@ class EntreeAuditTest {
     }
 
     @Test
+    @Tag("FR-026-02")
+    void une_desactivation_et_une_activation_ont_pour_utilisateur_l_administrateur() {
+        EntreeAudit desactivation = EntreeAudit.desactivationClient(10L, 1L, "203.0.113.7", ID, HORODATAGE);
+        EntreeAudit activation = EntreeAudit.activationClient(10L, 1L, "203.0.113.7", ID, HORODATAGE);
+
+        assertThat(desactivation.utilisateur()).isEqualTo("10");
+        assertThat(desactivation.action()).isEqualTo(ActionAudit.ADMIN_DEACTIVATE);
+        assertThat(desactivation.detail()).isEqualTo("Désactivation client id=1");
+        assertThat(desactivation.adresseIp()).isEqualTo("203.0.113.7");
+        assertThat(activation.utilisateur()).isEqualTo("10");
+        assertThat(activation.action()).isEqualTo(ActionAudit.ADMIN_ACTIVATE);
+        assertThat(activation.detail()).isEqualTo("Activation client id=1");
+    }
+
+    @Test
     void une_tentative_echouee_a_pour_utilisateur_l_identifiant_saisi() {
         EntreeAudit entree = EntreeAudit.tentativeEchouee("retro-compte-inexistant", "10.0.0.1", ID, HORODATAGE);
 

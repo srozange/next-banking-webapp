@@ -16,13 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PointEntreeTemoin {
 
+    static final String CHEMIN = "/api/coeur-bancaire/temoin";
+
     private final EcrireTemoin ecrireTemoin;
 
     public PointEntreeTemoin(EcrireTemoin ecrireTemoin) {
         this.ecrireTemoin = ecrireTemoin;
     }
 
-    @PostMapping("/api/coeur-bancaire/temoin")
+    @PostMapping(CHEMIN)
     public ResponseEntity<TemoinCree> ecrire(@RequestBody DemandeTemoin demande) {
         long temoinId = ecrireTemoin.ecrire(demande.libelle());
         return ResponseEntity.status(HttpStatus.CREATED).body(new TemoinCree(temoinId));

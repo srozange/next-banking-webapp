@@ -15,6 +15,13 @@ public class ConfigurationEvenements {
 
     static final String TOPIC_AUDIT = "identite-clients.audit.v1";
 
+    static final String TOPIC_CLIENT_MODIFIE = "identite-clients.client-modifie.v1";
+
+    @Bean
+    NewTopic topicClientModifie() {
+        return TopicBuilder.name(TOPIC_CLIENT_MODIFIE).partitions(3).replicas(1).build();
+    }
+
     @Bean
     NewTopic topicAudit() {
         return TopicBuilder.name(TOPIC_AUDIT).partitions(3).replicas(1).build();
