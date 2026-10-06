@@ -56,9 +56,11 @@ public class GestionErreursVirements {
     }
 
     @ExceptionHandler(ErreurReleve.class)
-    public ResponseEntity<Object> releveRefuse(ErreurReleve refus) {
-        return reponse(refus.motif() == ErreurReleve.Cause.COMPTE_ETRANGER ? HttpStatus.FORBIDDEN
-                : HttpStatus.NOT_FOUND, refus.getMessage());
+    public ResponseEntity<Message> releveRefuse(ErreurReleve refus) {
+        HttpStatus statut = refus.motif() == ErreurReleve.Cause.COMPTE_ETRANGER ? HttpStatus.FORBIDDEN
+                : HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(statut).contentType(MediaType.APPLICATION_JSON)
+                .body(new Message(refus.getMessage()));
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})
