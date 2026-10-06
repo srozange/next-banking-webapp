@@ -123,7 +123,7 @@ describe('accessibilité (axe)', () => {
 
     function ouvrirBourse(points: ReturnType<typeof point>[]) {
       localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
-      return rendreApplication('/bourse', undefined, undefined, undefined, undefined, {
+      return rendreApplication('/bourse', undefined, undefined, undefined, undefined, undefined, {
         lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [valeur(1, 'AI.PA', 'Air Liquide'), valeur(2, 'BNP.PA', 'BNP Paribas')] }),
         lireHistorique: (_jeton, symbole, periode) =>
           Promise.resolve({ statut: 'ok', donnees: { symbole, periode, points, graphique: points.length > 0 ? SVG : null } }),
