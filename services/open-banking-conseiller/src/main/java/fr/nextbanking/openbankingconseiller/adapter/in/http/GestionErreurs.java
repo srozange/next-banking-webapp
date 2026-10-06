@@ -1,5 +1,7 @@
 package fr.nextbanking.openbankingconseiller.adapter.in.http;
 
+import fr.nextbanking.openbankingconseiller.application.ConnexionPowensImpossible;
+import fr.nextbanking.openbankingconseiller.application.PowensIndisponible;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -22,6 +24,18 @@ public class GestionErreurs {
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})
     public ResponseEntity<Message> requeteInvalide() {
         return reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
+    }
+
+    /** Powens refuse ou n'initialise pas la connexion : 503, sans adresse (RG-028-004). */
+    @ExceptionHandler(ConnexionPowensImpossible.class)
+    public ResponseEntity<Message> connexionPowensImpossible() {
+        return reponse(HttpStatus.SERVICE_UNAVAILABLE, Textes.CONNEXION_POWENS_IMPOSSIBLE);
+    }
+
+    /** Powens en panne : jamais une liste vide (BUG-043, BUG-089). */
+    @ExceptionHandler(PowensIndisponible.class)
+    public ResponseEntity<Message> powensIndisponible() {
+        return reponse(HttpStatus.SERVICE_UNAVAILABLE, Textes.POWENS_INDISPONIBLE);
     }
 
     /** Exceptions de Spring MVC qui portent leur statut (400, 404, 405...), sinon erreur technique. */

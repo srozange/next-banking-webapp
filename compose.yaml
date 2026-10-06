@@ -382,6 +382,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${NB_OPEN_BANKING_CONSEILLER_BD_MOT_DE_PASSE:-}
       # Clé publique du jeton : tout /api/** est authentifié ; sans elle, refus de démarrer.
       NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
+      # Powens : vides par défaut (domaine, client et banques sandbox dans le code, secret sans valeur). L'adaptateur
+      # simulé reste actif tant que le mode réel n'est pas demandé hors des fichiers versionnés.
+      POWENS_CLIENT_SECRET: ${POWENS_CLIENT_SECRET:-}
+      POWENS_URL_RETOUR: ${POWENS_URL_RETOUR:-}
+      POWENS_DOMAINE: ${POWENS_DOMAINE:-}
+      POWENS_CLIENT_ID: ${POWENS_CLIENT_ID:-}
+      POWENS_CONNECTOR_ID: ${POWENS_CONNECTOR_ID:-}
     ports:
       - "${NB_PORT_OPEN_BANKING_CONSEILLER:-8088}:8080"
     networks: [nb]

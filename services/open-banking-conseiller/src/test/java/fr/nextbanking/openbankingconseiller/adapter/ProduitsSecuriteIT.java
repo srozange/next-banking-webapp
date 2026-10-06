@@ -24,6 +24,8 @@ import org.springframework.test.context.DynamicPropertySource;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
 @Tag("FR-010-01")
+@Tag("FR-012-17")
+@Tag("FR-012-05")
 class ProduitsSecuriteIT {
 
     private static final String AUTHENTIFICATION_REQUISE = "{\"message\":\"Authentification requise\"}";
@@ -48,6 +50,8 @@ class ProduitsSecuriteIT {
                 new String[] {"GET", "/api/open-banking-conseiller/produits", null},
                 new String[] {"GET", "/api/open-banking-conseiller/produits?type=EPARGNE", null},
                 new String[] {"POST", "/api/open-banking-conseiller/produits", "{}"},
+                new String[] {"POST", "/api/open-banking-conseiller/powens/connexion", null},
+                new String[] {"GET", "/api/open-banking-conseiller/powens", null},
                 new String[] {"GET", "/api/open-banking-conseiller/inconnu", null},
                 new String[] {"GET", "/actuator/info", null});
 
