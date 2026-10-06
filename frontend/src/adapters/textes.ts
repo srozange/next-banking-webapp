@@ -48,6 +48,24 @@ export const TEXTES = {
     monConseiller: 'BankApp Demo - Mon Conseiller',
     /** MSG-011-001 */
     produits: 'BankApp Demo - Produits bancaires',
+    /** FEAT-005 MESSAGES.md, titre de page. */
+    releve: 'BankApp Demo - Relevé de compte',
+  },
+  /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
+  releve: {
+    titre: 'Relevé de compte',
+    compte: 'Compte :',
+    informations: (type: string, numero: string, solde: string) => `${type} — N° ${numero} — Solde actuel : ${solde}`,
+    aucuneTransaction: 'Aucune transaction pour ce compte.',
+    compteur: (nombre: number) => `${nombre} opération(s)`,
+    colonnes: {
+      date: 'Date',
+      description: 'Description',
+      type: 'Type',
+      montant: 'Montant',
+      soldeApres: 'Solde après',
+    },
+    enAttente: 'En attente',
   },
   /**
    * Écran Produits : FEAT-011 MESSAGES.md (casse et absence d'accents comprises) ; titres de section sans

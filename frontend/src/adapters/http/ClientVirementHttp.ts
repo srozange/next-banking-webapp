@@ -5,7 +5,7 @@ export const CHEMIN_VIREMENTS = '/api/coeur-bancaire/virements';
 
 const estCompte = (valeur: unknown): valeur is Compte => {
   const compte = valeur as Partial<Compte> | null;
-  return typeof compte?.id === 'number' && typeof compte.type === 'string' && typeof compte.numero === 'string';
+  return typeof compte?.id === 'number' && typeof compte.type === 'string' && typeof compte.numero === 'string' && typeof compte.solde === 'string' && /^-?\d+\.\d{2}$/.test(compte.solde);
 };
 
 /**

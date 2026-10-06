@@ -1,0 +1,67 @@
+.ecran-releve {
+  box-sizing: border-box;
+  max-width: calc(var(--spacing-4xl) * 8);
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.ecran-releve__titre {
+  margin: 0 0 var(--spacing-lg);
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
+
+.ecran-releve__informations,
+.ecran-releve__compteur {
+  margin: var(--spacing-md) 0;
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.ecran-releve__tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+/* En-têtes rendus en capitales par le CSS, texte source dans sa casse (le golden master compare innerText). */
+.ecran-releve__tableau th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface-inverse);
+  color: var(--color-on-surface-inverse);
+  font-family: var(--font-eyebrow);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--font-weight-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.ecran-releve__tableau td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ecran-releve__tableau .ecran-releve__nombre {
+  text-align: right;
+}
+
+.ecran-releve__ligne--attente {
+  background-color: var(--color-warning-container);
+}
+
+.ecran-releve__type {
+  font-weight: var(--font-weight-label);
+}
+
+.ecran-releve__type--credit {
+  color: var(--color-success);
+}
+
+.ecran-releve__type--debit {
+  color: var(--color-error);
+}

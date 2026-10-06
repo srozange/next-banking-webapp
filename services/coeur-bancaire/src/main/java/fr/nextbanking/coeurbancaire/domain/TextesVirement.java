@@ -23,6 +23,8 @@ public final class TextesVirement {
             "Le virement n'a pas pu etre pris en compte, veuillez reessayer plus tard";
     /** Texte générique d'accès refusé (compte d'un autre client). */
     public static final String ACCES_REFUSE = "Accès refusé";
+    /** Texte générique d'une ressource inexistante (relevé d'un compte inexistant). */
+    public static final String RESSOURCE_INTROUVABLE = "Ressource introuvable";
 
     /** Mention du legacy ajoutée aux opérations d'un virement PENDING (BUG-009 conservé provisoirement). */
     public static final String EN_ATTENTE = "[EN ATTENTE]";

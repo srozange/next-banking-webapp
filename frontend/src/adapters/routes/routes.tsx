@@ -4,6 +4,7 @@ import type { ClientProfil } from '../../application/chargerProfil';
 import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
+import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientVirement } from '../../application/virement';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
 import { Application } from '../Application';
@@ -12,6 +13,7 @@ import { EcranBourse } from '../ecrans/bourse/EcranBourse';
 import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
+import { EcranReleve } from '../ecrans/releve/EcranReleve';
 import { EcranVirement } from '../ecrans/virement/EcranVirement';
 import { TEXTES } from '../textes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
@@ -29,6 +31,7 @@ export interface Dependances {
   clientConversation: ClientConversation;
   session: Session;
   clientVirement: ClientVirement;
+  clientReleve: ClientReleve;
 }
 
 /** Routes protégées sans écran pour l'instant (un titre d'onglet seul) : leur contenu arrive avec les stories suivantes. */
@@ -51,6 +54,7 @@ export function creerRoutes({
   clientConversation,
   session,
   clientVirement,
+  clientReleve,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
   return [
@@ -77,6 +81,8 @@ export function creerRoutes({
             { path: '/produits', element: <EcranProduits client={clientProduits} stockage={stockageJeton} /> },
             ...ROUTES_PROTEGEES.map((path) => ({ path, element: <title>{TITRES_ONGLET[path]}</title> })),
             { path: '/virement', element: <EcranVirement client={clientVirement} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-005-01) : seuls les comptes du jeton sont proposés.
+            { path: '/releve', element: <EcranReleve comptes={clientVirement} releve={clientReleve} /> },
           ],
         },
         { path: '/', element: accueil },

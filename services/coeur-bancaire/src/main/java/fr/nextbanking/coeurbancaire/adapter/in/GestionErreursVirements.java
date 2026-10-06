@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.adapter.in;
 
+import fr.nextbanking.coeurbancaire.domain.ErreurReleve;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,12 @@ public class GestionErreursVirements {
             JOURNAL.error("Virement non pris en compte", refus.getCause());
         }
         return reponse(statut, refus.getMessage());
+    }
+
+    @ExceptionHandler(ErreurReleve.class)
+    public ResponseEntity<Message> releveRefuse(ErreurReleve refus) {
+        return reponse(refus.motif() == ErreurReleve.Cause.COMPTE_ETRANGER ? HttpStatus.FORBIDDEN
+                : HttpStatus.NOT_FOUND, refus.getMessage());
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})

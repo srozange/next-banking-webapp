@@ -6,6 +6,7 @@ import type { ClientProfil, ReponseProfil } from '../../application/chargerProfi
 import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
+import type { ClientReleve, ReponseOperations } from '../../application/consulterReleve';
 import type { ClientVirement, ReponseComptes, ReponseVirement } from '../../application/virement';
 import type { ClientConnexion, ReponseConnexion } from '../../application/seConnecter';
 import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
@@ -19,7 +20,7 @@ import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
  * Outil des tests DOM (jsdom) : rend l'application complète sur un chemin, avec un routeur en mémoire,
  * le vrai stockage localStorage, un client de connexion simulé et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
- * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique) et une horloge réelle ou simulée.
+ * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération) et une horloge réelle ou simulée.
  */
 export function rendreApplication(
   chemin: string,
@@ -31,6 +32,7 @@ export function rendreApplication(
   clientBourse: Partial<ClientBourse> = {},
   clientProduits: Partial<ClientProduits> = {},
   clientConversation: Partial<ClientConversation> = {},
+  clientReleve: Partial<ClientReleve> = {},
 ) {
   const deconnecter = vi.fn(clientSession.deconnecter ?? (() => Promise.resolve()));
   const renouveler = vi.fn(
@@ -52,6 +54,7 @@ export function rendreApplication(
   };
   const lireComptes = vi.fn(clientVirement.lireComptes ?? (() => Promise.resolve<ReponseComptes>({ statut: 'comptes', comptes: [] })));
   const executer = vi.fn(clientVirement.executer ?? (() => Promise.resolve<ReponseVirement>({ statut: 'erreur', message: null })));
+  const lireOperations = vi.fn(clientReleve.lireOperations ?? (() => Promise.resolve<ReponseOperations>({ statut: 'operations', operations: [] })));
   const signal = creerSignalExpiration();
   const connecter = vi.fn(repondre);
   const lire = vi.fn(lireProfil);
@@ -66,9 +69,10 @@ export function rendreApplication(
       clientConversation: conversation,
       session: { client: { deconnecter, renouveler }, expiration: creerExpirationJeton(horloge), signal },
       clientVirement: { lireComptes, executer },
+      clientReleve: { lireOperations },
     }),
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, bourse, produits, conversation };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, bourse, produits, conversation, lireOperations };
 }

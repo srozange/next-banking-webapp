@@ -80,6 +80,17 @@ class ComptesJdbcIT {
         assertThat(comptes.duClient(10)).isEmpty();
     }
 
+    @Test
+    @Tag("FR-005-04")
+    void un_compte_se_lit_par_identifiant_avec_son_solde_s_il_existe() {
+        assertThat(comptes.trouver(1)).hasValueSatisfying(compte -> {
+            assertThat(compte.numero()).isEqualTo("FR76-0001-0001");
+            assertThat(compte.clientId()).isEqualTo(1L);
+            assertThat(compte.solde()).isEqualByComparingTo("2130.00");
+        });
+        assertThat(comptes.trouver(999)).isEmpty();
+    }
+
     private BigDecimal solde(long id) {
         return jdbc.sql("select solde from comptes where id = :id").param("id", id).query(BigDecimal.class).single();
     }

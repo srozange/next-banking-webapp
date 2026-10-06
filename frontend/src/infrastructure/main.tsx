@@ -6,6 +6,7 @@ import { creerClientConversationHttp } from '../adapters/http/ClientConversation
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
 import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
+import { creerClientReleveHttp } from '../adapters/http/ClientReleveHttp';
 import { creerClientVirementHttp } from '../adapters/http/ClientVirementHttp';
 import { creerClientSessionHttp } from '../adapters/http/ClientSessionHttp';
 import { decodeurJetonJwt } from '../adapters/jeton/DecodeurJetonJwt';
@@ -43,6 +44,7 @@ const routeur = createBrowserRouter(
       signal: signalExpiration,
     },
     clientVirement: creerClientVirementHttp(fetchAuthentifie),
+    clientReleve: creerClientReleveHttp(fetchAuthentifie),
   }),
 );
 

@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.adapter.in;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import fr.nextbanking.coeurbancaire.domain.ErreurReleve;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import java.util.Map;
@@ -58,5 +59,19 @@ class GestionErreursVirementsTest {
                 new HttpRequestMethodNotSupportedException(HttpMethod.GET.name()));
         assertThat(methode.getStatusCode()).isEqualTo(HttpStatus.METHOD_NOT_ALLOWED);
         assertThat(methode.getBody().message()).isEqualTo("Ressource introuvable");
+    }
+
+    @Test
+    @Tag("FR-005-05")
+    void un_releve_refuse_rend_403_pour_un_compte_d_autrui_et_404_pour_un_compte_inexistant() {
+        ResponseEntity<GestionErreursVirements.Message> etranger = gestion.releveRefuse(
+                new ErreurReleve(ErreurReleve.Cause.COMPTE_ETRANGER));
+        ResponseEntity<GestionErreursVirements.Message> introuvable = gestion.releveRefuse(
+                new ErreurReleve(ErreurReleve.Cause.COMPTE_INTROUVABLE));
+
+        assertThat(etranger.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(etranger.getBody().message()).isEqualTo("Accès refusé");
+        assertThat(introuvable.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(introuvable.getBody().message()).isEqualTo("Ressource introuvable");
     }
 }

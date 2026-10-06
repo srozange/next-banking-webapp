@@ -6,6 +6,8 @@ export interface Compte {
   id: number;
   type: string;
   numero: string;
+  /** Solde actuel, chaîne à point et deux décimales ("2130.00"). */
+  solde: string;
 }
 
 export interface CommandeVirement {

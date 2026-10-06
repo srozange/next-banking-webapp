@@ -62,6 +62,11 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
+    public Optional<Compte> trouver(long compteId) {
+        return Optional.ofNullable(comptes.get(compteId));
+    }
+
+    @Override
     public List<Compte> verrouiller(long premierId, long secondId) {
         journal.add("verrouiller");
         return java.util.stream.Stream.of(premierId, secondId).sorted().map(comptes::get)
@@ -91,6 +96,12 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     @Override
     public void enregistrer(Operation operation) {
         operations.add(operation);
+    }
+
+    /** Opérations du compte dans l'ordre où elles ont été inscrites : le cas d'usage décide du tri. */
+    @Override
+    public List<Operation> duCompte(long compteId) {
+        return operations.stream().filter(o -> o.compteId() == compteId).toList();
     }
 
     @Override
