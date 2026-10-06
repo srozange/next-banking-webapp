@@ -51,7 +51,7 @@ development_status:
   2-4-naviguer-dans-son-espace-selon-son-rôle: done
   2-5-se-déconnecter-et-retrouver-la-connexion-quand-la-session-ex: done
   2-6-faire-appliquer-les-rôles-par-les-services-eux-mêmes: done
-  2-7-publier-l-état-des-clients-pour-les-autres-services: backlog
+  2-7-publier-l-état-des-clients-pour-les-autres-services: done
   epic-2-retrospective: optional
 
   epic-3: backlog

@@ -10,6 +10,7 @@ import fr.nextbanking.identiteclients.application.ChangerEtatClientCasUsage;
 import fr.nextbanking.identiteclients.application.port.out.DepotClients;
 import fr.nextbanking.identiteclients.application.port.out.Horloge;
 import fr.nextbanking.identiteclients.application.port.out.JournalAudit;
+import fr.nextbanking.identiteclients.application.port.out.PublicationEtatClient;
 import fr.nextbanking.identiteclients.application.port.out.Transaction;
 import fr.nextbanking.identiteclients.domain.Role;
 import fr.nextbanking.identiteclients.infrastructure.ApplicationIdentiteClients;
@@ -72,6 +73,9 @@ class ActivationClientIT {
 
     @Autowired
     private JournalAudit journal;
+
+    @Autowired
+    private PublicationEtatClient publication;
 
     @Autowired
     private Transaction transaction;
@@ -158,6 +162,7 @@ class ActivationClientIT {
     @Test
     void une_desactivation_annulee_garde_son_entree_d_audit() {
         long depuis = LignesAudit.dernierId(jdbc);
+        long depuisEtat = jdbc.sql("select coalesce(max(id), 0) from outbox").query(Long.class).single();
         Transaction quiAnnule = new Transaction() {
             @Override
             public <T> T executer(Supplier<T> travail) {
@@ -172,12 +177,14 @@ class ActivationClientIT {
                 return transaction.executerIndependamment(travail);
             }
         };
-        ChangerEtatClientCasUsage casUsage = new ChangerEtatClientCasUsage(depot, journal, quiAnnule, horloge);
+        ChangerEtatClientCasUsage casUsage = new ChangerEtatClientCasUsage(depot, journal, publication, quiAnnule, horloge);
 
         assertThatThrownBy(() -> casUsage.desactiver(10L, Set.of(Role.ADMIN), 1L, "203.0.113.7"))
                 .hasMessage("annulation voulue");
 
         assertThat(actif(1L)).isTrue();
+        assertThat(jdbc.sql("select count(*) from outbox where id > :id").param("id", depuisEtat)
+                .query(Long.class).single()).isZero();
         assertThat(LignesAudit.depuis(jdbc, depuis)).singleElement().satisfies(ligne -> {
             assertThat(ligne.donnees().get("action").asString()).isEqualTo("ADMIN_DEACTIVATE");
             assertThat(ligne.donnees().get("adresseIp").asString()).isEqualTo("203.0.113.7");

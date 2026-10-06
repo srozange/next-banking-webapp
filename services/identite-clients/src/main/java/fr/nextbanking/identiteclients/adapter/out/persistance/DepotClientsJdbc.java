@@ -41,7 +41,7 @@ public class DepotClientsJdbc implements DepotClients {
 
     @Override
     public void changerActif(long clientId, boolean actif) {
-        jdbc.sql("update customers set active = :actif where id = :id")
+        jdbc.sql("update customers set active = :actif, version_agregat = version_agregat + 1 where id = :id")
                 .param("actif", actif)
                 .param("id", clientId)
                 .update();

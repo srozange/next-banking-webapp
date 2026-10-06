@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import fr.nextbanking.identiteclients.application.port.out.DepotClients;
 import fr.nextbanking.identiteclients.application.port.out.Horloge;
 import fr.nextbanking.identiteclients.application.port.out.JournalAudit;
+import fr.nextbanking.identiteclients.application.port.out.PublicationEtatClient;
 import fr.nextbanking.identiteclients.application.port.out.Transaction;
 import fr.nextbanking.identiteclients.domain.AccesRefuse;
 import fr.nextbanking.identiteclients.domain.ActionAudit;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -75,6 +77,19 @@ class ChangerEtatClientCasUsageTest {
         }
     };
 
+    private final PublicationEtatClient publication = new PublicationEtatClient() {
+        @Override
+        public long consigner(long clientId, UUID idEvenement, Instant horodatage) {
+            deroule.add("etat " + clientId + " " + horodatage);
+            return 9L;
+        }
+
+        @Override
+        public void publier(long idLigne) {
+            deroule.add("publier-etat " + idLigne);
+        }
+    };
+
     private final Transaction transaction = new Transaction() {
         @Override
         public <T> T executer(Supplier<T> travail) {
@@ -109,7 +124,7 @@ class ChangerEtatClientCasUsageTest {
     };
 
     private final ChangerEtatClientCasUsage casUsage =
-            new ChangerEtatClientCasUsage(depot, journal, transaction, horloge);
+            new ChangerEtatClientCasUsage(depot, journal, publication, transaction, horloge);
 
     @Test
     void l_administrateur_desactive_apres_avoir_consigne_l_audit_dans_une_transaction_independante() {
@@ -123,7 +138,7 @@ class ChangerEtatClientCasUsageTest {
             assertThat(entree.horodatage()).isEqualTo(MAINTENANT);
         });
         assertThat(deroule).containsExactly("debut", "lire 1", "independante", "consigner", "actif 1=false",
-                "validation", "publier 7");
+                "etat 1 " + MAINTENANT, "validation", "publier 7", "publier-etat 9");
     }
 
     @Test
@@ -135,7 +150,7 @@ class ChangerEtatClientCasUsageTest {
             assertThat(entree.detail()).isEqualTo("Activation client id=1");
             assertThat(entree.adresseIp()).isNull();
         });
-        assertThat(deroule).contains("actif 1=true").endsWith("publier 7");
+        assertThat(deroule).contains("actif 1=true").endsWith("publier 7", "publier-etat 9");
     }
 
     @Test
@@ -168,6 +183,6 @@ class ChangerEtatClientCasUsageTest {
                 .hasMessage("écriture impossible");
 
         assertThat(consignees).hasSize(1);
-        assertThat(deroule).doesNotContain("validation").noneMatch(e -> e.startsWith("publier"));
+        assertThat(deroule).doesNotContain("validation").noneMatch(e -> e.startsWith("publier") || e.startsWith("etat"));
     }
 }

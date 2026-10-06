@@ -4,6 +4,7 @@ import fr.nextbanking.identiteclients.application.port.in.ChangerEtatClient;
 import fr.nextbanking.identiteclients.application.port.out.DepotClients;
 import fr.nextbanking.identiteclients.application.port.out.Horloge;
 import fr.nextbanking.identiteclients.application.port.out.JournalAudit;
+import fr.nextbanking.identiteclients.application.port.out.PublicationEtatClient;
 import fr.nextbanking.identiteclients.application.port.out.Transaction;
 import fr.nextbanking.identiteclients.domain.AccesRefuse;
 import fr.nextbanking.identiteclients.domain.ClientIntrouvable;
@@ -16,19 +17,22 @@ import java.util.UUID;
  * Cas d'usage : exige le rôle ADMIN (refus sans audit), vérifie que le client existe (sans audit), puis, dans une
  * transaction, consigne l'entrée d'audit ADMIN_DEACTIVATE ou ADMIN_ACTIVATE dans une transaction indépendante,
  * conservée même si l'écriture de {@code active} échoue, avant de modifier l'état. L'entrée est publiée après
- * validation.
+ * validation. L'état complet du client est consigné dans l'outbox des clients, dans la transaction de l'écriture
+ * (annulé avec elle), puis publié après validation.
  */
 public class ChangerEtatClientCasUsage implements ChangerEtatClient {
 
     private final DepotClients depot;
     private final JournalAudit journal;
+    private final PublicationEtatClient publication;
     private final Transaction transaction;
     private final Horloge horloge;
 
-    public ChangerEtatClientCasUsage(DepotClients depot, JournalAudit journal, Transaction transaction,
-            Horloge horloge) {
+    public ChangerEtatClientCasUsage(DepotClients depot, JournalAudit journal,
+            PublicationEtatClient publication, Transaction transaction, Horloge horloge) {
         this.depot = depot;
         this.journal = journal;
+        this.publication = publication;
         this.transaction = transaction;
         this.horloge = horloge;
     }
@@ -50,13 +54,15 @@ public class ChangerEtatClientCasUsage implements ChangerEtatClient {
         if (rolesActeur == null || !rolesActeur.contains(Role.ADMIN)) {
             throw new AccesRefuse();
         }
-        long idLigne = transaction.executer(() -> {
+        long[] lignes = transaction.executer(() -> {
             depot.parId(clientId).orElseThrow(ClientIntrouvable::new);
             EntreeAudit aConsigner = entree.get();
             long ligne = transaction.executerIndependamment(() -> journal.consigner(aConsigner));
             depot.changerActif(clientId, actif);
-            return ligne;
+            long etat = publication.consigner(clientId, UUID.randomUUID(), horloge.instant());
+            return new long[] {ligne, etat};
         });
-        journal.publier(idLigne);
+        journal.publier(lignes[0]);
+        publication.publier(lignes[1]);
     }
 }

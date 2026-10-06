@@ -15,6 +15,7 @@ import fr.nextbanking.identiteclients.application.port.out.EmetteurJeton;
 import fr.nextbanking.identiteclients.application.port.out.Horloge;
 import fr.nextbanking.identiteclients.application.port.out.JournalAudit;
 import fr.nextbanking.identiteclients.application.port.out.MotsDePasse;
+import fr.nextbanking.identiteclients.application.port.out.PublicationEtatClient;
 import fr.nextbanking.identiteclients.application.port.out.Transaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,8 +44,9 @@ public class AssemblageConnexion {
 
     @Bean
     ChangerEtatClient changerEtatClient(DepotClients depotClients, JournalAudit journalAudit,
-            Transaction transaction, Horloge horloge) {
-        return new ChangerEtatClientCasUsage(depotClients, journalAudit, transaction, horloge);
+            PublicationEtatClient publicationEtatClient, Transaction transaction, Horloge horloge) {
+        return new ChangerEtatClientCasUsage(depotClients, journalAudit, publicationEtatClient, transaction,
+                horloge);
     }
 
     @Bean
