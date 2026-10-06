@@ -91,7 +91,7 @@ const SERIES = { 'AI.PA': SERIE_BAISSE, MSFT: SERIE_HAUSSE, 'SG.PA': SERIE_HAUSS
 
 function ouvrir(service = serviceBourse({ series: SERIES }), roles: string[] = ['CLIENT']) {
   localStorage.setItem('nb.jeton', jetonDeTest({ sub: '1', roles }));
-  const rendu = rendreApplication('/bourse', undefined, undefined, undefined, undefined, service);
+  const rendu = rendreApplication('/bourse', undefined, undefined, undefined, undefined, undefined, service);
   return { service, ...rendu };
 }
 

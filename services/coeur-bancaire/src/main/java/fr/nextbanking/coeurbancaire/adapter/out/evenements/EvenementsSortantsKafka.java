@@ -2,7 +2,9 @@ package fr.nextbanking.coeurbancaire.adapter.out.evenements;
 
 import fr.nextbanking.coeurbancaire.application.port.out.EvenementsSortants;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
+import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +36,24 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
 
     @Override
     public long consigner(TemoinEcrit evenement) {
+        return inserer(evenement.idEvenement(), EnveloppeTemoinEcrit.TOPIC, Long.toString(evenement.temoinId()),
+                enJson(evenement));
+    }
+
+    @Override
+    public long consigner(VirementATraiter evenement) {
+        return inserer(evenement.idEvenement(), EnveloppeVirementATraiter.TOPIC,
+                Long.toString(evenement.virementId()), enJson(evenement));
+    }
+
+    private long inserer(UUID idEvenement, String topic, String cle, String charge) {
         return jdbc.sql("""
                 insert into outbox (id_evenement, topic, cle, charge)
                 values (:idEvenement, :topic, :cle, :charge) returning id""")
-                .param("idEvenement", evenement.idEvenement())
-                .param("topic", EnveloppeTemoinEcrit.TOPIC)
-                .param("cle", Long.toString(evenement.temoinId()))
-                .param("charge", enJson(evenement))
+                .param("idEvenement", idEvenement)
+                .param("topic", topic)
+                .param("cle", cle)
+                .param("charge", charge)
                 .query(Long.class)
                 .single();
     }
@@ -56,6 +69,10 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
 
     String enJson(TemoinEcrit evenement) {
         return json.writeValueAsString(EnveloppeTemoinEcrit.de(evenement));
+    }
+
+    String enJson(VirementATraiter evenement) {
+        return json.writeValueAsString(EnveloppeVirementATraiter.de(evenement));
     }
 
     List<LigneOutbox> nonPubliees() {

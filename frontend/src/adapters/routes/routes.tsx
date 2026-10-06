@@ -4,6 +4,7 @@ import type { ClientProfil } from '../../application/chargerProfil';
 import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
+import type { ClientVirement } from '../../application/virement';
 import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
 import { Application } from '../Application';
 import type { Session } from '../session/session';
@@ -11,6 +12,7 @@ import { EcranBourse } from '../ecrans/bourse/EcranBourse';
 import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
+import { EcranVirement } from '../ecrans/virement/EcranVirement';
 import { TEXTES } from '../textes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { RedirectionAccueil } from './RedirectionAccueil';
@@ -26,6 +28,7 @@ export interface Dependances {
   clientProduits: ClientProduits;
   clientConversation: ClientConversation;
   session: Session;
+  clientVirement: ClientVirement;
 }
 
 /** Routes protégées sans écran pour l'instant (un titre d'onglet seul) : leur contenu arrive avec les stories suivantes. */
@@ -38,7 +41,17 @@ const TITRES_ONGLET: Readonly<Record<(typeof ROUTES_PROTEGEES)[number], string>>
   '/administration': TEXTES.titresOnglet.administration,
 };
 
-export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, clientProfil, clientBourse, clientProduits, clientConversation, session }: Dependances): RouteObject[] {
+export function creerRoutes({
+  clientConnexion,
+  stockageJeton,
+  decodeurJeton,
+  clientProfil,
+  clientBourse,
+  clientProduits,
+  clientConversation,
+  session,
+  clientVirement,
+}: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
   return [
     {
@@ -63,6 +76,7 @@ export function creerRoutes({ clientConnexion, stockageJeton, decodeurJeton, cli
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-011-01).
             { path: '/produits', element: <EcranProduits client={clientProduits} stockage={stockageJeton} /> },
             ...ROUTES_PROTEGEES.map((path) => ({ path, element: <title>{TITRES_ONGLET[path]}</title> })),
+            { path: '/virement', element: <EcranVirement client={clientVirement} /> },
           ],
         },
         { path: '/', element: accueil },

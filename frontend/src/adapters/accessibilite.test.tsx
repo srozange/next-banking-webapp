@@ -76,7 +76,7 @@ describe('accessibilité (axe)', () => {
 
     function ouvrirBourse(points: ReturnType<typeof point>[]) {
       localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
-      return rendreApplication('/bourse', undefined, undefined, undefined, undefined, {
+      return rendreApplication('/bourse', undefined, undefined, undefined, undefined, undefined, {
         lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [valeur(1, 'AI.PA', 'Air Liquide'), valeur(2, 'BNP.PA', 'BNP Paribas')] }),
         lireHistorique: (_jeton, symbole, periode) =>
           Promise.resolve({ statut: 'ok', donnees: { symbole, periode, points, graphique: points.length > 0 ? SVG : null } }),
@@ -109,7 +109,7 @@ describe('accessibilité (axe)', () => {
   describe('/mon-conseiller', () => {
     function ouvrirConseiller() {
       localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
-      rendreApplication('/mon-conseiller', undefined, undefined, undefined, undefined, undefined, undefined, {
+      rendreApplication('/mon-conseiller', undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
         envoyer: () => Promise.resolve({ statut: 'ok', reponse: 'Réponse de Sophie' }),
       });
     }
@@ -149,7 +149,7 @@ describe('accessibilité (axe)', () => {
 
     async function ouvrirProduits(journal: typeof JOURNAL) {
       localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
-      rendreApplication('/produits', undefined, undefined, undefined, undefined, undefined, {
+      rendreApplication('/produits', undefined, undefined, undefined, undefined, undefined, undefined, {
         lireCatalogue: () => Promise.resolve({ statut: 'ok', donnees: CATALOGUE }),
         lireTraitements: () => Promise.resolve({ statut: 'ok', donnees: journal }),
       });
@@ -189,5 +189,20 @@ describe('accessibilité (axe)', () => {
     );
 
     expect(await reglesViolees()).toContain('label');
+  });
+
+  it('[axe] /virement, vierge puis avec ses erreurs, ne relève aucune violation', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const utilisateur = userEvent.setup();
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    rendreApplication('/virement', undefined, undefined, undefined, undefined, {
+      lireComptes: () => Promise.resolve({ statut: 'comptes', comptes: [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001' }] }),
+    });
+    await screen.findByTestId('virement-executer');
+    await waitFor(() => expect((screen.getByTestId('virement-compte-source') as HTMLSelectElement).options).toHaveLength(2));
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('virement-executer'));
+    expect(await reglesViolees()).toEqual([]);
   });
 });

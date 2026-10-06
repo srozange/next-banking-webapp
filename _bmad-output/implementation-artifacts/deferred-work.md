@@ -111,7 +111,31 @@ severity: medium
 reason: Aucun DefaultErrorHandler configuré ; chaque essai attend le délai Hikari (30 s), puis l'offset est validé. Même motif que le consommateur notifications (story 1.4) : la politique de reprise (attente exponentielle, topic de rejet, exceptions non rejouables) est à décider pour tous les consommateurs (Edge Case Hunter).
 status: open
 
-### DW-12: Aucune commande outillée ne charge services/bourse/reference-data/reference-data.sql dans la pile compose : la watchlist reste vide après `docker compose up`.
+### DW-12: Données de référence incomplètes : seuls les comptes 1 et 2 de user1 sont documentés dans docs/retro.
+origin: spec-deferred 9166a9e47f30
+location: services/coeur-bancaire/reference-data/reference-data.sql
+source_spec: `spec-3-1-executer-un-virement-entre-ses-comptes.md`
+severity: medium
+reason: Les 5 autres comptes du legacy et les 45 opérations (dont les 5 dernières du COURANT de user1, AR-80) ne figurent pas dans docs/retro ; le solde de l'EPARGNE (15 200,00) est déduit du total de FEAT-002. À compléter par la story « Socle du rejeu final ».
+status: open
+
+### DW-13: Texte « Issue » de l'audit VIREMENT quand la remise est impossible (BUG-073) : ECHEC_REMISE est un choix provisoire.
+origin: spec-deferred b14871e6f743
+location: n/a
+source_spec: `spec-3-1-executer-un-virement-entre-ses-comptes.md`
+severity: low
+reason: FR-026-03 ne fixe que EXECUTE, SUSPENDU et REFUSE_ERREUR_CONTROLE ; un texte manquant est un point ouvert à confirmer.
+status: open
+
+### DW-14: Format de HORLOGE_DECALAGE (durée ISO-8601) à confirmer au premier rejeu.
+origin: spec-deferred 7cbac841f38c
+location: n/a
+source_spec: `spec-3-1-executer-un-virement-entre-ses-comptes.md`
+severity: low
+reason: Retenu sans vérification en compose (make rejeu-up) ; à confirmer par la story « Socle du rejeu final ».
+status: open
+
+### DW-15: Aucune commande outillée ne charge services/bourse/reference-data/reference-data.sql dans la pile compose : la watchlist reste vide après `docker compose up`.
 origin: spec-deferred 13e30c604155
 location: services/bourse/reference-data/reference-data.sql ; Makefile
 source_spec: `spec-7-1-ouvrir-le-service-bourse-et-gerer-la-watchlist-commune.md`
@@ -119,7 +143,7 @@ severity: medium
 reason: Même constat que pour identite-clients (report de la story 2.1) : le chargement est prévu par `make reset-data` (spine AD-11, golden-master-architecture §5.2), livré par la story « Socle du rejeu final ». Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur une pile isolée.
 status: open
 
-### DW-13: Les vert et rouge de l'écran viennent des tokens `--color-success` (#0b7a3e) et `--color-error` (#c4122f), pas des teintes legacy #2e7d32 et #E3000F.
+### DW-16: Les vert et rouge de l'écran viennent des tokens `--color-success` (#0b7a3e) et `--color-error` (#c4122f), pas des teintes legacy #2e7d32 et #E3000F.
 origin: spec-deferred 69378a65b706
 location: frontend/src/adapters/ecrans/bourse/EcranBourse.css
 source_spec: `spec-7-4-afficher-l-ecran-bourse.md`
@@ -127,7 +151,7 @@ severity: low
 reason: `tokens.css` est généré depuis DESIGN.md et le test `couleurs-hors-tokens` interdit toute couleur en dur dans `src` ; l'écart de teinte avec le legacy relève du design (UX-DR1), pas de cette story.
 status: open
 
-### DW-14: Le service bourse renvoie des prix à 4 décimales ("170.1600") ; le front les arrondit à 2 décimales (`centimesDepuisPrix`).
+### DW-17: Le service bourse renvoie des prix à 4 décimales ("170.1600") ; le front les arrondit à 2 décimales (`centimesDepuisPrix`).
 origin: spec-deferred 01195b30c3e0
 location: frontend/src/domain/bourse.ts:44
 source_spec: `spec-7-4-afficher-l-ecran-bourse.md`
@@ -135,7 +159,7 @@ severity: low
 reason: Contrat constaté dans le service (7.2/7.3) ; l'arrondi demi-supérieur est cohérent avec l'affichage legacy à 2 décimales, à confirmer par le métier si l'arrondi exact importe.
 status: open
 
-### DW-15: Aucune commande outillée ne charge services/open-banking-conseiller/reference-data/reference-data.sql dans la pile compose : le catalogue reste vide après `docker compose up`.
+### DW-18: Aucune commande outillée ne charge services/open-banking-conseiller/reference-data/reference-data.sql dans la pile compose : le catalogue reste vide après `docker compose up`.
 origin: spec-deferred 21c0faa07fe4
 location: services/open-banking-conseiller/reference-data/reference-data.sql ; Makefile
 source_spec: `spec-7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata.md`
@@ -143,7 +167,7 @@ severity: medium
 reason: Même constat que pour bourse et identite-clients : le chargement est prévu par `make reset-data` (story « Socle du rejeu final »). Le chargement manuel par psql est décrit dans les Design Notes et a été vérifié sur la pile.
 status: open
 
-### DW-16: Le dépôt minimal s'affiche « 300,00 EUR » alors que le legacy affichait « EUR300 » (format monétaire JSF non spécifié par le PRD).
+### DW-19: Le dépôt minimal s'affiche « 300,00 EUR » alors que le legacy affichait « EUR300 » (format monétaire JSF non spécifié par le PRD).
 origin: spec-deferred eb6630d0ba23
 location: frontend/src/domain/produits.ts
 source_spec: `spec-7-6-afficher-l-ecran-produits.md`
@@ -151,14 +175,14 @@ severity: low
 reason: Choix de cette story (Design Notes), à confirmer par le métier ; le golden master SC-011-01 ne compare pas cette valeur.
 status: open
 
-### DW-17: trace-smoke.sh non exécuté pour la story 7.7.
+### DW-20: trace-smoke.sh non exécuté pour la story 7.7.
 origin: spec-deferred fe5e50232b09
 location: n/a
 source_spec: `spec-7-7-raccorder-azure-openai-derriere-un-port-simule-et-exposer-l-echange-avec-sophie.md`
 reason: Le script exige la pile compose ; non lancé dans cette session.
 status: open
 
-### DW-18: trace-smoke.sh non exécuté pour la story 7.8.
+### DW-21: trace-smoke.sh non exécuté pour la story 7.8.
 origin: spec-deferred a041d069f888
 location: n/a
 source_spec: `spec-7-8-dialoguer-avec-sophie-sur-l-ecran-mon-conseiller.md`

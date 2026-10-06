@@ -6,6 +6,7 @@ import { creerClientConversationHttp } from '../adapters/http/ClientConversation
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
 import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
+import { creerClientVirementHttp } from '../adapters/http/ClientVirementHttp';
 import { creerClientSessionHttp } from '../adapters/http/ClientSessionHttp';
 import { decodeurJetonJwt } from '../adapters/jeton/DecodeurJetonJwt';
 import { creerRoutes } from '../adapters/routes/routes';
@@ -41,6 +42,7 @@ const routeur = createBrowserRouter(
       expiration: creerExpirationJeton(horlogeSysteme),
       signal: signalExpiration,
     },
+    clientVirement: creerClientVirementHttp(fetchAuthentifie),
   }),
 );
 

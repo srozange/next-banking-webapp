@@ -64,7 +64,7 @@ function service(catalogue: ReponseProduits<Catalogue> = { statut: 'ok', donnees
 
 function ouvrir(client = service(), roles: string[] = ['CLIENT']) {
   localStorage.setItem('nb.jeton', jetonDeTest({ sub: '1', roles }));
-  const rendu = rendreApplication('/produits', undefined, undefined, undefined, undefined, undefined, client);
+  const rendu = rendreApplication('/produits', undefined, undefined, undefined, undefined, undefined, undefined, client);
   return { client, ...rendu };
 }
 

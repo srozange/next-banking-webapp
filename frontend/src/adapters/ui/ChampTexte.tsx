@@ -17,17 +17,44 @@ interface Proprietes {
   aide?: string;
   /** Message d'erreur affiché sous le champ, relié par aria-describedby. */
   erreur?: string;
+  /** Aide affichée sous le champ, reliée par aria-describedby. */
+  indice?: string;
+  /** Champ facultatif : ni astérisque ni aria-required. */
+  facultatif?: boolean;
+  inputMode?: 'text' | 'decimal';
   ref?: Ref<HTMLInputElement>;
 }
 
 /** Champ obligatoire avec libellé relié (label for) ; l'astérisque est purement visuel (CSS). */
-export function ChampTexte({ id, name, type, libelle, valeur, onChange, testId, autoComplete, maxLength, placeholder, aide, erreur, ref }: Proprietes) {
+export function ChampTexte({
+  id,
+  name,
+  type,
+  libelle,
+  valeur,
+  onChange,
+  testId,
+  autoComplete,
+  maxLength,
+  placeholder,
+  aide,
+  erreur,
+  indice,
+  facultatif = false,
+  inputMode,
+  ref,
+}: Proprietes) {
   const idErreur = `${id}-erreur`;
   const idAide = `${id}-aide`;
-  const description = [aide === undefined ? null : idAide, erreur === undefined ? null : idErreur].filter((cible) => cible !== null).join(' ');
+  const idIndice = `${id}-indice`;
+  const decrit = [
+    aide === undefined ? null : idAide,
+    indice === undefined ? null : idIndice,
+    erreur === undefined ? null : idErreur,
+  ].filter((cible) => cible !== null);
   return (
     <div className="champ-texte">
-      <label className="champ-texte__libelle" htmlFor={id}>
+      <label className={facultatif ? 'champ-texte__libelle champ-texte__libelle--facultatif' : 'champ-texte__libelle'} htmlFor={id}>
         {libelle}
       </label>
       <input
@@ -41,14 +68,20 @@ export function ChampTexte({ id, name, type, libelle, valeur, onChange, testId, 
         autoComplete={autoComplete}
         maxLength={maxLength}
         placeholder={placeholder}
-        aria-required="true"
+        inputMode={inputMode}
+        aria-required={facultatif ? undefined : 'true'}
         aria-invalid={erreur === undefined ? undefined : 'true'}
-        aria-describedby={description === '' ? undefined : description}
+        aria-describedby={decrit.length === 0 ? undefined : decrit.join(' ')}
         data-testid={testId}
       />
       {aide !== undefined && (
         <p id={idAide} className="champ-texte__aide">
           {aide}
+        </p>
+      )}
+      {indice !== undefined && (
+        <p id={idIndice} className="champ-texte__indice">
+          {indice}
         </p>
       )}
       {erreur !== undefined && (

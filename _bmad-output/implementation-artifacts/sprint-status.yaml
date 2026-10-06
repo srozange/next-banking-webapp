@@ -55,7 +55,7 @@ development_status:
   epic-2-retrospective: optional
 
   epic-3: backlog
-  3-1-exécuter-un-virement-entre-ses-comptes: backlog
+  3-1-exécuter-un-virement-entre-ses-comptes: done
   3-2-évaluer-les-signaux-de-fraude-de-chaque-virement: backlog
   3-3-notifier-le-client-de-l-issue-de-son-virement: backlog
   3-4-suspendre-refuser-revoir-et-rejeter-à-l-échéance-un-virement: backlog

@@ -6,6 +6,7 @@ import type { ClientProfil, ReponseProfil } from '../../application/chargerProfi
 import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
+import type { ClientVirement, ReponseComptes, ReponseVirement } from '../../application/virement';
 import type { ClientConnexion, ReponseConnexion } from '../../application/seConnecter';
 import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
 import { creerRoutes } from '../routes/routes';
@@ -26,6 +27,7 @@ export function rendreApplication(
   lireProfil: ClientProfil['lire'] = () => Promise.resolve<ReponseProfil>({ statut: 'profil', nomComplet: 'Jean Dupont' }),
   horloge: Horloge = horlogeSysteme,
   clientSession: Partial<ClientSession> = {},
+  clientVirement: Partial<ClientVirement> = {},
   clientBourse: Partial<ClientBourse> = {},
   clientProduits: Partial<ClientProduits> = {},
   clientConversation: Partial<ClientConversation> = {},
@@ -48,6 +50,8 @@ export function rendreApplication(
   const conversation: ClientConversation = {
     envoyer: vi.fn(clientConversation.envoyer ?? technique),
   };
+  const lireComptes = vi.fn(clientVirement.lireComptes ?? (() => Promise.resolve<ReponseComptes>({ statut: 'comptes', comptes: [] })));
+  const executer = vi.fn(clientVirement.executer ?? (() => Promise.resolve<ReponseVirement>({ statut: 'erreur', message: null })));
   const signal = creerSignalExpiration();
   const connecter = vi.fn(repondre);
   const lire = vi.fn(lireProfil);
@@ -61,9 +65,10 @@ export function rendreApplication(
       clientProduits: produits,
       clientConversation: conversation,
       session: { client: { deconnecter, renouveler }, expiration: creerExpirationJeton(horloge), signal },
+      clientVirement: { lireComptes, executer },
     }),
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, bourse, produits, conversation };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, bourse, produits, conversation };
 }

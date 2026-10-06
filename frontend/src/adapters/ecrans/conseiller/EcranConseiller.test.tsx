@@ -24,7 +24,7 @@ type Envoyer = ClientConversation['envoyer'];
 
 function ouvrir(role = 'CLIENT', envoyer: Envoyer = () => Promise.resolve<ReponseConversation>({ statut: 'ok', reponse: 'Réponse de Sophie' }), profil?: Parameters<typeof rendreApplication>[2]) {
   localStorage.setItem('nb.jeton', jetonDeTest({ roles: [role] }));
-  return rendreApplication('/mon-conseiller', undefined, profil, undefined, undefined, undefined, undefined, { envoyer });
+  return rendreApplication('/mon-conseiller', undefined, profil, undefined, undefined, undefined, undefined, undefined, { envoyer });
 }
 
 const ecran = () => screen.getByTestId('chat-contenu');

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "coeur-bancaire.virement-a-traiter.v1",
+  "title": "Virement remis au traitement asynchrone (topic interne)",
+  "description": "Publié par coeur-bancaire sur le topic coeur-bancaire.virement-a-traiter.v1 par l'outbox, dans la même transaction que le débit, clé = identifiant du virement, chaîne JSON sans en-tête de type. Topic interne : consommé par coeur-bancaire lui-même (remplace la file JMS « virements »), de façon idempotente (evenements_traites). Il ne produit aucune notification.",
+  "type": "object",
+  "required": ["idEvenement", "type", "version", "horodatage", "producteur", "donnees"],
+  "additionalProperties": false,
+  "properties": {
+    "idEvenement": { "type": "string", "format": "uuid" },
+    "type": { "const": "virement-a-traiter" },
+    "version": { "const": 1 },
+    "horodatage": { "type": "string", "format": "date-time", "description": "ISO 8601 UTC, lu sur le port Horloge du producteur." },
+    "producteur": { "const": "coeur-bancaire" },
+    "donnees": {
+      "type": "object",
+      "required": ["virementId", "montant", "emetteurId", "compteDestinataireId", "motif"],
+      "additionalProperties": false,
+      "properties": {
+        "virementId": { "type": "integer", "minimum": 1 },
+        "montant": { "type": "string", "pattern": "^\\d+\\.\\d{2}$", "description": "Chaîne décimale à point, 2 décimales." },
+        "emetteurId": { "type": "integer", "minimum": 1, "description": "Identifiant (clientId) de l'émetteur du virement." },
+        "compteDestinataireId": { "type": "integer", "minimum": 1, "description": "Identifiant numérique (compteId) du compte destinataire." },
+        "motif": { "type": ["string", "null"], "maxLength": 100 }
+      }
+    }
+  },
+  "examples": [
+    {
+      "idEvenement": "5e8f1a2b-3c4d-4e5f-a6b7-8c9d0e1f2a3b",
+      "type": "virement-a-traiter",
+      "version": 1,
+      "horodatage": "2026-11-17T09:00:00Z",
+      "producteur": "coeur-bancaire",
+      "donnees": {
+        "virementId": 12,
+        "montant": "100.00",
+        "emetteurId": 1,
+        "compteDestinataireId": 2,
+        "motif": "loyer"
+      }
+    }
+  ]
+}
