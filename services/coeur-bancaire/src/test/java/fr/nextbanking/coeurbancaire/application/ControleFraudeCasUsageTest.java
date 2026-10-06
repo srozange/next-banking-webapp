@@ -3,6 +3,7 @@ package fr.nextbanking.coeurbancaire.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import fr.nextbanking.coeurbancaire.domain.ControleEnErreur;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude.Evaluation;
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
@@ -89,7 +90,8 @@ class ControleFraudeCasUsageTest {
         memoire.historiqueEnErreur = new IllegalStateException("historique indisponible");
 
         assertThatThrownBy(() -> controle.evaluer(7, new BigDecimal("100.00"), IBAN,
-                MemoireCoeurBancaire.MAINTENANT)).hasMessage("historique indisponible");
+                MemoireCoeurBancaire.MAINTENANT)).isInstanceOf(ControleEnErreur.class)
+                .hasRootCauseMessage("historique indisponible");
 
         assertThat(lignes).extracting(LogRecord::getLevel).containsExactly(Level.SEVERE);
         assertThat(lignes.getFirst().getThrown()).hasMessage("historique indisponible");

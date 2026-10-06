@@ -5,6 +5,7 @@ import fr.nextbanking.coeurbancaire.application.port.out.Beneficiaires;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.application.port.out.HistoriqueVirements;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
+import fr.nextbanking.coeurbancaire.domain.ControleEnErreur;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude.Evaluation;
 import fr.nextbanking.coeurbancaire.domain.HistoriqueClient;
@@ -43,8 +44,8 @@ public class ControleFraudeCasUsage {
     }
 
     /**
-     * Évalue le virement. Une erreur d'accès à l'historique est journalisée puis relancée : elle fait échouer la
-     * transaction (le refus pour erreur de contrôle est la story 3.4).
+     * Évalue le virement. Une erreur d'accès à l'historique (échec ou délai dépassé) est journalisée puis relancée en
+     * {@link ControleEnErreur} : elle fait échouer la transaction, le virement est refusé pour erreur de contrôle.
      */
     Evaluation evaluer(long clientId, BigDecimal montant, String numeroDestinataire, Instant soumisLe) {
         Iban destinataire = new Iban(numeroDestinataire);
@@ -65,7 +66,7 @@ public class ControleFraudeCasUsage {
         } catch (RuntimeException echec) {
             JOURNAL.log(Level.SEVERE, "Contrôle de fraude du virement du client " + clientId + " vers "
                     + destinataire + " en erreur", echec);
-            throw echec;
+            throw new ControleEnErreur(echec);
         }
     }
 

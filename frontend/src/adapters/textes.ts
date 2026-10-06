@@ -37,6 +37,78 @@ export const TEXTES = {
     /** virement.validation.montant */
     validationMontant: 'Veuillez saisir le montant',
     comptesIdentiques: 'Le compte source et destination doivent être différents',
+    /** virement.avis.suspension, en deux parties autour de l'heure butoir (`virement.revue.butoir.valeur`). */
+    avisSuspension: {
+      avant: (montant: string, numeroCompte: string) =>
+        `Votre virement de ${montant} EUR vers le compte ${numeroCompte} est en cours de vérification. Rien n'a été débité. Vous aurez notre réponse avant le `,
+      apres: '. Sans décision à cette heure, il sera rejeté sans aucun débit.',
+    },
+    /** virement.refus.erreur.controle, en deux parties autour de la référence. */
+    refusErreurControle: {
+      avant:
+        "Votre virement n'a pas pu être vérifié. Rien n'a été débité. Ce n'est pas un refus de votre banque. Vous pouvez refaire votre demande dans quelques minutes ; si cela persiste, contactez-nous avec la référence ",
+      apres: '.',
+    },
+    /** « Suivi de mes virements » (virement.revue.*, virement.etat.*). */
+    suivi: {
+      titre: 'Suivi de mes virements',
+      aide: "Vous n'avez rien à faire : l'état de chaque virement se met à jour sur cette page. Un virement rejeté n'a pas été débité ; vous pouvez refaire votre demande.",
+      vide: 'Aucun virement à suivre',
+      colonnes: {
+        date: 'Date',
+        compte: 'Compte destinataire',
+        montant: 'Montant',
+        etat: 'Etat',
+        butoir: 'Réponse avant le',
+      },
+      /** virement.revue.butoir.valeur */
+      butoir: (date: string, heure: string) => `${date} à ${heure}`,
+      etats: {
+        EXECUTE: 'Exécuté - débité',
+        SUSPENDU: 'En cours de vérification - non débité',
+        LIBERE: 'Accepté - pas encore débité',
+        REJETE: 'Rejeté - non débité',
+      },
+    },
+  },
+  /** Section de revue des virements suspendus, écran Administration (revue.*, textes-nouveaux.md). */
+  revue: {
+    titre: 'Virements suspendus — En attente de revue',
+    vide: 'Aucun virement suspendu',
+    colonnes: {
+      client: 'Client',
+      montant: 'Montant',
+      compte: 'Compte destinataire',
+      motif: 'Motif de suspension',
+      butoir: 'Heure butoir',
+      actions: 'Actions',
+    },
+    liberer: 'Libérer',
+    rejeter: 'Rejeter',
+    modale: {
+      titreLiberer: (montant: string, numeroCompte: string) => `Libérer le virement de ${montant} EUR vers le compte ${numeroCompte}`,
+      titreRejeter: (montant: string, numeroCompte: string) => `Rejeter le virement de ${montant} EUR vers le compte ${numeroCompte}`,
+      champMotif: 'Motif de la décision',
+      valider: 'Valider',
+      annuler: 'Annuler',
+    },
+    /** revue.erreur.motif.manquant (MSG-007-127) */
+    erreurMotifManquant: 'Veuillez indiquer un motif',
+    succesLiberer: 'Libération enregistrée : le virement est accepté, son débit va être effectué.',
+    succesRejeter: 'Rejet enregistré : le virement est rejeté sans débit.',
+    erreurSoldeInsuffisant: 'Libération refusée : solde insuffisant. Le virement est rejeté, sans aucun débit.',
+    erreurHeureButoir: 'Heure butoir dépassée : le virement est rejeté.',
+    historique: {
+      titre: 'Virements traités',
+      colonneIssue: 'Issue',
+      colonneDate: "Date de l'issue",
+    },
+    issues: {
+      LIBERE: 'Libéré',
+      REJETE: 'Rejeté',
+      REJETE_HEURE_BUTOIR: 'Rejeté - heure butoir dépassée',
+      REJETE_SOLDE_AU_DEBIT: 'Rejeté : solde insuffisant au moment du débit',
+    },
   },
   /** Titres d'onglet des pages déclarées (FEAT-002 MSG-002-001, FEAT-015, FEAT-016 MSG-016-001). */
   titresOnglet: {

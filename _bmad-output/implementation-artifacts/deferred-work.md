@@ -150,3 +150,11 @@ source_spec: `spec-3-3-notifier-le-client-de-l-issue-de-son-virement.md`
 severity: low
 reason: AD-25 prévoit un `titre` rendu par le producteur, mais le legacy n'en a pas pour un virement (MESSAGES.md) et textes-nouveaux.md n'en propose pas ; aucun texte inventé. À fixer par le métier (point ouvert) avant l'affichage de la story 3.9.
 status: open
+
+### DW-17: Unreadable `deferred:` items in spec-3-4-suspendre-refuser-revoir-et-rejeter-a-l-echeance-un-virement.md
+origin: spec-deferred-malformed 9dfb71774667
+location: n/a
+source_spec: `spec-3-4-suspendre-refuser-revoir-et-rejeter-a-l-echeance-un-virement.md`
+severity: low
+reason: The dev session recorded deferred findings the orchestrator could not parse, so they were NOT filed as entries: item 1: not a mapping (got str); item 2: not a mapping (got str); item 3: not a mapping (got str); item 4: not a mapping (got str); item 5: not a mapping (got str); item 6: not a mapping (got str). Read `spec-3-4-suspendre-refuser-revoir-et-rejeter-a-l-echeance-un-virement.md`'s frontmatter and re-file them by hand.
+status: open

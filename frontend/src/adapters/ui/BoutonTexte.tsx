@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import './BoutonTexte.css';
 
 interface Proprietes {
   'data-testid': string;
   children: ReactNode;
-  onClick?: () => void;
+  onClick?: (evenement: MouseEvent<HTMLButtonElement>) => void;
 }
 
 /** Bouton secondaire présenté comme un lien de navigation (typographie label, texte ink) ; son action est portée par l'appelant. */

@@ -61,4 +61,19 @@ class RecepteurVirementATraiterTest {
         assertThat(recus).hasSize(2);
         assertThat(sortie.getOut()).contains("déjà traité", "inconnu");
     }
+
+    @Test
+    @Tag("FR-027-16")
+    void journalise_un_virement_libere_execute_ou_rejete_et_un_etat_inattendu(CapturedOutput sortie) {
+        issue = Issue.EXECUTE_APRES_LIBERATION;
+        recepteur.recevoir(json.writeValueAsString(exemple));
+        issue = Issue.REJETE_SOLDE_INSUFFISANT;
+        recepteur.recevoir(json.writeValueAsString(exemple));
+        issue = Issue.ETAT_INATTENDU;
+        recepteur.recevoir(json.writeValueAsString(exemple));
+
+        assertThat(recus).hasSize(3);
+        assertThat(sortie.getOut()).contains("libéré : débité et exécuté", "solde insuffisant au débit",
+                "état inattendu");
+    }
 }

@@ -1,5 +1,7 @@
 package fr.nextbanking.coeurbancaire.domain;
 
+import java.time.ZoneId;
+
 /**
  * Notification de l'issue d'un virement, entièrement rendue par le cœur bancaire (AD-25) : le service
  * {@code notifications} la stocke telle quelle. Le titre n'a aucun texte défini pour un virement : il est absent
@@ -26,5 +28,12 @@ public record NotificationVirement(long clientId, TypeNotification type, String 
         }
         return new NotificationVirement(virement.clientId(), TypeNotification.CONFIRMATION, null,
                 TextesVirement.confirmation(montant, numeroDestinataire, virement.motif()));
+    }
+
+    /** Notification FRAUDE d'un virement suspendu : l'avis de suspension, sans mot « fraude », score ni signal. */
+    public static NotificationVirement pourSuspension(Virement virement, String numeroDestinataire, ZoneId fuseau) {
+        return new NotificationVirement(virement.clientId(), TypeNotification.FRAUDE, null,
+                TextesVirement.avisSuspension(virement.montant().toPlainString(), numeroDestinataire,
+                        virement.heureButoir(), fuseau));
     }
 }

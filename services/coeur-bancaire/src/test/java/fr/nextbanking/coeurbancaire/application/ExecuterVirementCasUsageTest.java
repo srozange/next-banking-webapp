@@ -44,7 +44,7 @@ class ExecuterVirementCasUsageTest {
     static ExecuterVirementCasUsage assembler(MemoireCoeurBancaire m) {
         ControleFraudeCasUsage controle = new ControleFraudeCasUsage(m, m, m, m, ControleFraudeTestes.PARAMETRES);
         return new ExecuterVirementCasUsage(m, m, m, m, m, m, m,
-                new SeuilsFraude(new BigDecimal("5000"), new BigDecimal("5000")), controle);
+                new SeuilsFraude(new BigDecimal("5000"), new BigDecimal("5000"), new BigDecimal("10000")), controle);
     }
 
     private static Commande commande(Long source, Long destinataire, String montant, String motif, String cle) {
@@ -70,7 +70,7 @@ class ExecuterVirementCasUsageTest {
     void un_virement_valide_debite_credite_et_rend_l_ecrit_des_champs_saisis() {
         Resultat resultat = cas.executer(commande(1L, 2L, "100", "loyer", null));
 
-        assertThat(resultat).isEqualTo(new Resultat(12, EtatVirement.EXECUTE, StatutAffichage.SUCCESS, 1, 2,
+        assertThat(resultat).isEqualTo(new Resultat(12, EtatVirement.EXECUTE, null, StatutAffichage.SUCCESS, 1, 2,
                 new BigDecimal("100.00"), "loyer"));
         assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2030.00");
         assertThat(memoire.comptes.get(2L).solde()).isEqualByComparingTo("15300.00");
@@ -87,6 +87,7 @@ class ExecuterVirementCasUsageTest {
     @Test
     @Tag("FR-003-10")
     void a_5000_euros_le_virement_est_pending_et_a_4999_99_il_est_success() {
+        memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
 
         Resultat pending = cas.executer(commande(1L, 2L, "5000.00", "loyer", null));
@@ -119,6 +120,7 @@ class ExecuterVirementCasUsageTest {
     @Tag("FR-003-14")
     @Tag("FR-002-10")
     void une_confirmation_sans_motif_ou_avec_motif_blanc_n_a_pas_de_mention_de_motif() {
+        memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         cas.executer(commande(1L, 2L, "100", null, null));
         cas.executer(commande(1L, 2L, "100", "   ", null));
 
@@ -153,6 +155,7 @@ class ExecuterVirementCasUsageTest {
     @Tag("FR-025-01")
     @Tag("FR-025-02")
     void a_5000_euros_la_notification_est_une_alerte_et_a_4999_99_une_confirmation() {
+        memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
 
         cas.executer(commande(1L, 2L, "5000.00", "loyer", null));
@@ -323,7 +326,7 @@ class ExecuterVirementCasUsageTest {
         memoire.cles.put("7/cle-2", 5L);
         memoire.virements.put(5L, new fr.nextbanking.coeurbancaire.domain.Virement(5, 7, 1, 2,
                 new BigDecimal("100.00"), "loyer", EtatVirement.EXECUTE, StatutAffichage.SUCCESS,
-                MemoireCoeurBancaire.MAINTENANT));
+                MemoireCoeurBancaire.MAINTENANT, null, null));
         MemoireCoeurBancaire course = new MemoireCoeurBancaire() {
             private int lectures;
 
@@ -396,10 +399,12 @@ class ExecuterVirementCasUsageTest {
         assertThat(memoire.alertes).isEmpty();
         assertThat(a75.etat()).isEqualTo(EtatVirement.EXECUTE);
 
-        // Immédiatement après : RAPID_SUCCESSION 55 en plus, 130 au total.
+        // Immédiatement après : RAPID_SUCCESSION 55 en plus, 130 au total : suspendu, sans nouveau débit.
+        int debitsAvant = java.util.Collections.frequency(memoire.journal, "debiter");
         Resultat a130 = cas.executer(commande(1L, 2L, "5000.50", null, null));
 
-        assertThat(a130.etat()).isEqualTo(EtatVirement.EXECUTE);
+        assertThat(a130.etat()).isEqualTo(EtatVirement.SUSPENDU);
+        assertThat(java.util.Collections.frequency(memoire.journal, "debiter")).isEqualTo(debitsAvant);
         assertThat(memoire.alertes).extracting(a -> a.regle().name(), a -> a.score(), a -> a.statut().name(),
                 a -> a.virementId()).containsExactly(
                         org.assertj.core.groups.Tuple.tuple("LARGE_AMOUNT", 40, "OPEN", a130.virementId()),
@@ -407,7 +412,6 @@ class ExecuterVirementCasUsageTest {
                         org.assertj.core.groups.Tuple.tuple("RAPID_SUCCESSION", 55, "OPEN", a130.virementId()));
         assertThat(memoire.alertes.getFirst().description())
                 .isEqualTo("Transaction amount 5000.50 exceeds the large threshold of 5000");
-        assertThat(memoire.journal.lastIndexOf("alerte")).isLessThan(memoire.journal.lastIndexOf("debiter"));
     }
 
     @Test
@@ -425,14 +429,14 @@ class ExecuterVirementCasUsageTest {
     @Test
     @Tag("FR-003-15")
     @Tag("FR-027-02")
-    void une_erreur_du_controle_fait_echouer_la_transaction_sans_debit_et_suit_le_chemin_de_remise_impossible() {
+    void une_erreur_du_controle_annule_la_transaction_sans_debit_et_refuse_le_virement_pour_erreur_de_controle() {
         memoire.historiqueEnErreur = new IllegalStateException("historique indisponible");
 
         ErreurVirement erreur = refus(commande(1L, 2L, "100", "loyer", null));
 
-        assertThat(erreur.motif()).isEqualTo(Cause.REMISE_IMPOSSIBLE);
-        assertThat(erreur.getCause()).hasMessage("historique indisponible");
-        aucuneEcriture();
+        assertThat(erreur.motif()).isEqualTo(Cause.CONTROLE_EN_ERREUR);
+        assertThat(erreur.getCause()).hasCauseInstanceOf(IllegalStateException.class);
+        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2130.00");
         assertThat(memoire.journal).doesNotContain("debiter", "crediter");
     }
 

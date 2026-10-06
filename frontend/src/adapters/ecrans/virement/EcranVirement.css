@@ -28,3 +28,9 @@
   font-size: var(--text-body-sm);
   font-weight: var(--font-weight-body-sm);
 }
+
+/* Référence de trace du refus : police à chasse fixe, sélectionnable d'un geste. */
+.ecran-virement__reference {
+  font-family: monospace;
+  user-select: all;
+}

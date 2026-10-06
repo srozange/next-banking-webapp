@@ -196,6 +196,10 @@ services:
         condition: service_healthy
       otel-collector:
         condition: service_healthy
+      # La projection des clients souscrit à identite-clients.client-modifie.v1, déclaré par son producteur
+      # (bean NewTopic) : le topic existe avant la souscription.
+      identite-clients:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8080/actuator/health"]
       interval: 5s

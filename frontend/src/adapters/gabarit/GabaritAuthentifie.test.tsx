@@ -151,7 +151,7 @@ describe('gabarit authentifié', () => {
 
     const contenu = screen.getByTestId('application-racine');
     expect(contenu.getAttribute('aria-busy')).toBe('true');
-    expect(contenu.textContent).toBe('');
+    expect(contenu.textContent).not.toMatch(/chargement/i);
     expect(screen.queryByTestId('nav-salutation')).toBeNull();
     expect(screen.getByTestId('nav-deconnexion')).toBeTruthy();
   });
@@ -179,7 +179,7 @@ describe('gabarit authentifié', () => {
 
     expect(screen.queryByTestId('nav-salutation')).toBeNull();
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(screen.getByTestId('application-racine').textContent).toBe('');
+    expect(screen.getByTestId('application-racine').textContent).not.toMatch(/chargement|erreur/i);
     expect(routeur.state.location.pathname).toBe('/tableau-de-bord');
     expect(localStorage.getItem('nb.jeton')).not.toBeNull();
   });

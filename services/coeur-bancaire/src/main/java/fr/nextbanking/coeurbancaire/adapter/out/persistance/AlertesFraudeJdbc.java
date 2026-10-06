@@ -3,6 +3,7 @@ package fr.nextbanking.coeurbancaire.adapter.out.persistance;
 import fr.nextbanking.coeurbancaire.application.port.out.AlertesFraude;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
 import java.sql.Timestamp;
+import java.time.Instant;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,17 @@ public class AlertesFraudeJdbc implements AlertesFraude {
                 .param("description", alerte.description())
                 .param("statut", alerte.statut().name())
                 .param("creeLe", Timestamp.from(alerte.creeLe()))
+                .update();
+    }
+
+    @Override
+    public int passerEnRevue(long virementId, String revuPar, Instant revueLe) {
+        return jdbc.sql("""
+                update alertes_fraude set statut = 'REVIEWED', revu_le = :revueLe, revu_par = :revuPar
+                where virement_id = :virementId and statut = 'OPEN'""")
+                .param("revueLe", Timestamp.from(revueLe))
+                .param("revuPar", revuPar)
+                .param("virementId", virementId)
                 .update();
     }
 }

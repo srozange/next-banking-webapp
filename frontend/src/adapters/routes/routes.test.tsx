@@ -26,12 +26,25 @@ describe('routes', () => {
     },
   );
 
-  it.each(ROUTES_PROTEGEES)('avec un jeton, %s reste affichée, sans contenu pour l’instant', async (chemin) => {
+  it.each(ROUTES_PROTEGEES)('avec un jeton, %s reste affichée, sans autre contenu que ses sections de revue', async (chemin) => {
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
     const { routeur } = rendreApplication(chemin);
 
     expect(routeur.state.location.pathname).toBe(chemin);
-    expect(screen.getByTestId('application-racine').textContent).toBe('');
+    const contenu = screen.getByTestId('application-racine').textContent;
+    expect(contenu?.includes('Suivi de mes virements')).toBe(chemin === '/tableau-de-bord');
+    expect(contenu?.includes('Virements suspendus — En attente de revue')).toBe(chemin === '/administration');
+    if (chemin === '/espace-conseiller') {
+      expect(contenu).toBe('');
+    }
+  });
+
+  it('[FR-027-16] le tableau de bord porte la section « Suivi de mes virements » (dashboard-virements-revue)', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    rendreApplication('/tableau-de-bord');
+
+    expect(await screen.findByTestId('dashboard-virements-revue')).toBeTruthy();
+    expect(await screen.findByText('Aucun virement à suivre')).toBeTruthy();
   });
 
   it.each([

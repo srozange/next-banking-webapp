@@ -3,17 +3,19 @@ package fr.nextbanking.coeurbancaire.application.port.in;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.StatutAffichage;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 /**
- * Port entrant : exécuter un virement immédiat entre deux comptes du client authentifié.
+ * Port entrant : soumettre un virement immédiat entre deux comptes du client authentifié.
  */
 public interface ExecuterVirement {
 
     /**
-     * Exécute le virement, ou rend le premier résultat si la clé d'idempotence a déjà servi.
+     * Soumet le virement, ou rend le premier résultat si la clé d'idempotence a déjà servi. Le contrôle de fraude
+     * décide avant tout débit : EXÉCUTÉ, ou SUSPENDU (aucun débit).
      *
-     * @throws fr.nextbanking.coeurbancaire.domain.ErreurVirement saisie ou compte refusé, solde insuffisant, ou
-     *         remise au traitement asynchrone impossible
+     * @throws fr.nextbanking.coeurbancaire.domain.ErreurVirement saisie ou compte refusé, solde insuffisant, remise
+     *         au traitement asynchrone impossible, ou contrôle en erreur (virement REFUSÉ_ERREUR_CONTRÔLE enregistré)
      */
     Resultat executer(Commande commande);
 
@@ -22,8 +24,8 @@ public interface ExecuterVirement {
             String cleIdempotence, String adresseIp) {
     }
 
-    /** Résultat : état, statut d'affichage et écho des champs saisis. */
-    record Resultat(long virementId, EtatVirement etat, StatutAffichage statut, long compteSourceId,
-            long compteDestinataireId, BigDecimal montant, String motif) {
+    /** Résultat : état, heure butoir (SUSPENDU seulement), statut d'affichage et écho des champs saisis. */
+    record Resultat(long virementId, EtatVirement etat, Instant heureButoir, StatutAffichage statut,
+            long compteSourceId, long compteDestinataireId, BigDecimal montant, String motif) {
     }
 }

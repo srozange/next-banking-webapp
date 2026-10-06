@@ -16,6 +16,11 @@ public class ErreurVirement extends RuntimeException {
         COMPTE_ETRANGER(TextesVirement.ACCES_REFUSE),
         SOLDE_INSUFFISANT(TextesVirement.SOLDE_INSUFFISANT),
         REMISE_IMPOSSIBLE(TextesVirement.REMISE_IMPOSSIBLE),
+        /** Contrôle de fraude en erreur : le message complet est rendu avec la référence de trace par l'adaptateur. */
+        CONTROLE_EN_ERREUR(TextesVirement.refusControle("")),
+        ROLE_INSUFFISANT(TextesVirement.ACCES_REFUSE),
+        MOTIF_DECISION_OBLIGATOIRE(TextesVirement.MOTIF_DECISION_OBLIGATOIRE),
+        VIREMENT_NON_SUSPENDU(TextesVirement.VIREMENT_NON_SUSPENDU),
         CLE_IDEMPOTENCE_DEJA_UTILISEE(TextesVirement.REMISE_IMPOSSIBLE);
 
         private final String texte;

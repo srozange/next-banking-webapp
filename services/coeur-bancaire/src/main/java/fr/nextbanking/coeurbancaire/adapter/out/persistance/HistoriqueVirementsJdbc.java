@@ -1,6 +1,7 @@
 package fr.nextbanking.coeurbancaire.adapter.out.persistance;
 
 import fr.nextbanking.coeurbancaire.application.port.out.HistoriqueVirements;
+import fr.nextbanking.coeurbancaire.domain.DelaiAccesHistorique;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -17,14 +18,24 @@ import org.springframework.stereotype.Component;
 public class HistoriqueVirementsJdbc implements HistoriqueVirements {
 
     private final JdbcClient jdbc;
+    private final DelaiAccesHistorique delai;
 
-    public HistoriqueVirementsJdbc(JdbcClient jdbc) {
+    public HistoriqueVirementsJdbc(JdbcClient jdbc, DelaiAccesHistorique delai) {
         this.jdbc = jdbc;
+        this.delai = delai;
     }
 
+    /**
+     * Le verrou n'est attendu que {@code nb.fraude.acces-historique.delai} ({@code lock_timeout} local à la
+     * transaction) : au-delà, la prise du verrou échoue et le contrôle est en erreur. Le délai est levé une fois le
+     * verrou pris, pour ne pas gêner les écritures suivantes de la transaction.
+     */
     @Override
     public void verrouillerClient(long clientId) {
+        jdbc.sql("select set_config('lock_timeout', :delai, true)").param("delai", delai.millisecondes() + "ms")
+                .query().listOfRows();
         jdbc.sql("select pg_advisory_xact_lock(:clientId)").param("clientId", clientId).query().listOfRows();
+        jdbc.sql("select set_config('lock_timeout', '0', true)").query().listOfRows();
     }
 
     @Override

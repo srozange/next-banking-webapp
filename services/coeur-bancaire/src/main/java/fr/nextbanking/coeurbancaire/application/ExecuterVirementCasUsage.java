@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.application.EcritureAudit.Entree;
 import fr.nextbanking.coeurbancaire.application.port.in.ExecuterVirement;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.application.port.out.DepotVirements;
@@ -10,12 +11,14 @@ import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
 import fr.nextbanking.coeurbancaire.domain.ActionAudit;
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.ControleEnErreur;
+import fr.nextbanking.coeurbancaire.domain.ControleFraude.Decision;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude.Evaluation;
-import fr.nextbanking.coeurbancaire.domain.EntreeAudit;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
-import fr.nextbanking.coeurbancaire.domain.SeuilsFraude;
+import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.NotificationVirement;
+import fr.nextbanking.coeurbancaire.domain.SeuilsFraude;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
 import fr.nextbanking.coeurbancaire.domain.Virement;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
@@ -30,22 +33,26 @@ import java.util.logging.Logger;
 /**
  * Cas d'usage : virement immédiat. Une clé d'idempotence déjà servie rend le premier résultat. Sinon, la saisie est
  * contrôlée, puis une seule transaction verrouille les comptes, contrôle propriété et solde, évalue les signaux de
- * fraude (FEAT-027, avant tout débit), enregistre le virement et ses alertes, débite (mise à jour conditionnelle),
- * crédite, enregistre ses deux opérations, la ligne d'outbox de la décision (notification) et celle de la remise au
- * traitement asynchrone : un échec d'écriture annule tout. L'audit passe par l'outbox d'audit, dans des transactions indépendantes
- * (FR-026-04) : il est conservé même quand le virement est annulé (BUG-073).
+ * fraude (FEAT-027) et décide avant tout débit : EXÉCUTÉ (débit conditionnel, crédit, deux opérations, remise au
+ * traitement asynchrone) ou SUSPENDU (ni débit, ni crédit, ni opération, ni remise ; heure butoir à 24 heures). La
+ * décision et sa notification passent par l'outbox dans la même transaction : un échec d'écriture annule tout.
+ * Quand le contrôle est en erreur, la transaction est annulée puis le virement est enregistré REFUSÉ_ERREUR_CONTRÔLE
+ * dans une transaction à part, sans notification. L'audit passe par l'outbox d'audit, dans des transactions
+ * indépendantes (FR-026-04) : il est conservé même quand le virement est annulé (BUG-073).
  */
 public class ExecuterVirementCasUsage implements ExecuterVirement {
 
     private static final Logger JOURNAL = Logger.getLogger(ExecuterVirementCasUsage.class.getName());
     static final String ISSUE_EXECUTE = "EXECUTE";
+    static final String ISSUE_SUSPENDU = "SUSPENDU";
+    static final String ISSUE_REFUS_CONTROLE = "REFUSE_ERREUR_CONTROLE";
     static final String ISSUE_ECHEC_REMISE = "ECHEC_REMISE";
 
     private final Comptes comptes;
     private final Operations operations;
     private final DepotVirements virements;
     private final EvenementsSortants evenements;
-    private final JournalAudit audit;
+    private final EcritureAudit audit;
     private final Transaction transaction;
     private final Horloge horloge;
     private final SeuilsFraude seuils;
@@ -58,7 +65,7 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         this.operations = operations;
         this.virements = virements;
         this.evenements = evenements;
-        this.audit = audit;
+        this.audit = new EcritureAudit(audit, transaction);
         this.transaction = transaction;
         this.horloge = horloge;
         this.seuils = seuils;
@@ -70,7 +77,7 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         if (commande.cleIdempotence() != null) {
             var premier = virements.parCle(commande.clientId(), commande.cleIdempotence());
             if (premier.isPresent()) {
-                return resultat(premier.get());
+                return rejouer(premier.get());
             }
         }
         BigDecimal montant = Virement.verifierSaisie(commande.compteSourceId(), commande.compteDestinataireId(),
@@ -82,21 +89,29 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
             ecriture = transaction.executer(() -> ecrire(virementId, commande, montant, soumisLe));
         } catch (ErreurVirement refus) {
             if (refus.motif() == Cause.CLE_IDEMPOTENCE_DEJA_UTILISEE) {
-                return resultat(virements.parCle(commande.clientId(), commande.cleIdempotence()).orElseThrow());
+                return rejouer(virements.parCle(commande.clientId(), commande.cleIdempotence()).orElseThrow());
             }
             throw refus;
+        } catch (ControleEnErreur erreur) {
+            refuser(commande, virementId, montant, soumisLe);
+            throw new ErreurVirement(Cause.CONTROLE_EN_ERREUR, erreur);
         } catch (RuntimeException echec) {
-            auditer(commande, virementId, soumisLe, List.of(new Entree(ActionAudit.VIREMENT,
-                    TextesVirement.detailVirement(montant.toPlainString(), commande.motif(), ISSUE_ECHEC_REMISE))));
+            auditer(commande, virementId, soumisLe, ActionAudit.VIREMENT,
+                    TextesVirement.detailVirement(montant.toPlainString(), commande.motif(), ISSUE_ECHEC_REMISE));
             throw new ErreurVirement(Cause.REMISE_IMPOSSIBLE, echec);
         }
         evenements.publier(ecriture.ligneDecision());
-        evenements.publier(ecriture.ligneRemise());
         String montantTexte = montant.toPlainString();
-        auditer(commande, virementId, soumisLe, List.of(
-                new Entree(ActionAudit.VIREMENT,
+        if (ecriture.virement().etat() == EtatVirement.SUSPENDU) {
+            auditer(commande, virementId, soumisLe, ActionAudit.VIREMENT,
+                    TextesVirement.detailVirement(montantTexte, commande.motif(), ISSUE_SUSPENDU));
+            return resultat(ecriture.virement());
+        }
+        evenements.publier(ecriture.ligneRemise());
+        audit.ecrire(virementId, soumisLe, List.of(
+                entree(commande, ActionAudit.VIREMENT,
                         TextesVirement.detailVirement(montantTexte, commande.motif(), ISSUE_EXECUTE)),
-                new Entree(ActionAudit.TRANSFER_EXECUTED,
+                entree(commande, ActionAudit.TRANSFER_EXECUTED,
                         TextesVirement.detailExecution(montantTexte, commande.motif()))));
         return resultat(ecriture.virement());
     }
@@ -107,10 +122,23 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         List<Compte> verrouilles = comptes.verrouiller(sourceId, destinataireId);
         Compte source = trouver(verrouilles, sourceId);
         Compte destinataire = trouver(verrouilles, destinataireId);
+        Virement.verifierComptes(commande.clientId(), source, destinataire, montant);
+        Evaluation evaluation = controle.evaluer(commande.clientId(), montant, destinataire.numero(), soumisLe);
+        Decision decision = evaluation.decider(montant, seuils.seuilFraude());
+        if (decision.etat() == EtatVirement.SUSPENDU) {
+            Virement suspendu = Virement.suspendre(virementId, commande.clientId(), source, destinataire, montant,
+                    commande.motif(), seuils, soumisLe, decision.motifSuspension());
+            virements.enregistrer(suspendu, commande.cleIdempotence());
+            controle.enregistrerAlertes(evaluation, commande.clientId(), virementId, soumisLe);
+            long ligne = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId,
+                    commande.clientId(), suspendu.etat(),
+                    NotificationVirement.pourSuspension(suspendu, destinataire.numero(), horloge.fuseau()),
+                    soumisLe));
+            return new Ecriture(suspendu, ligne, 0);
+        }
         Virement.Execution execution = Virement.executer(virementId, commande.clientId(), source, destinataire,
                 montant, commande.motif(), seuils, soumisLe);
         Virement virement = execution.virement();
-        Evaluation evaluation = controle.evaluer(commande.clientId(), montant, destinataire.numero(), soumisLe);
         virements.enregistrer(virement, commande.cleIdempotence());
         controle.enregistrerAlertes(evaluation, commande.clientId(), virementId, soumisLe);
         if (!comptes.debiter(sourceId, montant)) {
@@ -120,12 +148,31 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         operations.enregistrer(execution.debit());
         operations.enregistrer(execution.credit());
         // Une seule notification par virement, à la décision : jamais à la remise asynchrone.
-        long decision = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId, commande.clientId(),
-                virement.etat(), NotificationVirement.pourExecution(virement, destinataire.numero(), seuils),
-                soumisLe));
+        long decisionLigne = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId,
+                commande.clientId(), virement.etat(),
+                NotificationVirement.pourExecution(virement, destinataire.numero(), seuils), soumisLe));
         long remise = evenements.consigner(new VirementATraiter(UUID.randomUUID(), virementId, montant,
                 commande.clientId(), destinataireId, virement.motif(), soumisLe));
-        return new Ecriture(virement, decision, remise);
+        return new Ecriture(virement, decisionLigne, remise);
+    }
+
+    /**
+     * Le contrôle est en erreur et la transaction de soumission est annulée : le virement est enregistré refusé, sans
+     * solde, opération, remise ni notification, avec la seule entrée d'audit « Issue: REFUSE_ERREUR_CONTROLE ».
+     */
+    private void refuser(Commande commande, long virementId, BigDecimal montant, Instant soumisLe) {
+        try {
+            Virement refuse = Virement.refuser(virementId, commande.clientId(), commande.compteSourceId(),
+                    commande.compteDestinataireId(), montant, commande.motif(), seuils, soumisLe);
+            transaction.executer(() -> {
+                virements.enregistrer(refuse, commande.cleIdempotence());
+                return null;
+            });
+        } catch (RuntimeException echec) {
+            JOURNAL.log(Level.SEVERE, "Virement " + virementId + " refusé non enregistré", echec);
+        }
+        auditer(commande, virementId, soumisLe, ActionAudit.VIREMENT,
+                TextesVirement.detailVirement(montant.toPlainString(), commande.motif(), ISSUE_REFUS_CONTROLE));
     }
 
     private static Compte trouver(List<Compte> comptes, long id) {
@@ -133,28 +180,28 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
                 .orElseThrow(() -> new ErreurVirement(Cause.COMPTE_INTROUVABLE));
     }
 
-    /** Écrit les entrées d'audit dans une transaction indépendante, dans l'ordre, puis les publie. */
-    private void auditer(Commande commande, long virementId, Instant horodatage, List<Entree> entrees) {
-        try {
-            List<Long> lignes = transaction.executerIndependamment(() -> entrees.stream()
-                    .map(entree -> audit.consigner(new EntreeAudit(UUID.randomUUID(),
-                            Long.toString(commande.clientId()), entree.action(), commande.adresseIp(), horodatage,
-                            entree.detail(), virementId)))
-                    .toList());
-            lignes.forEach(audit::publier);
-        } catch (RuntimeException echec) {
-            JOURNAL.log(Level.SEVERE, "Entrée d'audit du virement " + virementId + " non écrite", echec);
+    private void auditer(Commande commande, long virementId, Instant horodatage, ActionAudit action, String detail) {
+        audit.ecrire(virementId, horodatage, List.of(entree(commande, action, detail)));
+    }
+
+    private static Entree entree(Commande commande, ActionAudit action, String detail) {
+        return new Entree(Long.toString(commande.clientId()), commande.adresseIp(), action, detail);
+    }
+
+    /** Premier résultat d'une clé d'idempotence : un virement refusé pour erreur de contrôle est refusé de nouveau. */
+    private static Resultat rejouer(Virement virement) {
+        if (virement.etat() == EtatVirement.REFUSE_ERREUR_CONTROLE) {
+            throw new ErreurVirement(Cause.CONTROLE_EN_ERREUR);
         }
+        return resultat(virement);
     }
 
     private static Resultat resultat(Virement virement) {
-        return new Resultat(virement.id(), virement.etat(), virement.statut(), virement.compteSourceId(),
-                virement.compteDestinataireId(), virement.montant(), virement.motif());
+        return new Resultat(virement.id(), virement.etat(), virement.heureButoir(), virement.statut(),
+                virement.compteSourceId(), virement.compteDestinataireId(), virement.montant(), virement.motif());
     }
 
-    private record Entree(ActionAudit action, String detail) {
-    }
-
+    /** {@code ligneRemise} vaut 0 pour un virement suspendu : aucune remise. */
     private record Ecriture(Virement virement, long ligneDecision, long ligneRemise) {
     }
 }

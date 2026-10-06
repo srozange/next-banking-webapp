@@ -10,7 +10,8 @@ import java.util.List;
 /**
  * Évaluation des huit signaux de fraude d'un virement (FEAT-027), en Java pur, sans accès aux données : l'historique
  * est lu par l'application avant l'appel. Les scores s'additionnent ; au-delà de {@code scoreCumuleMax}, une alerte
- * par signal levé est à écrire. Le contrôle ne refuse rien ici (suspension : story 3.4).
+ * par signal levé est à écrire et le virement est suspendu ; un montant au moins égal au seuil de fraude le suspend
+ * aussi. Un échec d'accès à l'historique n'est pas décidé ici : l'application le refuse pour erreur de contrôle.
  */
 public final class ControleFraude {
 
@@ -38,6 +39,22 @@ public final class ControleFraude {
             signaux = List.copyOf(signaux);
         }
 
+        /**
+         * EXÉCUTÉ, sauf si la somme des scores dépasse le seuil (motif : score et signaux) ou si le montant atteint le
+         * seuil de fraude (motif : le seuil) : SUSPENDU, avant tout débit.
+         */
+        public Decision decider(BigDecimal montant, BigDecimal seuilFraude) {
+            if (alerter) {
+                return new Decision(EtatVirement.SUSPENDU, TextesVirement.motifSuspensionScore(score,
+                        signaux.stream().map(signal -> signal.type().name()).toList()));
+            }
+            if (montant.compareTo(seuilFraude) >= 0) {
+                return new Decision(EtatVirement.SUSPENDU,
+                        TextesVirement.motifSuspensionSeuil(seuilFraude.toPlainString()));
+            }
+            return new Decision(EtatVirement.EXECUTE, null);
+        }
+
         /** Une alerte OPEN par signal levé si la somme dépasse le seuil ; aucune sinon. */
         public List<AlerteFraude> alertes(long clientId, long virementId, Instant creeLe) {
             if (!alerter) {
@@ -46,6 +63,10 @@ public final class ControleFraude {
             return signaux.stream().map(signal -> new AlerteFraude(clientId, virementId, signal.type(),
                     signal.score(), signal.description(), StatutAlerte.OPEN, creeLe)).toList();
         }
+    }
+
+    /** Décision du contrôle : EXÉCUTÉ, ou SUSPENDU avec le motif de suspension en clair. */
+    public record Decision(EtatVirement etat, String motifSuspension) {
     }
 
     private ControleFraude() {

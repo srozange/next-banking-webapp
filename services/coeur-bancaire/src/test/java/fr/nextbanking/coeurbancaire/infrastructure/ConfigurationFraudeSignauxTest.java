@@ -23,7 +23,8 @@ class ConfigurationFraudeSignauxTest {
         "nb.fraude.score-cumule-max=75",
         "nb.fraude.montant-eleve=5000", "nb.fraude.montant-tres-eleve=15000", "nb.fraude.plafond-quotidien=8",
         "nb.fraude.succession-rapide-secondes=30", "nb.fraude.velocite-fenetre-minutes=60",
-        "nb.fraude.velocite-nombre-max=5", "nb.fraude.velocite-montant=500"};
+        "nb.fraude.velocite-nombre-max=5", "nb.fraude.velocite-montant=500",
+        "nb.fraude.seuil-fraude=10000", "nb.fraude.acces-historique.delai=2s"};
 
     private static final String[] PROPRIETES_VALIDES = Stream.concat(
             Stream.of("nb.fraude.seuil-attente=5000", "nb.fraude.seuil-alerte=5000"), Arrays.stream(PROPRIETES_SIGNAUX))
@@ -31,7 +32,7 @@ class ConfigurationFraudeSignauxTest {
 
     private static final String[] PROPRIETES = {"score-cumule-max", "montant-eleve", "montant-tres-eleve",
         "plafond-quotidien", "succession-rapide-secondes", "velocite-fenetre-minutes", "velocite-nombre-max",
-        "velocite-montant"};
+        "velocite-montant", "seuil-fraude", "acces-historique.delai"};
 
     private final ApplicationContextRunner contexte = new ApplicationContextRunner()
             .withUserConfiguration(ConfigurationFraude.class);

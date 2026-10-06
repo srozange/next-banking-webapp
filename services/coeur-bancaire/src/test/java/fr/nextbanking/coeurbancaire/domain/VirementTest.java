@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class VirementTest {
 
     private static final Instant MAINTENANT = Instant.parse("2026-11-17T09:00:00Z");
-    private static final SeuilsFraude SEUILS = new SeuilsFraude(new BigDecimal("5000"), new BigDecimal("5000"));
+    private static final SeuilsFraude SEUILS = new SeuilsFraude(new BigDecimal("5000"), new BigDecimal("5000"), new BigDecimal("10000"));
     private static final Compte COURANT = new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT,
             new BigDecimal("2130.00"));
     private static final Compte EPARGNE = new Compte(2, 7, "FR76-0001-0002", TypeCompte.EPARGNE,
@@ -92,7 +92,7 @@ class VirementTest {
                 SEUILS, MAINTENANT);
 
         assertThat(execution.virement()).isEqualTo(new Virement(12, 7, 1, 2, new BigDecimal("100.00"), "loyer",
-                EtatVirement.EXECUTE, StatutAffichage.SUCCESS, MAINTENANT));
+                EtatVirement.EXECUTE, StatutAffichage.SUCCESS, MAINTENANT, null, null));
         assertThat(execution.debit()).isEqualTo(new Operation(1, TypeOperation.DEBIT, new BigDecimal("100.00"),
                 new BigDecimal("2030.00"), "Virement vers FR76-0001-0002 - loyer", MAINTENANT, 12));
         assertThat(execution.credit()).isEqualTo(new Operation(2, TypeOperation.CREDIT, new BigDecimal("100.00"),

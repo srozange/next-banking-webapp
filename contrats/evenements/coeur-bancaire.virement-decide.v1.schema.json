@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "coeur-bancaire.virement-decide.v1",
   "title": "Décision d'un virement et notification rendue",
-  "description": "Publié par coeur-bancaire sur le topic coeur-bancaire.virement-decide.v1 par l'outbox, dans la même transaction que la décision (le débit), clé = identifiant du virement, chaîne JSON sans en-tête de type. Consommé par notifications, qui stocke la notification telle que rendue (AD-25) sans composer de texte ni lire de seuil. Une seule notification par virement : aucun événement pour la remise asynchrone, la libération, le rejet ou le refus pour erreur.",
+  "description": "Publié par coeur-bancaire sur le topic coeur-bancaire.virement-decide.v1 par l'outbox, dans la même transaction que la décision (le débit), clé = identifiant du virement, chaîne JSON sans en-tête de type. Consommé par notifications, qui stocke la notification telle que rendue (AD-25) sans composer de texte ni lire de seuil. Une seule notification par virement, à la décision : aucun événement pour la remise asynchrone, la libération, le rejet, le rejet automatique ou le refus pour erreur. Un virement suspendu publie la décision SUSPENDU avec la notification FRAUDE, dans la transaction de soumission.",
   "type": "object",
   "required": ["idEvenement", "type", "version", "horodatage", "producteur", "donnees"],
   "additionalProperties": false,
@@ -19,14 +19,14 @@
       "properties": {
         "virementId": { "type": "integer", "minimum": 1 },
         "clientId": { "type": "integer", "minimum": 1 },
-        "etat": { "enum": ["EXECUTE"], "description": "Seul état produit aujourd'hui ; les autres arrivent avec la story 3.4." },
+        "etat": { "enum": ["EXECUTE", "SUSPENDU"], "description": "État décidé à la soumission : EXECUTE (débité), ou SUSPENDU (aucun débit, notification FRAUDE). Le refus pour erreur de contrôle, la libération et le rejet ne publient aucun événement." },
         "notification": {
           "type": "object",
           "required": ["clientId", "type", "titre", "message"],
           "additionalProperties": false,
           "properties": {
             "clientId": { "type": "integer", "minimum": 1, "description": "Destinataire de la notification." },
-            "type": { "enum": ["CONFIRMATION", "ALERTE"] },
+            "type": { "enum": ["CONFIRMATION", "ALERTE", "FRAUDE"], "description": "FRAUDE : avis de suspension (jamais le mot fraude, un score ou un signal dans le message)." },
             "titre": { "type": ["string", "null"], "description": "Aucun texte défini pour un virement : null (point ouvert)." },
             "message": { "type": "string", "minLength": 1, "description": "Texte déjà rendu par le producteur." }
           }

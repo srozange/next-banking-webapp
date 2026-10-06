@@ -1,0 +1,21 @@
+.section-suivi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.section-suivi__titre {
+  margin: 0;
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
+
+.section-suivi__aide {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}

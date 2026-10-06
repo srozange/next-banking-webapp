@@ -9,10 +9,17 @@ import fr.nextbanking.coeurbancaire.application.port.out.EvenementsTraites;
 import fr.nextbanking.coeurbancaire.application.port.out.HistoriqueVirements;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalAudit;
+import fr.nextbanking.coeurbancaire.application.port.out.JournalBatch;
+import fr.nextbanking.coeurbancaire.application.port.out.ProjectionClients;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.DecisionRevue;
+import fr.nextbanking.coeurbancaire.domain.LigneRevue;
+import fr.nextbanking.coeurbancaire.domain.LigneSuivi;
+import fr.nextbanking.coeurbancaire.domain.LigneTraitee;
+import fr.nextbanking.coeurbancaire.domain.StatutAlerte;
 import fr.nextbanking.coeurbancaire.domain.EntreeAudit;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
@@ -41,7 +48,8 @@ import java.util.function.Supplier;
  * les écritures (comptes, opérations, virements, outbox) quand le travail échoue, et des défaillances programmables.
  */
 class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, EvenementsSortants, JournalAudit,
-        EvenementsTraites, Transaction, Horloge, HistoriqueVirements, Beneficiaires, AlertesFraude {
+        EvenementsTraites, Transaction, Horloge, HistoriqueVirements, Beneficiaires, AlertesFraude, JournalBatch,
+        ProjectionClients {
 
     static final Instant MAINTENANT = Instant.parse("2026-11-17T09:00:00Z");
 
@@ -65,6 +73,21 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     Optional<Instant> dernierVirement;
     Long virementsImportants;
     RuntimeException historiqueEnErreur;
+
+    /** Décisions de revue enregistrées par transition, par virement. */
+    final Map<Long, DecisionRevue> decisionsRevue = new HashMap<>();
+    /** Nom complet des clients, projection locale. */
+    final Map<Long, String> noms = new HashMap<>();
+    final Map<Long, Long> versionsClients = new HashMap<>();
+    final List<String> lignesBatch = new ArrayList<>();
+    /** Transitions refusées d'avance (un autre traitement a gagné la course). */
+    final Set<Long> transitionsPerdues = new HashSet<>();
+    boolean batchRefuse;
+    boolean lectureEcheancesEnErreur;
+    boolean transitionEnErreur;
+
+    /** Instant de l'horloge de test ; réglable. */
+    Instant maintenant = MAINTENANT;
 
     boolean outboxRefusee;
     boolean auditRefuse;
@@ -134,6 +157,106 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     @Override
     public Optional<Virement> parId(long virementId) {
         return Optional.ofNullable(virements.get(virementId));
+    }
+
+    @Override
+    public boolean transiter(long virementId, EtatVirement de, EtatVirement vers, DecisionRevue decision) {
+        journal.add("transiter " + de + "->" + vers);
+        if (transitionEnErreur) {
+            throw new IllegalStateException("transition en erreur");
+        }
+        Virement virement = virements.get(virementId);
+        if (transitionsPerdues.contains(virementId) || virement == null || virement.etat() != de
+                || !de.peutTransiterVers(vers)) {
+            return false;
+        }
+        virements.put(virementId, new Virement(virement.id(), virement.clientId(), virement.compteSourceId(),
+                virement.compteDestinataireId(), virement.montant(), virement.motif(), vers, virement.statut(),
+                virement.soumisLe(), virement.heureButoir(), virement.motifSuspension()));
+        if (decision != null) {
+            decisionsRevue.put(virementId, decision);
+        }
+        return true;
+    }
+
+    @Override
+    public List<Virement> suspendusEchus(Instant maintenant) {
+        if (lectureEcheancesEnErreur) {
+            throw new IllegalStateException("lecture en erreur");
+        }
+        return virements.values().stream().filter(v -> v.etat() == EtatVirement.SUSPENDU)
+                .filter(v -> v.heureButoirAtteinte(maintenant))
+                .sorted(java.util.Comparator.comparing(Virement::heureButoir).thenComparingLong(Virement::id))
+                .toList();
+    }
+
+    @Override
+    public List<LigneRevue> fileDeRevue() {
+        return virements.values().stream().filter(v -> v.etat() == EtatVirement.SUSPENDU)
+                .sorted(java.util.Comparator.comparing(Virement::heureButoir).thenComparingLong(Virement::id))
+                .map(this::ligneRevue).toList();
+    }
+
+    private LigneRevue ligneRevue(Virement v) {
+        return new LigneRevue(v.id(), v.clientId(), noms.get(v.clientId()), v.montant(),
+                comptes.get(v.compteDestinataireId()).numero(), v.motifSuspension(), v.heureButoir());
+    }
+
+    @Override
+    public List<LigneTraitee> historiqueDesTraites(int limite) {
+        return decisionsRevue.entrySet().stream()
+                .sorted(java.util.Comparator.<Map.Entry<Long, DecisionRevue>, Instant>comparing(e -> e.getValue().date())
+                        .reversed().thenComparing(java.util.Map.Entry::getKey, java.util.Comparator.reverseOrder()))
+                .limit(limite)
+                .map(e -> new LigneTraitee(ligneRevue(virements.get(e.getKey())), e.getValue().issue(),
+                        e.getValue().date()))
+                .toList();
+    }
+
+    @Override
+    public List<LigneSuivi> suiviDuClient(long clientId, int limite) {
+        return virements.values().stream().filter(v -> v.clientId() == clientId && v.heureButoir() != null)
+                .sorted(java.util.Comparator.comparing(Virement::soumisLe).reversed()
+                        .thenComparing(java.util.Comparator.comparingLong(Virement::id).reversed()))
+                .limit(limite)
+                .map(v -> new LigneSuivi(v.id(), v.soumisLe(), comptes.get(v.compteDestinataireId()).numero(),
+                        v.montant(), v.etat(), v.heureButoir()))
+                .toList();
+    }
+
+    @Override
+    public int passerEnRevue(long virementId, String revuPar, Instant revueLe) {
+        journal.add("revue");
+        int passees = 0;
+        for (int i = 0; i < alertes.size(); i++) {
+            AlerteFraude alerte = alertes.get(i);
+            if (alerte.virementId() == virementId && alerte.statut() == StatutAlerte.OPEN) {
+                alertes.set(i, new AlerteFraude(alerte.clientId(), alerte.virementId(), alerte.regle(),
+                        alerte.score(), alerte.description(), StatutAlerte.REVIEWED, alerte.creeLe()));
+                passees++;
+            }
+        }
+        return passees;
+    }
+
+    @Override
+    public void enregistrer(String job, Instant debut, Instant fin, int enregistrements, Statut statut,
+            String details) {
+        if (batchRefuse) {
+            throw new IllegalStateException("journal d'exécution refusé");
+        }
+        lignesBatch.add(job + "|" + enregistrements + "|" + statut + "|" + details);
+    }
+
+    @Override
+    public boolean enregistrerSiPlusRecent(long clientId, String nomComplet, long versionAgregat) {
+        Long connue = versionsClients.get(clientId);
+        if (connue != null && connue >= versionAgregat) {
+            return false;
+        }
+        versionsClients.put(clientId, versionAgregat);
+        noms.put(clientId, nomComplet);
+        return true;
     }
 
     @Override
@@ -240,7 +363,9 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         Map<String, Long> clesAvant = new HashMap<>(cles);
         int outboxAvant = outbox.size();
         int decisionsAvant = decisions.size();
-        int alertesAvant = alertes.size();
+        List<AlerteFraude> alertesAvant = new ArrayList<>(alertes);
+        Map<Long, DecisionRevue> decisionsRevueAvant = new HashMap<>(decisionsRevue);
+        Set<UUID> traitesAvant = new HashSet<>(traites);
         try {
             return travail.get();
         } catch (RuntimeException e) {
@@ -259,9 +384,12 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             while (decisions.size() > decisionsAvant) {
                 decisions.removeLast();
             }
-            while (alertes.size() > alertesAvant) {
-                alertes.removeLast();
-            }
+            alertes.clear();
+            alertes.addAll(alertesAvant);
+            decisionsRevue.clear();
+            decisionsRevue.putAll(decisionsRevueAvant);
+            traites.clear();
+            traites.addAll(traitesAvant);
             throw e;
         }
     }
@@ -273,12 +401,12 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
 
     @Override
     public Instant instant() {
-        return MAINTENANT;
+        return maintenant;
     }
 
     @Override
     public LocalDate aujourdhui() {
-        return LocalDate.of(2026, 11, 17);
+        return maintenant.atZone(fuseau()).toLocalDate();
     }
 
     @Override

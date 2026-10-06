@@ -10,7 +10,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Adaptateur entrant : écouteur unitaire du topic interne {@code coeur-bancaire.virement-a-traiter.v1}, produit et
- * consommé par le cœur bancaire. Lit l'enveloppe JSON (chaîne, sans en-tête de type), ignore un type ou une version
+ * consommé par le cœur bancaire (débit d'un virement libéré). Lit l'enveloppe JSON (chaîne, sans en-tête de type), ignore un type ou une version
  * inattendus, et confie le message au cas d'usage idempotent. Il n'émet aucune notification.
  */
 @Component
@@ -42,6 +42,12 @@ public class RecepteurVirementATraiter {
             case VIREMENT_INCONNU -> JOURNAL.warn("Événement {} : virement {} inconnu, ignoré",
                     enveloppe.idEvenement(), enveloppe.donnees().virementId());
             case DEJA_EXECUTE -> JOURNAL.debug("Virement {} déjà exécuté : aucun effet", enveloppe.donnees().virementId());
+            case ETAT_INATTENDU -> JOURNAL.warn("Événement {} : virement {} dans un état inattendu, ignoré",
+                    enveloppe.idEvenement(), enveloppe.donnees().virementId());
+            case EXECUTE_APRES_LIBERATION -> JOURNAL.info("Virement {} libéré : débité et exécuté",
+                    enveloppe.donnees().virementId());
+            case REJETE_SOLDE_INSUFFISANT -> JOURNAL.info("Virement {} libéré : rejeté, solde insuffisant au débit",
+                    enveloppe.donnees().virementId());
         }
     }
 

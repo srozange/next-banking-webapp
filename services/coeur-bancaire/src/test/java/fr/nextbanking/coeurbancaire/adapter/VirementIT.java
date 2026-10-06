@@ -154,7 +154,7 @@ class VirementIT {
     @Test
     @Tag("FR-003-25")
     @Tag("FR-027-03")
-    void a_75_aucune_alerte_et_a_80_ou_plus_une_alerte_open_par_signal_leve_et_le_virement_reste_execute()
+    void a_75_aucune_alerte_et_au_dela_une_alerte_open_par_signal_leve_et_le_virement_est_suspendu()
             throws Exception {
         jdbc.sql("update comptes set solde = 20000.00 where id = 1").update();
 
@@ -169,7 +169,7 @@ class VirementIT {
         assertThat(a75.statusCode()).isEqualTo(201);
         assertThat(a80.statusCode()).isEqualTo(201);
         long virementId = json.readTree(a80.body()).get("virementId").asLong();
-        assertThat(json.readTree(a80.body()).get("etat").asString()).isEqualTo("EXECUTE");
+        assertThat(json.readTree(a80.body()).get("etat").asString()).isEqualTo("SUSPENDU");
         List<Map<String, Object>> alertes = jdbc.sql("""
                 select virement_id, client_id, regle, score, statut, description, cree_le, revu_le, revu_par
                 from alertes_fraude order by id""").query().listOfRows();
@@ -187,7 +187,7 @@ class VirementIT {
         assertThat(alertes.getFirst().get("revu_le")).isNull();
         assertThat(alertes.getFirst().get("revu_par")).isNull();
         assertThat(alertes.getFirst().get("cree_le")).isNotNull();
-        assertThat(solde(1)).isEqualByComparingTo("9999.50");
+        assertThat(solde(1)).isEqualByComparingTo("14999.50");
     }
 
     @Test
@@ -250,6 +250,9 @@ class VirementIT {
     @Tag("FR-003-10")
     void a_5000_euros_pending_avec_operations_en_attente_et_a_4999_99_success() throws Exception {
         jdbc.sql("update comptes set solde = 20000.00 where id = 1").update();
+        jdbc.sql("""
+                insert into beneficiaires_externes (client_id, titulaire, iban, libelle, actif)
+                values (1, 'Titulaire', 'FR76-0001-0002', 'Mon épargne', true)""").update();
 
         HttpResponse<String> pending = virement(1, 2, "5000.00", "gros", null, user1());
         HttpResponse<String> succes = virement(1, 2, "4999.99", "petit", null, user1());

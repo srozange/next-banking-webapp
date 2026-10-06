@@ -1,6 +1,8 @@
 package fr.nextbanking.coeurbancaire.adapter.in;
 
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
+import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
+import fr.nextbanking.coeurbancaire.domain.TextesVirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -16,28 +18,46 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * Erreurs de l'API des virements au format unique {@code {"message": "..."}}, sans pile, nom de classe ni code
  * interne (NFR-SEC-04) : le texte d'un refus est celui du domaine ; le détail technique d'un 5xx n'est que journalisé.
  */
-@RestControllerAdvice(assignableTypes = PointEntreeVirements.class)
+@RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class})
 public class GestionErreursVirements {
+
+    static final String ISSUE_REFUS_CONTROLE = "REFUSE_ERREUR_CONTROLE";
 
     private static final Logger JOURNAL = LoggerFactory.getLogger(GestionErreursVirements.class);
 
+    private final EnrichissementTrace trace;
+
+    public GestionErreursVirements(EnrichissementTrace trace) {
+        this.trace = trace;
+    }
+
+    /**
+     * Un contrôle de fraude en erreur répond {@code {"message", "reference"}} : la référence est l'identifiant de la
+     * trace courante, enrichie de l'issue et de l'erreur ; les autres refus répondent {@code {"message"}}.
+     */
     @ExceptionHandler(ErreurVirement.class)
-    public ResponseEntity<Message> virementRefuse(ErreurVirement refus) {
+    public ResponseEntity<Object> virementRefuse(ErreurVirement refus) {
         HttpStatus statut = statut(refus);
         if (statut.is5xxServerError()) {
             JOURNAL.error("Virement non pris en compte", refus.getCause());
         }
-        return reponse(statut, refus.getMessage());
+        if (refus.motif() == Cause.CONTROLE_EN_ERREUR) {
+            trace.issue(ISSUE_REFUS_CONTROLE);
+            trace.erreur(refus);
+            String reference = trace.reference();
+            return corps(statut, new MessageAvecReference(TextesVirement.refusControle(reference), reference));
+        }
+        return corps(statut, new Message(refus.getMessage()));
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})
-    public ResponseEntity<Message> requeteInvalide() {
+    public ResponseEntity<Object> requeteInvalide() {
         return reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
     }
 
     /** Exceptions de Spring MVC qui portent leur statut (404, 405, 415...), sinon erreur technique. */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Message> autreErreur(Exception erreur) {
+    public ResponseEntity<Object> autreErreur(Exception erreur) {
         HttpStatus statut = erreur instanceof ErrorResponse avecStatut
                 ? Textes.statutPublie(avecStatut.getStatusCode().value())
                 : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -49,19 +69,28 @@ public class GestionErreursVirements {
 
     private static HttpStatus statut(ErreurVirement refus) {
         return switch (refus.motif()) {
-            case COMPTES_OBLIGATOIRES, COMPTES_IDENTIQUES, MONTANT_INVALIDE, MOTIF_TROP_LONG, SOLDE_INSUFFISANT ->
-                    HttpStatus.BAD_REQUEST;
-            case COMPTE_INTROUVABLE -> HttpStatus.NOT_FOUND;
-            case COMPTE_ETRANGER -> HttpStatus.FORBIDDEN;
-            case REMISE_IMPOSSIBLE, CLE_IDEMPOTENCE_DEJA_UTILISEE -> HttpStatus.INTERNAL_SERVER_ERROR;
+            case COMPTES_OBLIGATOIRES, COMPTES_IDENTIQUES, MONTANT_INVALIDE, MOTIF_TROP_LONG, SOLDE_INSUFFISANT,
+                    MOTIF_DECISION_OBLIGATOIRE -> HttpStatus.BAD_REQUEST;
+            case COMPTE_INTROUVABLE, VIREMENT_NON_SUSPENDU -> HttpStatus.NOT_FOUND;
+            case COMPTE_ETRANGER, ROLE_INSUFFISANT -> HttpStatus.FORBIDDEN;
+            case REMISE_IMPOSSIBLE, CLE_IDEMPOTENCE_DEJA_UTILISEE, CONTROLE_EN_ERREUR ->
+                    HttpStatus.INTERNAL_SERVER_ERROR;
         };
     }
 
-    private static ResponseEntity<Message> reponse(HttpStatus statut, String texte) {
-        return ResponseEntity.status(statut).contentType(MediaType.APPLICATION_JSON).body(new Message(texte));
+    private static ResponseEntity<Object> reponse(HttpStatus statut, String texte) {
+        return corps(statut, new Message(texte));
+    }
+
+    private static ResponseEntity<Object> corps(HttpStatus statut, Object corps) {
+        return ResponseEntity.status(statut).contentType(MediaType.APPLICATION_JSON).body(corps);
     }
 
     /** Corps d'erreur. */
     public record Message(String message) {
+    }
+
+    /** Corps d'erreur du contrôle de fraude en erreur : la référence est l'identifiant de la trace courante. */
+    public record MessageAvecReference(String message, String reference) {
     }
 }

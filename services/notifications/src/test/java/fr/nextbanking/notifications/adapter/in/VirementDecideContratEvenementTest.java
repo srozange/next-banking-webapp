@@ -41,4 +41,34 @@ class VirementDecideContratEvenementTest {
                 + donnees.get("virementId").asLong() + "|" + notification.get("clientId").asLong() + "|"
                 + notification.get("type").asString() + "|null|" + notification.get("message").asString());
     }
+
+    @Test
+    @Tag("FR-027-04")
+    void une_decision_suspendu_et_sa_notification_fraude_sont_transmises_telles_quelles() {
+        JsonNode schema = json.readTree(SCHEMA.toFile());
+        JsonNode proprietes = schema.get("properties").get("donnees").get("properties");
+        List<String> etats = new ArrayList<>();
+        proprietes.get("etat").get("enum").forEach(etat -> etats.add(etat.asString()));
+        List<String> types = new ArrayList<>();
+        proprietes.get("notification").get("properties").get("type").get("enum")
+                .forEach(type -> types.add(type.asString()));
+        String message = "Votre virement de 10000.00 EUR vers le compte FR76-0001-0002 est en cours de vérification. "
+                + "Rien n'a été débité. Vous aurez notre réponse avant le 18/11/2026 à 10:15. "
+                + "Sans décision à cette heure, il sera rejeté sans aucun débit.";
+        String enveloppe = json.writeValueAsString(schema.get("examples").get(0))
+                .replace("\"etat\":\"EXECUTE\"", "\"etat\":\"SUSPENDU\"")
+                .replace("\"type\":\"CONFIRMATION\"", "\"type\":\"FRAUDE\"")
+                .replaceAll("\"message\":\"[^\"]*\"", "\"message\":" + json.writeValueAsString(message));
+        List<String> recus = new ArrayList<>();
+        RecepteurVirementDecide recepteur = new RecepteurVirementDecide((idEvenement, virementId, rendue) -> {
+            recus.add(rendue.type() + "|" + rendue.message());
+            return true;
+        }, json);
+
+        recepteur.recevoir(enveloppe);
+
+        assertThat(etats).contains("SUSPENDU");
+        assertThat(types).contains("FRAUDE");
+        assertThat(recus).containsExactly("FRAUDE|" + message);
+    }
 }

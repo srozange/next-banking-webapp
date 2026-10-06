@@ -76,4 +76,27 @@ class VirementDecideContratEvenementTest {
         schema.get("required").forEach(champ -> requis.add(champ.asString()));
         return requis;
     }
+
+    @Test
+    @Tag("FR-027-04")
+    void tous_les_etats_et_types_produits_sont_dans_les_enumerations_du_schema() {
+        JsonNode proprietes = schema.get("properties").get("donnees").get("properties");
+        Set<String> etats = new HashSet<>();
+        proprietes.get("etat").get("enum").forEach(etat -> etats.add(etat.asString()));
+        Set<String> types = new HashSet<>();
+        proprietes.get("notification").get("properties").get("type").get("enum")
+                .forEach(type -> types.add(type.asString()));
+        EvenementsSortantsKafka kafka = new EvenementsSortantsKafka(null, null, json);
+
+        JsonNode suspendu = json.readTree(kafka.enJson(new VirementDecide(UUID.randomUUID(), 13L, 1L,
+                EtatVirement.SUSPENDU, new NotificationVirement(1L, TypeNotification.FRAUDE, null,
+                        "Votre virement de 10000.00 EUR vers le compte FR76-0001-0002 est en cours de vérification."),
+                Instant.parse("2026-11-17T09:00:00Z"))));
+
+        assertThat(etats).containsExactlyInAnyOrder("EXECUTE", "SUSPENDU");
+        assertThat(types).containsExactlyInAnyOrder("CONFIRMATION", "ALERTE", "FRAUDE");
+        assertThat(etats).contains(suspendu.get("donnees").get("etat").asString());
+        assertThat(types).contains(suspendu.get("donnees").get("notification").get("type").asString());
+        assertThat(suspendu.get("donnees").get("notification").get("titre").isNull()).isTrue();
+    }
 }

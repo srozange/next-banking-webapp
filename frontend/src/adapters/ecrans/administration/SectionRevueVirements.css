@@ -1,0 +1,25 @@
+.section-revue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+}
+
+.section-revue__titre {
+  margin: 0;
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
+
+.section-revue__sous-titre {
+  margin: var(--spacing-md) 0 0;
+  font-family: var(--font-h4);
+  font-size: var(--text-h4);
+  font-weight: var(--font-weight-h4);
+}
+
+.section-revue__actions {
+  display: flex;
+  gap: var(--spacing-md);
+}

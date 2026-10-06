@@ -1,8 +1,8 @@
 package fr.nextbanking.coeurbancaire.domain;
 
 /**
- * Type d'une notification de virement. FRAUDE s'ajoute avec la story 3.4.
+ * Type d'une notification de virement : CONFIRMATION, ALERTE pour un virement exécuté, FRAUDE pour un virement suspendu.
  */
 public enum TypeNotification {
-    CONFIRMATION, ALERTE
+    CONFIRMATION, ALERTE, FRAUDE
 }

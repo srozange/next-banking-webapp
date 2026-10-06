@@ -1,16 +1,35 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.application.EcritureAudit.Entree;
 import fr.nextbanking.coeurbancaire.application.port.in.TraiterVirementATraiter;
+import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.application.port.out.DepotVirements;
 import fr.nextbanking.coeurbancaire.application.port.out.EvenementsTraites;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
+import fr.nextbanking.coeurbancaire.application.port.out.JournalAudit;
+import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
+import fr.nextbanking.coeurbancaire.domain.ActionAudit;
+import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.DecisionRevue;
+import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
+import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
+import fr.nextbanking.coeurbancaire.domain.EtatVirement;
+import fr.nextbanking.coeurbancaire.domain.IssueRevue;
+import fr.nextbanking.coeurbancaire.domain.TextesVirement;
+import fr.nextbanking.coeurbancaire.domain.Virement;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Cas d'usage idempotent : consomme la remise d'un virement au traitement asynchrone. Dans une même transaction,
- * l'événement est marqué traité puis le virement est lu. Un virement exécuté est déjà débité : aucun débit et
- * aucune notification. (La libération d'un virement suspendu arrive avec la story 3.4.)
+ * l'événement est marqué traité puis le virement est lu. Un virement exécuté est déjà débité : aucun effet. Un
+ * virement LIBÉRÉ est débité par mise à jour conditionnelle ({@code solde >= montant}), crédité, inscrit au relevé
+ * par ses deux opérations et passé à EXÉCUTÉ ; si le solde est devenu insuffisant, il passe à REJETÉ sans débit ni
+ * crédit (audit TRANSFER_REJECT_INSUFFICIENT_FUNDS par {@code SYSTEM}). Aucune notification dans aucun cas. L'audit
+ * est écrit après la transaction, par l'outbox d'audit.
  */
 public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter {
 
@@ -18,13 +37,20 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
     private final EvenementsTraites evenementsTraites;
     private final Transaction transaction;
     private final Horloge horloge;
+    private final Comptes comptes;
+    private final Operations operations;
+    private final EcritureAudit audit;
 
     public TraiterVirementATraiterCasUsage(DepotVirements virements, EvenementsTraites evenementsTraites,
-            Transaction transaction, Horloge horloge) {
+            Transaction transaction, Horloge horloge, Comptes comptes, Operations operations,
+            JournalAudit audit) {
         this.virements = virements;
         this.evenementsTraites = evenementsTraites;
         this.transaction = transaction;
         this.horloge = horloge;
+        this.comptes = comptes;
+        this.operations = operations;
+        this.audit = new EcritureAudit(audit, transaction);
     }
 
     @Override
@@ -32,11 +58,60 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
         if (idEvenement == null) {
             throw new IllegalArgumentException("L'identifiant de l'événement est obligatoire.");
         }
-        return transaction.executer(() -> {
-            if (!evenementsTraites.marquerTraite(idEvenement, horloge.instant())) {
-                return Issue.DEJA_TRAITE;
-            }
-            return virements.parId(virementId).isPresent() ? Issue.DEJA_EXECUTE : Issue.VIREMENT_INCONNU;
-        });
+        Instant maintenant = horloge.instant();
+        Traitement traitement = transaction.executer(() -> traiterLeVirement(idEvenement, virementId, maintenant));
+        if (traitement.audit() != null) {
+            audit.ecrire(virementId, maintenant, List.of(traitement.audit()));
+        }
+        return traitement.issue();
+    }
+
+    private Traitement traiterLeVirement(UUID idEvenement, long virementId, Instant maintenant) {
+        if (!evenementsTraites.marquerTraite(idEvenement, maintenant)) {
+            return new Traitement(Issue.DEJA_TRAITE, null);
+        }
+        Optional<Virement> lu = virements.parId(virementId);
+        if (lu.isEmpty()) {
+            return new Traitement(Issue.VIREMENT_INCONNU, null);
+        }
+        Virement virement = lu.get();
+        if (virement.etat() == EtatVirement.EXECUTE) {
+            return new Traitement(Issue.DEJA_EXECUTE, null);
+        }
+        if (virement.etat() != EtatVirement.LIBERE) {
+            return new Traitement(Issue.ETAT_INATTENDU, null);
+        }
+        List<Compte> verrouilles = comptes.verrouiller(virement.compteSourceId(), virement.compteDestinataireId());
+        Compte source = trouver(verrouilles, virement.compteSourceId());
+        Compte destinataire = trouver(verrouilles, virement.compteDestinataireId());
+        if (!comptes.debiter(source.id(), virement.montant())) {
+            transiter(virement, EtatVirement.REJETE,
+                    new DecisionRevue(IssueRevue.REJETE_SOLDE_AU_DEBIT, DecisionRevue.SYSTEME, null, maintenant));
+            return new Traitement(Issue.REJETE_SOLDE_INSUFFISANT, new Entree(DecisionRevue.SYSTEME, null,
+                    ActionAudit.TRANSFER_REJECT_INSUFFICIENT_FUNDS, TextesVirement.detailRejetSoldeAuDebit(virementId)));
+        }
+        comptes.crediter(destinataire.id(), virement.montant());
+        Virement.Execution execution = virement.executerApresLiberation(source, destinataire, maintenant);
+        operations.enregistrer(execution.debit());
+        operations.enregistrer(execution.credit());
+        transiter(virement, EtatVirement.EXECUTE, null);
+        return new Traitement(Issue.EXECUTE_APRES_LIBERATION, new Entree(Long.toString(virement.clientId()), null,
+                ActionAudit.TRANSFER_EXECUTED,
+                TextesVirement.detailExecution(virement.montant().toPlainString(), virement.motif())));
+    }
+
+    /** Un autre traitement a décidé entre-temps : la transaction est annulée, le message sera rejoué. */
+    private void transiter(Virement virement, EtatVirement vers, DecisionRevue decision) {
+        if (!virements.transiter(virement.id(), EtatVirement.LIBERE, vers, decision)) {
+            throw new ErreurVirement(Cause.VIREMENT_NON_SUSPENDU);
+        }
+    }
+
+    private static Compte trouver(List<Compte> comptes, long id) {
+        return comptes.stream().filter(compte -> compte.id() == id).findFirst()
+                .orElseThrow(() -> new ErreurVirement(Cause.COMPTE_INTROUVABLE));
+    }
+
+    private record Traitement(Issue issue, Entree audit) {
     }
 }

@@ -17,12 +17,12 @@
       "required": ["utilisateur", "action", "detail", "adresseIp"],
       "additionalProperties": false,
       "properties": {
-        "utilisateur": { "type": "string", "minLength": 1, "description": "clientId en texte pour un virement soumis par un client, SYSTEM pour un traitement." },
+        "utilisateur": { "type": "string", "minLength": 1, "description": "clientId en texte pour un virement soumis par un client, SYSTEM pour un traitement (rejet automatique, rejet au débit) ; identifiant de l'administrateur pour sa décision." },
         "action": {
           "enum": ["LOGIN", "LOGIN_FAILED", "LOGOUT", "ADMIN_DEACTIVATE", "ADMIN_ACTIVATE", "ADMIN_LOAN_APPROVE", "ADMIN_LOAN_REFUSE", "ADMIN_TRANSFER_RELEASE", "ADMIN_TRANSFER_REJECT", "VIREMENT", "TRANSFER_EXECUTED", "TRANSFER_AUTO_REJECT", "TRANSFER_REJECT_INSUFFICIENT_FUNDS"],
-          "description": "Catalogue fermé AR-40 ; la story 3.1 produit VIREMENT puis TRANSFER_EXECUTED."
+          "description": "Catalogue fermé AR-40 ; le cœur bancaire produit VIREMENT, TRANSFER_EXECUTED, ADMIN_TRANSFER_RELEASE, ADMIN_TRANSFER_REJECT, TRANSFER_AUTO_REJECT et TRANSFER_REJECT_INSUFFICIENT_FUNDS."
         },
-        "detail": { "type": "string", "description": "VIREMENT : « Montant: {amount} - Motif: {motif} - Issue: {EXECUTE|SUSPENDU|REFUSE_ERREUR_CONTROLE|ECHEC_REMISE} » ; TRANSFER_EXECUTED : « Montant: {amount} - Motif: {motif} »." },
+        "detail": { "type": "string", "description": "VIREMENT : « Montant: {amount} - Motif: {motif} - Issue: {EXECUTE|SUSPENDU|REFUSE_ERREUR_CONTROLE|ECHEC_REMISE} » ; TRANSFER_EXECUTED : « Montant: {amount} - Motif: {motif} » ; ADMIN_TRANSFER_RELEASE : « Liberation virement id={id} - Motif: {motif} - Issue: {EXECUTE|REJETE} » ; ADMIN_TRANSFER_REJECT : « Rejet virement id={id} - Motif: {motif} » ; TRANSFER_AUTO_REJECT : « Rejet automatique virement id={id} » ; TRANSFER_REJECT_INSUFFICIENT_FUNDS : « Rejet virement id={id} - Motif: solde insuffisant au debit »." },
         "adresseIp": { "type": ["string", "null"], "description": "Adresse IP d'origine résolue par adapter.in (AD-17) ; null pour une action du système." }
       }
     }

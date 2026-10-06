@@ -1,0 +1,25 @@
+.modale__fond {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background-color: color-mix(in srgb, var(--color-surface-inverse) 60%, transparent);
+}
+
+.modale {
+  width: 100%;
+  max-width: calc(var(--spacing-4xl) * 5);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.modale__titre {
+  margin: 0 0 var(--spacing-lg);
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
