@@ -1,4 +1,4 @@
-package fr.nextbanking.coeurbancaire.adapter.in.http;
+package fr.nextbanking.coeurbancaire.adapter.in;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package fr.nextbanking.coeurbancaire.adapter.in.http;
+package fr.nextbanking.coeurbancaire.adapter.in;
 
 import fr.nextbanking.coeurbancaire.domain.LimiteInvalide;
 import org.slf4j.Logger;

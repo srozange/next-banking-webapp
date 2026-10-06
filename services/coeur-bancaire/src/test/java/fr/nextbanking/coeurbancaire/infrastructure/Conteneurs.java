@@ -18,7 +18,6 @@ public final class Conteneurs {
             .withDatabaseName("coeur_bancaire").withUsername("coeur_bancaire").withPassword("mot-de-passe-de-test");
     /** Plusieurs tentatives : sur un poste chargé (pile compose en marche), le premier démarrage de Kafka échoue parfois. */
     public static final KafkaContainer KAFKA = new KafkaContainer("apache/kafka:4.2.2").withStartupAttempts(3);
-    public static final KeyPair CLES = paireRsa();
 
     /** Paire RSA du jeton, générée en mémoire : aucune clé n'est écrite dans un fichier. */
     public static final KeyPair CLES = paireRsa();

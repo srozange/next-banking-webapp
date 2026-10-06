@@ -1,4 +1,4 @@
-package fr.nextbanking.coeurbancaire.adapter.in.http;
+package fr.nextbanking.coeurbancaire.adapter.in;
 
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterTraitements;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
