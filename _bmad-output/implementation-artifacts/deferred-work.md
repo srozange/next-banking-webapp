@@ -150,3 +150,10 @@ source_spec: `spec-7-6-afficher-l-ecran-produits.md`
 severity: low
 reason: Choix de cette story (Design Notes), à confirmer par le métier ; le golden master SC-011-01 ne compare pas cette valeur.
 status: open
+
+### DW-17: trace-smoke.sh non exécuté pour la story 7.7.
+origin: spec-deferred fe5e50232b09
+location: n/a
+source_spec: `spec-7-7-raccorder-azure-openai-derriere-un-port-simule-et-exposer-l-echange-avec-sophie.md`
+reason: Le script exige la pile compose ; non lancé dans cette session.
+status: open

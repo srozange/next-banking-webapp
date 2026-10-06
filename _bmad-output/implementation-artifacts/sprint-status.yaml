@@ -87,7 +87,7 @@ development_status:
   5-1-ouvrir-la-page-prêts-et-simuler-un-emprunt: backlog
   5-2-déposer-une-demande-de-prêt-et-la-transmettre-au-scoring: backlog
   5-3-approuver-ou-refuser-automatiquement-une-demande-par-le-scor: backlog
-  5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: backlog
+  5-4-recevoir-la-décision-sur-sa-demande-de-prêt-dans-le-centre-d: optional
   5-5-consulter-l-échéancier-marquer-une-échéance-payée-et-supprim: backlog
   5-6-traiter-le-pipeline-des-prêts-en-attente-depuis-l-administra: backlog
   epic-5-retrospective: optional
@@ -105,7 +105,7 @@ development_status:
   7-4-afficher-l-écran-bourse: done
   7-5-ouvrir-le-service-open-banking-conseiller-et-exposer-le-cata: done
   7-6-afficher-l-écran-produits: done
-  7-7-raccorder-azure-openai-derrière-un-port-simulé-et-exposer-l: backlog
+  7-7-raccorder-azure-openai-derrière-un-port-simulé-et-exposer-l: done
   7-8-dialoguer-avec-sophie-sur-l-écran-mon-conseiller: backlog
   epic-7-retrospective: optional
 

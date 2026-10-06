@@ -336,6 +336,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${NB_OPEN_BANKING_CONSEILLER_BD_MOT_DE_PASSE:-}
       # Clé publique du jeton : tout /api/** est authentifié ; sans elle, refus de démarrer.
       NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
+      # Service d'IA Azure OpenAI (Sophie) : vides par défaut (valeurs du legacy). L'adaptateur simulé reste actif
+      # tant que le mode réel n'est pas demandé hors des fichiers versionnés.
+      AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY:-}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-}
+      AZURE_OPENAI_DEPLOYMENT: ${AZURE_OPENAI_DEPLOYMENT:-}
+      AZURE_OPENAI_API_VERSION: ${AZURE_OPENAI_API_VERSION:-}
     ports:
       - "${NB_PORT_OPEN_BANKING_CONSEILLER:-8088}:8080"
     networks: [nb]

@@ -1,5 +1,7 @@
 package fr.nextbanking.openbankingconseiller.adapter.in.http;
 
+import fr.nextbanking.openbankingconseiller.application.MessageVide;
+import fr.nextbanking.openbankingconseiller.application.ServiceIaIndisponible;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -19,9 +21,23 @@ public class GestionErreurs {
 
     private static final Logger JOURNAL = LoggerFactory.getLogger(GestionErreurs.class);
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})
+    @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class, MessageVide.class,
+            PointEntreeChat.RequeteInvalide.class})
     public ResponseEntity<Message> requeteInvalide() {
         return reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
+    }
+
+    /**
+     * Service d'IA en échec : statut non 2xx (hors 401/403) en 502 avec ce statut ; tout le reste, y compris un refus
+     * d'authentification, en 503 sans code technique (BUG-038). Le motif journalisé ne porte ni clé ni corps.
+     */
+    @ExceptionHandler(ServiceIaIndisponible.class)
+    public ResponseEntity<Message> serviceIaIndisponible(ServiceIaIndisponible erreur) {
+        JOURNAL.warn("Service d'IA indisponible : {}", erreur.getMessage());
+        if (erreur.nature() == ServiceIaIndisponible.Nature.STATUT) {
+            return reponse(HttpStatus.BAD_GATEWAY, Textes.iaStatut(erreur.statutRecu()));
+        }
+        return reponse(HttpStatus.SERVICE_UNAVAILABLE, Textes.IA_INDISPONIBLE);
     }
 
     /** Exceptions de Spring MVC qui portent leur statut (400, 404, 405...), sinon erreur technique. */
