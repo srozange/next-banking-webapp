@@ -15,6 +15,9 @@ import fr.nextbanking.coeurbancaire.application.port.out.JournalBatch;
 import fr.nextbanking.coeurbancaire.application.port.out.ProjectionClients;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
+import fr.nextbanking.coeurbancaire.application.port.out.VirementsProgrammes;
+import fr.nextbanking.coeurbancaire.domain.DemandeVirementProgramme;
+import fr.nextbanking.coeurbancaire.domain.VirementProgramme;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
 import fr.nextbanking.coeurbancaire.domain.BeneficiaireExterne;
 import fr.nextbanking.coeurbancaire.domain.Compte;
@@ -52,7 +55,7 @@ import java.util.function.Supplier;
  */
 class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, EvenementsSortants, JournalAudit,
         EvenementsTraites, Transaction, Horloge, HistoriqueVirements, Beneficiaires, AlertesFraude, JournalBatch,
-        ProjectionClients {
+        ProjectionClients, VirementsProgrammes {
 
     static final Instant MAINTENANT = Instant.parse("2026-11-17T09:00:00Z");
 
@@ -112,6 +115,35 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     @Override
     public Optional<Compte> trouver(long compteId) {
         return Optional.ofNullable(comptes.get(compteId));
+    }
+
+    @Override
+    public Optional<Compte> parNumero(String numero) {
+        return comptes.values().stream().filter(c -> c.numero().equals(numero)).findFirst();
+    }
+
+    /** Virements programmés enregistrés, dans l'ordre d'écriture. */
+    final List<VirementProgramme> virementsProgrammes = new ArrayList<>();
+    boolean enregistrementProgrammeEnErreur;
+
+    @Override
+    public VirementProgramme enregistrer(long clientId, DemandeVirementProgramme demande,
+            Instant prochaineExecution, Instant creeLe) {
+        if (enregistrementProgrammeEnErreur) {
+            throw new IllegalStateException("base indisponible");
+        }
+        VirementProgramme cree = new VirementProgramme(virementsProgrammes.size() + 1L, clientId,
+                demande.compteSourceId(), demande.numeroBeneficiaire(), demande.libelleBeneficiaire(),
+                demande.montant(), demande.frequence(), demande.motif(), prochaineExecution, true, 0, creeLe);
+        virementsProgrammes.add(cree);
+        return cree;
+    }
+
+    @Override
+    public List<VirementProgramme> listerDuClient(long clientId) {
+        return virementsProgrammes.stream().filter(v -> v.clientId() == clientId)
+                .sorted(java.util.Comparator.comparing(VirementProgramme::prochaineExecution)
+                        .thenComparingLong(VirementProgramme::id)).toList();
     }
 
     @Override

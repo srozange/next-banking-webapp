@@ -21,12 +21,14 @@ import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { SectionRevueVirements } from '../ecrans/administration/SectionRevueVirements';
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
+import type { ClientVirementsProgrammes } from '../../application/gererVirementsProgrammes';
 import { EcranBeneficiaires } from '../ecrans/beneficiaires/EcranBeneficiaires';
 import { EcranReleve } from '../ecrans/releve/EcranReleve';
 import { EcranVirement } from '../ecrans/virement/EcranVirement';
 import { EcranTableauDeBord } from '../ecrans/tableauDeBord/EcranTableauDeBord';
 import { EcranPrets } from '../ecrans/prets/EcranPrets';
 import { TEXTES } from '../textes';
+import { EcranVirementsProgrammes } from '../ecrans/virementsProgrammes/EcranVirementsProgrammes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { RedirectionAccueil } from './RedirectionAccueil';
 import { RouteProtegee } from './RouteProtegee';
@@ -46,6 +48,7 @@ export interface Dependances {
   clientRevue: ClientRevue;
   clientReleve: ClientReleve;
   clientBeneficiaires: ClientBeneficiaires;
+  clientVirementsProgrammes: ClientVirementsProgrammes;
   clientTableauDeBord: ClientTableauDeBord;
   clientNotifications: ClientNotifications;
   clientPrets: ClientPrets;
@@ -77,6 +80,7 @@ export function creerRoutes({
   clientRevue,
   clientReleve,
   clientBeneficiaires,
+  clientVirementsProgrammes,
   clientTableauDeBord,
   clientNotifications,
   clientPrets,
@@ -125,6 +129,8 @@ export function creerRoutes({
             { path: '/releve', element: <EcranReleve comptes={clientVirement} releve={clientReleve} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-013-01) : seuls les bénéficiaires du client du jeton sont rendus.
             { path: '/beneficiaires', element: <EcranBeneficiaires client={clientBeneficiaires} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-004-01) : seuls les comptes et virements du client du jeton sont rendus.
+            { path: '/virements-programmes', element: <EcranVirementsProgrammes comptes={clientVirement} client={clientVirementsProgrammes} /> },
           ],
         },
         { path: '/', element: accueil },

@@ -37,7 +37,7 @@ class CoeurBancaireSecuriteIT {
     private static final String RESSOURCE_INTROUVABLE = "{\"message\":\"Ressource introuvable\"}";
     private static final List<String> CHEMINS = List.of("/api/coeur-bancaire/traitements",
             "/api/coeur-bancaire/traitements?limite=50", "/api/coeur-bancaire/tableau-de-bord",
-            "/api/coeur-bancaire/beneficiaires",
+            "/api/coeur-bancaire/beneficiaires", "/api/coeur-bancaire/virements-programmes",
             "/api/coeur-bancaire/temoin", "/api/coeur-bancaire/temoin/", "/api/coeur-bancaire/inconnu",
             "/actuator/info");
 
@@ -96,6 +96,21 @@ class CoeurBancaireSecuriteIT {
                 assertThat(reponse.statusCode()).as(chemin).isEqualTo(401);
                 assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
             }
+        }
+    }
+
+    @Test
+    @Tag("FR-004-01")
+    void sans_jeton_ou_avec_un_jeton_invalide_la_creation_d_un_virement_programme_rend_401() throws Exception {
+        Instant maintenant = Instant.now();
+        String expire = Jetons.jeton(Conteneurs.CLES, "CLIENT", maintenant.minusSeconds(7200),
+                maintenant.minusSeconds(3600));
+
+        for (String jeton : new String[] {null, expire, "illisible"}) {
+            HttpResponse<String> reponse = Jetons.envoyer(port, "POST", "/api/coeur-bancaire/virements-programmes",
+                    jeton, "{}");
+            assertThat(reponse.statusCode()).isEqualTo(401);
+            assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
         }
     }
 

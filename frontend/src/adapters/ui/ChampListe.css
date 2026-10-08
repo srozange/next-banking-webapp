@@ -26,3 +26,8 @@
   font-size: var(--text-body-md);
   font-weight: var(--font-weight-body-md);
 }
+
+.champ-liste__liste--erreur {
+  border-color: var(--color-error);
+  background-color: var(--color-error-container);
+}

@@ -340,4 +340,59 @@ describe('accessibilité (axe)', () => {
     await screen.findByTestId('beneficiaires-message-info');
     expect(await reglesViolees()).toEqual([]);
   });
+  it('[axe] /virements-programmes, formulaire, liste, erreur de champ puis succès, ne relève aucune violation', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const virement = {
+      id: 7,
+      compteSourceId: 1,
+      numeroCompteSource: 'FR76-0001-0001',
+      numeroBeneficiaire: 'FR76-0001-0002',
+      libelleBeneficiaire: 'Epargne',
+      montant: '35.00',
+      frequence: 'MENSUEL',
+      motif: null,
+      prochaineExecution: '2027-01-01',
+      actif: true,
+      nbExecutions: 0,
+    };
+    rendreApplication(
+      '/virements-programmes',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { lireComptes: () => Promise.resolve({ statut: 'comptes' as const, comptes: [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001', solde: '2130.00' }] }) },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      {
+        lister: () => Promise.resolve({ statut: 'liste' as const, virements: [virement, { ...virement, id: 8, actif: false }] }),
+        creer: () => Promise.resolve({ statut: 'cree' as const }),
+      },
+    );
+    await screen.findByTestId('vp-ligne-7');
+    expect(await reglesViolees()).toEqual([]);
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-creer'));
+    await screen.findByRole('alert');
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.selectOptions(screen.getByTestId('vp-compte-debiteur'), '1');
+    await utilisateur.type(screen.getByTestId('vp-montant'), '50');
+    await utilisateur.type(screen.getByTestId('vp-numero-beneficiaire'), 'FR76-0001-0002');
+    await utilisateur.type(screen.getByTestId('vp-libelle-beneficiaire'), 'Epargne');
+    await utilisateur.type(screen.getByTestId('vp-date-premiere-execution'), '2027-01-01');
+    await utilisateur.click(screen.getByTestId('vp-creer'));
+    await screen.findByTestId('vp-message-succes');
+    expect(await reglesViolees()).toEqual([]);
+  });
 });

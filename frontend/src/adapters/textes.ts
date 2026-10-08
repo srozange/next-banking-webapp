@@ -126,6 +126,8 @@ export const TEXTES = {
     comptesTiers: 'BankApp Demo - Comptes Tiers',
     /** MSG-013-001 */
     beneficiaires: 'BankApp Demo - Beneficiaires',
+    /** FEAT-004 MESSAGES.md, titre de navigateur. */
+    virementsProgrammes: 'BankApp Demo - Virements programmes',
   },
   /**
    * Tableau de bord : FEAT-002 MESSAGES.md (MSG-002-050 à 067), orthographe du source sans accent ; les capitales
@@ -203,6 +205,66 @@ export const TEXTES = {
     succes: 'Bénéficiaire ajouté avec succès.',
     /** beneficiaire.erreur.ajout de textes-nouveaux.md (remplace MSG-013-077) : unique, sans détail. */
     erreurAjout: "Erreur lors de l'ajout du bénéficiaire. Veuillez réessayer.",
+  },
+  /** Écran Virements programmés : FEAT-004 MESSAGES.md (casse et absence d'accents comprises), `vp.erreur.creation` de textes-nouveaux.md. */
+  virementsProgrammes: {
+    nouveau: 'Nouveau virement programme',
+    mes: 'Mes virements programmes',
+    champs: {
+      compteDebiteur: 'Compte debiteur',
+      montant: 'Montant (EUR)',
+      frequence: 'Frequence',
+      numeroBeneficiaire: 'IBAN / N compte beneficiaire',
+      libelleBeneficiaire: 'Libelle beneficiaire',
+      datePremiereExecution: 'Date de premiere execution',
+      motif: 'Motif (optionnel)',
+    },
+    placeholders: {
+      montant: 'ex: 200.00',
+      numeroBeneficiaire: 'ex: FR76-0001-0002',
+      libelleBeneficiaire: 'ex: Compte epargne',
+      datePremiereExecution: 'yyyy-MM-dd',
+      motif: 'ex: Epargne mensuelle',
+    },
+    choisir: '-- Choisir --',
+    optionCompte: (numero: string, type: string, solde: string) => `${numero} (${type}) - ${solde} EUR`,
+    frequences: {
+      HEBDOMADAIRE: 'Hebdomadaire',
+      MENSUEL: 'Mensuel',
+      BIMESTRIEL: 'Bimestriel',
+      TRIMESTRIEL: 'Trimestriel',
+      SEMESTRIEL: 'Semestriel',
+      ANNUEL: 'Annuel',
+    },
+    creer: 'Creer le virement programme',
+    colonnes: {
+      source: 'Source',
+      beneficiaire: 'Beneficiaire',
+      montant: 'Montant',
+      frequence: 'Frequence',
+      prochain: 'Prochain',
+      executions: 'Nb executions',
+      etat: 'Etat',
+      actions: 'Actions',
+    },
+    actif: 'Actif',
+    inactif: 'Inactif',
+    suspendre: 'Suspendre',
+    reactiver: 'Reactiver',
+    supprimer: 'Supprimer',
+    aucun: 'Aucun virement programme configure',
+    montantAffiche: (montant: string) => `EUR${montant}`,
+    refus: {
+      compteSourceObligatoire: 'Veuillez selectionner un compte source',
+      numeroObligatoire: 'Veuillez saisir le numero de compte destinataire',
+      libelleObligatoire: 'Veuillez saisir le libelle du beneficiaire',
+      montantInvalide: 'Montant invalide',
+      dateObligatoire: 'Veuillez saisir la date de premiere execution',
+      dateInvalide: 'Format de date invalide (attendu : yyyy-MM-dd)',
+    },
+    succes: 'Virement programme cree avec succes',
+    /** vp.erreur.creation de textes-nouveaux.md : unique, sans détail. */
+    erreurCreation: "Erreur : le virement programmé n'a pas été créé. Rien n'a été débité. Veuillez réessayer.",
   },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {

@@ -10,6 +10,7 @@ import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientReleve, ReponseOperations } from '../../application/consulterReleve';
 import type { ClientBeneficiaires, ReponseAjout, ReponseBeneficiaires, ReponseSuppression, ReponseVerificationIban } from '../../application/gererBeneficiaires';
+import type { ClientVirementsProgrammes, ReponseCreation, ReponseVirementsProgrammes } from '../../application/gererVirementsProgrammes';
 import type { ClientTableauDeBord, ReponseTableauDeBord } from '../../application/consulterTableauDeBord';
 import type { ClientNotifications, ReponseActionNotifications, ReponseNotifications } from '../../application/gererNotifications';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
@@ -37,7 +38,7 @@ import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
  * le vrai stockage localStorage, un client de connexion simulé (qui, comme l'adaptateur HTTP, enregistre un jeton
  * `jetonDeTest({ sub: '1', roles })` quand la connexion est acceptée avec un rôle connu) et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
- * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), un client des bénéficiaires simulé (par défaut, aucune liste, suppression en panne), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
+ * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), un client des bénéficiaires simulé (par défaut, aucune liste, suppression en panne), un client des virements programmés simulé (par défaut, aucune liste, création en panne), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
  * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) et un client des notifications simulé (par défaut, aucune notification) ; `allerVers` simule l'envoi du navigateur à Powens.
  */
 export function rendreApplication(
@@ -57,6 +58,7 @@ export function rendreApplication(
   clientTableauDeBord: Partial<ClientTableauDeBord> = {},
   clientNotifications: Partial<ClientNotifications> = {},
   clientBeneficiaires: Partial<ClientBeneficiaires> = {},
+  clientVirementsProgrammes: Partial<ClientVirementsProgrammes> = {},
 ) {
   const deconnecter = vi.fn(clientSession.deconnecter ?? (() => Promise.resolve()));
   const renouveler = vi.fn(
@@ -87,6 +89,8 @@ export function rendreApplication(
   const supprimerBeneficiaire = vi.fn(clientBeneficiaires.supprimer ?? (() => Promise.resolve<ReponseSuppression>({ statut: 'technique' })));
   const verifierIbanBeneficiaire = vi.fn(clientBeneficiaires.verifierIban ?? (() => Promise.resolve<ReponseVerificationIban>({ statut: 'technique' })));
   const ajouterBeneficiaire = vi.fn(clientBeneficiaires.ajouter ?? (() => Promise.resolve<ReponseAjout>({ statut: 'technique' })));
+  const listerVirementsProgrammes = vi.fn(clientVirementsProgrammes.lister ?? (() => Promise.resolve<ReponseVirementsProgrammes>({ statut: 'liste', virements: [] })));
+  const creerVirementProgramme = vi.fn(clientVirementsProgrammes.creer ?? (() => Promise.resolve<ReponseCreation>({ statut: 'technique' })));
   const lireTableauDeBord = vi.fn(
     clientTableauDeBord.lire ?? (() => Promise.resolve<ReponseTableauDeBord>({ statut: 'tableau', comptes: [], dernieresOperations: [] })),
   );
@@ -134,6 +138,7 @@ export function rendreApplication(
       clientRevue: { lireFile, lireHistorique, decider },
       clientReleve: { lireOperations },
       clientBeneficiaires: { lister: listerBeneficiaires, supprimer: supprimerBeneficiaire, verifierIban: verifierIbanBeneficiaire, ajouter: ajouterBeneficiaire },
+      clientVirementsProgrammes: { lister: listerVirementsProgrammes, creer: creerVirementProgramme },
       clientTableauDeBord: { lire: lireTableauDeBord },
       clientNotifications: { lister: listerNotifications, toutMarquerLu, toutEffacer },
       clientComptesTiers: tiers,
@@ -143,5 +148,5 @@ export function rendreApplication(
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, listerVirementsProgrammes, creerVirementProgramme, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
 }

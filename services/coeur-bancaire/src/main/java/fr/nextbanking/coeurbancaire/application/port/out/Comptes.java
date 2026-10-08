@@ -17,6 +17,9 @@ public interface Comptes {
     /** Compte d'identifiant donné, s'il existe. */
     Optional<Compte> trouver(long compteId);
 
+    /** Compte de numéro donné (le numéro est unique), s'il existe. */
+    Optional<Compte> parNumero(String numero);
+
     /**
      * Lit les comptes demandés qui existent et les verrouille jusqu'à la fin de la transaction courante, dans l'ordre
      * de leur identifiant (pas d'interblocage entre deux virements croisés).

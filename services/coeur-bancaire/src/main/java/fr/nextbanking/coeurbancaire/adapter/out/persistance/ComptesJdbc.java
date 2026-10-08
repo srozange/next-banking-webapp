@@ -42,6 +42,14 @@ public class ComptesJdbc implements Comptes {
     }
 
     @Override
+    public Optional<Compte> parNumero(String numero) {
+        return jdbc.sql("select id, client_id, numero, type, solde from comptes where numero = :numero")
+                .param("numero", numero)
+                .query(ComptesJdbc::compte)
+                .optional();
+    }
+
+    @Override
     public List<Compte> verrouiller(long premierId, long secondId) {
         return jdbc.sql("""
                 select id, client_id, numero, type, solde from comptes

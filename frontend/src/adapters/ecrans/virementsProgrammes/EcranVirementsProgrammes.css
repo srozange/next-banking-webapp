@@ -1,0 +1,40 @@
+.ecran-virements-programmes {
+  box-sizing: border-box;
+  max-width: calc(var(--spacing-4xl) * 8);
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+/* Capitales rendues par le CSS : le texte source garde sa casse (le golden master compare innerText). */
+.ecran-virements-programmes__separateur {
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-family: var(--font-eyebrow);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--font-weight-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.ecran-virements-programmes__separateur:not(:first-child) {
+  margin-top: var(--spacing-lg);
+}
+
+.ecran-virements-programmes .tableau__table th {
+  text-transform: uppercase;
+}
+
+.ecran-virements-programmes__formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.ecran-virements-programmes__beneficiaire {
+  font-weight: var(--font-weight-label);
+}
+
+.ecran-virements-programmes__actions {
+  display: flex;
+  gap: var(--spacing-md);
+}

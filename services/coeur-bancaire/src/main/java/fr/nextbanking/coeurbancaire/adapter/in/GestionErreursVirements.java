@@ -4,6 +4,7 @@ import fr.nextbanking.coeurbancaire.domain.ErreurBeneficiaire;
 import fr.nextbanking.coeurbancaire.domain.ErreurReleve;
 import fr.nextbanking.coeurbancaire.domain.ErreurSaisieBeneficiaire;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
+import fr.nextbanking.coeurbancaire.domain.ErreurVirementProgramme;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
 import org.slf4j.Logger;
@@ -25,7 +26,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * Consulté avant le gestionnaire général {@link GestionErreurs}, qui capte aussi {@code Exception}.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class, PointEntreeBeneficiaires.class})
+@RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class, PointEntreeBeneficiaires.class,
+        PointEntreeVirementsProgrammes.class})
 public class GestionErreursVirements {
 
     static final String ISSUE_REFUS_CONTROLE = "REFUSE_ERREUR_CONTROLE";
@@ -79,6 +81,25 @@ public class GestionErreursVirements {
         String message = refus.motif() == ErreurSaisieBeneficiaire.Cause.TROP_LONG ? Textes.REQUETE_INVALIDE
                 : refus.getMessage();
         return corps(HttpStatus.BAD_REQUEST, new MessageAvecChamp(message, refus.champ().nom()));
+    }
+
+    /**
+     * Création d'un virement programmé refusée : 400 saisie, 403 compte source d'autrui, 404 compte source ou
+     * destinataire introuvable. Le corps porte le champ en cause quand il y en a un ; sans texte propre, « Requête
+     * invalide ».
+     */
+    @ExceptionHandler(ErreurVirementProgramme.class)
+    public ResponseEntity<Object> virementProgrammeRefuse(ErreurVirementProgramme refus) {
+        HttpStatus statut = switch (refus.motif()) {
+            case COMPTE_SOURCE_ETRANGER -> HttpStatus.FORBIDDEN;
+            case COMPTE_SOURCE_INTROUVABLE, DESTINATAIRE_INTROUVABLE -> HttpStatus.NOT_FOUND;
+            default -> HttpStatus.BAD_REQUEST;
+        };
+        String message = refus.motif().texte() == null ? Textes.REQUETE_INVALIDE : refus.motif().texte();
+        if (refus.motif().champ() == null) {
+            return corps(statut, new Message(message));
+        }
+        return corps(statut, new MessageAvecChamp(message, refus.motif().champ().nom()));
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})
