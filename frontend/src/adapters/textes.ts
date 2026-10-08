@@ -285,6 +285,25 @@ export const TEXTES = {
     depensesDuMois: (periode: string) => `Depenses du mois ${periode}`,
     aucuneDepense: 'Aucune depense enregistree sur cette periode',
     plafonds: 'Plafonds budgetaires',
+    definirPlafond: 'Definir un plafond',
+    categorie: 'Categorie',
+    choisir: '-- Choisir --',
+    plafondMensuel: 'Plafond mensuel (EUR)',
+    exemplePlafond: 'ex: 500',
+    enregistrer: 'Enregistrer le plafond',
+    plafondEnregistre: (categorie: string) => `Plafond enregistre pour ${categorie}`,
+    categorieRequise: 'Veuillez selectionner une categorie',
+    plafondInvalide: 'Veuillez saisir un plafond valide',
+    /** budget.erreur.plafond.max de textes-nouveaux.md. */
+    plafondTropGrand: 'Le plafond ne doit pas dépasser 13 chiffres avant la virgule',
+    /** A-006-1 : remplace « Erreur : {message technique} » et « Erreur suppression : {message technique} ». */
+    erreurPlafond: 'Une erreur est survenue. Veuillez reessayer.',
+    aucunPlafond: 'Aucun plafond defini',
+    pourcentage: (pourcentage: number) => `${pourcentage}% du plafond`,
+    depassement: 'Depassement',
+    plafondsDuMois: (periode: string) => `Plafonds du mois ${periode}`,
+    colonnes: { categorie: 'Categorie', plafond: 'Plafond', depense: 'Depense', ecart: 'Ecart', action: 'Action' },
+    supprimer: 'Supprimer',
   },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {

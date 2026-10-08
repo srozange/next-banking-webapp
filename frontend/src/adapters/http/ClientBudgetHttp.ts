@@ -1,5 +1,6 @@
 import type { ClientBudget, ReponseBudget } from '../../application/consulterBudget';
 import type { BudgetBrut, LigneRepartitionBrute } from '../../domain/budget';
+import type { PlafondBrut } from '../../domain/plafond';
 
 export const CHEMIN_BUDGET = '/api/coeur-bancaire/budget';
 
@@ -10,6 +11,18 @@ const FORMAT_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const estLigne = (valeur: unknown): valeur is LigneRepartitionBrute => {
   const ligne = valeur as Partial<Record<keyof LigneRepartitionBrute, unknown>> | null;
   return typeof ligne?.categorie === 'string' && typeof ligne.montant === 'string' && FORMAT_MONTANT.test(ligne.montant);
+};
+
+const estPlafond = (valeur: unknown): valeur is PlafondBrut => {
+  const plafond = valeur as Partial<Record<keyof PlafondBrut, unknown>> | null;
+  return (
+    Number.isInteger(plafond?.id) &&
+    typeof plafond?.categorie === 'string' &&
+    typeof plafond.plafond === 'string' &&
+    FORMAT_MONTANT.test(plafond.plafond) &&
+    typeof plafond.depense === 'string' &&
+    FORMAT_MONTANT.test(plafond.depense)
+  );
 };
 
 const estBudget = (valeur: unknown): valeur is BudgetBrut => {
@@ -28,7 +41,9 @@ const estBudget = (valeur: unknown): valeur is BudgetBrut => {
     Number.isInteger(budget.plafondsDefinis) &&
     (budget.plafondsDefinis as number) >= 0 &&
     Array.isArray(budget.repartition) &&
-    budget.repartition.every(estLigne)
+    budget.repartition.every(estLigne) &&
+    Array.isArray(budget.plafonds) &&
+    budget.plafonds.every(estPlafond)
   );
 };
 

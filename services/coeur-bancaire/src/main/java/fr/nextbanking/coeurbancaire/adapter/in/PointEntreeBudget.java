@@ -35,15 +35,24 @@ public class PointEntreeBudget {
                 budget.totalRevenus().texte(), budget.plafondsDefinis(),
                 budget.repartition().stream()
                         .map(ligne -> new LigneRepartition(ligne.categorie().libelle(), ligne.montant().texte()))
+                        .toList(),
+                budget.plafonds().stream()
+                        .map(l -> new LignePlafond(l.id(), l.categorie().libelle(), l.plafond().texte(),
+                                l.depense().texte()))
                         .toList());
     }
 
     /** Budget d'un mois : dates {@code AAAA-MM-JJ} et {@code AAAA-MM}, montants en chaîne décimale à point. */
     public record BudgetClient(String aujourdhui, String periode, List<String> periodes, String totalDepenses,
-            String totalRevenus, long plafondsDefinis, List<LigneRepartition> repartition) {
+            String totalRevenus, long plafondsDefinis, List<LigneRepartition> repartition,
+            List<LignePlafond> plafonds) {
     }
 
     /** Dépense d'une catégorie. */
     public record LigneRepartition(String categorie, String montant) {
+    }
+
+    /** Plafond d'une catégorie et dépense de la catégorie sur la période. */
+    public record LignePlafond(long id, String categorie, String plafond, String depense) {
     }
 }

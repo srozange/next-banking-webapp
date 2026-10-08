@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.application;
 
 import fr.nextbanking.coeurbancaire.domain.CompteId;
 import fr.nextbanking.coeurbancaire.domain.Montant;
+import fr.nextbanking.coeurbancaire.domain.Plafond;
 import fr.nextbanking.coeurbancaire.application.port.out.AlertesFraude;
 import fr.nextbanking.coeurbancaire.application.port.out.Beneficiaires;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
@@ -292,12 +293,37 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
                 .filter(o -> !o.date().isBefore(debut) && o.date().isBefore(fin)).toList();
     }
 
-    /** Plafonds définis, par client puis mois : nombre de plafonds. */
-    final Map<String, Long> plafonds = new HashMap<>();
+    /** Plafonds définis, par client. */
+    record PlafondMemoire(long clientId, Plafond plafond) {
+    }
+
+    final List<PlafondMemoire> plafonds = new ArrayList<>();
 
     @Override
     public long compter(long clientId, String mois) {
-        return plafonds.getOrDefault(clientId + "|" + mois, 0L);
+        return duMois(clientId, mois).size();
+    }
+
+    @Override
+    public List<Plafond> duMois(long clientId, String mois) {
+        return plafonds.stream().filter(p -> p.clientId() == clientId && p.plafond().mois().equals(mois))
+                .map(PlafondMemoire::plafond).toList();
+    }
+
+    @Override
+    public Plafond enregistrer(long clientId, fr.nextbanking.coeurbancaire.domain.CategorieBudget categorie,
+            String mois, Montant plafond) {
+        long id = plafonds.stream().filter(p -> p.clientId() == clientId && p.plafond().mois().equals(mois)
+                && p.plafond().categorie() == categorie).map(p -> p.plafond().id()).findFirst().orElse(prochainId++);
+        plafonds.removeIf(p -> p.plafond().id() == id);
+        Plafond enregistre = new Plafond(id, categorie, mois, plafond);
+        plafonds.add(new PlafondMemoire(clientId, enregistre));
+        return enregistre;
+    }
+
+    @Override
+    public boolean retirer(long clientId, long plafondId) {
+        return plafonds.removeIf(p -> p.clientId() == clientId && p.plafond().id() == plafondId);
     }
 
     @Override

@@ -115,7 +115,8 @@ class ConsulterBudgetCasUsageTest {
         operation(2, TypeOperation.DEBIT, "234.50", "xyz", "2026-03-31T21:59:59Z");
         operation(1, TypeOperation.CREDIT, "2000.00", "virement", "2026-03-06T08:00:00Z");
         operation(1, TypeOperation.DEBIT, "99.00", "loyer", "2026-04-01T08:00:00Z");
-        memoire.plafonds.put("7|2026-03", 2L);
+        memoire.enregistrer(7, CategorieBudget.LOGEMENT, "2026-03", Montant.lire("500.00"));
+        memoire.enregistrer(7, CategorieBudget.ALIMENTATION, "2026-03", Montant.lire("100.00"));
 
         Budget budget = cas.budget(7, "2026-03");
 
@@ -131,7 +132,7 @@ class ConsulterBudgetCasUsageTest {
         operation(1, TypeOperation.DEBIT, "10.00", "loyer", "2026-03-01T08:00:00Z");
         operation(3, TypeOperation.DEBIT, "999.00", "loyer", "2026-03-01T08:00:00Z");
         operation(3, TypeOperation.CREDIT, "500.00", "salaire", "2026-05-01T08:00:00Z");
-        memoire.plafonds.put("8|2026-03", 5L);
+        memoire.enregistrer(8, CategorieBudget.LOGEMENT, "2026-03", Montant.lire("5.00"));
 
         Budget budget = cas.budget(7, "2026-03");
 
@@ -139,5 +140,25 @@ class ConsulterBudgetCasUsageTest {
         assertThat(budget.totalDepenses().texte()).isEqualTo("10.00");
         assertThat(budget.totalRevenus().texte()).isEqualTo("0.00");
         assertThat(budget.plafondsDefinis()).isZero();
+    }
+
+    @Test
+    @Tag("FR-006-11")
+    void les_plafonds_de_la_periode_portent_la_depense_de_leur_categorie_dans_l_ordre_des_categories() {
+        operation(1, TypeOperation.DEBIT, "400.00", "loyer", "2026-03-01T08:00:00Z");
+        operation(1, TypeOperation.DEBIT, "10.00", "xyz", "2026-03-02T08:00:00Z");
+        memoire.enregistrer(7, CategorieBudget.AUTRES, "2026-03", Montant.lire("50.00"));
+        memoire.enregistrer(7, CategorieBudget.TRANSPORT, "2026-03", Montant.lire("80.00"));
+        memoire.enregistrer(7, CategorieBudget.LOGEMENT, "2026-03", Montant.lire("500.00"));
+        memoire.enregistrer(7, CategorieBudget.LOGEMENT, "2026-04", Montant.lire("1.00"));
+
+        Budget budget = cas.budget(7, "2026-03");
+
+        assertThat(budget.plafonds()).extracting(p -> p.categorie(), p -> p.plafond().texte(),
+                p -> p.depense().texte()).containsExactly(
+                org.assertj.core.api.Assertions.tuple(CategorieBudget.LOGEMENT, "500.00", "400.00"),
+                org.assertj.core.api.Assertions.tuple(CategorieBudget.TRANSPORT, "80.00", "0.00"),
+                org.assertj.core.api.Assertions.tuple(CategorieBudget.AUTRES, "50.00", "10.00"));
+        assertThat(budget.plafondsDefinis()).isEqualTo(3);
     }
 }

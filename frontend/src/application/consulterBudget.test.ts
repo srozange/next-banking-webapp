@@ -10,6 +10,7 @@ const brut: BudgetBrut = {
   totalRevenus: '2000.00',
   plafondsDefinis: 2,
   repartition: [],
+  plafonds: [],
 };
 
 describe('[FR-006-02] chargerBudget', () => {

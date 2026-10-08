@@ -1,7 +1,9 @@
 package fr.nextbanking.coeurbancaire.infrastructure;
 
 import fr.nextbanking.coeurbancaire.application.ConsulterBudgetCasUsage;
+import fr.nextbanking.coeurbancaire.application.GererPlafondsCasUsage;
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterBudget;
+import fr.nextbanking.coeurbancaire.application.port.in.GererPlafonds;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Plafonds;
@@ -17,5 +19,10 @@ public class AssemblageBudget {
     @Bean
     ConsulterBudget consulterBudget(Operations operations, Plafonds plafonds, Horloge horloge) {
         return new ConsulterBudgetCasUsage(operations, plafonds, horloge);
+    }
+
+    @Bean
+    GererPlafonds gererPlafonds(Plafonds plafonds) {
+        return new GererPlafondsCasUsage(plafonds);
     }
 }

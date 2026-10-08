@@ -1,6 +1,7 @@
 package fr.nextbanking.coeurbancaire.adapter.in;
 
 import fr.nextbanking.coeurbancaire.domain.ErreurBeneficiaire;
+import fr.nextbanking.coeurbancaire.domain.ErreurPlafond;
 import fr.nextbanking.coeurbancaire.domain.ErreurReleve;
 import fr.nextbanking.coeurbancaire.domain.ErreurSaisieBeneficiaire;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class, PointEntreeBeneficiaires.class,
-        PointEntreeVirementsProgrammes.class})
+        PointEntreeVirementsProgrammes.class, PointEntreePlafonds.class})
 public class GestionErreursVirements {
 
     static final String ISSUE_REFUS_CONTROLE = "REFUSE_ERREUR_CONTROLE";
@@ -100,6 +101,16 @@ public class GestionErreursVirements {
             return corps(statut, new Message(message));
         }
         return corps(statut, new MessageAvecChamp(message, refus.motif().champ().nom()));
+    }
+
+    /** Plafond refusé : 400 saisie (texte du domaine, « Requête invalide » pour un mois illisible), 404 introuvable. */
+    @ExceptionHandler(ErreurPlafond.class)
+    public ResponseEntity<Object> plafondRefuse(ErreurPlafond refus) {
+        return switch (refus.motif()) {
+            case INTROUVABLE -> reponse(HttpStatus.NOT_FOUND, refus.getMessage());
+            case MOIS_INVALIDE -> reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
+            default -> reponse(HttpStatus.BAD_REQUEST, refus.getMessage());
+        };
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})

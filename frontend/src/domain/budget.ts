@@ -1,4 +1,5 @@
 import { centimesDepuisChaine, chaineDepuisCentimes } from './montant';
+import { progression, type PlafondBrut, type Progression } from './plafond';
 
 /** Règles pures du budget (FEAT-006) : période, montants en centimes entiers, lignes de la répartition. */
 
@@ -17,12 +18,25 @@ export interface BudgetBrut {
   totalRevenus: string;
   plafondsDefinis: number;
   repartition: readonly LigneRepartitionBrute[];
+  /** Plafonds de la période avec la dépense de leur catégorie (ordre des catégories). */
+  plafonds: readonly PlafondBrut[];
 }
 
-/** Ligne de répartition prête à afficher : montant « 1234.50 EUR ». */
+/** Ligne de répartition prête à afficher : montant « 1234.50 EUR » et progression sur son plafond, nulle sans plafond. */
 export interface LigneRepartition {
   categorie: string;
   montant: string;
+  progression: Progression | null;
+}
+
+/** Ligne du tableau des plafonds : montants « 500.00 EUR », écart plafond − dépense. */
+export interface LignePlafond {
+  id: number;
+  categorie: string;
+  plafond: string;
+  depense: string;
+  ecart: string;
+  ecartNegatif: boolean;
 }
 
 /** Budget prêt à afficher. */
@@ -35,6 +49,7 @@ export interface Budget {
   totalRevenus: string;
   plafondsDefinis: number;
   repartition: readonly LigneRepartition[];
+  plafonds: readonly LignePlafond[];
 }
 
 const LONGUEUR_PERIODE = 'AAAA-MM'.length;
@@ -62,6 +77,27 @@ export function budgetAffichable(brut: BudgetBrut): Budget {
     totalDepenses: montantEuros(brut.totalDepenses),
     totalRevenus: montantEuros(brut.totalRevenus),
     plafondsDefinis: brut.plafondsDefinis,
-    repartition: brut.repartition.map((ligne) => ({ categorie: ligne.categorie, montant: montantEuros(ligne.montant) })),
+    repartition: brut.repartition.map((ligne) => {
+      const plafond = brut.plafonds.find((candidat) => candidat.categorie === ligne.categorie);
+      return {
+        categorie: ligne.categorie,
+        montant: montantEuros(ligne.montant),
+        progression: plafond === undefined ? null : progression(centimesDepuisChaine(ligne.montant), centimesDepuisChaine(plafond.plafond)),
+      };
+    }),
+    plafonds: brut.plafonds.map(lignePlafond),
+  };
+}
+
+/** Ligne du tableau des plafonds (FR-006-11) : l'écart est plafond − dépense, calculé en centimes entiers. */
+function lignePlafond(brut: PlafondBrut): LignePlafond {
+  const ecart = centimesDepuisChaine(brut.plafond) - centimesDepuisChaine(brut.depense);
+  return {
+    id: brut.id,
+    categorie: brut.categorie,
+    plafond: montantEuros(brut.plafond),
+    depense: montantEuros(brut.depense),
+    ecart: `${chaineDepuisCentimes(ecart)} EUR`,
+    ecartNegatif: ecart < 0,
   };
 }

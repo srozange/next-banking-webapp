@@ -35,6 +35,24 @@ public enum CategorieBudget {
         return libelle;
     }
 
+    /** Vrai si un plafond peut être défini sur la catégorie : toutes sauf {@link #REVENUS} (FR-006-06). */
+    public boolean estPlafonnable() {
+        return this != REVENUS;
+    }
+
+    /** Catégorie portant ce libellé (casse ignorée), ou {@code null} si le libellé est absent ou inconnu. */
+    public static CategorieBudget deLibelleAffiche(String libelleAffiche) {
+        if (libelleAffiche == null) {
+            return null;
+        }
+        for (CategorieBudget categorie : values()) {
+            if (categorie.libelle.equalsIgnoreCase(libelleAffiche.strip())) {
+                return categorie;
+            }
+        }
+        return null;
+    }
+
     /** Mots-clés de la catégorie, en minuscules sans accent. */
     public List<String> motsCles() {
         return motsCles;

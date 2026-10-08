@@ -7,11 +7,13 @@ import fr.nextbanking.coeurbancaire.application.port.out.Plafonds;
 import fr.nextbanking.coeurbancaire.domain.CategorieBudget;
 import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.Operation;
+import fr.nextbanking.coeurbancaire.domain.Plafond;
 import fr.nextbanking.coeurbancaire.domain.TypeOperation;
 import java.time.Instant;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +65,13 @@ public class ConsulterBudgetCasUsage implements ConsulterBudget {
                 repartition.add(new LigneRepartition(categorie, montant));
             }
         });
+        List<LignePlafond> lignesPlafonds = plafonds.duMois(clientId, periode.toString()).stream()
+                .sorted(Comparator.comparing(Plafond::categorie))
+                .map(p -> new LignePlafond(p.id(), p.categorie(), p.montant(),
+                        parCategorie.getOrDefault(p.categorie(), Montant.ZERO)))
+                .toList();
         return new Budget(horloge.aujourdhui(), periode, periodes, depenses, revenus,
-                plafonds.compter(clientId, periode.toString()), repartition);
+                plafonds.compter(clientId, periode.toString()), repartition, lignesPlafonds);
     }
 
     /** Période lue, ou nulle si le texte est absent ou illisible. */

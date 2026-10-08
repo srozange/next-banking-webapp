@@ -21,12 +21,17 @@ public interface ConsulterBudget {
     record LigneRepartition(CategorieBudget categorie, Montant montant) {
     }
 
+    /** Plafond d'une catégorie pour la période et dépense de la catégorie sur la période ({@code 0.00} si aucune). */
+    record LignePlafond(long id, CategorieBudget categorie, Montant plafond, Montant depense) {
+    }
+
     /**
      * Vue du budget : date du jour du service, période retenue, périodes proposées (24 au plus, de la plus récente à la
      * plus ancienne), totaux, nombre de plafonds définis et répartition des débits (catégories non nulles, dans l'ordre
-     * des catégories).
+     * des catégories) et plafonds de la période avec leur dépense (dans l'ordre des catégories).
      */
     record Budget(LocalDate aujourdhui, YearMonth periode, List<YearMonth> periodes, Montant totalDepenses,
-            Montant totalRevenus, long plafondsDefinis, List<LigneRepartition> repartition) {
+            Montant totalRevenus, long plafondsDefinis, List<LigneRepartition> repartition,
+            List<LignePlafond> plafonds) {
     }
 }

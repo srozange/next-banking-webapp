@@ -10,6 +10,7 @@ const budget = {
   totalRevenus: '2000.00',
   plafondsDefinis: 2,
   repartition: [{ categorie: 'Logement', montant: '1000.00' }],
+  plafonds: [{ id: 4, categorie: 'Logement', plafond: '500.00', depense: '1000.00' }],
 };
 
 describe('ClientBudgetHttp', () => {
@@ -51,6 +52,14 @@ describe('ClientBudgetHttp', () => {
     ['une ligne sans catégorie', () => json({ ...budget, repartition: [{ categorie: 1, montant: '1.00' }] }, 200)],
     ['une ligne au montant mal formé', () => json({ ...budget, repartition: [{ categorie: 'A', montant: '1' }] }, 200)],
     ['une ligne au montant absent', () => json({ ...budget, repartition: [{ categorie: 'A', montant: 1 }] }, 200)],
+    ['des plafonds absents', () => json({ ...budget, plafonds: undefined }, 200)],
+    ['une ligne de plafond nulle', () => json({ ...budget, plafonds: [null] }, 200)],
+    ['un plafond sans identifiant entier', () => json({ ...budget, plafonds: [{ ...budget.plafonds[0], id: 'x' }] }, 200)],
+    ['un plafond sans catégorie', () => json({ ...budget, plafonds: [{ ...budget.plafonds[0], categorie: 1 }] }, 200)],
+    ['un plafond au montant mal formé', () => json({ ...budget, plafonds: [{ ...budget.plafonds[0], plafond: '5' }] }, 200)],
+    ['un plafond au montant absent', () => json({ ...budget, plafonds: [{ ...budget.plafonds[0], plafond: 5 }] }, 200)],
+    ['une dépense de plafond mal formée', () => json({ ...budget, plafonds: [{ ...budget.plafonds[0], depense: 'x' }] }, 200)],
+    ['une dépense de plafond absente', () => json({ ...budget, plafonds: [{ ...budget.plafonds[0], depense: 1 }] }, 200)],
     ['un corps illisible', () => Promise.resolve(new Response('pas du json', { status: 200 }))],
     ['une coupure', () => Promise.reject(new Error('réseau'))],
   ])('[FR-006-02] rend technique pour %s', async (_nom, reponse) => {

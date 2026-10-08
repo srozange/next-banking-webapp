@@ -22,7 +22,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -35,11 +39,22 @@ import org.springframework.test.context.DynamicPropertySource;
  */
 @SpringBootTest(classes = ApplicationCoeurBancaire.class)
 @DirtiesContext
+@Import(VirementTransitionConcurrenteTest.ConfigurationHorloge.class)
 @Tag("FR-003-06")
 @Tag("BUG-008")
 class VirementTransitionConcurrenteTest {
 
     private static final int MANCHES = 5;
+
+    /** Horloge réglée à 10:00 : le contrôle de fraude suspend tout virement à partir de 23:00 (heure inhabituelle). */
+    @TestConfiguration
+    static class ConfigurationHorloge {
+        @Bean
+        @Primary
+        HorlogeFixe horlogeFixe() {
+            return new HorlogeFixe();
+        }
+    }
 
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
