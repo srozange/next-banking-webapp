@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import { creerClientBudgetHttp } from '../adapters/http/ClientBudgetHttp';
 import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
 import { creerClientComptesTiersHttp } from '../adapters/http/ClientComptesTiersHttp';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
@@ -59,6 +60,7 @@ const routeur = createBrowserRouter(
     clientTableauDeBord: creerClientTableauDeBordHttp(fetchAuthentifie),
     clientNotifications: creerClientNotificationsHttp(fetchAuthentifie),
     clientPrets: creerClientPretsHttp(fetchAuthentifie),
+    clientBudget: creerClientBudgetHttp(fetchAuthentifie),
   }),
 );
 

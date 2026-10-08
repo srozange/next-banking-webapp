@@ -9,6 +9,8 @@ import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientTableauDeBord } from '../../application/consulterTableauDeBord';
 import type { ClientNotifications } from '../../application/gererNotifications';
 import type { ClientReleve } from '../../application/consulterReleve';
+import type { ClientBudget } from '../../application/consulterBudget';
+import { EcranBudget } from '../ecrans/budget/EcranBudget';
 import type { ClientBeneficiaires } from '../../application/gererBeneficiaires';
 import type { ClientVirement } from '../../application/virement';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
@@ -52,6 +54,7 @@ export interface Dependances {
   clientTableauDeBord: ClientTableauDeBord;
   clientNotifications: ClientNotifications;
   clientPrets: ClientPrets;
+  clientBudget: ClientBudget;
 }
 
 /**
@@ -84,6 +87,7 @@ export function creerRoutes({
   clientTableauDeBord,
   clientNotifications,
   clientPrets,
+  clientBudget,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil session={session.locale} />;
   return [
@@ -127,6 +131,8 @@ export function creerRoutes({
             { path: '/virement', element: <EcranVirement client={clientVirement} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-005-01) : seuls les comptes du jeton sont proposés.
             { path: '/releve', element: <EcranReleve comptes={clientVirement} releve={clientReleve} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-006-01) : seul le budget du client du jeton est rendu.
+            { path: '/budget', element: <EcranBudget client={clientBudget} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-013-01) : seuls les bénéficiaires du client du jeton sont rendus.
             { path: '/beneficiaires', element: <EcranBeneficiaires client={clientBeneficiaires} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-004-01) : seuls les comptes et virements du client du jeton sont rendus.

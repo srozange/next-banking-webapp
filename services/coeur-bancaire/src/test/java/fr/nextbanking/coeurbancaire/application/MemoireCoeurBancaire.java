@@ -14,6 +14,7 @@ import fr.nextbanking.coeurbancaire.application.port.out.JournalAudit;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalBatch;
 import fr.nextbanking.coeurbancaire.application.port.out.ProjectionClients;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
+import fr.nextbanking.coeurbancaire.application.port.out.Plafonds;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
 import fr.nextbanking.coeurbancaire.application.port.out.VirementsProgrammes;
 import fr.nextbanking.coeurbancaire.domain.DemandeVirementProgramme;
@@ -56,7 +57,7 @@ import java.util.function.Supplier;
  */
 class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, EvenementsSortants, JournalAudit,
         EvenementsTraites, Transaction, Horloge, HistoriqueVirements, Beneficiaires, AlertesFraude, JournalBatch,
-        ProjectionClients, VirementsProgrammes {
+        ProjectionClients, VirementsProgrammes, Plafonds {
 
     static final Instant MAINTENANT = Instant.parse("2026-11-17T09:00:00Z");
 
@@ -275,6 +276,28 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     @Override
     public List<Operation> duCompte(long compteId) {
         return operations.stream().filter(o -> o.compteId() == compteId).toList();
+    }
+
+    /** Mois (fuseau donné) où le client a des opérations, du plus récent au plus ancien. */
+    @Override
+    public List<java.time.YearMonth> moisAvecOperations(long clientId, ZoneId fuseau, int limite) {
+        return operations.stream().filter(o -> comptes.get(o.compteId()).clientId() == clientId)
+                .map(o -> java.time.YearMonth.from(o.date().atZone(fuseau))).distinct()
+                .sorted(java.util.Comparator.reverseOrder()).limit(limite).toList();
+    }
+
+    @Override
+    public List<Operation> duClientSurPeriode(long clientId, Instant debut, Instant fin) {
+        return operations.stream().filter(o -> comptes.get(o.compteId()).clientId() == clientId)
+                .filter(o -> !o.date().isBefore(debut) && o.date().isBefore(fin)).toList();
+    }
+
+    /** Plafonds définis, par client puis mois : nombre de plafonds. */
+    final Map<String, Long> plafonds = new HashMap<>();
+
+    @Override
+    public long compter(long clientId, String mois) {
+        return plafonds.getOrDefault(clientId + "|" + mois, 0L);
     }
 
     @Override

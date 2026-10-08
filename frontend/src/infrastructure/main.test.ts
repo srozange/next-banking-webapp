@@ -4,6 +4,7 @@ import type { ClientProfil } from '../application/chargerProfil';
 import type { ClientBourse } from '../application/consulterBourse';
 import type { ClientProduits } from '../application/consulterProduits';
 import type { ClientReleve } from '../application/consulterReleve';
+import type { ClientBudget } from '../application/consulterBudget';
 import type { ClientTableauDeBord } from '../application/consulterTableauDeBord';
 import type { ClientNotifications } from '../application/gererNotifications';
 import type { ClientComptesTiers } from '../application/comptesTiers';
@@ -69,6 +70,7 @@ const NOMS_CLIENTS_AUTHENTIFIES = [
   'notifications',
   'virement',
   'releve',
+  'budget',
   'revue',
 ];
 
@@ -96,6 +98,7 @@ async function clientsDeMain() {
     ['notifications', () => (ecran('/tableau-de-bord').clientNotifications as ClientNotifications).lister()],
     ['virement', () => (ecran('/virement').client as ClientVirement).lireComptes()],
     ['releve', () => (ecran('/releve').releve as ClientReleve).lireOperations(1)],
+    ['budget', () => (ecran('/budget').client as ClientBudget).lire(null)],
     ['revue', () => revue.client.lireFile()],
   ];
   return { connexion, session: garde.session, authentifies };

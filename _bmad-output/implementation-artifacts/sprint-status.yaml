@@ -84,7 +84,7 @@ development_status:
   4-9-créditer-les-intérêts-mensuels-des-comptes-épargne: optional
   4-10-compter-chaque-nuit-les-transactions-importantes: optional
   4-11-alerter-le-client-d-un-solde-faible: optional
-  4-12-consulter-ses-dépenses-du-mois-par-catégorie: backlog
+  4-12-consulter-ses-dépenses-du-mois-par-catégorie: done
   4-13-définir-et-suivre-des-plafonds-de-dépenses-par-catégorie: backlog
   epic-4-retrospective: optional
 

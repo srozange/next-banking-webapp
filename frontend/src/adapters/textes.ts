@@ -123,6 +123,8 @@ export const TEXTES = {
     produits: 'BankApp Demo - Produits bancaires',
     /** FEAT-005 MESSAGES.md, titre de page. */
     releve: 'BankApp Demo - Relevé de compte',
+    /** MSG-006-001 */
+    budget: 'BankApp Demo - Budget',
     comptesTiers: 'BankApp Demo - Comptes Tiers',
     /** MSG-013-001 */
     beneficiaires: 'BankApp Demo - Beneficiaires',
@@ -271,6 +273,18 @@ export const TEXTES = {
     erreurEtat: "Erreur : l'état du virement programmé n'a pas changé. Rien n'a été débité. Veuillez réessayer.",
     /** vp.erreur.suppression de textes-nouveaux.md : échec technique de Supprimer. */
     erreurSuppression: "Erreur suppression : le virement programmé n'a pas été supprimé et reste inchangé. Veuillez réessayer.",
+  },
+  /** Écran Budget : FEAT-006 MESSAGES.md (casse et absence d'accents comprises) ; bandeau technique MSG-006-005 supprimé. */
+  budget: {
+    periode: 'Periode :',
+    afficher: 'Afficher',
+    totalDepenses: 'Total depenses',
+    totalRevenus: 'Total revenus',
+    plafondsDefinis: 'Plafonds definis',
+    repartition: 'Repartition par categorie',
+    depensesDuMois: (periode: string) => `Depenses du mois ${periode}`,
+    aucuneDepense: 'Aucune depense enregistree sur cette periode',
+    plafonds: 'Plafonds budgetaires',
   },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {
