@@ -21,6 +21,16 @@ public interface VirementsProgrammes {
      */
     boolean changerEtat(long id, long clientId, boolean actifAttendu);
 
+    /** Virements actifs dont la prochaine exécution est atteinte, par prochaine exécution croissante puis identifiant. */
+    List<VirementProgramme> dues(Instant maintenant);
+
+    /**
+     * Prend l'échéance : mise à jour conditionnelle ({@code id}, actif, prochaine exécution = échéance prévue) qui
+     * avance la prochaine exécution, ajoute une exécution et enregistre la dernière. Vrai si une ligne a été modifiée
+     * (faux : un autre passage l'a prise, aucun effet).
+     */
+    boolean prendreEcheance(long id, Instant echeancePrevue, Instant prochaine, Instant executeLe);
+
     /** Supprime la ligne du virement du client, quel que soit son état. Vrai si une ligne a été supprimée. */
     boolean supprimer(long id, long clientId);
 }

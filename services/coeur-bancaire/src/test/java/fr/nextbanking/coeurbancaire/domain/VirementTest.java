@@ -152,4 +152,45 @@ class VirementTest {
                 () -> Virement.executer(soumission(12, COURANT, autre, "1.00", null), COURANT, autre, SEUILS))
                 .motif()).isEqualTo(Cause.COMPTE_ETRANGER);
     }
+
+    @Test
+    @Tag("FR-021-06")
+    @Tag("FR-021-05")
+    void une_echeance_programmee_a_des_libelles_programmes_sans_mention_d_attente() {
+        Soumission seuil = soumission(12, COURANT, EPARGNE, "2000", "Epargne");
+        Virement.Execution avecMotif = Virement.executerEcheance(seuil, COURANT, EPARGNE, "Livret", SEUILS);
+        Virement.Execution sansMotif = Virement.executerEcheance(soumission(13, COURANT, EPARGNE, "100", null),
+                COURANT, EPARGNE, "Livret", SEUILS);
+
+        assertThat(avecMotif.virement().etat()).isEqualTo(EtatVirement.EXECUTE);
+        assertThat(avecMotif.debit().description()).isEqualTo("Virement programme vers Livret - Epargne");
+        assertThat(avecMotif.credit().description()).isEqualTo("Virement programme de FR76-0001-0001 - Epargne");
+        assertThat(avecMotif.debit().soldeApres().texte()).isEqualTo(
+                COURANT.solde().soustraire(Montant.lire("2000")).texte());
+        assertThat(sansMotif.debit().description()).isEqualTo("Virement programme vers Livret");
+        assertThat(sansMotif.credit().description()).isEqualTo("Virement programme de FR76-0001-0001");
+    }
+
+    @Test
+    @Tag("FR-021-06")
+    void une_echeance_programmee_accepte_un_destinataire_d_un_autre_client_mais_controle_la_source_et_le_solde() {
+        Compte autre = new Compte(3, 8, "FR76-0002-0001", TypeCompte.COURANT, Montant.lire("500.00"));
+
+        assertThat(Virement.executerEcheance(soumission(12, COURANT, autre, "100", null), COURANT, autre, "Ami",
+                SEUILS).virement().etat()).isEqualTo(EtatVirement.EXECUTE);
+        assertThat(org.assertj.core.api.Assertions.catchThrowableOfType(ErreurVirement.class,
+                () -> Virement.executerEcheance(soumission(12, autre, COURANT, "100", null), autre, COURANT, "Moi",
+                        SEUILS)).motif()).isEqualTo(Cause.COMPTE_ETRANGER);
+        assertThat(org.assertj.core.api.Assertions.catchThrowableOfType(ErreurVirement.class,
+                () -> Virement.executerEcheance(soumission(12, COURANT, EPARGNE, "9999", null), COURANT, EPARGNE,
+                        "Livret", SEUILS)).motif()).isEqualTo(Cause.SOLDE_INSUFFISANT);
+    }
+
+    @Test
+    @Tag("FR-021-05")
+    void un_motif_blanc_n_est_pas_repris_dans_les_libelles_programmes() {
+        assertThat(TextesVirement.libelleDebitProgramme("Livret", " ")).isEqualTo("Virement programme vers Livret");
+        assertThat(TextesVirement.libelleCreditProgramme("FR76-0001-0001", null))
+                .isEqualTo("Virement programme de FR76-0001-0001");
+    }
 }

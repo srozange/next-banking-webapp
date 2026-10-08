@@ -78,7 +78,7 @@ development_status:
   4-3-créer-un-virement-programmé-et-voir-ses-virements-programmés: done
   4-4-suspendre-réactiver-ou-supprimer-un-virement-programmé: done
   4-5-journaliser-les-traitements-planifiés-relevés-mensuels-et-se: optional
-  4-6-exécuter-automatiquement-les-échéances-dues-des-virements-pr: backlog
+  4-6-exécuter-automatiquement-les-échéances-dues-des-virements-pr: done
   4-7-traiter-les-échéances-non-exécutées-et-prévenir-le-client: backlog
   4-8-suspendre-une-échéance-suspecte-et-la-soumettre-à-la-revue: optional
   4-9-créditer-les-intérêts-mensuels-des-comptes-épargne: optional

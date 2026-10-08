@@ -72,6 +72,31 @@ public class VirementsProgrammesJdbc implements VirementsProgrammes {
     }
 
     @Override
+    public List<VirementProgramme> dues(Instant maintenant) {
+        return jdbc.sql("""
+                select id, client_id, compte_source_id, numero_beneficiaire, libelle_beneficiaire, montant, frequence,
+                    motif, prochaine_execution, actif, nb_executions, cree_le
+                from virements_programmes where actif and prochaine_execution <= :maintenant
+                order by prochaine_execution, id""")
+                .param("maintenant", Timestamp.from(maintenant))
+                .query(VirementsProgrammesJdbc::virement)
+                .list();
+    }
+
+    @Override
+    public boolean prendreEcheance(long id, Instant echeancePrevue, Instant prochaine, Instant executeLe) {
+        return jdbc.sql("""
+                update virements_programmes set prochaine_execution = :prochaine,
+                    nb_executions = nb_executions + 1, derniere_execution = :executeLe
+                where id = :id and actif and prochaine_execution = :prevue""")
+                .param("id", id)
+                .param("prevue", Timestamp.from(echeancePrevue))
+                .param("prochaine", Timestamp.from(prochaine))
+                .param("executeLe", Timestamp.from(executeLe))
+                .update() > 0;
+    }
+
+    @Override
     public boolean supprimer(long id, long clientId) {
         return jdbc.sql("delete from virements_programmes where id = :id and client_id = :clientId")
                 .param("id", id)

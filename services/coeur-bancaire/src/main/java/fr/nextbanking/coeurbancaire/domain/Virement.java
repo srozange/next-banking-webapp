@@ -48,6 +48,37 @@ public record Virement(long id, long clientId, CompteId compteSourceId, CompteId
     }
 
     /**
+     * Contrôle la propriété du compte source et son solde pour une échéance de virement programmé ; le destinataire
+     * est un compte quelconque.
+     *
+     * @throws ErreurVirement le compte source n'appartient pas au client, ou solde insuffisant
+     */
+    public static void verifierEcheance(long clientId, Compte source, Montant montant) {
+        if (!source.appartientA(clientId)) {
+            throw new ErreurVirement(Cause.COMPTE_ETRANGER);
+        }
+        if (source.solde().compareTo(montant) < 0) {
+            throw new ErreurVirement(Cause.SOLDE_INSUFFISANT);
+        }
+    }
+
+    /**
+     * Exécute une échéance de virement programmé : propriété de la source et solde contrôlés, destinataire quelconque,
+     * opérations aux libellés programmés (jamais de mention d'attente).
+     *
+     * @throws ErreurVirement le compte source n'appartient pas au client, ou solde insuffisant
+     */
+    public static Execution executerEcheance(Soumission soumission, Compte source, Compte destinataire,
+            String libelleBeneficiaire, SeuilsFraude seuils) {
+        verifierEcheance(soumission.clientId(), source, soumission.demande().montant());
+        Virement virement = naitre(soumission, seuils, EtatVirement.EXECUTE, null, null);
+        String motifTexte = virement.motif.texte();
+        return virement.operations(source, destinataire, soumission.soumisLe(),
+                TextesVirement.libelleDebitProgramme(libelleBeneficiaire, motifTexte),
+                TextesVirement.libelleCreditProgramme(source.numero(), motifTexte));
+    }
+
+    /**
      * Virement suspendu avant tout débit : l'heure butoir est la soumission plus 24 heures, et le motif de suspension
      * est celui de la décision du contrôle.
      */
@@ -77,11 +108,17 @@ public record Virement(long id, long clientId, CompteId compteSourceId, CompteId
     }
 
     private Execution operations(Compte source, Compte destinataire, Instant date) {
+        return operations(source, destinataire, date,
+                TextesVirement.libelleDebit(destinataire.numero(), motif.texte(), statut),
+                TextesVirement.libelleCredit(source.numero(), motif.texte(), statut));
+    }
+
+    private Execution operations(Compte source, Compte destinataire, Instant date, String libelleDebit,
+            String libelleCredit) {
         Operation debit = new Operation(source.id(), TypeOperation.DEBIT, montant, source.solde().soustraire(montant),
-                TextesVirement.libelleDebit(destinataire.numero(), motif.texte(), statut), date, id);
+                libelleDebit, date, id);
         Operation credit = new Operation(destinataire.id(), TypeOperation.CREDIT, montant,
-                destinataire.solde().ajouter(montant),
-                TextesVirement.libelleCredit(source.numero(), motif.texte(), statut), date, id);
+                destinataire.solde().ajouter(montant), libelleCredit, date, id);
         return new Execution(this, debit, credit);
     }
 

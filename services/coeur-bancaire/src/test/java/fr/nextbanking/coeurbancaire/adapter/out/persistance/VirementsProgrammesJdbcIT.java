@@ -28,6 +28,8 @@ import org.springframework.test.context.DynamicPropertySource;
 @Tag("FR-004-03")
 @Tag("FR-004-07")
 @Tag("FR-004-13")
+@Tag("FR-021-02")
+@Tag("FR-021-07")
 class VirementsProgrammesJdbcIT {
 
     @DynamicPropertySource
@@ -128,5 +130,49 @@ class VirementsProgrammesJdbcIT {
         assertThat(virements.supprimer(actif.id(), 1)).isFalse();
         assertThat(virements.supprimer(inactif.id(), 1)).isTrue();
         assertThat(virements.listerDuClient(1)).isEmpty();
+    }
+
+    @Test
+    void les_echeances_dues_sont_les_actives_atteintes_par_echeance_puis_identifiant() {
+        VirementProgramme tard = enregistrer(1, null, "2027-01-01", "2026-11-17T08:55:00Z");
+        VirementProgramme tot = enregistrer(8, null, "2027-01-01", "2026-11-17T07:00:00Z");
+        VirementProgramme inactif = enregistrer(1, null, "2027-01-01", "2026-11-17T06:00:00Z");
+        enregistrer(1, null, "2027-01-01", "2026-11-17T09:00:01Z");
+        virements.changerEtat(inactif.id(), 1, true);
+
+        assertThat(virements.dues(Instant.parse("2026-11-17T09:00:00Z"))).extracting(VirementProgramme::id)
+                .containsExactly(tot.id(), tard.id());
+        assertThat(virements.dues(Instant.parse("2026-11-17T08:55:00Z"))).extracting(VirementProgramme::id)
+                .containsExactly(tot.id(), tard.id());
+        assertThat(virements.dues(Instant.parse("2026-11-17T08:54:59Z"))).extracting(VirementProgramme::id)
+                .containsExactly(tot.id());
+    }
+
+    @Test
+    void la_prise_d_une_echeance_est_conditionnelle_et_avance_la_date_compte_et_date_la_derniere_execution() {
+        VirementProgramme cree = enregistrer(1, null, "2027-01-01", "2026-11-17T07:00:00Z");
+        Instant prevue = cree.prochaineExecution();
+        Instant prochaine = Instant.parse("2026-12-17T07:00:00Z");
+        Instant executeLe = Instant.parse("2026-11-17T07:04:00Z");
+
+        assertThat(virements.prendreEcheance(cree.id(), prevue.plusSeconds(1), prochaine, executeLe)).isFalse();
+        assertThat(virements.prendreEcheance(cree.id(), prevue, prochaine, executeLe)).isTrue();
+        assertThat(virements.prendreEcheance(cree.id(), prevue, prochaine, executeLe)).isFalse();
+
+        VirementProgramme relu = virements.listerDuClient(1).getFirst();
+        assertThat(relu.prochaineExecution()).isEqualTo(prochaine);
+        assertThat(relu.nbExecutions()).isEqualTo(1);
+        assertThat(jdbc.sql("select derniere_execution from virements_programmes where id = :id")
+                .param("id", cree.id()).query(java.sql.Timestamp.class).single().toInstant()).isEqualTo(executeLe);
+    }
+
+    @Test
+    void une_echeance_inactive_ne_peut_pas_etre_prise() {
+        VirementProgramme cree = enregistrer(1, null, "2027-01-01", "2026-11-17T07:00:00Z");
+        virements.changerEtat(cree.id(), 1, true);
+
+        assertThat(virements.prendreEcheance(cree.id(), cree.prochaineExecution(),
+                Instant.parse("2026-12-17T07:00:00Z"), Instant.parse("2026-11-17T07:04:00Z"))).isFalse();
+        assertThat(virements.listerDuClient(1).getFirst().nbExecutions()).isZero();
     }
 }

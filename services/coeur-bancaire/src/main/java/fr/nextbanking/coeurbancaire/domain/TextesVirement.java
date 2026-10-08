@@ -210,6 +210,45 @@ public final class TextesVirement {
                 + " minutes (limit: " + nombreMax + ")";
     }
 
+    /** MSG-021-001 et MSG-021-002 : opération DEBIT d'une échéance (le motif absent n'est pas repris). */
+    public static String libelleDebitProgramme(String libelleBeneficiaire, String motif) {
+        return avecMotif("Virement programme vers " + libelleBeneficiaire, motif);
+    }
+
+    /** MSG-021-003 et MSG-021-004 : opération CREDIT d'une échéance (le motif absent n'est pas repris). */
+    public static String libelleCreditProgramme(String numeroSource, String motif) {
+        return avecMotif("Virement programme de " + numeroSource, motif);
+    }
+
+    /** MSG-021-021 : journal d'une échéance exécutée. */
+    public static String journalExecute(long id, String montant) {
+        return "Virement programme execute id=" + id + " montant=" + montant;
+    }
+
+    /** MSG-021-020 : journal d'un solde insuffisant. */
+    public static String journalSoldeInsuffisant(long id) {
+        return "Solde insuffisant pour virement programme id=" + id;
+    }
+
+    /** MSG-021-022 : journal d'une échéance en échec. */
+    public static String journalEchec(long id) {
+        return "Echec execution virement programme id=" + id;
+    }
+
+    /** MSG-021-011 : passage du déclencheur, et détails d'une ligne SUCCESS du journal d'exécution. */
+    public static String detailsVerification() {
+        return "Verification virements programmes dus";
+    }
+
+    /** Détails de la ligne RECURRING_TRANSFERS quand la lecture des échéances échoue. */
+    public static String detailsErreur(String message) {
+        return "Erreur: " + message;
+    }
+
+    private static String avecMotif(String base, String motif) {
+        return motif == null || motif.isBlank() ? base : base + SEPARATEUR_MOTIF + motif;
+    }
+
     private static String libelle(String base, String motif, StatutAffichage statut) {
         String avecMotif = motif == null || motif.isBlank() ? base : base + SEPARATEUR_MOTIF + motif;
         return statut == StatutAffichage.PENDING ? EN_ATTENTE + " " + avecMotif : avecMotif;

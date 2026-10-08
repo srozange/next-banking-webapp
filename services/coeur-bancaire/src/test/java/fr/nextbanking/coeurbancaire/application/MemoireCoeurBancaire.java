@@ -125,6 +125,11 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     /** Virements programmés enregistrés, dans l'ordre d'écriture. */
     final List<VirementProgramme> virementsProgrammes = new ArrayList<>();
     boolean enregistrementProgrammeEnErreur;
+    /** Dernière exécution enregistrée par la prise d'une échéance, par identifiant. */
+    final Map<Long, Instant> derniereExecution = new HashMap<>();
+    /** Prises d'échéance perdues d'avance (un autre passage a gagné la course). */
+    final Set<Long> prisesPerdues = new HashSet<>();
+    boolean lectureDuesEnErreur;
 
     @Override
     public VirementProgramme enregistrer(long clientId, DemandeVirementProgramme demande,
@@ -147,6 +152,33 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
                 virementsProgrammes.set(i, new VirementProgramme(v.id(), v.clientId(), v.compteSourceId(),
                         v.numeroBeneficiaire(), v.libelleBeneficiaire(), v.montant(), v.frequence(), v.motif(),
                         v.prochaineExecution(), !actifAttendu, v.nbExecutions(), v.creeLe()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<VirementProgramme> dues(Instant maintenant) {
+        if (lectureDuesEnErreur) {
+            throw new IllegalStateException("lecture des échéances en erreur");
+        }
+        return virementsProgrammes.stream().filter(v -> v.actif() && !v.prochaineExecution().isAfter(maintenant))
+                .sorted(java.util.Comparator.comparing(VirementProgramme::prochaineExecution)
+                        .thenComparingLong(VirementProgramme::id)).toList();
+    }
+
+    @Override
+    public boolean prendreEcheance(long id, Instant echeancePrevue, Instant prochaine, Instant executeLe) {
+        journal.add("prendre");
+        for (int i = 0; i < virementsProgrammes.size(); i++) {
+            VirementProgramme v = virementsProgrammes.get(i);
+            if (v.id() == id && v.actif() && v.prochaineExecution().equals(echeancePrevue)
+                    && !prisesPerdues.contains(id)) {
+                virementsProgrammes.set(i, new VirementProgramme(v.id(), v.clientId(), v.compteSourceId(),
+                        v.numeroBeneficiaire(), v.libelleBeneficiaire(), v.montant(), v.frequence(), v.motif(),
+                        prochaine, v.actif(), v.nbExecutions() + 1, v.creeLe()));
+                derniereExecution.put(id, executeLe);
                 return true;
             }
         }
@@ -478,6 +510,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         List<AlerteFraude> alertesAvant = new ArrayList<>(alertes);
         Map<Long, DecisionRevue> decisionsRevueAvant = new HashMap<>(decisionsRevue);
         Set<UUID> traitesAvant = new HashSet<>(traites);
+        List<VirementProgramme> programmesAvant = new ArrayList<>(virementsProgrammes);
+        Map<Long, Instant> derniereAvant = new HashMap<>(derniereExecution);
         try {
             return travail.get();
         } catch (RuntimeException e) {
@@ -502,6 +536,10 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             decisionsRevue.putAll(decisionsRevueAvant);
             traites.clear();
             traites.addAll(traitesAvant);
+            virementsProgrammes.clear();
+            virementsProgrammes.addAll(programmesAvant);
+            derniereExecution.clear();
+            derniereExecution.putAll(derniereAvant);
             throw e;
         }
     }

@@ -226,3 +226,27 @@ location: n/a
 source_spec: `spec-5-1-ouvrir-la-page-prets-et-simuler-un-emprunt.md`
 reason: sprint-status.yaml : epic 4 en backlog.
 status: open
+
+### DW-27: Un motif de plus de 100 caractères, accepté à la création (255 à la story 4.3), fait échouer à chaque passage l'exécution de l'échéance (colonne virements.motif limitée à 100).
+origin: spec-deferred 1a4eb3b87033
+location: services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterEcheancesCasUsage.java
+source_spec: `spec-4-6-executer-automatiquement-les-echeances-dues-des-virements-programmes.md`
+severity: medium
+reason: DemandeVirementProgramme.MOTIF_MAX = 255 alors que Motif.LONGUEUR_MAX = 100 : Motif.depuis lève une IllegalArgumentException dans ExecuterEcheancesCasUsage.ecrire ; l'échéance est comptée en échec et retentée indéfiniment. À arbitrer avec le métier (aligner la limite à la création, ou tronquer).
+status: open
+
+### DW-28: L'attribut d'observation virement.controle.issue n'est pas posé sur la tâche planifiée des échéances.
+origin: spec-deferred 2c6d2801b532
+location: services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/EnrichissementTrace.java
+source_spec: `spec-4-6-executer-automatiquement-les-echeances-dues-des-virements-programmes.md`
+severity: low
+reason: Le contexte d'epic 4 le prévoit pour la tâche planifiée ; seule la requête HTTP est enrichie (EnrichissementTrace). Aucun critère de la story 4.6 ne l'exige ; à traiter avec la story 4.8 (suspension d'une échéance) si la trace doit porter l'issue.
+status: open
+
+### DW-29: Solde insuffisant, destinataire introuvable et suspension par la fraude laissent l'échéance inchangée et due, sans notification ni désactivation, jusqu'aux stories 4.7 et 4.8.
+origin: spec-deferred 7f995a1329f7
+location: services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterEcheancesCasUsage.java
+source_spec: `spec-4-6-executer-automatiquement-les-echeances-dues-des-virements-programmes.md`
+severity: medium
+reason: Choix assumé de la story 4.6 (voir Design Notes) ; les tests de 4.6 assertent « reste due ». Les stories 4.7 et 4.8 devront remplacer ce comportement (notification ALERTE, désactivation après compte introuvable, suspension et avance de la date) et mettre ces tests à jour. Le cas « destinataire introuvable » journalise pour l'instant le texte legacy « Echec execution virement programme id={id} » sans compter d'échec.
+status: open
