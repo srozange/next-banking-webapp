@@ -259,6 +259,111 @@ class VirementsProgrammesIT {
         assertThat(String.join("\n", lignes)).doesNotContain("FR76-0001-0002");
     }
 
+    private static final String INTROUVABLE = "{\"message\":\"Ressource introuvable\"}";
+
+    private long creerPour(String jeton) throws Exception {
+        return json.readTree(Jetons.envoyer(port, "POST", CHEMIN, jeton, nominal()).body()).get("id").asLong();
+    }
+
+    private HttpResponse<String> action(String jeton, String action, long id) throws Exception {
+        return switch (action) {
+            case "suspension", "reactivation" -> Jetons.envoyer(port, "POST", CHEMIN + "/" + id + "/" + action, jeton,
+                    null);
+            default -> Jetons.envoyer(port, "DELETE", CHEMIN + "/" + id, jeton, null);
+        };
+    }
+
+    private Object etat(long id) {
+        return jdbc.sql("select actif from virements_programmes where id = :id").param("id", id)
+                .query(Boolean.class).optional().orElse(null);
+    }
+
+    @Test
+    @Tag("FR-004-09")
+    void sans_jeton_les_trois_actions_rendent_401() throws Exception {
+        long id = creerPour(Jetons.pour(1, "CLIENT"));
+
+        for (String action : new String[] {"suspension", "reactivation", "suppression"}) {
+            assertThat(action(null, action, id).statusCode()).isEqualTo(401);
+        }
+        assertThat(etat(id)).isEqualTo(true);
+    }
+
+    @Test
+    @Tag("FR-004-09")
+    void suspendre_puis_reactiver_rend_204_et_ne_change_que_l_etat() throws Exception {
+        String jeton = Jetons.pour(1, "CLIENT");
+        long id = creerPour(jeton);
+        var avant = jdbc.sql("select prochaine_execution, nb_executions, motif from virements_programmes where id = :id")
+                .param("id", id).query().singleRow();
+
+        HttpResponse<String> suspension = action(jeton, "suspension", id);
+        assertThat(suspension.statusCode()).isEqualTo(204);
+        assertThat(suspension.body()).isEmpty();
+        assertThat(etat(id)).isEqualTo(false);
+
+        assertThat(action(jeton, "reactivation", id).statusCode()).isEqualTo(204);
+        assertThat(etat(id)).isEqualTo(true);
+        assertThat(jdbc.sql("select prochaine_execution, nb_executions, motif from virements_programmes where id = :id")
+                .param("id", id).query().singleRow()).isEqualTo(avant);
+    }
+
+    @Test
+    @Tag("FR-004-10")
+    void supprimer_efface_la_ligne_quel_que_soit_l_etat() throws Exception {
+        String jeton = Jetons.pour(1, "CLIENT");
+        long actif = creerPour(jeton);
+        long inactif = creerPour(jeton);
+        action(jeton, "suspension", inactif);
+
+        assertThat(action(jeton, "suppression", actif).statusCode()).isEqualTo(204);
+        assertThat(action(jeton, "suppression", inactif).statusCode()).isEqualTo(204);
+
+        assertThat(compter()).isZero();
+        assertThat(json.readTree(Jetons.envoyer(port, "GET", CHEMIN, jeton, null).body())).isEmpty();
+    }
+
+    @Test
+    @Tag("FR-004-10")
+    @Tag("BUG-013")
+    void le_virement_d_autrui_et_l_inexistant_rendent_le_meme_404_octet_pour_octet() throws Exception {
+        long id = creerPour(Jetons.pour(1, "CLIENT"));
+        var avant = jdbc.sql("select * from virements_programmes where id = :id").param("id", id).query().singleRow();
+        String autre = Jetons.pour(8, "CLIENT");
+
+        for (String action : new String[] {"suspension", "reactivation", "suppression"}) {
+            HttpResponse<String> dAutrui = action(autre, action, id);
+            HttpResponse<String> inexistant = action(autre, action, 9999);
+            assertThat(dAutrui.statusCode()).as(action).isEqualTo(404);
+            assertThat(dAutrui.body()).isEqualTo(INTROUVABLE);
+            assertThat(inexistant.statusCode()).isEqualTo(404);
+            assertThat(inexistant.body()).isEqualTo(dAutrui.body());
+        }
+        assertThat(jdbc.sql("select * from virements_programmes where id = :id").param("id", id).query()
+                .singleRow()).isEqualTo(avant);
+    }
+
+    @Test
+    @Tag("FR-004-10")
+    void un_etat_deja_atteint_ou_une_suppression_repetee_rendent_le_404_identique() throws Exception {
+        String jeton = Jetons.pour(1, "CLIENT");
+        long id = creerPour(jeton);
+
+        HttpResponse<String> dejaActif = action(jeton, "reactivation", id);
+        assertThat(dejaActif.statusCode()).isEqualTo(404);
+        assertThat(dejaActif.body()).isEqualTo(INTROUVABLE);
+        action(jeton, "suspension", id);
+        HttpResponse<String> dejaInactif = action(jeton, "suspension", id);
+        assertThat(dejaInactif.statusCode()).isEqualTo(404);
+        assertThat(dejaInactif.body()).isEqualTo(INTROUVABLE);
+        assertThat(etat(id)).isEqualTo(false);
+
+        assertThat(action(jeton, "suppression", id).statusCode()).isEqualTo(204);
+        HttpResponse<String> repetee = action(jeton, "suppression", id);
+        assertThat(repetee.statusCode()).isEqualTo(404);
+        assertThat(repetee.body()).isEqualTo(INTROUVABLE);
+    }
+
     private void refus(String jeton, String corps, int statut, String message, String champ) throws Exception {
         HttpResponse<String> reponse = Jetons.envoyer(port, "POST", CHEMIN, jeton, corps);
         assertThat(reponse.statusCode()).isEqualTo(statut);

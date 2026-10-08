@@ -117,3 +117,50 @@ describe('ClientVirementsProgrammesHttp.creer', () => {
     expect(rappel).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('ClientVirementsProgrammesHttp actions', () => {
+  it('[FR-004-09] suspend et réactive par POST, supprime par DELETE, 204 ok', async () => {
+    const appeler = vi.fn((_e: unknown, _o?: unknown) => Promise.resolve(new Response(null, { status: 204 })));
+    const client = creerClientVirementsProgrammesHttp(appeler as unknown as typeof fetch);
+
+    expect(await client.suspendre(3)).toEqual({ statut: 'ok' });
+    expect(await client.reactiver(3)).toEqual({ statut: 'ok' });
+    expect(await client.supprimer(3)).toEqual({ statut: 'ok' });
+    expect(appeler).toHaveBeenNthCalledWith(1, '/api/coeur-bancaire/virements-programmes/3/suspension', expect.objectContaining({ method: 'POST' }));
+    expect(appeler).toHaveBeenNthCalledWith(2, '/api/coeur-bancaire/virements-programmes/3/reactivation', expect.objectContaining({ method: 'POST' }));
+    expect(appeler).toHaveBeenNthCalledWith(3, '/api/coeur-bancaire/virements-programmes/3', expect.objectContaining({ method: 'DELETE' }));
+  });
+
+  it('[FR-004-10] un 404 est introuvable pour les trois actions', async () => {
+    const client = http(() => json({ message: 'Ressource introuvable' }, 404));
+
+    expect(await client.suspendre(3)).toEqual({ statut: 'introuvable' });
+    expect(await client.reactiver(3)).toEqual({ statut: 'introuvable' });
+    expect(await client.supprimer(3)).toEqual({ statut: 'introuvable' });
+  });
+
+  it.each([
+    ['un 500', () => json({}, 500)],
+    ['un 200', () => json({}, 200)],
+    ['un 403', () => json({}, 403)],
+    ['une coupure', () => Promise.reject(new Error('coupure'))],
+  ])('[FR-004-09] %s est une panne technique', async (_nom, reponse) => {
+    const client = http(reponse);
+
+    expect(await client.suspendre(3)).toEqual({ statut: 'technique' });
+    expect(await client.reactiver(3)).toEqual({ statut: 'technique' });
+    expect(await client.supprimer(3)).toEqual({ statut: 'technique' });
+  });
+
+  it('[FR-004-09] un 401 supprime le jeton et signale la fin de session (règle de fetchAuthentifie)', async () => {
+    const stockage: StockageJeton = { lire: () => 'j', enregistrer: vi.fn(), supprimer: vi.fn() };
+    const signal = creerSignalExpiration();
+    const rappel = vi.fn();
+    signal.ecouter(rappel);
+    const client = creerClientVirementsProgrammesHttp(creerFetchAuthentifie(stockage, signal, () => json({ message: 'Session expirée, veuillez vous reconnecter.' }, 401)));
+
+    expect(await client.suspendre(3)).toEqual({ statut: 'technique' });
+    expect(await client.supprimer(3)).toEqual({ statut: 'technique' });
+    expect(rappel).toHaveBeenCalledTimes(2);
+  });
+});

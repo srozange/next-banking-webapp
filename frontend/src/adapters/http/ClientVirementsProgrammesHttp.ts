@@ -1,4 +1,4 @@
-import { champConnu, type ClientVirementsProgrammes, type ReponseCreation, type ReponseVirementsProgrammes } from '../../application/gererVirementsProgrammes';
+import { champConnu, type ClientVirementsProgrammes, type ReponseAction, type ReponseCreation, type ReponseVirementsProgrammes } from '../../application/gererVirementsProgrammes';
 import type { LigneVirementProgramme } from '../../domain/virementsProgrammes';
 
 export const CHEMIN_VIREMENTS_PROGRAMMES = '/api/coeur-bancaire/virements-programmes';
@@ -28,8 +28,21 @@ const JSON_ENTETES = { Accept: 'application/json', 'Content-Type': 'application/
  * Adaptateur HTTP des virements programmés (cœur bancaire). `appeler` porte le jeton et la règle du 401 (fetchAuthentifie).
  * Liste : 200 avec un tableau lisible, sinon technique. Création : 201 créé ; 400, 403 et 404 avec `message` refusé
  * (le `champ` désigne le champ fautif) ; tout autre statut, corps illisible ou coupure, technique.
+ * Suspension, réactivation (POST) et suppression (DELETE) : 204 ok, 404 introuvable, tout autre statut ou coupure technique.
  */
 export function creerClientVirementsProgrammesHttp(appeler: typeof fetch): ClientVirementsProgrammes {
+  async function agir(chemin: string, method: 'POST' | 'DELETE'): Promise<ReponseAction> {
+    try {
+      const reponse = await appeler(chemin, { method, headers: { Accept: 'application/json' } });
+      if (reponse.status === 204) {
+        return { statut: 'ok' };
+      }
+      return reponse.status === 404 ? { statut: 'introuvable' } : { statut: 'technique' };
+    } catch {
+      return { statut: 'technique' };
+    }
+  }
+
   return {
     async lister(): Promise<ReponseVirementsProgrammes> {
       try {
@@ -60,5 +73,8 @@ export function creerClientVirementsProgrammesHttp(appeler: typeof fetch): Clien
         return { statut: 'technique' };
       }
     },
+    suspendre: (id) => agir(`${CHEMIN_VIREMENTS_PROGRAMMES}/${id}/suspension`, 'POST'),
+    reactiver: (id) => agir(`${CHEMIN_VIREMENTS_PROGRAMMES}/${id}/reactivation`, 'POST'),
+    supprimer: (id) => agir(`${CHEMIN_VIREMENTS_PROGRAMMES}/${id}`, 'DELETE'),
   };
 }

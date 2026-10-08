@@ -97,4 +97,36 @@ class VirementsProgrammesJdbcIT {
         assertThat(comptes.parNumero("FR76-0001-0002")).hasValueSatisfying(c -> assertThat(c.id()).isEqualTo(2L));
         assertThat(comptes.parNumero("FR76-9999-9999")).isEmpty();
     }
+
+    @Test
+    @Tag("FR-004-09")
+    void le_changement_d_etat_est_conditionnel_et_ne_touche_que_l_etat() {
+        VirementProgramme cree = enregistrer(1, "Motif", "2027-01-01", "2026-12-31T23:00:00Z");
+
+        assertThat(virements.changerEtat(cree.id(), 8, true)).isFalse();
+        assertThat(virements.changerEtat(cree.id(), 1, false)).isFalse();
+        assertThat(virements.changerEtat(cree.id(), 1, true)).isTrue();
+        assertThat(virements.changerEtat(cree.id(), 1, true)).isFalse();
+        assertThat(virements.listerDuClient(1)).containsExactly(
+                new VirementProgramme(cree.id(), cree.clientId(), cree.compteSourceId(), cree.numeroBeneficiaire(),
+                        cree.libelleBeneficiaire(), cree.montant(), cree.frequence(), cree.motif(),
+                        cree.prochaineExecution(), false, cree.nbExecutions(), cree.creeLe()));
+        assertThat(virements.changerEtat(cree.id(), 1, false)).isTrue();
+        assertThat(virements.listerDuClient(1)).containsExactly(cree);
+    }
+
+    @Test
+    @Tag("FR-004-10")
+    @Tag("BUG-013")
+    void la_suppression_est_limitee_au_client_et_independante_de_l_etat() {
+        VirementProgramme actif = enregistrer(1, null, "2027-01-01", "2026-12-31T23:00:00Z");
+        VirementProgramme inactif = enregistrer(1, null, "2027-02-01", "2027-01-31T23:00:00Z");
+        virements.changerEtat(inactif.id(), 1, true);
+
+        assertThat(virements.supprimer(actif.id(), 8)).isFalse();
+        assertThat(virements.supprimer(actif.id(), 1)).isTrue();
+        assertThat(virements.supprimer(actif.id(), 1)).isFalse();
+        assertThat(virements.supprimer(inactif.id(), 1)).isTrue();
+        assertThat(virements.listerDuClient(1)).isEmpty();
+    }
 }

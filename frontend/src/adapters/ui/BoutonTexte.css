@@ -9,3 +9,8 @@
   cursor: pointer;
   white-space: nowrap;
 }
+
+.bouton-texte:disabled {
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}

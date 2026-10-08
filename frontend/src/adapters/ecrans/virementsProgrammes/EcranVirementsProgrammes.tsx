@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { chargerComptes, type ClientVirement, type Compte } from '../../../application/virement';
-import { chargerVirementsProgrammes, creerVirementProgramme, type ClientVirementsProgrammes } from '../../../application/gererVirementsProgrammes';
+import {
+  agirSurVirementProgramme,
+  chargerVirementsProgrammes,
+  creerVirementProgramme,
+  type ActionVirementProgramme,
+  type ClientVirementsProgrammes,
+} from '../../../application/gererVirementsProgrammes';
 import {
   CHAMP_DU_REFUS,
   dateAffichee,
@@ -40,7 +46,8 @@ interface Proprietes {
  * client du jeton, triés par le service. Les contrôles de saisie locaux suivent l'ordre du legacy ; le service
  * contrôle aussi la saisie, les comptes source et destinataire. Une erreur reste sur l'écran, le champ fautif en
  * `aria-invalid`, valeurs conservées ; un succès vide le formulaire et recharge la liste sans rechargement de page.
- * Suspendre, réactiver et supprimer sont rendus sans comportement (story 4.4).
+ * Suspendre, réactiver et supprimer agissent sans modale puis rechargent la liste ; un 404 affiche le refus générique
+ * d'appartenance, un échec technique le texte dédié ; les boutons sont désactivés le temps de l'action.
  */
 export function EcranVirementsProgrammes({ comptes, client }: Proprietes) {
   const [lesComptes, setLesComptes] = useState<readonly Compte[]>([]);
@@ -50,7 +57,9 @@ export function EcranVirementsProgrammes({ comptes, client }: Proprietes) {
   const [champEnErreur, setChampEnErreur] = useState<ChampVirementProgramme | null>(null);
   const [succes, setSucces] = useState(false);
   const [occupe, setOccupe] = useState(false);
+  const [actionEnCours, setActionEnCours] = useState(false);
   const derniereDemande = useRef(0);
+  const actionEnvoyee = useRef(false);
   const envoiEnCours = useRef(false);
   const alerte = useRef<HTMLDivElement>(null);
   const champs = {
@@ -141,6 +150,32 @@ export function EcranVirementsProgrammes({ comptes, client }: Proprietes) {
       setErreur(T.erreurCreation);
       alerte.current?.focus();
     }
+  }
+
+  async function agir(action: ActionVirementProgramme, id: number) {
+    if (actionEnvoyee.current) {
+      return;
+    }
+    actionEnvoyee.current = true;
+    setActionEnCours(true);
+    const demande = ++derniereDemande.current;
+    const resultat = await agirSurVirementProgramme(action, id, client);
+    actionEnvoyee.current = false;
+    setActionEnCours(false);
+    if (demande !== derniereDemande.current) {
+      return;
+    }
+    setSucces(false);
+    setChampEnErreur(null);
+    if (resultat.statut === 'ok') {
+      setErreur(resultat.liste === null ? TEXTES.erreurTechnique : null);
+      if (resultat.liste !== null) {
+        setLignes(resultat.liste);
+      }
+      return;
+    }
+    setErreur(resultat.statut === 'introuvable' ? T.erreurAppartenance : action === 'supprimer' ? T.erreurSuppression : T.erreurEtat);
+    alerte.current?.focus();
   }
 
   const optionsComptes = lesComptes.map((compte) => ({ valeur: String(compte.id), libelle: T.optionCompte(compte.numero, compte.type, compte.solde) }));
@@ -285,11 +320,11 @@ export function EcranVirementsProgrammes({ comptes, client }: Proprietes) {
                 <td>
                   <div className="ecran-virements-programmes__actions">
                     {ligne.actif ? (
-                      <BoutonTexte data-testid={`vp-suspendre-${ligne.id}`}>{T.suspendre}</BoutonTexte>
+                      <BoutonTexte data-testid={`vp-suspendre-${ligne.id}`} desactive={actionEnCours} onClick={() => void agir('suspendre', ligne.id)}>{T.suspendre}</BoutonTexte>
                     ) : (
-                      <BoutonTexte data-testid={`vp-reactiver-${ligne.id}`}>{T.reactiver}</BoutonTexte>
+                      <BoutonTexte data-testid={`vp-reactiver-${ligne.id}`} desactive={actionEnCours} onClick={() => void agir('reactiver', ligne.id)}>{T.reactiver}</BoutonTexte>
                     )}
-                    <BoutonTexte data-testid={`vp-supprimer-${ligne.id}`}>{T.supprimer}</BoutonTexte>
+                    <BoutonTexte data-testid={`vp-supprimer-${ligne.id}`} desactive={actionEnCours} onClick={() => void agir('supprimer', ligne.id)}>{T.supprimer}</BoutonTexte>
                   </div>
                 </td>
               </tr>

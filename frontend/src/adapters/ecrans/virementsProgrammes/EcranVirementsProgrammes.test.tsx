@@ -1,10 +1,11 @@
 // @vitest-environment jsdom
 import { cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
-import type { ClientVirementsProgrammes, ReponseCreation, ReponseVirementsProgrammes } from '../../../application/gererVirementsProgrammes';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { ClientVirementsProgrammes, ReponseAction, ReponseCreation, ReponseVirementsProgrammes } from '../../../application/gererVirementsProgrammes';
 import type { ClientVirement } from '../../../application/virement';
 import type { LigneVirementProgramme } from '../../../domain/virementsProgrammes';
+import { TEXTES } from '../../textes';
 import { jetonDeTest } from '../../jeton/jetonDeTest';
 import { rendreApplication } from '../../test/rendreApplication';
 
@@ -167,18 +168,178 @@ describe('écran des virements programmés', () => {
     expect(screen.getByTestId('vp-supprimer-8').textContent).toBe('Supprimer');
   });
 
-  it('[FR-004-03] suspendre, réactiver et supprimer restent sans comportement (story 4.4)', async () => {
-    const lister = vi_lister(ACTIF, INACTIF);
-    ouvrir({ lister });
+  it('[FR-004-09] suspendre appelle le service, recharge la liste sans modale et affiche Inactif avec Reactiver et Supprimer', async () => {
+    const lister = vi.fn().mockReturnValueOnce(liste(ACTIF)).mockReturnValue(liste({ ...ACTIF, actif: false }));
+    const { suspendreVirementProgramme } = ouvrir({ lister, suspendre: () => Promise.resolve({ statut: 'ok' }) });
     await screen.findByTestId('vp-ligne-7');
     const utilisateur = userEvent.setup();
 
     await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
-    await utilisateur.click(screen.getByTestId('vp-reactiver-8'));
+
+    await screen.findByTestId('vp-reactiver-7');
+    expect(suspendreVirementProgramme).toHaveBeenCalledWith(7);
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('[FR-004-10] supprimer appelle le service et retire la ligne, dernière ligne : « Aucun virement programme configure »', async () => {
+    const lister = vi.fn().mockReturnValueOnce(liste(ACTIF)).mockReturnValue(liste());
+    const { supprimerVirementProgramme } = ouvrir({ lister, supprimer: () => Promise.resolve({ statut: 'ok' }) });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
     await utilisateur.click(screen.getByTestId('vp-supprimer-7'));
 
+    await screen.findByTestId('vp-aucun');
+    expect(supprimerVirementProgramme).toHaveBeenCalledWith(7);
+    expect(screen.queryByTestId('vp-ligne-7')).toBeNull();
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('[FR-004-09] un virement suspendu se réactive : Actif, Suspendre et Supprimer', async () => {
+    const lister = vi.fn().mockReturnValueOnce(liste(INACTIF)).mockReturnValue(liste({ ...INACTIF, actif: true }));
+    const { reactiverVirementProgramme } = ouvrir({ lister, reactiver: () => Promise.resolve({ statut: 'ok' }) });
+    await screen.findByTestId('vp-ligne-8');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-reactiver-8'));
+
+    await screen.findByTestId('vp-suspendre-8');
+    expect(reactiverVirementProgramme).toHaveBeenCalledWith(8);
+    expect(within(screen.getByTestId('vp-ligne-8')).getByText('Actif')).toBeTruthy();
+    expect(screen.queryByTestId('vp-reactiver-8')).toBeNull();
+    expect(screen.getByTestId('vp-supprimer-8')).toBeTruthy();
+  });
+
+  it('[FR-004-09] une suspension réussie recharge la liste : Inactif, Reactiver et Supprimer', async () => {
+    const lister = vi.fn().mockReturnValueOnce(liste(ACTIF)).mockReturnValue(liste({ ...ACTIF, actif: false }));
+    ouvrir({ lister, suspendre: () => Promise.resolve({ statut: 'ok' }) });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+
+    await screen.findByTestId('vp-reactiver-7');
+    expect(within(screen.getByTestId('vp-ligne-7')).getByText('Inactif')).toBeTruthy();
+    expect(screen.queryByTestId('vp-suspendre-7')).toBeNull();
+    expect(screen.getByTestId('vp-supprimer-7')).toBeTruthy();
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(screen.getAllByTestId(/^vp-ligne-/)).toHaveLength(2);
+  });
+
+  it.each([
+    ['vp-suspendre-7', 'suspendre'],
+    ['vp-supprimer-7', 'supprimer'],
+  ] as const)('[FR-004-10] un 404 (%s) affiche vp.erreur.appartenance, ligne inchangée', async (testId, action) => {
+    ouvrir({ lister: () => liste(ACTIF), [action]: () => Promise.resolve({ statut: 'introuvable' }) });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId(testId));
+
+    expect((await screen.findByTestId('vp-message-erreur')).textContent).toBe('Erreur : action impossible. Rechargez la page.');
+    expect(screen.getByTestId('vp-ligne-7')).toBeTruthy();
+  });
+
+  it('[FR-004-10] un 404 sur Reactiver affiche vp.erreur.appartenance', async () => {
+    ouvrir({ lister: () => liste(INACTIF), reactiver: () => Promise.resolve({ statut: 'introuvable' }) });
+    await screen.findByTestId('vp-ligne-8');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-reactiver-8'));
+
+    expect((await screen.findByTestId('vp-message-erreur')).textContent).toBe('Erreur : action impossible. Rechargez la page.');
+  });
+
+  it('[FR-004-09] un échec technique de Suspendre puis de Reactiver affiche vp.erreur.etat, ligne inchangée', async () => {
+    ouvrir({ lister: () => liste(ACTIF, INACTIF), suspendre: () => Promise.reject(new Error('coupure')) });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+    expect((await screen.findByTestId('vp-message-erreur')).textContent).toBe(
+      "Erreur : l'état du virement programmé n'a pas changé. Rien n'a été débité. Veuillez réessayer.",
+    );
+    expect(within(screen.getByTestId('vp-ligne-7')).getByText('Actif')).toBeTruthy();
+
+    await utilisateur.click(screen.getByTestId('vp-reactiver-8'));
+    await waitFor(() => expect(screen.getByTestId('vp-message-erreur').textContent).toContain("l'état du virement programmé n'a pas changé"));
+    expect(within(screen.getByTestId('vp-ligne-8')).getByText('Inactif')).toBeTruthy();
+  });
+
+  it('[FR-004-10] un échec technique de Supprimer affiche vp.erreur.suppression, ligne conservée', async () => {
+    ouvrir({ lister: () => liste(ACTIF) });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-supprimer-7'));
+
+    expect((await screen.findByTestId('vp-message-erreur')).textContent).toBe(
+      "Erreur suppression : le virement programmé n'a pas été supprimé et reste inchangé. Veuillez réessayer.",
+    );
+    expect(screen.getByTestId('vp-ligne-7')).toBeTruthy();
+  });
+
+  it('[FR-004-09] une action réussie efface l’erreur précédente et le succès de création', async () => {
+    const lister = vi.fn().mockReturnValueOnce(liste(ACTIF)).mockReturnValue(liste({ ...ACTIF, actif: false }));
+    const suspendre = vi.fn().mockResolvedValueOnce({ statut: 'technique' }).mockResolvedValue({ statut: 'ok' });
+    ouvrir({ lister, suspendre });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+    await screen.findByTestId('vp-message-erreur');
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+
+    await screen.findByTestId('vp-reactiver-7');
+    expect(screen.queryByTestId('vp-message-erreur')).toBeNull();
+    expect(screen.queryByTestId('vp-message-succes')).toBeNull();
+  });
+
+  it('[FR-004-09] une relecture en échec après l’action affiche le texte technique', async () => {
+    const lister = vi.fn().mockReturnValueOnce(liste(ACTIF)).mockResolvedValue({ statut: 'technique' });
+    ouvrir({ lister, suspendre: () => Promise.resolve({ statut: 'ok' }) });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+
+    expect((await screen.findByTestId('vp-message-erreur')).textContent).toBe(TEXTES.erreurTechnique);
+  });
+
+  it('[FR-004-09] les boutons sont désactivés pendant l’action : pas de double envoi', async () => {
+    let rendre: (reponse: ReponseAction) => void = () => {};
+    const { suspendreVirementProgramme } = ouvrir({
+      lister: () => liste(ACTIF, INACTIF),
+      suspendre: () => new Promise<ReponseAction>((resolve) => (rendre = resolve)),
+    });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+    await waitFor(() => expect(screen.getByTestId('vp-suspendre-7').hasAttribute('disabled')).toBe(true));
+    expect(screen.getByTestId('vp-supprimer-7').hasAttribute('disabled')).toBe(true);
+    expect(screen.getByTestId('vp-reactiver-8').hasAttribute('disabled')).toBe(true);
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+    rendre({ statut: 'ok' });
+
+    await waitFor(() => expect(screen.getByTestId('vp-suspendre-7').hasAttribute('disabled')).toBe(false));
+    expect(suspendreVirementProgramme).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-004-09] un 401 du service pendant une action ramène à /login', async () => {
+    let rendu: ReturnType<typeof ouvrir> | undefined;
+    rendu = ouvrir({
+      lister: () => liste(ACTIF),
+      suspendre: () => {
+        rendu?.signal.declencher();
+        return Promise.resolve({ statut: 'technique' });
+      },
+    });
+    await screen.findByTestId('vp-ligne-7');
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('vp-suspendre-7'));
+
+    await waitFor(() => expect(rendu?.routeur.state.location.pathname).toBe('/login'));
   });
 
   it('[FR-004-03] sans virement, garde les en-têtes et une ligne pleine largeur', async () => {
@@ -380,7 +541,3 @@ describe('écran des virements programmés', () => {
     expect(creerVirementProgramme).toHaveBeenCalledOnce();
   });
 });
-
-function vi_lister(...virements: LigneVirementProgramme[]) {
-  return () => liste(...virements);
-}

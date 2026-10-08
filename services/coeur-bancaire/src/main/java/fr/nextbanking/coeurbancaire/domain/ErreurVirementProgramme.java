@@ -41,7 +41,9 @@ public class ErreurVirementProgramme extends RuntimeException {
         TROP_LONG(null, null),
         COMPTE_SOURCE_INTROUVABLE("Erreur : Client ou compte introuvable", Champ.COMPTE_SOURCE),
         COMPTE_SOURCE_ETRANGER("Erreur : Compte non autorise", Champ.COMPTE_SOURCE),
-        DESTINATAIRE_INTROUVABLE("Compte destinataire introuvable", Champ.NUMERO_BENEFICIAIRE);
+        DESTINATAIRE_INTROUVABLE("Compte destinataire introuvable", Champ.NUMERO_BENEFICIAIRE),
+        /** Suspension, réactivation ou suppression : virement d'autrui, inexistant ou déjà dans l'état demandé. */
+        INTROUVABLE(TextesVirement.RESSOURCE_INTROUVABLE, null);
 
         private final String texte;
         private final Champ champ;

@@ -92,7 +92,7 @@ public class GestionErreursVirements {
     public ResponseEntity<Object> virementProgrammeRefuse(ErreurVirementProgramme refus) {
         HttpStatus statut = switch (refus.motif()) {
             case COMPTE_SOURCE_ETRANGER -> HttpStatus.FORBIDDEN;
-            case COMPTE_SOURCE_INTROUVABLE, DESTINATAIRE_INTROUVABLE -> HttpStatus.NOT_FOUND;
+            case COMPTE_SOURCE_INTROUVABLE, DESTINATAIRE_INTROUVABLE, INTROUVABLE -> HttpStatus.NOT_FOUND;
             default -> HttpStatus.BAD_REQUEST;
         };
         String message = refus.motif().texte() == null ? Textes.REQUETE_INVALIDE : refus.motif().texte();

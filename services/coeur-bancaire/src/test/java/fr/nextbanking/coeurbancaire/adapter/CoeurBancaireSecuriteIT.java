@@ -115,6 +115,25 @@ class CoeurBancaireSecuriteIT {
     }
 
     @Test
+    @Tag("FR-004-09")
+    @Tag("FR-004-10")
+    void sans_jeton_ou_avec_un_jeton_invalide_les_actions_sur_un_virement_programme_rendent_401() throws Exception {
+        Instant maintenant = Instant.now();
+        String expire = Jetons.jeton(Conteneurs.CLES, "CLIENT", maintenant.minusSeconds(7200),
+                maintenant.minusSeconds(3600));
+        String base = "/api/coeur-bancaire/virements-programmes/1";
+
+        for (String jeton : new String[] {null, expire, "illisible"}) {
+            for (String[] appel : new String[][] {{"POST", base + "/suspension"}, {"POST", base + "/reactivation"},
+                    {"DELETE", base}}) {
+                HttpResponse<String> reponse = Jetons.envoyer(port, appel[0], appel[1], jeton, null);
+                assertThat(reponse.statusCode()).as(appel[1]).isEqualTo(401);
+                assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
+            }
+        }
+    }
+
+    @Test
     void avec_un_jeton_valide_une_route_inconnue_rend_404() throws Exception {
         Instant maintenant = Instant.now();
         String valide = Jetons.jeton(Conteneurs.CLES, "ADMIN", maintenant, maintenant.plusSeconds(1800));

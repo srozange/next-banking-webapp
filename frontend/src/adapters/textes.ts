@@ -265,6 +265,12 @@ export const TEXTES = {
     succes: 'Virement programme cree avec succes',
     /** vp.erreur.creation de textes-nouveaux.md : unique, sans détail. */
     erreurCreation: "Erreur : le virement programmé n'a pas été créé. Rien n'a été débité. Veuillez réessayer.",
+    /** vp.erreur.appartenance de textes-nouveaux.md : tout 404 d'une action, sans révéler l'existence du virement. */
+    erreurAppartenance: 'Erreur : action impossible. Rechargez la page.',
+    /** vp.erreur.etat de textes-nouveaux.md : échec technique de Suspendre ou Reactiver. */
+    erreurEtat: "Erreur : l'état du virement programmé n'a pas changé. Rien n'a été débité. Veuillez réessayer.",
+    /** vp.erreur.suppression de textes-nouveaux.md : échec technique de Supprimer. */
+    erreurSuppression: "Erreur suppression : le virement programmé n'a pas été supprimé et reste inchangé. Veuillez réessayer.",
   },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {

@@ -10,7 +10,7 @@ import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientReleve, ReponseOperations } from '../../application/consulterReleve';
 import type { ClientBeneficiaires, ReponseAjout, ReponseBeneficiaires, ReponseSuppression, ReponseVerificationIban } from '../../application/gererBeneficiaires';
-import type { ClientVirementsProgrammes, ReponseCreation, ReponseVirementsProgrammes } from '../../application/gererVirementsProgrammes';
+import type { ClientVirementsProgrammes, ReponseAction as ReponseActionVirementProgramme, ReponseCreation, ReponseVirementsProgrammes } from '../../application/gererVirementsProgrammes';
 import type { ClientTableauDeBord, ReponseTableauDeBord } from '../../application/consulterTableauDeBord';
 import type { ClientNotifications, ReponseActionNotifications, ReponseNotifications } from '../../application/gererNotifications';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
@@ -91,6 +91,9 @@ export function rendreApplication(
   const ajouterBeneficiaire = vi.fn(clientBeneficiaires.ajouter ?? (() => Promise.resolve<ReponseAjout>({ statut: 'technique' })));
   const listerVirementsProgrammes = vi.fn(clientVirementsProgrammes.lister ?? (() => Promise.resolve<ReponseVirementsProgrammes>({ statut: 'liste', virements: [] })));
   const creerVirementProgramme = vi.fn(clientVirementsProgrammes.creer ?? (() => Promise.resolve<ReponseCreation>({ statut: 'technique' })));
+  const suspendreVirementProgramme = vi.fn(clientVirementsProgrammes.suspendre ?? (() => Promise.resolve<ReponseActionVirementProgramme>({ statut: 'technique' })));
+  const reactiverVirementProgramme = vi.fn(clientVirementsProgrammes.reactiver ?? (() => Promise.resolve<ReponseActionVirementProgramme>({ statut: 'technique' })));
+  const supprimerVirementProgramme = vi.fn(clientVirementsProgrammes.supprimer ?? (() => Promise.resolve<ReponseActionVirementProgramme>({ statut: 'technique' })));
   const lireTableauDeBord = vi.fn(
     clientTableauDeBord.lire ?? (() => Promise.resolve<ReponseTableauDeBord>({ statut: 'tableau', comptes: [], dernieresOperations: [] })),
   );
@@ -138,7 +141,13 @@ export function rendreApplication(
       clientRevue: { lireFile, lireHistorique, decider },
       clientReleve: { lireOperations },
       clientBeneficiaires: { lister: listerBeneficiaires, supprimer: supprimerBeneficiaire, verifierIban: verifierIbanBeneficiaire, ajouter: ajouterBeneficiaire },
-      clientVirementsProgrammes: { lister: listerVirementsProgrammes, creer: creerVirementProgramme },
+      clientVirementsProgrammes: {
+        lister: listerVirementsProgrammes,
+        creer: creerVirementProgramme,
+        suspendre: suspendreVirementProgramme,
+        reactiver: reactiverVirementProgramme,
+        supprimer: supprimerVirementProgramme,
+      },
       clientTableauDeBord: { lire: lireTableauDeBord },
       clientNotifications: { lister: listerNotifications, toutMarquerLu, toutEffacer },
       clientComptesTiers: tiers,
@@ -148,5 +157,5 @@ export function rendreApplication(
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, listerVirementsProgrammes, creerVirementProgramme, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, listerVirementsProgrammes, creerVirementProgramme, suspendreVirementProgramme, reactiverVirementProgramme, supprimerVirementProgramme, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
 }

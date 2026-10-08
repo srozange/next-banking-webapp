@@ -28,10 +28,16 @@ export type ReponseCreation =
   | { statut: 'refuse'; message: string; champ: ChampVirementProgramme | null }
   | { statut: 'technique' };
 
+/** Réponse du service à une suspension, réactivation ou suppression : introuvable couvre autrui, inexistant et état déjà atteint. */
+export type ReponseAction = { statut: 'ok' } | { statut: 'introuvable' } | { statut: 'technique' };
+
 /** Port sortant : virements programmés du client (le service déduit le client de la session). */
 export interface ClientVirementsProgrammes {
   lister(): Promise<ReponseVirementsProgrammes>;
   creer(commande: CommandeVirementProgramme): Promise<ReponseCreation>;
+  suspendre(id: number): Promise<ReponseAction>;
+  reactiver(id: number): Promise<ReponseAction>;
+  supprimer(id: number): Promise<ReponseAction>;
 }
 
 /** Cas d'usage (FR-004-03) : virements du client dans l'ordre du service ; null si le service est indisponible. */
@@ -79,6 +85,32 @@ export async function creerVirementProgramme(formulaire: FormulaireVirementProgr
   }
   if (reponse.statut === 'cree') {
     return { statut: 'cree', liste: await chargerVirementsProgrammes(client) };
+  }
+  return reponse;
+}
+
+/** Action sur un virement programmé existant. */
+export type ActionVirementProgramme = 'suspendre' | 'reactiver' | 'supprimer';
+
+/** Issue d'une action : `liste` est la liste rechargée, nulle si la relecture a échoué. */
+export type ResultatAction =
+  | { statut: 'ok'; liste: readonly LigneVirementProgramme[] | null }
+  | { statut: 'introuvable' }
+  | { statut: 'technique' };
+
+/**
+ * Cas d'usage (FR-004-09, FR-004-10) : suspend, réactive ou supprime le virement programmé, puis recharge la liste
+ * après un succès. Introuvable (404 : d'autrui, inexistant ou état déjà atteint) et technique restent distincts.
+ */
+export async function agirSurVirementProgramme(action: ActionVirementProgramme, id: number, client: ClientVirementsProgrammes): Promise<ResultatAction> {
+  let reponse: ReponseAction;
+  try {
+    reponse = await client[action](id);
+  } catch {
+    return { statut: 'technique' };
+  }
+  if (reponse.statut === 'ok') {
+    return { statut: 'ok', liste: await chargerVirementsProgrammes(client) };
   }
   return reponse;
 }

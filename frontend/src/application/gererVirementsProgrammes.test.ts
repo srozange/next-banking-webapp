@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { champConnu, chargerVirementsProgrammes, creerVirementProgramme, type ClientVirementsProgrammes } from './gererVirementsProgrammes';
+import { agirSurVirementProgramme, champConnu, chargerVirementsProgrammes, creerVirementProgramme, type ClientVirementsProgrammes } from './gererVirementsProgrammes';
 import { FORMULAIRE_VIREMENT_PROGRAMME_VIDE, type FormulaireVirementProgramme, type LigneVirementProgramme } from '../domain/virementsProgrammes';
 
 const LIGNE: LigneVirementProgramme = {
@@ -29,6 +29,9 @@ function client(surcharge: Partial<ClientVirementsProgrammes> = {}): ClientVirem
   return {
     lister: vi.fn(() => Promise.resolve({ statut: 'liste' as const, virements: [LIGNE] })),
     creer: vi.fn(() => Promise.resolve({ statut: 'cree' as const })),
+    suspendre: vi.fn(() => Promise.resolve({ statut: 'ok' as const })),
+    reactiver: vi.fn(() => Promise.resolve({ statut: 'ok' as const })),
+    supprimer: vi.fn(() => Promise.resolve({ statut: 'ok' as const })),
     ...surcharge,
   };
 }
@@ -94,5 +97,38 @@ describe('champConnu', () => {
     expect(champConnu('montant')).toBe('montant');
     expect(champConnu('inconnu')).toBeNull();
     expect(champConnu(undefined)).toBeNull();
+  });
+});
+
+describe('agirSurVirementProgramme', () => {
+  it.each(['suspendre', 'reactiver', 'supprimer'] as const)('[FR-004-09] %s appelle le service puis recharge la liste', async (action) => {
+    const c = client();
+
+    expect(await agirSurVirementProgramme(action, 1, c)).toEqual({ statut: 'ok', liste: [LIGNE] });
+    expect(c[action]).toHaveBeenCalledWith(1);
+    expect(c.lister).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-004-09] une relecture en échec après un succès rend une liste nulle', async () => {
+    const c = client({ lister: () => Promise.resolve({ statut: 'technique' }) });
+
+    expect(await agirSurVirementProgramme('suspendre', 1, c)).toEqual({ statut: 'ok', liste: null });
+  });
+
+  it('[FR-004-10] introuvable et technique sont rendus tels quels, sans relecture', async () => {
+    const introuvable = client({ supprimer: () => Promise.resolve({ statut: 'introuvable' }) });
+    const technique = client({ reactiver: () => Promise.resolve({ statut: 'technique' }) });
+
+    expect(await agirSurVirementProgramme('supprimer', 1, introuvable)).toEqual({ statut: 'introuvable' });
+    expect(await agirSurVirementProgramme('reactiver', 1, technique)).toEqual({ statut: 'technique' });
+    expect(introuvable.lister).not.toHaveBeenCalled();
+    expect(technique.lister).not.toHaveBeenCalled();
+  });
+
+  it('[FR-004-09] une exception du port est une panne technique', async () => {
+    const c = client({ suspendre: () => Promise.reject(new Error('coupure')) });
+
+    expect(await agirSurVirementProgramme('suspendre', 1, c)).toEqual({ statut: 'technique' });
+    expect(c.lister).not.toHaveBeenCalled();
   });
 });

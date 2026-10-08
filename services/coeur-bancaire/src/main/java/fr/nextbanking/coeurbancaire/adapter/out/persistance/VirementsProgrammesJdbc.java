@@ -59,6 +59,26 @@ public class VirementsProgrammesJdbc implements VirementsProgrammes {
                 .list();
     }
 
+    @Override
+    public boolean changerEtat(long id, long clientId, boolean actifAttendu) {
+        return jdbc.sql("""
+                update virements_programmes set actif = :actifVoulu
+                where id = :id and client_id = :clientId and actif = :actifAttendu""")
+                .param("id", id)
+                .param("clientId", clientId)
+                .param("actifAttendu", actifAttendu)
+                .param("actifVoulu", !actifAttendu)
+                .update() > 0;
+    }
+
+    @Override
+    public boolean supprimer(long id, long clientId) {
+        return jdbc.sql("delete from virements_programmes where id = :id and client_id = :clientId")
+                .param("id", id)
+                .param("clientId", clientId)
+                .update() > 0;
+    }
+
     private static VirementProgramme virement(ResultSet ligne, int numero) throws SQLException {
         return new VirementProgramme(ligne.getLong("id"), ligne.getLong("client_id"), ligne.getLong("compte_source_id"),
                 ligne.getString("numero_beneficiaire"), ligne.getString("libelle_beneficiaire"),

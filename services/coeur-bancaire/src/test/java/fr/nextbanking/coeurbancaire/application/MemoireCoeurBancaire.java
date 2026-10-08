@@ -140,6 +140,25 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
+    public boolean changerEtat(long id, long clientId, boolean actifAttendu) {
+        for (int i = 0; i < virementsProgrammes.size(); i++) {
+            VirementProgramme v = virementsProgrammes.get(i);
+            if (v.id() == id && v.clientId() == clientId && v.actif() == actifAttendu) {
+                virementsProgrammes.set(i, new VirementProgramme(v.id(), v.clientId(), v.compteSourceId(),
+                        v.numeroBeneficiaire(), v.libelleBeneficiaire(), v.montant(), v.frequence(), v.motif(),
+                        v.prochaineExecution(), !actifAttendu, v.nbExecutions(), v.creeLe()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean supprimer(long id, long clientId) {
+        return virementsProgrammes.removeIf(v -> v.id() == id && v.clientId() == clientId);
+    }
+
+    @Override
     public List<VirementProgramme> listerDuClient(long clientId) {
         return virementsProgrammes.stream().filter(v -> v.clientId() == clientId)
                 .sorted(java.util.Comparator.comparing(VirementProgramme::prochaineExecution)
