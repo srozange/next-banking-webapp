@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 import type { ClientSession, ReponseRenouvellement } from '../../application/renouvelerSession';
 import type { ClientProfil, ReponseProfil } from '../../application/chargerProfil';
+import type { ActionPret, ClientPipelinePrets, ReponseDecisionPret, ReponseListePrets } from '../../application/pipelinePrets';
 import type { ClientRevue, ReponseDecision, ReponseFile, ReponseHistorique } from '../../application/revue';
 import type { ClientVirement, ReponseComptes, ReponseSuivi, ReponseVirement } from '../../application/virement';
 import type { ClientBourse } from '../../application/consulterBourse';
@@ -40,7 +41,7 @@ import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
  * le vrai stockage localStorage, un client de connexion simulé (qui, comme l'adaptateur HTTP, enregistre un jeton
  * `jetonDeTest({ sub: '1', roles })` quand la connexion est acceptée avec un rôle connu) et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
- * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), un client du budget simulé (par défaut, panne technique), un client des plafonds simulé (par défaut, panne technique), un client des bénéficiaires simulé (par défaut, aucune liste, suppression en panne), un client des virements programmés simulé (par défaut, aucune liste, création en panne), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
+ * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), un client du budget simulé (par défaut, panne technique), un client des plafonds simulé (par défaut, panne technique), un client des bénéficiaires simulé (par défaut, aucune liste, suppression en panne), un client des virements programmés simulé (par défaut, aucune liste, création en panne), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client du pipeline des prêts simulé (par défaut, listes vides, décision en panne), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
  * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) et un client des notifications simulé (par défaut, aucune notification) ; `allerVers` simule l'envoi du navigateur à Powens.
  */
 export function rendreApplication(
@@ -63,6 +64,7 @@ export function rendreApplication(
   clientVirementsProgrammes: Partial<ClientVirementsProgrammes> = {},
   clientBudget: Partial<ClientBudget> = {},
   clientPlafonds: Partial<ClientPlafonds> = {},
+  clientPipelinePrets: Partial<ClientPipelinePrets> = {},
 ) {
   const deconnecter = vi.fn(clientSession.deconnecter ?? (() => Promise.resolve()));
   const renouveler = vi.fn(
@@ -88,6 +90,11 @@ export function rendreApplication(
   const lireFile = vi.fn(clientRevue.lireFile ?? (() => Promise.resolve<ReponseFile>({ statut: 'liste', virements: [] })));
   const lireHistorique = vi.fn(clientRevue.lireHistorique ?? (() => Promise.resolve<ReponseHistorique>({ statut: 'liste', virements: [] })));
   const decider = vi.fn(clientRevue.decider ?? (() => Promise.resolve<ReponseDecision>({ statut: 'enregistre' })));
+  const lireEnAttentePrets = vi.fn(clientPipelinePrets.lireEnAttente ?? (() => Promise.resolve<ReponseListePrets>({ statut: 'liste', prets: [] })));
+  const lireHistoriquePrets = vi.fn(clientPipelinePrets.lireHistorique ?? (() => Promise.resolve<ReponseListePrets>({ statut: 'liste', prets: [] })));
+  const deciderPretAdministration = vi.fn<(action: ActionPret, pretId: number) => Promise<ReponseDecisionPret>>(
+    clientPipelinePrets.decider ?? (() => Promise.resolve({ statut: 'technique' })),
+  );
   const lireOperations = vi.fn(clientReleve.lireOperations ?? (() => Promise.resolve<ReponseOperations>({ statut: 'operations', operations: [] })));
   const listerBeneficiaires = vi.fn(clientBeneficiaires.lister ?? (() => Promise.resolve<ReponseBeneficiaires>({ statut: 'liste', beneficiaires: [] })));
   const supprimerBeneficiaire = vi.fn(clientBeneficiaires.supprimer ?? (() => Promise.resolve<ReponseSuppression>({ statut: 'technique' })));
@@ -146,6 +153,7 @@ export function rendreApplication(
       session: { client: { deconnecter, renouveler }, locale: creerSessionLocale(stockage, decodeurJetonJwt, creerExpirationJeton(horloge)), signal },
       clientVirement: { lireComptes, executer, lireSuivi },
       clientRevue: { lireFile, lireHistorique, decider },
+      clientPipelinePrets: { lireEnAttente: lireEnAttentePrets, lireHistorique: lireHistoriquePrets, decider: deciderPretAdministration },
       clientReleve: { lireOperations },
       clientBeneficiaires: { lister: listerBeneficiaires, supprimer: supprimerBeneficiaire, verifierIban: verifierIbanBeneficiaire, ajouter: ajouterBeneficiaire },
       clientVirementsProgrammes: {
@@ -166,5 +174,5 @@ export function rendreApplication(
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, lireBudget, enregistrerPlafond, supprimerPlafond, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, listerVirementsProgrammes, creerVirementProgramme, suspendreVirementProgramme, reactiverVirementProgramme, supprimerVirementProgramme, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
+  return { ...rendu, routeur, lireBudget, enregistrerPlafond, supprimerPlafond, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, lireEnAttentePrets, lireHistoriquePrets, deciderPretAdministration, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, listerVirementsProgrammes, creerVirementProgramme, suspendreVirementProgramme, reactiverVirementProgramme, supprimerVirementProgramme, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
 }

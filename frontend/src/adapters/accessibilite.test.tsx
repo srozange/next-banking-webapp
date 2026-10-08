@@ -62,6 +62,37 @@ describe('accessibilité (axe)', () => {
     expect(await reglesViolees()).toEqual([]);
   });
 
+  it('[axe] /administration avec pipeline, historique et message de décision des prêts ne relève aucune violation', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const utilisateur = userEvent.setup();
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
+    const pret = {
+      id: 42,
+      clientId: 1,
+      nomClient: 'Jean Dupont',
+      type: 'CONSOMMATION' as const,
+      montant: '10000.00',
+      statut: 'EN_ATTENTE' as const,
+      dureeMois: 36,
+      tauxAnnuel: '3.5000',
+      mensualite: '293.02',
+      objet: 'Voiture',
+      dateDebut: '2026-10-01',
+    };
+    rendreApplication('/administration', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+      lireEnAttente: () => Promise.resolve({ statut: 'liste' as const, prets: [pret] }),
+      lireHistorique: () => Promise.resolve({ statut: 'liste' as const, prets: [pret] }),
+      decider: () => Promise.resolve({ statut: 'technique' as const }),
+    });
+    await screen.findByTestId('admin-approuver-42');
+    await waitFor(() => expect(screen.getByTestId('application-racine').getAttribute('aria-busy')).toBeNull());
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('admin-approuver-42'));
+    await screen.findByTestId('admin-message-erreur');
+    expect(await reglesViolees()).toEqual([]);
+  });
+
   it('[axe] /tableau-de-bord avec des notifications lues et non lues (badge, pastille, boutons) ne relève aucune violation', async () => {
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
     rendreApplication('/tableau-de-bord', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {

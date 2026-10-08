@@ -110,6 +110,45 @@ export const TEXTES = {
       REJETE_SOLDE_AU_DEBIT: 'Rejeté : solde insuffisant au moment du débit',
     },
   },
+  /** Pipeline des prêts et historique de tous les prêts, écran Administration (FEAT-016 MESSAGES.md, pret.erreur.traitement). */
+  administrationPrets: {
+    pipeline: {
+      titre: 'Pipeline Prets — En attente d approbation',
+      vide: 'Aucun pret en attente',
+      colonnes: {
+        id: 'ID',
+        client: 'Client',
+        type: 'Type',
+        montant: 'Montant',
+        duree: 'Duree',
+        taux: 'Taux',
+        mensualite: 'Mensualite',
+        motif: 'Motif',
+        actions: 'Actions',
+      },
+      approuver: 'Approuver',
+      refuser: 'Refuser',
+    },
+    historique: {
+      titre: 'Historique de tous les prets',
+      vide: 'Aucun pret en base',
+      colonnes: {
+        id: 'ID',
+        client: 'Client',
+        type: 'Type',
+        montant: 'Montant',
+        statut: 'Statut',
+        duree: 'Duree',
+        mensualite: 'Mensualite',
+        dateDebut: 'Date debut',
+      },
+    },
+    /** MSG-016-132 et MSG-016-133 */
+    succesApprouve: 'Prêt approuvé',
+    succesRefuse: 'Prêt refusé',
+    /** pret.erreur.traitement (B-13), quel que soit l'échec. */
+    erreurTraitement: 'Erreur lors du traitement du prêt. Veuillez réessayer.',
+  },
   /** Titres d'onglet des pages déclarées (FEAT-002 MSG-002-001, FEAT-015, FEAT-016 MSG-016-001). */
   titresOnglet: {
     tableauDeBord: 'BankApp Demo - Tableau de bord',

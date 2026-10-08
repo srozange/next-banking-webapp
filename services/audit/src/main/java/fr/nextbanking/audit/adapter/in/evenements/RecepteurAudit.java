@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * Adaptateur entrant : écouteur unitaire des topics d'audit ({@code identite-clients.audit.v1}, {@code coeur-bancaire.audit.v1}). Lit l'enveloppe
+ * Adaptateur entrant : écouteur unitaire des topics d'audit ({@code identite-clients.audit.v1}, {@code coeur-bancaire.audit.v1}, {@code credits.audit.v1}). Lit l'enveloppe
  * JSON (chaîne, sans en-tête de type), ignore un type ou une version inattendus, et confie l'entrée au cas d'usage
  * idempotent avec l'horodatage de l'enveloppe. Un code hors catalogue est rejeté et journalisé.
  */
@@ -29,7 +29,7 @@ public class RecepteurAudit {
         this.json = json;
     }
 
-    @KafkaListener(topics = {"identite-clients.audit.v1", "coeur-bancaire.audit.v1"})
+    @KafkaListener(topics = {"identite-clients.audit.v1", "coeur-bancaire.audit.v1", "credits.audit.v1"})
     public void recevoir(String message) {
         EnveloppeAudit enveloppe = json.readValue(message, EnveloppeAudit.class);
         if (!TYPE.equals(enveloppe.type()) || enveloppe.version() != VERSION) {

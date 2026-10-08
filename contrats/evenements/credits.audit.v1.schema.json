@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "credits.audit.v1",
+  "title": "Entrée d'audit de credits (décisions de l'administrateur sur les prêts)",
+  "description": "Publié par credits sur le topic credits.audit.v1 par l'outbox d'audit (outbox_audit, transaction indépendante de celle de la décision), clé = identifiant du prêt, chaîne JSON sans en-tête de type. Consommé par le service audit, qui écrit AUDIT_LOGS avec l'horodatage de l'enveloppe.",
+  "type": "object",
+  "required": ["idEvenement", "type", "version", "horodatage", "producteur", "donnees"],
+  "additionalProperties": false,
+  "properties": {
+    "idEvenement": { "type": "string", "format": "uuid" },
+    "type": { "const": "audit" },
+    "version": { "const": 1 },
+    "horodatage": { "type": "string", "format": "date-time", "description": "ISO 8601 UTC, lu sur le port Horloge du producteur ; devient ACTION_DATE." },
+    "producteur": { "const": "credits" },
+    "donnees": {
+      "type": "object",
+      "required": ["utilisateur", "action", "detail", "adresseIp"],
+      "additionalProperties": false,
+      "properties": {
+        "utilisateur": { "type": "string", "minLength": 1, "description": "Identifiant de l'administrateur (clientId en texte) qui décide du prêt." },
+        "action": {
+          "enum": ["ADMIN_LOAN_APPROVE", "ADMIN_LOAN_REFUSE"],
+          "description": "Catalogue fermé AR-40 ; credits produit ADMIN_LOAN_APPROVE et ADMIN_LOAN_REFUSE."
+        },
+        "detail": { "type": "string", "description": "ADMIN_LOAN_APPROVE : « Approbation prêt id={loanId} » ; ADMIN_LOAN_REFUSE : « Refus prêt id={loanId} »." },
+        "adresseIp": { "type": ["string", "null"], "description": "Adresse IP d'origine résolue par adapter.in.http (AD-17)." }
+      }
+    }
+  },
+  "examples": [
+    {
+      "idEvenement": "9a2c6e1d-4b7f-4a3e-8c5d-2e1f0a9b8c7d",
+      "type": "audit",
+      "version": 1,
+      "horodatage": "2026-10-09T10:15:00Z",
+      "producteur": "credits",
+      "donnees": {
+        "utilisateur": "10",
+        "action": "ADMIN_LOAN_APPROVE",
+        "detail": "Approbation prêt id=42",
+        "adresseIp": "203.0.113.7"
+      }
+    }
+  ]
+}

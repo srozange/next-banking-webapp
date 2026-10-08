@@ -78,6 +78,36 @@ class ApplicationCreditsTest {
         assertThat(decisionPret).isNotNull();
     }
 
+    @Autowired
+    private org.apache.kafka.clients.admin.NewTopic topicAudit;
+
+    @Autowired
+    private fr.nextbanking.credits.application.port.in.DecisionAdministrateurPret decisionAdministrateurPret;
+
+    @Autowired
+    private fr.nextbanking.credits.application.port.in.ConsulterPipelinePrets consulterPipelinePrets;
+
+    @Autowired
+    private fr.nextbanking.credits.application.port.in.RecevoirClientModifie recevoirClientModifie;
+
+    @Test
+    @org.junit.jupiter.api.Tag("FR-026-02")
+    void le_topic_d_audit_est_declare_et_les_cas_d_usage_d_administration_sont_assembles() {
+        assertThat(topicAudit.name()).isEqualTo("credits.audit.v1");
+        assertThat(topicAudit.numPartitions()).isEqualTo(3);
+        assertThat(topicAudit.replicationFactor()).isEqualTo((short) 1);
+        assertThat(decisionAdministrateurPret).isNotNull();
+        assertThat(consulterPipelinePrets).isNotNull();
+        assertThat(recevoirClientModifie).isNotNull();
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("FR-026-05")
+    void refuse_de_demarrer_sans_plage_de_mandataires_de_confiance() {
+        assertThatThrownBy(() -> demarrer(avec("--nb.reseau.mandataires-de-confiance=")))
+                .hasStackTraceContaining("nb.reseau.mandataires-de-confiance est obligatoire");
+    }
+
     @Test
     void l_horloge_est_dans_le_fuseau_metier() {
         assertThat(horloge.fuseau()).isEqualTo(java.time.ZoneId.of("Europe/Paris"));

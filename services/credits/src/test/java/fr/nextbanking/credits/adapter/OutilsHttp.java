@@ -42,7 +42,7 @@ public final class OutilsHttp {
     /** Remet les tables {@code loans}, {@code loan_repayments}, {@code outbox} et {@code evenements_traites} aux données de référence. */
     public static void chargerDonnees(DataSource base) {
         try {
-            executer(base, "truncate table loan_repayments, loans, outbox, evenements_traites restart identity;\n"
+            executer(base, "truncate table loan_repayments, loans, outbox, outbox_audit, clients, evenements_traites restart identity;\n"
                     + Files.readString(REFERENCE_DATA, StandardCharsets.UTF_8)
                     // Les données de référence fixent leurs identifiants : la séquence reprend après le dernier.
                     + "\nselect setval(pg_get_serial_sequence('loans', 'id'), (select max(id) from loans));");

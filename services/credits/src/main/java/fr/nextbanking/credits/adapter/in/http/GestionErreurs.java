@@ -1,6 +1,8 @@
 package fr.nextbanking.credits.adapter.in.http;
 
+import fr.nextbanking.credits.application.AccesAdministrationRefuse;
 import fr.nextbanking.credits.application.AccesPretRefuse;
+import fr.nextbanking.credits.application.DecisionAdministrateurEnEchec;
 import fr.nextbanking.credits.application.DemandePretEnEchec;
 import fr.nextbanking.credits.application.EcheanceIntrouvable;
 import fr.nextbanking.credits.application.PaiementEnEchec;
@@ -92,12 +94,18 @@ public class GestionErreurs {
         return reponse(HttpStatus.INTERNAL_SERVER_ERROR, Textes.ERREUR_SUPPRESSION);
     }
 
+    @ExceptionHandler(DecisionAdministrateurEnEchec.class)
+    public ResponseEntity<Message> decisionAdministrateurEnEchec(DecisionAdministrateurEnEchec echec) {
+        JOURNAL.error("Décision de l'administrateur sur un prêt en échec", echec);
+        return reponse(HttpStatus.INTERNAL_SERVER_ERROR, Textes.ERREUR_TRAITEMENT_PRET);
+    }
+
     @ExceptionHandler(AuthentificationRequise.class)
     public ResponseEntity<Message> authentificationRequise() {
         return reponse(HttpStatus.UNAUTHORIZED, Textes.AUTHENTIFICATION_REQUISE);
     }
 
-    @ExceptionHandler({AccessDeniedException.class, AccesPretRefuse.class})
+    @ExceptionHandler({AccessDeniedException.class, AccesPretRefuse.class, AccesAdministrationRefuse.class})
     public ResponseEntity<Message> accesRefuse() {
         return reponse(HttpStatus.FORBIDDEN, Textes.ACCES_REFUSE);
     }

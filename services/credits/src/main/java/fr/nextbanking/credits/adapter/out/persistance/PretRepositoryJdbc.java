@@ -46,6 +46,21 @@ public class PretRepositoryJdbc implements PretRepository {
     }
 
     @Override
+    public List<Pret> enAttente() {
+        return jdbc.sql(COLONNES + " where status = :statut order by date_debut desc, id desc")
+                .param("statut", StatutPret.EN_ATTENTE.name())
+                .query(PretRepositoryJdbc::pret)
+                .list();
+    }
+
+    @Override
+    public List<Pret> tous() {
+        return jdbc.sql(COLONNES + " order by date_debut desc, id desc")
+                .query(PretRepositoryJdbc::pret)
+                .list();
+    }
+
+    @Override
     public Optional<Pret> parId(long pretId) {
         return jdbc.sql(COLONNES + " where id = :id")
                 .param("id", pretId)

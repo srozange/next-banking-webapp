@@ -14,14 +14,15 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Contrat consommateur : l'exemple du schéma de chaque producteur ({@code identite-clients.audit.v1},
- * {@code coeur-bancaire.audit.v1}) se lit et produit l'effet attendu.
+ * {@code coeur-bancaire.audit.v1}, {@code credits.audit.v1}) se lit et produit l'effet attendu.
  */
 @Tag("FR-026-01")
 class AuditContratEvenementTest {
 
     private static final List<Path> SCHEMAS = List.of(
             Path.of("../../contrats/evenements/identite-clients.audit.v1.schema.json"),
-            Path.of("../../contrats/evenements/coeur-bancaire.audit.v1.schema.json"));
+            Path.of("../../contrats/evenements/coeur-bancaire.audit.v1.schema.json"),
+            Path.of("../../contrats/evenements/credits.audit.v1.schema.json"));
 
     private final JsonMapper json = JsonMapper.builder().build();
 

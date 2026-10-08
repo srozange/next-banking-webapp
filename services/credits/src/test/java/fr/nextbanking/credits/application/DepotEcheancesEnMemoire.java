@@ -86,6 +86,16 @@ class DepotEcheancesEnMemoire implements PretRepository {
     }
 
     @Override
+    public List<Pret> enAttente() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Pret> tous() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public long creer(NouveauPret pret) {
         throw new UnsupportedOperationException();
     }

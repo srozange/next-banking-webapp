@@ -8,6 +8,7 @@ import { creerClientComptesTiersHttp } from '../adapters/http/ClientComptesTiers
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
 import { creerClientConversationHttp } from '../adapters/http/ClientConversationHttp';
 import { creerClientNotificationsHttp } from '../adapters/http/ClientNotificationsHttp';
+import { creerClientPipelinePretsHttp } from '../adapters/http/ClientPipelinePretsHttp';
 import { creerClientPretsHttp } from '../adapters/http/ClientPretsHttp';
 import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
@@ -55,6 +56,7 @@ const routeur = createBrowserRouter(
     },
     clientVirement: creerClientVirementHttp(fetchAuthentifie),
     clientRevue: creerClientRevueHttp(fetchAuthentifie),
+    clientPipelinePrets: creerClientPipelinePretsHttp(fetchAuthentifie),
     clientReleve: creerClientReleveHttp(fetchAuthentifie),
     clientBeneficiaires: creerClientBeneficiairesHttp(fetchAuthentifie),
     clientVirementsProgrammes: creerClientVirementsProgrammesHttp(fetchAuthentifie),

@@ -17,6 +17,12 @@ public interface PretRepository {
     /** Prêts du client, date de début décroissante. */
     List<Pret> parClient(long clientId);
 
+    /** Prêts EN_ATTENTE de tous les clients, date de début décroissante. */
+    List<Pret> enAttente();
+
+    /** Tous les prêts, tous statuts, date de début décroissante. */
+    List<Pret> tous();
+
     Optional<Pret> parId(long pretId);
 
     /** Enregistre le prêt EN_ATTENTE dans la transaction courante ; rend son identifiant. */

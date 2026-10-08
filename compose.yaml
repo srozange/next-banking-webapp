@@ -337,6 +337,8 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # Clé publique du jeton : tout /api/** est authentifié ; sans elle, refus de démarrer.
       NB_JETON_CLE_PUBLIQUE: ${NB_JETON_CLE_PUBLIQUE:-}
+      # Adresse IP d'origine de l'audit : même plage de confiance que coeur-bancaire (le conteneur web).
+      NB_RESEAU_MANDATAIRES_DE_CONFIANCE: ${NB_SOUS_RESEAU:-172.30.0.0/24}
     ports:
       - "${NB_PORT_CREDITS:-8083}:8080"
     networks: [nb]

@@ -2,7 +2,9 @@ package fr.nextbanking.credits.adapter.in.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import fr.nextbanking.credits.application.AccesAdministrationRefuse;
 import fr.nextbanking.credits.application.AccesPretRefuse;
+import fr.nextbanking.credits.application.DecisionAdministrateurEnEchec;
 import fr.nextbanking.credits.application.DemandePretEnEchec;
 import fr.nextbanking.credits.application.EcheanceIntrouvable;
 import fr.nextbanking.credits.application.PaiementEnEchec;
@@ -32,6 +34,24 @@ import org.springframework.web.server.ResponseStatusException;
 class GestionErreursTest {
 
     private final GestionErreurs gestion = new GestionErreurs();
+
+    @Test
+    @Tag("FR-016-07")
+    @Tag("BUG-054")
+    void une_decision_en_echec_rend_500_au_texte_fixe_sans_detail_technique() {
+        ResponseEntity<GestionErreurs.Message> reponse = gestion.decisionAdministrateurEnEchec(
+                new DecisionAdministrateurEnEchec(new IllegalStateException("détail technique de la base")));
+
+        assertReponse(reponse, 500, "Erreur lors du traitement du prêt. Veuillez réessayer.");
+    }
+
+    @Test
+    @Tag("FR-030-07")
+    void un_role_insuffisant_rend_403_acces_refuse() {
+        assertReponse(gestion.accesRefuse(), 403, "Accès refusé");
+        assertThat(gestion.accesRefuse().getBody()).isEqualTo(new GestionErreurs.Message("Accès refusé"));
+        assertThat(new AccesAdministrationRefuse()).isInstanceOf(RuntimeException.class);
+    }
 
     @Test
     @Tag("FR-007-02")

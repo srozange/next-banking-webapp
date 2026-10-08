@@ -1,32 +1,40 @@
 package fr.nextbanking.credits.infrastructure;
 
 import fr.nextbanking.credits.application.ConsulterEcheancesCasUsage;
+import fr.nextbanking.credits.application.ConsulterPipelinePretsCasUsage;
 import fr.nextbanking.credits.application.ConsulterPretCasUsage;
+import fr.nextbanking.credits.application.DecisionAdministrateurPretCasUsage;
 import fr.nextbanking.credits.application.DecisionPretCasUsage;
 import fr.nextbanking.credits.application.DeposerDemandePretCasUsage;
 import fr.nextbanking.credits.application.ListerPretsCasUsage;
 import fr.nextbanking.credits.application.PayerEcheanceCasUsage;
+import fr.nextbanking.credits.application.RecevoirClientModifieCasUsage;
 import fr.nextbanking.credits.application.SimulerEmpruntCasUsage;
 import fr.nextbanking.credits.application.SupprimerPretCasUsage;
 import fr.nextbanking.credits.application.port.in.ConsulterEcheances;
+import fr.nextbanking.credits.application.port.in.ConsulterPipelinePrets;
 import fr.nextbanking.credits.application.port.in.ConsulterPret;
+import fr.nextbanking.credits.application.port.in.DecisionAdministrateurPret;
 import fr.nextbanking.credits.application.port.in.DecisionPret;
 import fr.nextbanking.credits.application.port.in.DeposerDemandePret;
 import fr.nextbanking.credits.application.port.in.ListerPrets;
 import fr.nextbanking.credits.application.port.in.PayerEcheance;
+import fr.nextbanking.credits.application.port.in.RecevoirClientModifie;
 import fr.nextbanking.credits.application.port.in.SimulerEmprunt;
 import fr.nextbanking.credits.application.port.in.SupprimerPret;
 import fr.nextbanking.credits.application.port.out.CalculSimulation;
 import fr.nextbanking.credits.application.port.out.EvenementsSortants;
 import fr.nextbanking.credits.application.port.out.EvenementsTraites;
 import fr.nextbanking.credits.application.port.out.Horloge;
+import fr.nextbanking.credits.application.port.out.JournalAudit;
 import fr.nextbanking.credits.application.port.out.PretRepository;
+import fr.nextbanking.credits.application.port.out.ProjectionClients;
 import fr.nextbanking.credits.application.port.out.Transaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Assemble les cas d'usage de simulation, de dépôt de demande, de décision et de consultation des prêts, écrits en Java pur.
+ * Assemble les cas d'usage de simulation, de dépôt de demande, de décision et de consultation des prêts, d'administration des prêts et de projection des clients, écrits en Java pur.
  */
 @Configuration
 public class AssemblageCredits {
@@ -71,5 +79,22 @@ public class AssemblageCredits {
     @Bean
     SupprimerPret supprimerPret(PretRepository prets) {
         return new SupprimerPretCasUsage(prets);
+    }
+
+    @Bean
+    ConsulterPipelinePrets consulterPipelinePrets(PretRepository prets, ProjectionClients clients) {
+        return new ConsulterPipelinePretsCasUsage(prets, clients);
+    }
+
+    @Bean
+    DecisionAdministrateurPret decisionAdministrateurPret(PretRepository prets, JournalAudit audit,
+            Transaction transaction, Horloge horloge) {
+        return new DecisionAdministrateurPretCasUsage(prets, audit, transaction, horloge);
+    }
+
+    @Bean
+    RecevoirClientModifie recevoirClientModifie(ProjectionClients projection, EvenementsTraites traites,
+            Transaction transaction) {
+        return new RecevoirClientModifieCasUsage(projection, traites, transaction);
     }
 }

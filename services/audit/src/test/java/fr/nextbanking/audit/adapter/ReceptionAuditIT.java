@@ -51,6 +51,7 @@ class ReceptionAuditIT {
 
     private static final String TOPIC = "identite-clients.audit.v1";
     private static final String TOPIC_COEUR_BANCAIRE = "coeur-bancaire.audit.v1";
+    private static final String TOPIC_CREDITS = "credits.audit.v1";
     private static final String HORODATAGE_PASSE = "2026-10-05T08:30:00Z";
 
     @DynamicPropertySource
@@ -121,6 +122,23 @@ class ReceptionAuditIT {
         await().atMost(Duration.ofSeconds(30)).until(() -> traite(idFin));
         assertThat(lignesDe("1", "Montant: 100.00 - Motif: loyer%"))
                 .extracting(Ligne::action).containsSubsequence("VIREMENT", "TRANSFER_EXECUTED");
+    }
+
+    @Test
+    @Tag("FR-026-05")
+    void les_decisions_de_pret_de_l_administrateur_du_service_credits_sont_ecrites_dans_audit_logs() throws Exception {
+        String administrateur = "admin-" + UUID.randomUUID();
+        UUID idFin = UUID.randomUUID();
+
+        envoyerSur(TOPIC_CREDITS, "42",
+                enveloppe(UUID.randomUUID(), administrateur, "ADMIN_LOAN_APPROVE", "Approbation prêt id=42"),
+                enveloppe(idFin, administrateur, "ADMIN_LOAN_REFUSE", "Refus prêt id=42"));
+
+        await().atMost(Duration.ofSeconds(30)).until(() -> traite(idFin));
+        assertThat(lignes(administrateur)).extracting(Ligne::action, Ligne::details, Ligne::ipaddress)
+                .containsExactly(
+                        org.assertj.core.groups.Tuple.tuple("ADMIN_LOAN_APPROVE", "Approbation prêt id=42", "203.0.113.7"),
+                        org.assertj.core.groups.Tuple.tuple("ADMIN_LOAN_REFUSE", "Refus prêt id=42", "203.0.113.7"));
     }
 
     @Test

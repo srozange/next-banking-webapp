@@ -26,6 +26,8 @@ final class Textes {
     static final String ERREUR_PAIEMENT = "Erreur : l'échéance n'a pas été marquée comme payée. Veuillez réessayer.";
     /** pret.erreur.suppression (textes-nouveaux.md). */
     static final String ERREUR_SUPPRESSION = "Erreur suppression : le prêt n'a pas été supprimé. Veuillez réessayer.";
+    /** pret.erreur.traitement (textes-nouveaux.md). */
+    static final String ERREUR_TRAITEMENT_PRET = "Erreur lors du traitement du prêt. Veuillez réessayer.";
     /** A-024-1 : transmission de la demande impossible. */
     static final String SERVICE_INDISPONIBLE = "Service credit temporairement indisponible, veuillez reessayer plus tard";
     static final String ERREUR_TECHNIQUE = "Une erreur technique est survenue";

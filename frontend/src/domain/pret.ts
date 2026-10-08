@@ -76,6 +76,24 @@ export interface Pret {
   dateFin: string;
 }
 
+/**
+ * Prêt vu par l'administrateur (pipeline et historique, FEAT-016) : le nom complet du client vient de la projection du
+ * service (à défaut, son identifiant en texte) ; le type peut manquer (BUG-078, prêt sans type).
+ */
+export interface PretAdministration {
+  id: number;
+  clientId: number;
+  nomClient: string;
+  type: TypePret | null;
+  montant: string;
+  statut: StatutPret;
+  dureeMois: number;
+  tauxAnnuel: string;
+  mensualite: string;
+  objet: string | null;
+  dateDebut: string;
+}
+
 /** Échéance d'un prêt lue auprès du service : montants en chaînes, date `yyyy-MM-dd`, paiement en instant ISO ou null. */
 export interface Echeance {
   id: number;

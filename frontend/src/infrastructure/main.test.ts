@@ -12,6 +12,7 @@ import type { ClientConversation } from '../application/dialoguerAvecSophie';
 import type { ClientPrets } from '../application/prets';
 import type { ClientSession } from '../application/renouvelerSession';
 import type { ClientRevue } from '../application/revue';
+import type { ClientPipelinePrets } from '../application/pipelinePrets';
 import type { ClientConnexion } from '../application/seConnecter';
 import type { ClientVirement } from '../application/virement';
 import { jetonDeTest } from '../adapters/jeton/jetonDeTest';
@@ -72,6 +73,7 @@ const NOMS_CLIENTS_AUTHENTIFIES = [
   'releve',
   'budget',
   'revue',
+  'pipeline des prêts',
 ];
 
 /** Importe main, puis retrouve dans les routes les clients tels que main.tsx les a câblés. */
@@ -85,7 +87,9 @@ async function clientsDeMain() {
   const protegee = enfants.find((route) => route.path === undefined) as Route;
   const garde = propsDe(protegee) as { clientProfil: ClientProfil; session: Session };
   const ecran = (chemin: string) => propsDe(protegee.children?.find((route) => route.path === chemin));
-  const revue = (ecran('/administration').children as ReactElement[])[1]?.props as { client: ClientRevue };
+  const sectionsAdministration = ((ecran('/administration').children as ReactElement<{ children: ReactElement[] }>[])[1]?.props.children ?? []) as ReactElement[];
+  const pipelinePrets = sectionsAdministration[0]?.props as { client: ClientPipelinePrets };
+  const revue = sectionsAdministration[1]?.props as { client: ClientRevue };
   const authentifies: ReadonlyArray<readonly [string, () => Promise<unknown>]> = [
     ['profil', () => garde.clientProfil.lire()],
     ['session', () => (garde.session.client as ClientSession).deconnecter()],
@@ -100,6 +104,7 @@ async function clientsDeMain() {
     ['releve', () => (ecran('/releve').releve as ClientReleve).lireOperations(1)],
     ['budget', () => (ecran('/budget').client as ClientBudget).lire(null)],
     ['revue', () => revue.client.lireFile()],
+    ['pipeline des prêts', () => pipelinePrets.client.lireEnAttente()],
   ];
   return { connexion, session: garde.session, authentifies };
 }

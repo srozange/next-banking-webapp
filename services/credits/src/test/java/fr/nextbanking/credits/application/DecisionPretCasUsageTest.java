@@ -54,6 +54,16 @@ class DecisionPretCasUsageTest {
         }
 
         @Override
+        public List<Pret> enAttente() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public List<Pret> tous() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public long creer(NouveauPret nouveau) {
             throw new UnsupportedOperationException();
         }

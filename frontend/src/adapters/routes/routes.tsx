@@ -2,6 +2,7 @@ import type { RouteObject } from 'react-router';
 import { ROUTE_CONNEXION } from '../../domain/connexion';
 import type { ClientProfil } from '../../application/chargerProfil';
 import type { ClientRevue } from '../../application/revue';
+import type { ClientPipelinePrets } from '../../application/pipelinePrets';
 import type { ClientPrets } from '../../application/prets';
 import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
@@ -23,6 +24,7 @@ import { EcranBourse } from '../ecrans/bourse/EcranBourse';
 import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { SectionRevueVirements } from '../ecrans/administration/SectionRevueVirements';
+import { SectionsPretsAdministration } from '../ecrans/administration/SectionsPretsAdministration';
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
 import type { ClientVirementsProgrammes } from '../../application/gererVirementsProgrammes';
 import { EcranBeneficiaires } from '../ecrans/beneficiaires/EcranBeneficiaires';
@@ -49,6 +51,7 @@ export interface Dependances {
   session: Session;
   clientVirement: ClientVirement;
   clientRevue: ClientRevue;
+  clientPipelinePrets: ClientPipelinePrets;
   clientReleve: ClientReleve;
   clientBeneficiaires: ClientBeneficiaires;
   clientVirementsProgrammes: ClientVirementsProgrammes;
@@ -61,7 +64,7 @@ export interface Dependances {
 
 /**
  * Routes protégées : déclarées ici ; le tableau de bord a son écran (comptes, opérations, puis les sections « Centre de notifications » et « Suivi de mes virements »),
- * l'administration la section de revue des virements suspendus et /prets l'écran Prêts ; le reste du contenu arrive
+ * l'administration le pipeline des prêts, l'historique des prêts puis la revue des virements suspendus, et /prets l'écran Prêts ; le reste du contenu arrive
  * avec les stories suivantes.
  */
 export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets'] as const;
@@ -83,6 +86,7 @@ export function creerRoutes({
   session,
   clientVirement,
   clientRevue,
+  clientPipelinePrets,
   clientReleve,
   clientBeneficiaires,
   clientVirementsProgrammes,
@@ -127,7 +131,12 @@ export function creerRoutes({
                 ) : (
                   <>
                     <title>{TITRES_ONGLET[path]}</title>
-                    {path === '/administration' && <SectionRevueVirements client={clientRevue} />}
+                    {path === '/administration' && (
+                      <>
+                        <SectionsPretsAdministration client={clientPipelinePrets} />
+                        <SectionRevueVirements client={clientRevue} />
+                      </>
+                    )}
                   </>
                 ),
             })),
