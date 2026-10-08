@@ -37,7 +37,7 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   epic-0: backlog
   0-1-confiner-le-jeton-dans-le-décorateur-fetch-du-front: done
-  0-2-porter-les-montants-et-les-identifiants-par-des-types-du-dom: backlog
+  0-2-porter-les-montants-et-les-identifiants-par-des-types-du-dom: done
   epic-0-retrospective: optional
 
   epic-1: done

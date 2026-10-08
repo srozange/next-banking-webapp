@@ -1,5 +1,8 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
@@ -14,7 +17,6 @@ import fr.nextbanking.coeurbancaire.domain.IssueRevue;
 import fr.nextbanking.coeurbancaire.domain.Role;
 import fr.nextbanking.coeurbancaire.domain.StatutAlerte;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
-import java.math.BigDecimal;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -64,14 +66,14 @@ class LiberationVirementCasUsageTest {
 
         assertThat(issue).isEqualTo(IssueDecision.ACCEPTEE);
         assertThat(memoire.virements.get(12L).etat()).isEqualTo(EtatVirement.LIBERE);
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("20000.00");
-        assertThat(memoire.comptes.get(2L).solde()).isEqualByComparingTo("100.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("20000.00");
+        assertThat(memoire.comptes.get(2L).solde().texte()).isEqualTo("100.00");
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.outbox).singleElement().satisfies(remise -> {
             assertThat(remise.virementId()).isEqualTo(12);
-            assertThat(remise.montant()).isEqualByComparingTo("12000.00");
+            assertThat(remise.montant().texte()).isEqualTo("12000.00");
             assertThat(remise.emetteurId()).isEqualTo(7);
-            assertThat(remise.compteDestinataireId()).isEqualTo(2);
+            assertThat(remise.compteDestinataireId()).isEqualTo(new CompteId(2));
         });
         assertThat(memoire.publies).hasSize(1);
         assertThat(memoire.decisions).isEmpty();
@@ -104,13 +106,13 @@ class LiberationVirementCasUsageTest {
 
     @Test
     void un_solde_devenu_insuffisant_refuse_la_libération_et_rejette_le_virement_sans_debit() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("11999.99")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("11999.99")));
 
         IssueDecision issue = cas.liberer(commande("vérifié"));
 
         assertThat(issue).isEqualTo(IssueDecision.REFUSEE_SOLDE_INSUFFISANT);
         assertThat(memoire.virements.get(12L).etat()).isEqualTo(EtatVirement.REJETE);
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("11999.99");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("11999.99");
         assertThat(memoire.outbox).isEmpty();
         assertThat(memoire.decisions).isEmpty();
         assertThat(memoire.outboxAudit).singleElement().satisfies(entree -> {
@@ -122,7 +124,7 @@ class LiberationVirementCasUsageTest {
 
     @Test
     void un_solde_exactement_egal_au_montant_suffit() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("12000.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("12000.00")));
 
         assertThat(cas.liberer(commande("vérifié"))).isEqualTo(IssueDecision.ACCEPTEE);
     }

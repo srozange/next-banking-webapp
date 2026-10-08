@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterTableauDeBord.TableauDeBord;
@@ -18,12 +19,12 @@ class ConsulterTableauDeBordCasUsageTest {
     private final ConsulterTableauDeBordCasUsage cas = new ConsulterTableauDeBordCasUsage(memoire, memoire);
 
     private void compte(long id, long client, TypeCompte type, String solde) {
-        memoire.comptes.put(id, new Compte(id, client, "FR76-000" + id, type, new BigDecimal(solde)));
+        memoire.comptes.put(id, new Compte(id, client, "FR76-000" + id, type, Montant.lire(solde)));
     }
 
     private void operation(long compteId, String description, String date) {
-        memoire.operations.add(new Operation(compteId, TypeOperation.CREDIT, new BigDecimal("1.00"),
-                new BigDecimal("11.00"), description, Instant.parse(date), 0));
+        memoire.operations.add(new Operation(compteId, TypeOperation.CREDIT, Montant.lire("1.00"),
+                Montant.lire("11.00"), description, Instant.parse(date), 0));
     }
 
     @Test
@@ -36,7 +37,7 @@ class ConsulterTableauDeBordCasUsageTest {
         TableauDeBord vue = cas.tableauDeBord(7);
 
         assertThat(vue.comptes()).extracting(Compte::id).containsExactly(1L, 2L);
-        assertThat(vue.soldeTotal()).isEqualTo(new BigDecimal("17330.50"));
+        assertThat(vue.soldeTotal().texte()).isEqualTo("17330.50");
     }
 
     @Test
@@ -45,7 +46,7 @@ class ConsulterTableauDeBordCasUsageTest {
         TableauDeBord vue = cas.tableauDeBord(7);
 
         assertThat(vue.comptes()).isEmpty();
-        assertThat(vue.soldeTotal()).isEqualTo(new BigDecimal("0.00"));
+        assertThat(vue.soldeTotal().texte()).isEqualTo("0.00");
         assertThat(vue.dernieresOperations()).isEmpty();
     }
 
@@ -58,7 +59,7 @@ class ConsulterTableauDeBordCasUsageTest {
         TableauDeBord vue = cas.tableauDeBord(7);
 
         assertThat(vue.dernieresOperations()).isEmpty();
-        assertThat(vue.soldeTotal()).isEqualTo(new BigDecimal("10.00"));
+        assertThat(vue.soldeTotal().texte()).isEqualTo("10.00");
     }
 
     @Test

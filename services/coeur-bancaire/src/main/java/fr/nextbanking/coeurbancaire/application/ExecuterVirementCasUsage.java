@@ -11,19 +11,22 @@ import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
 import fr.nextbanking.coeurbancaire.domain.ActionAudit;
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
 import fr.nextbanking.coeurbancaire.domain.ControleEnErreur;
+import fr.nextbanking.coeurbancaire.domain.DemandeVirement;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude.Decision;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude.Evaluation;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.NotificationVirement;
+import fr.nextbanking.coeurbancaire.domain.Soumission;
 import fr.nextbanking.coeurbancaire.domain.SeuilsFraude;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
 import fr.nextbanking.coeurbancaire.domain.Virement;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
 import fr.nextbanking.coeurbancaire.domain.VirementDecide;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -80,28 +83,29 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
                 return rejouer(premier.get());
             }
         }
-        BigDecimal montant = Virement.verifierSaisie(commande.compteSourceId(), commande.compteDestinataireId(),
+        DemandeVirement demande = DemandeVirement.lire(commande.compteSourceId(), commande.compteDestinataireId(),
                 commande.montant(), commande.motif());
         Instant soumisLe = horloge.instant();
         long virementId = virements.attribuerIdentifiant();
+        Soumission soumission = new Soumission(virementId, commande.clientId(), demande, soumisLe);
         Ecriture ecriture;
         try {
-            ecriture = transaction.executer(() -> ecrire(virementId, commande, montant, soumisLe));
+            ecriture = transaction.executer(() -> ecrire(soumission, commande.cleIdempotence()));
         } catch (ErreurVirement refus) {
             if (refus.motif() == Cause.CLE_IDEMPOTENCE_DEJA_UTILISEE) {
                 return rejouer(virements.parCle(commande.clientId(), commande.cleIdempotence()).orElseThrow());
             }
             throw refus;
         } catch (ControleEnErreur erreur) {
-            refuser(commande, virementId, montant, soumisLe);
+            refuser(soumission, commande);
             throw new ErreurVirement(Cause.CONTROLE_EN_ERREUR, erreur);
         } catch (RuntimeException echec) {
             auditer(commande, virementId, soumisLe, ActionAudit.VIREMENT,
-                    TextesVirement.detailVirement(montant.toPlainString(), commande.motif(), ISSUE_ECHEC_REMISE));
+                    TextesVirement.detailVirement(demande.montant().texte(), commande.motif(), ISSUE_ECHEC_REMISE));
             throw new ErreurVirement(Cause.REMISE_IMPOSSIBLE, echec);
         }
         evenements.publier(ecriture.ligneDecision());
-        String montantTexte = montant.toPlainString();
+        String montantTexte = demande.montant().texte();
         if (ecriture.virement().etat() == EtatVirement.SUSPENDU) {
             auditer(commande, virementId, soumisLe, ActionAudit.VIREMENT,
                     TextesVirement.detailVirement(montantTexte, commande.motif(), ISSUE_SUSPENDU));
@@ -116,31 +120,34 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         return resultat(ecriture.virement());
     }
 
-    private Ecriture ecrire(long virementId, Commande commande, BigDecimal montant, Instant soumisLe) {
-        long sourceId = commande.compteSourceId();
-        long destinataireId = commande.compteDestinataireId();
-        List<Compte> verrouilles = comptes.verrouiller(sourceId, destinataireId);
-        Compte source = trouver(verrouilles, sourceId);
-        Compte destinataire = trouver(verrouilles, destinataireId);
-        Virement.verifierComptes(commande.clientId(), source, destinataire, montant);
-        Evaluation evaluation = controle.evaluer(commande.clientId(), montant, destinataire.numero(), soumisLe);
-        Decision decision = evaluation.decider(montant, seuils.seuilFraude());
+    private Ecriture ecrire(Soumission soumission, String cleIdempotence) {
+        DemandeVirement demande = soumission.demande();
+        CompteId sourceId = demande.source();
+        CompteId destinataireId = demande.destinataire();
+        Montant montant = demande.montant();
+        long virementId = soumission.id();
+        long clientId = soumission.clientId();
+        Instant soumisLe = soumission.soumisLe();
+        List<Compte> verrouilles = comptes.verrouiller(sourceId.valeur(), destinataireId.valeur());
+        Compte source = trouver(verrouilles, sourceId.valeur());
+        Compte destinataire = trouver(verrouilles, destinataireId.valeur());
+        Virement.verifierComptes(clientId, source, destinataire, montant);
+        Evaluation evaluation = controle.evaluer(clientId, montant.valeur(), destinataire.numero(), soumisLe);
+        Decision decision = evaluation.decider(montant.valeur(), seuils.seuilFraude());
         if (decision.etat() == EtatVirement.SUSPENDU) {
-            Virement suspendu = Virement.suspendre(virementId, commande.clientId(), source, destinataire, montant,
-                    commande.motif(), seuils, soumisLe, decision.motifSuspension());
-            virements.enregistrer(suspendu, commande.cleIdempotence());
-            controle.enregistrerAlertes(evaluation, commande.clientId(), virementId, soumisLe);
+            Virement suspendu = Virement.suspendre(soumission, seuils, decision.motifSuspension());
+            virements.enregistrer(suspendu, cleIdempotence);
+            controle.enregistrerAlertes(evaluation, clientId, virementId, soumisLe);
             long ligne = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId,
-                    commande.clientId(), suspendu.etat(),
+                    clientId, suspendu.etat(),
                     NotificationVirement.pourSuspension(suspendu, destinataire.numero(), horloge.fuseau()),
                     soumisLe));
             return new Ecriture(suspendu, ligne, 0);
         }
-        Virement.Execution execution = Virement.executer(virementId, commande.clientId(), source, destinataire,
-                montant, commande.motif(), seuils, soumisLe);
+        Virement.Execution execution = Virement.executer(soumission, source, destinataire, seuils);
         Virement virement = execution.virement();
-        virements.enregistrer(virement, commande.cleIdempotence());
-        controle.enregistrerAlertes(evaluation, commande.clientId(), virementId, soumisLe);
+        virements.enregistrer(virement, cleIdempotence);
+        controle.enregistrerAlertes(evaluation, clientId, virementId, soumisLe);
         if (!comptes.debiter(sourceId, montant)) {
             throw new ErreurVirement(Cause.SOLDE_INSUFFISANT);
         }
@@ -149,10 +156,10 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         operations.enregistrer(execution.credit());
         // Une seule notification par virement, à la décision : jamais à la remise asynchrone.
         long decisionLigne = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId,
-                commande.clientId(), virement.etat(),
+                clientId, virement.etat(),
                 NotificationVirement.pourExecution(virement, destinataire.numero(), seuils), soumisLe));
         long remise = evenements.consigner(new VirementATraiter(UUID.randomUUID(), virementId, montant,
-                commande.clientId(), destinataireId, virement.motif(), soumisLe));
+                clientId, destinataireId, virement.motif(), soumisLe));
         return new Ecriture(virement, decisionLigne, remise);
     }
 
@@ -160,10 +167,10 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
      * Le contrôle est en erreur et la transaction de soumission est annulée : le virement est enregistré refusé, sans
      * solde, opération, remise ni notification, avec la seule entrée d'audit « Issue: REFUSE_ERREUR_CONTROLE ».
      */
-    private void refuser(Commande commande, long virementId, BigDecimal montant, Instant soumisLe) {
+    private void refuser(Soumission soumission, Commande commande) {
+        long virementId = soumission.id();
         try {
-            Virement refuse = Virement.refuser(virementId, commande.clientId(), commande.compteSourceId(),
-                    commande.compteDestinataireId(), montant, commande.motif(), seuils, soumisLe);
+            Virement refuse = Virement.refuser(soumission, seuils);
             transaction.executer(() -> {
                 virements.enregistrer(refuse, commande.cleIdempotence());
                 return null;
@@ -171,8 +178,9 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         } catch (RuntimeException echec) {
             JOURNAL.log(Level.SEVERE, "Virement " + virementId + " refusé non enregistré", echec);
         }
-        auditer(commande, virementId, soumisLe, ActionAudit.VIREMENT,
-                TextesVirement.detailVirement(montant.toPlainString(), commande.motif(), ISSUE_REFUS_CONTROLE));
+        auditer(commande, virementId, soumission.soumisLe(), ActionAudit.VIREMENT,
+                TextesVirement.detailVirement(soumission.demande().montant().texte(), commande.motif(),
+                        ISSUE_REFUS_CONTROLE));
     }
 
     private static Compte trouver(List<Compte> comptes, long id) {
@@ -198,7 +206,8 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
 
     private static Resultat resultat(Virement virement) {
         return new Resultat(virement.id(), virement.etat(), virement.heureButoir(), virement.statut(),
-                virement.compteSourceId(), virement.compteDestinataireId(), virement.montant(), virement.motif());
+                virement.compteSourceId().valeur(), virement.compteDestinataireId().valeur(), virement.montant().valeur(),
+                virement.motif().texte());
     }
 
     /** {@code ligneRemise} vaut 0 pour un virement suspendu : aucune remise. */

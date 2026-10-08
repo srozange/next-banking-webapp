@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
@@ -50,7 +51,7 @@ class RejetVirementCasUsageTest {
 
         assertThat(issue).isEqualTo(IssueDecision.ACCEPTEE);
         assertThat(memoire.virements.get(12L).etat()).isEqualTo(EtatVirement.REJETE);
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("20000.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("20000.00");
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.outbox).isEmpty();
         assertThat(memoire.decisions).isEmpty();

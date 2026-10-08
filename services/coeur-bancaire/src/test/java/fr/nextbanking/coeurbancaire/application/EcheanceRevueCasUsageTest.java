@@ -1,5 +1,8 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.domain.ActionAudit;
@@ -8,7 +11,6 @@ import fr.nextbanking.coeurbancaire.domain.IssueRevue;
 import fr.nextbanking.coeurbancaire.domain.StatutAffichage;
 import fr.nextbanking.coeurbancaire.domain.StatutAlerte;
 import fr.nextbanking.coeurbancaire.domain.Virement;
-import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -50,7 +52,7 @@ class EcheanceRevueCasUsageTest {
         assertThat(cas.rejeterLesEchus()).isEqualTo(1);
 
         assertThat(memoire.virements.get(12L).etat()).isEqualTo(EtatVirement.REJETE);
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("20000.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("20000.00");
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.outbox).isEmpty();
         assertThat(memoire.decisions).isEmpty();
@@ -80,10 +82,10 @@ class EcheanceRevueCasUsageTest {
 
     @Test
     void les_virements_echus_sont_rejetes_du_plus_ancien_au_plus_recent_et_les_autres_etats_sont_ignores() {
-        memoire.virements.put(13L, new Virement(13, 7, 1, 2, new BigDecimal("50.00"), null, EtatVirement.SUSPENDU,
+        memoire.virements.put(13L, new Virement(13, 7, new CompteId(1), new CompteId(2), Montant.lire("50.00"), Motif.AUCUN, EtatVirement.SUSPENDU,
                 StatutAffichage.SUCCESS, RevueTestes.SOUMIS.minusSeconds(60), RevueTestes.BUTOIR.minusSeconds(60),
                 "motif"));
-        memoire.virements.put(14L, new Virement(14, 7, 1, 2, new BigDecimal("50.00"), null, EtatVirement.EXECUTE,
+        memoire.virements.put(14L, new Virement(14, 7, new CompteId(1), new CompteId(2), Montant.lire("50.00"), Motif.AUCUN, EtatVirement.EXECUTE,
                 StatutAffichage.SUCCESS, RevueTestes.SOUMIS.minusSeconds(60), null, null));
         memoire.maintenant = RevueTestes.BUTOIR;
 
@@ -114,7 +116,7 @@ class EcheanceRevueCasUsageTest {
 
         memoire.lignesBatch.clear();
         memoire.transitionEnErreur = false;
-        memoire.virements.put(13L, new Virement(13, 7, 1, 2, new BigDecimal("50.00"), null, EtatVirement.SUSPENDU,
+        memoire.virements.put(13L, new Virement(13, 7, new CompteId(1), new CompteId(2), Montant.lire("50.00"), Motif.AUCUN, EtatVirement.SUSPENDU,
                 StatutAffichage.SUCCESS, RevueTestes.SOUMIS.minusSeconds(60), RevueTestes.BUTOIR.minusSeconds(60),
                 "motif"));
         MemoireCoeurBancaire partiel = new MemoireCoeurBancaire() {

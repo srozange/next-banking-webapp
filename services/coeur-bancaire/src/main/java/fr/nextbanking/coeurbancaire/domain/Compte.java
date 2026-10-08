@@ -1,12 +1,11 @@
 package fr.nextbanking.coeurbancaire.domain;
 
-import java.math.BigDecimal;
 
 /**
  * Compte bancaire d'un client : identifiant numérique, propriétaire ({@code clientId}), numéro, type et solde.
  * Seul le cœur bancaire modifie un solde.
  */
-public record Compte(long id, long clientId, String numero, TypeCompte type, BigDecimal solde) {
+public record Compte(long id, long clientId, String numero, TypeCompte type, Montant solde) {
 
     public Compte {
         if (numero == null || numero.isBlank()) {

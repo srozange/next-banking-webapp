@@ -1,8 +1,8 @@
 package fr.nextbanking.coeurbancaire.application.port.in;
 
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.Operation;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -18,7 +18,7 @@ public interface ConsulterTableauDeBord {
      * @param dernieresOperations au plus 5 opérations du compte COURANT, de la plus récente à la plus ancienne ;
      *        vide sans compte COURANT
      */
-    record TableauDeBord(List<Compte> comptes, BigDecimal soldeTotal, List<Operation> dernieresOperations) {
+    record TableauDeBord(List<Compte> comptes, Montant soldeTotal, List<Operation> dernieresOperations) {
     }
 
     TableauDeBord tableauDeBord(long clientId);

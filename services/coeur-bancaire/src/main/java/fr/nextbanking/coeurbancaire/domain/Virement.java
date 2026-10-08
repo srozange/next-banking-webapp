@@ -1,7 +1,6 @@
 package fr.nextbanking.coeurbancaire.domain;
 
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -10,40 +9,15 @@ import java.time.Instant;
  * FR-003-07 (comptes, comptes distincts, montant, motif) avant tout accès aux comptes ; puis compte introuvable (par
  * l'application), propriété des comptes (NFR-SEC-03) et solde.
  */
-public record Virement(long id, long clientId, long compteSourceId, long compteDestinataireId, BigDecimal montant,
-        String motif, EtatVirement etat, StatutAffichage statut, Instant soumisLe, Instant heureButoir,
+public record Virement(long id, long clientId, CompteId compteSourceId, CompteId compteDestinataireId,
+        Montant montant, Motif motif, EtatVirement etat, StatutAffichage statut, Instant soumisLe, Instant heureButoir,
         String motifSuspension) {
 
-    /** Longueur maximale du motif (FR-003-01). */
-    public static final int LONGUEUR_MAX_MOTIF = 100;
     /** Délai de revue d'un virement suspendu : 24 heures à compter de la soumission (FR-027-17). */
     public static final Duration DELAI_DE_REVUE = Duration.ofHours(24);
 
-    private static final int DECIMALES = 2;
-    private static final int CHIFFRES_ENTIERS_MAX = 17;
-
     /** Virement exécuté et ses deux opérations au relevé. */
     public record Execution(Virement virement, Operation debit, Operation credit) {
-    }
-
-    /**
-     * Contrôle la saisie et rend le montant à 2 décimales.
-     *
-     * @throws ErreurVirement comptes absents ou identiques, montant illisible, nul, négatif ou trop précis, motif trop long
-     */
-    public static BigDecimal verifierSaisie(Long compteSourceId, Long compteDestinataireId, String montant,
-            String motif) {
-        if (compteSourceId == null || compteDestinataireId == null) {
-            throw new ErreurVirement(Cause.COMPTES_OBLIGATOIRES);
-        }
-        if (compteSourceId.equals(compteDestinataireId)) {
-            throw new ErreurVirement(Cause.COMPTES_IDENTIQUES);
-        }
-        BigDecimal lu = lireMontant(montant);
-        if (motif != null && motif.length() > LONGUEUR_MAX_MOTIF) {
-            throw new ErreurVirement(Cause.MOTIF_TROP_LONG);
-        }
-        return lu;
     }
 
     /**
@@ -51,7 +25,7 @@ public record Virement(long id, long clientId, long compteSourceId, long compteD
      *
      * @throws ErreurVirement un compte n'appartient pas au client, ou solde insuffisant
      */
-    public static void verifierComptes(long clientId, Compte source, Compte destinataire, BigDecimal montant) {
+    public static void verifierComptes(long clientId, Compte source, Compte destinataire, Montant montant) {
         if (!source.appartientA(clientId) || !destinataire.appartientA(clientId)) {
             throw new ErreurVirement(Cause.COMPTE_ETRANGER);
         }
@@ -66,29 +40,25 @@ public record Virement(long id, long clientId, long compteSourceId, long compteD
      *
      * @throws ErreurVirement un compte n'appartient pas au client, ou solde insuffisant
      */
-    public static Execution executer(long id, long clientId, Compte source, Compte destinataire, BigDecimal montant,
-            String motif, SeuilsFraude seuils, Instant soumisLe) {
-        verifierComptes(clientId, source, destinataire, montant);
-        Virement virement = naitre(id, clientId, source.id(), destinataire.id(), montant, motif, seuils,
-                EtatVirement.EXECUTE, soumisLe, null, null);
-        return virement.operations(source, destinataire, soumisLe);
+    public static Execution executer(Soumission soumission, Compte source, Compte destinataire,
+            SeuilsFraude seuils) {
+        verifierComptes(soumission.clientId(), source, destinataire, soumission.demande().montant());
+        Virement virement = naitre(soumission, seuils, EtatVirement.EXECUTE, null, null);
+        return virement.operations(source, destinataire, soumission.soumisLe());
     }
 
     /**
      * Virement suspendu avant tout débit : l'heure butoir est la soumission plus 24 heures, et le motif de suspension
      * est celui de la décision du contrôle.
      */
-    public static Virement suspendre(long id, long clientId, Compte source, Compte destinataire, BigDecimal montant,
-            String motif, SeuilsFraude seuils, Instant soumisLe, String motifSuspension) {
-        return naitre(id, clientId, source.id(), destinataire.id(), montant, motif, seuils, EtatVirement.SUSPENDU,
-                soumisLe, soumisLe.plus(DELAI_DE_REVUE), motifSuspension);
+    public static Virement suspendre(Soumission soumission, SeuilsFraude seuils, String motifSuspension) {
+        return naitre(soumission, seuils, EtatVirement.SUSPENDU, soumission.soumisLe().plus(DELAI_DE_REVUE),
+                motifSuspension);
     }
 
     /** Virement refusé pour erreur de contrôle : persisté, terminal, sans aucun effet sur les soldes. */
-    public static Virement refuser(long id, long clientId, long compteSourceId, long compteDestinataireId,
-            BigDecimal montant, String motif, SeuilsFraude seuils, Instant soumisLe) {
-        return naitre(id, clientId, compteSourceId, compteDestinataireId, montant, motif, seuils,
-                EtatVirement.REFUSE_ERREUR_CONTROLE, soumisLe, null, null);
+    public static Virement refuser(Soumission soumission, SeuilsFraude seuils) {
+        return naitre(soumission, seuils, EtatVirement.REFUSE_ERREUR_CONTROLE, null, null);
     }
 
     /**
@@ -107,37 +77,21 @@ public record Virement(long id, long clientId, long compteSourceId, long compteD
     }
 
     private Execution operations(Compte source, Compte destinataire, Instant date) {
-        Operation debit = new Operation(source.id(), TypeOperation.DEBIT, montant, source.solde().subtract(montant),
-                TextesVirement.libelleDebit(destinataire.numero(), motif, statut), date, id);
+        Operation debit = new Operation(source.id(), TypeOperation.DEBIT, montant, source.solde().soustraire(montant),
+                TextesVirement.libelleDebit(destinataire.numero(), motif.texte(), statut), date, id);
         Operation credit = new Operation(destinataire.id(), TypeOperation.CREDIT, montant,
-                destinataire.solde().add(montant),
-                TextesVirement.libelleCredit(source.numero(), motif, statut), date, id);
+                destinataire.solde().ajouter(montant),
+                TextesVirement.libelleCredit(source.numero(), motif.texte(), statut), date, id);
         return new Execution(this, debit, credit);
     }
 
-    private static Virement naitre(long id, long clientId, long compteSourceId, long compteDestinataireId,
-            BigDecimal montant, String motif, SeuilsFraude seuils, EtatVirement etat, Instant soumisLe,
+    private static Virement naitre(Soumission soumission, SeuilsFraude seuils, EtatVirement etat,
             Instant heureButoir, String motifSuspension) {
-        String motifRetenu = motif == null || motif.isBlank() ? null : motif;
-        StatutAffichage statut = montant.compareTo(seuils.seuilAttente()) >= 0
+        DemandeVirement demande = soumission.demande();
+        StatutAffichage statut = demande.montant().atteint(seuils.seuilAttente())
                 ? StatutAffichage.PENDING : StatutAffichage.SUCCESS;
-        return new Virement(id, clientId, compteSourceId, compteDestinataireId, montant, motifRetenu, etat, statut,
-                soumisLe, heureButoir, motifSuspension);
-    }
-
-    private static BigDecimal lireMontant(String texte) {
-        if (texte == null) {
-            throw new ErreurVirement(Cause.MONTANT_INVALIDE);
-        }
-        BigDecimal lu;
-        try {
-            lu = new BigDecimal(texte.strip());
-        } catch (NumberFormatException e) {
-            throw new ErreurVirement(Cause.MONTANT_INVALIDE);
-        }
-        if (lu.signum() <= 0 || lu.scale() > DECIMALES || lu.precision() - lu.scale() > CHIFFRES_ENTIERS_MAX) {
-            throw new ErreurVirement(Cause.MONTANT_INVALIDE);
-        }
-        return lu.setScale(DECIMALES);
+        return new Virement(soumission.id(), soumission.clientId(), demande.source(), demande.destinataire(),
+                demande.montant(), demande.motif(), etat, statut, soumission.soumisLe(), heureButoir,
+                motifSuspension);
     }
 }

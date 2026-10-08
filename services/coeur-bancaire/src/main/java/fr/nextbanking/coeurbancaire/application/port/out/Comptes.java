@@ -1,7 +1,8 @@
 package fr.nextbanking.coeurbancaire.application.port.out;
 
 import fr.nextbanking.coeurbancaire.domain.Compte;
-import java.math.BigDecimal;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,8 @@ public interface Comptes {
     List<Compte> verrouiller(long premierId, long secondId);
 
     /** Débite le compte si, et seulement si, son solde couvre le montant (mise à jour conditionnelle) ; faux sinon. */
-    boolean debiter(long compteId, BigDecimal montant);
+    boolean debiter(CompteId compteId, Montant montant);
 
     /** Crédite le compte. */
-    void crediter(long compteId, BigDecimal montant);
+    void crediter(CompteId compteId, Montant montant);
 }

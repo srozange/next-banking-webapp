@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -51,7 +52,7 @@ class ControleFraudeCasUsageTest {
     @BeforeEach
     void preparer() {
         logger.addHandler(capteur);
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("2130.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("2130.00")));
         controle = new ControleFraudeCasUsage(memoire, memoire, memoire, memoire, ControleFraudeTestes.PARAMETRES);
     }
 

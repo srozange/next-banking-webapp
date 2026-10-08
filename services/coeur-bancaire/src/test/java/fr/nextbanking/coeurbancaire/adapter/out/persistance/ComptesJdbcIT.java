@@ -1,5 +1,7 @@
 package fr.nextbanking.coeurbancaire.adapter.out.persistance;
 
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.adapter.DonneesDeReference;
@@ -56,18 +58,18 @@ class ComptesJdbcIT {
 
     @Test
     void le_debit_conditionnel_refuse_un_montant_superieur_au_solde_et_laisse_le_solde_intact() {
-        assertThat(comptes.debiter(1, new BigDecimal("9999.00"))).isFalse();
+        assertThat(comptes.debiter(new CompteId(1), Montant.lire("9999.00"))).isFalse();
         assertThat(solde(1)).isEqualByComparingTo("2130.00");
 
-        assertThat(comptes.debiter(1, new BigDecimal("2130.00"))).isTrue();
+        assertThat(comptes.debiter(new CompteId(1), Montant.lire("2130.00"))).isTrue();
         assertThat(solde(1)).isEqualByComparingTo("0.00");
-        assertThat(comptes.debiter(1, new BigDecimal("0.01"))).isFalse();
+        assertThat(comptes.debiter(new CompteId(1), Montant.lire("0.01"))).isFalse();
         assertThat(solde(1)).isEqualByComparingTo("0.00");
     }
 
     @Test
     void le_credit_ajoute_au_solde() {
-        comptes.crediter(2, new BigDecimal("0.50"));
+        comptes.crediter(new CompteId(2), Montant.lire("0.50"));
 
         assertThat(solde(2)).isEqualByComparingTo("15200.50");
     }
@@ -86,7 +88,7 @@ class ComptesJdbcIT {
         assertThat(comptes.trouver(1)).hasValueSatisfying(compte -> {
             assertThat(compte.numero()).isEqualTo("FR76-0001-0001");
             assertThat(compte.clientId()).isEqualTo(1L);
-            assertThat(compte.solde()).isEqualByComparingTo("2130.00");
+            assertThat(compte.solde().texte()).isEqualTo("2130.00");
         });
         assertThat(comptes.trouver(999)).isEmpty();
     }

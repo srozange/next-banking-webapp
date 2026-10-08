@@ -1,5 +1,7 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
@@ -9,7 +11,6 @@ import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.Virement;
-import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -42,8 +43,8 @@ class ControleFraudeErreurTest {
     }
 
     private void riendDebiteNiEmis() {
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("20000.00");
-        assertThat(memoire.comptes.get(2L).solde()).isEqualByComparingTo("100.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("20000.00");
+        assertThat(memoire.comptes.get(2L).solde().texte()).isEqualTo("100.00");
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.outbox).isEmpty();
         assertThat(memoire.decisions).isEmpty();
@@ -55,7 +56,7 @@ class ControleFraudeErreurTest {
     @Test
     void un_virement_de_50_euros_puis_de_50000_euros_est_refuse_et_persiste_sans_aucun_effet() {
         memoire.comptes.put(1L, new fr.nextbanking.coeurbancaire.domain.Compte(1, 7, "FR76-0001-0001",
-                fr.nextbanking.coeurbancaire.domain.TypeCompte.COURANT, new BigDecimal("20000.00")));
+                fr.nextbanking.coeurbancaire.domain.TypeCompte.COURANT, Montant.lire("20000.00")));
         ErreurVirement petit = soumettre("50.00", null);
         ErreurVirement gros = soumettre("20000.00", null);
 

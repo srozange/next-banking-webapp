@@ -1,9 +1,11 @@
 package fr.nextbanking.coeurbancaire.adapter.out.evenements;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
-import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.HashSet;
@@ -28,7 +30,7 @@ class VirementATraiterContratEvenementTest {
     private final JsonNode schema = json.readTree(SCHEMA.toFile());
     private final JsonNode produit = json.readTree(new EvenementsSortantsKafka(null, null, json).enJson(
             new VirementATraiter(UUID.fromString("5e8f1a2b-3c4d-4e5f-a6b7-8c9d0e1f2a3b"), 12L,
-                    new BigDecimal("100.00"), 1L, 2L, "loyer", Instant.parse("2026-11-17T09:00:00Z"))));
+                    Montant.lire("100.00"), 1L, new CompteId(2), Motif.lire("loyer"), Instant.parse("2026-11-17T09:00:00Z"))));
 
     @Test
     void l_enveloppe_et_les_donnees_ont_exactement_les_champs_du_schema() {

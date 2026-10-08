@@ -19,8 +19,8 @@ record EnveloppeVirementATraiter(String idEvenement, String type, int version, S
                 1,
                 DateTimeFormatter.ISO_INSTANT.format(evenement.horodatage()),
                 "coeur-bancaire",
-                new Donnees(evenement.virementId(), evenement.montant().toPlainString(), evenement.emetteurId(),
-                        evenement.compteDestinataireId(), evenement.motif()));
+                new Donnees(evenement.virementId(), evenement.montant().texte(), evenement.emetteurId(),
+                        evenement.compteDestinataireId().valeur(), evenement.motif().texte()));
     }
 
     /** Données de l'événement ; le montant est une chaîne décimale à point, 2 décimales. */

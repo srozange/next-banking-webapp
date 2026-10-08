@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -9,7 +10,6 @@ import fr.nextbanking.coeurbancaire.domain.ErreurReleve.Cause;
 import fr.nextbanking.coeurbancaire.domain.Operation;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
 import fr.nextbanking.coeurbancaire.domain.TypeOperation;
-import java.math.BigDecimal;
 import java.time.Instant;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -20,12 +20,12 @@ class ConsulterReleveCasUsageTest {
     private final ConsulterReleveCasUsage cas = new ConsulterReleveCasUsage(memoire, memoire);
 
     private void comptes() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, BigDecimal.TEN));
-        memoire.comptes.put(3L, new Compte(3, 8, "FR76-0002-0001", TypeCompte.COURANT, BigDecimal.TEN));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("10.00")));
+        memoire.comptes.put(3L, new Compte(3, 8, "FR76-0002-0001", TypeCompte.COURANT, Montant.lire("10.00")));
     }
 
     private static Operation operation(long compteId, String description, String date) {
-        return new Operation(compteId, TypeOperation.CREDIT, new BigDecimal("1.00"), new BigDecimal("11.00"),
+        return new Operation(compteId, TypeOperation.CREDIT, Montant.lire("1.00"), Montant.lire("11.00"),
                 description, Instant.parse(date), 0);
     }
 

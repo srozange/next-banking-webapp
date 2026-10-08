@@ -21,19 +21,19 @@ public record NotificationVirement(long clientId, TypeNotification type, String 
      */
     public static NotificationVirement pourExecution(Virement virement, String numeroDestinataire,
             SeuilsFraude seuils) {
-        String montant = virement.montant().toPlainString();
-        if (virement.montant().compareTo(seuils.seuilAlerte()) >= 0) {
+        String montant = virement.montant().texte();
+        if (virement.montant().atteint(seuils.seuilAlerte())) {
             return new NotificationVirement(virement.clientId(), TypeNotification.ALERTE, null,
                     TextesVirement.transactionImportante(montant));
         }
         return new NotificationVirement(virement.clientId(), TypeNotification.CONFIRMATION, null,
-                TextesVirement.confirmation(montant, numeroDestinataire, virement.motif()));
+                TextesVirement.confirmation(montant, numeroDestinataire, virement.motif().texte()));
     }
 
     /** Notification FRAUDE d'un virement suspendu : l'avis de suspension, sans mot « fraude », score ni signal. */
     public static NotificationVirement pourSuspension(Virement virement, String numeroDestinataire, ZoneId fuseau) {
         return new NotificationVirement(virement.clientId(), TypeNotification.FRAUDE, null,
-                TextesVirement.avisSuspension(virement.montant().toPlainString(), numeroDestinataire,
+                TextesVirement.avisSuspension(virement.montant().texte(), numeroDestinataire,
                         virement.heureButoir(), fuseau));
     }
 }

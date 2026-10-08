@@ -4,10 +4,9 @@ import fr.nextbanking.coeurbancaire.application.port.in.ConsulterTableauDeBord;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.Operation;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
@@ -31,8 +30,7 @@ public class ConsulterTableauDeBordCasUsage implements ConsulterTableauDeBord {
     @Override
     public TableauDeBord tableauDeBord(long clientId) {
         List<Compte> duClient = comptes.duClient(clientId);
-        BigDecimal total = duClient.stream().map(Compte::solde).reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(2, RoundingMode.UNNECESSARY);
+        Montant total = duClient.stream().map(Compte::solde).reduce(Montant.ZERO, Montant::ajouter);
         List<Operation> recentes = duClient.stream().filter(c -> c.type() == TypeCompte.COURANT).findFirst()
                 .map(c -> operations.duCompte(c.id()).stream()
                         .sorted(Comparator.comparing(Operation::date).reversed())

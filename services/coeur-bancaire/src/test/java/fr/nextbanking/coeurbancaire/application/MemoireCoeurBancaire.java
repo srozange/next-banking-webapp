@@ -1,5 +1,7 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.application.port.out.AlertesFraude;
 import fr.nextbanking.coeurbancaire.application.port.out.Beneficiaires;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
@@ -113,23 +115,23 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
-    public boolean debiter(long compteId, BigDecimal montant) {
+    public boolean debiter(CompteId compteId, Montant montant) {
         journal.add("debiter");
-        Compte compte = comptes.get(compteId);
+        Compte compte = comptes.get(compteId.valeur());
         if (debitRefuse || compte.solde().compareTo(montant) < 0) {
             return false;
         }
-        comptes.put(compteId, new Compte(compteId, compte.clientId(), compte.numero(), compte.type(),
-                compte.solde().subtract(montant)));
+        comptes.put(compteId.valeur(), new Compte(compteId.valeur(), compte.clientId(), compte.numero(), compte.type(),
+                compte.solde().soustraire(montant)));
         return true;
     }
 
     @Override
-    public void crediter(long compteId, BigDecimal montant) {
+    public void crediter(CompteId compteId, Montant montant) {
         journal.add("crediter");
-        Compte compte = comptes.get(compteId);
-        comptes.put(compteId, new Compte(compteId, compte.clientId(), compte.numero(), compte.type(),
-                compte.solde().add(montant)));
+        Compte compte = comptes.get(compteId.valeur());
+        comptes.put(compteId.valeur(), new Compte(compteId.valeur(), compte.clientId(), compte.numero(), compte.type(),
+                compte.solde().ajouter(montant)));
     }
 
     @Override
@@ -209,8 +211,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     private LigneRevue ligneRevue(Virement v) {
-        return new LigneRevue(v.id(), v.clientId(), noms.get(v.clientId()), v.montant(),
-                comptes.get(v.compteDestinataireId()).numero(), v.motifSuspension(), v.heureButoir());
+        return new LigneRevue(v.id(), v.clientId(), noms.get(v.clientId()), v.montant().valeur(),
+                comptes.get(v.compteDestinataireId().valeur()).numero(), v.motifSuspension(), v.heureButoir());
     }
 
     @Override
@@ -230,8 +232,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
                 .sorted(java.util.Comparator.comparing(Virement::soumisLe).reversed()
                         .thenComparing(java.util.Comparator.comparingLong(Virement::id).reversed()))
                 .limit(limite)
-                .map(v -> new LigneSuivi(v.id(), v.soumisLe(), comptes.get(v.compteDestinataireId()).numero(),
-                        v.montant(), v.etat(), v.heureButoir()))
+                .map(v -> new LigneSuivi(v.id(), v.soumisLe(), comptes.get(v.compteDestinataireId().valeur()).numero(),
+                        v.montant().valeur(), v.etat(), v.heureButoir()))
                 .toList();
     }
 
@@ -303,7 +305,7 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             return virementsImportants;
         }
         return virements.values().stream().filter(v -> v.clientId() == clientId)
-                .filter(v -> v.etat() == EtatVirement.EXECUTE).filter(v -> v.montant().compareTo(montantMin) > 0)
+                .filter(v -> v.etat() == EtatVirement.EXECUTE).filter(v -> v.montant().valeur().compareTo(montantMin) > 0)
                 .filter(v -> !v.soumisLe().isBefore(depuis)).count();
     }
 

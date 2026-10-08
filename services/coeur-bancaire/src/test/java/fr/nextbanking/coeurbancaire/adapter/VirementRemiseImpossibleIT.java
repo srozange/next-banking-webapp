@@ -1,5 +1,7 @@
 package fr.nextbanking.coeurbancaire.adapter;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.infrastructure.ApplicationCoeurBancaire;

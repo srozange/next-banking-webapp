@@ -81,23 +81,24 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
         if (virement.etat() != EtatVirement.LIBERE) {
             return new Traitement(Issue.ETAT_INATTENDU, null);
         }
-        List<Compte> verrouilles = comptes.verrouiller(virement.compteSourceId(), virement.compteDestinataireId());
-        Compte source = trouver(verrouilles, virement.compteSourceId());
-        Compte destinataire = trouver(verrouilles, virement.compteDestinataireId());
-        if (!comptes.debiter(source.id(), virement.montant())) {
+        List<Compte> verrouilles = comptes.verrouiller(virement.compteSourceId().valeur(),
+                virement.compteDestinataireId().valeur());
+        Compte source = trouver(verrouilles, virement.compteSourceId().valeur());
+        Compte destinataire = trouver(verrouilles, virement.compteDestinataireId().valeur());
+        if (!comptes.debiter(virement.compteSourceId(), virement.montant())) {
             transiter(virement, EtatVirement.REJETE,
                     new DecisionRevue(IssueRevue.REJETE_SOLDE_AU_DEBIT, DecisionRevue.SYSTEME, null, maintenant));
             return new Traitement(Issue.REJETE_SOLDE_INSUFFISANT, new Entree(DecisionRevue.SYSTEME, null,
                     ActionAudit.TRANSFER_REJECT_INSUFFICIENT_FUNDS, TextesVirement.detailRejetSoldeAuDebit(virementId)));
         }
-        comptes.crediter(destinataire.id(), virement.montant());
+        comptes.crediter(virement.compteDestinataireId(), virement.montant());
         Virement.Execution execution = virement.executerApresLiberation(source, destinataire, maintenant);
         operations.enregistrer(execution.debit());
         operations.enregistrer(execution.credit());
         transiter(virement, EtatVirement.EXECUTE, null);
         return new Traitement(Issue.EXECUTE_APRES_LIBERATION, new Entree(Long.toString(virement.clientId()), null,
                 ActionAudit.TRANSFER_EXECUTED,
-                TextesVirement.detailExecution(virement.montant().toPlainString(), virement.motif())));
+                TextesVirement.detailExecution(virement.montant().texte(), virement.motif().texte())));
     }
 
     /** Un autre traitement a décidé entre-temps : la transaction est annulée, le message sera rejoué. */

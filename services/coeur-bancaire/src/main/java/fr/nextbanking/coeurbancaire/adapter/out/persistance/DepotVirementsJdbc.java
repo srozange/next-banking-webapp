@@ -1,6 +1,7 @@
 package fr.nextbanking.coeurbancaire.adapter.out.persistance;
 
 import fr.nextbanking.coeurbancaire.application.port.out.DepotVirements;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
 import fr.nextbanking.coeurbancaire.domain.DecisionRevue;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
@@ -9,6 +10,8 @@ import fr.nextbanking.coeurbancaire.domain.IssueRevue;
 import fr.nextbanking.coeurbancaire.domain.LigneRevue;
 import fr.nextbanking.coeurbancaire.domain.LigneSuivi;
 import fr.nextbanking.coeurbancaire.domain.LigneTraitee;
+import fr.nextbanking.coeurbancaire.domain.Montant;
+import fr.nextbanking.coeurbancaire.domain.Motif;
 import fr.nextbanking.coeurbancaire.domain.StatutAffichage;
 import fr.nextbanking.coeurbancaire.domain.Virement;
 import java.sql.ResultSet;
@@ -63,10 +66,10 @@ public class DepotVirementsJdbc implements DepotVirements {
                             :cle, :heureButoir, :motifSuspension)""")
                     .param("id", virement.id())
                     .param("clientId", virement.clientId())
-                    .param("source", virement.compteSourceId())
-                    .param("destinataire", virement.compteDestinataireId())
-                    .param("montant", virement.montant())
-                    .param("motif", virement.motif())
+                    .param("source", virement.compteSourceId().valeur())
+                    .param("destinataire", virement.compteDestinataireId().valeur())
+                    .param("montant", virement.montant().valeur())
+                    .param("motif", virement.motif().texte())
                     .param("etat", virement.etat().name())
                     .param("statut", virement.statut().name())
                     .param("soumisLe", Timestamp.from(virement.soumisLe()))
@@ -171,8 +174,9 @@ public class DepotVirementsJdbc implements DepotVirements {
 
     private static Virement virement(ResultSet ligne, int numero) throws SQLException {
         Timestamp butoir = ligne.getTimestamp("heure_butoir");
-        return new Virement(ligne.getLong("id"), ligne.getLong("client_id"), ligne.getLong("compte_source_id"),
-                ligne.getLong("compte_destinataire_id"), ligne.getBigDecimal("montant"), ligne.getString("motif"),
+        return new Virement(ligne.getLong("id"), ligne.getLong("client_id"),
+                new CompteId(ligne.getLong("compte_source_id")), new CompteId(ligne.getLong("compte_destinataire_id")),
+                new Montant(ligne.getBigDecimal("montant")), Motif.depuis(ligne.getString("motif")),
                 EtatVirement.valueOf(ligne.getString("etat")), StatutAffichage.valueOf(ligne.getString("statut")),
                 ligne.getTimestamp("soumis_le").toInstant(), butoir == null ? null : butoir.toInstant(),
                 ligne.getString("motif_suspension"));

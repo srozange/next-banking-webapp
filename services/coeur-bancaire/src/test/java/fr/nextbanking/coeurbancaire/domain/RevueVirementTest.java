@@ -21,10 +21,12 @@ class RevueVirementTest {
     private static final Instant SOUMIS = Instant.parse("2026-11-05T09:15:00Z");
     private static final SeuilsFraude SEUILS =
             new SeuilsFraude(new BigDecimal("5000"), new BigDecimal("5000"), new BigDecimal("10000"));
-    private static final Compte SOURCE = new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT,
-            new BigDecimal("20000.00"));
-    private static final Compte DESTINATAIRE = new Compte(2, 7, "FR76-0001-0002", TypeCompte.EPARGNE,
-            new BigDecimal("100.00"));
+    private static final Compte SOURCE = new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00"));
+    private static final Compte DESTINATAIRE = new Compte(2, 7, "FR76-0001-0002", TypeCompte.EPARGNE, Montant.lire("100.00"));
+    private static Soumission soumission(long id, String montant, String motif, Instant soumisLe) {
+        return new Soumission(id, 7, DemandeVirement.lire(1L, 2L, montant, motif), soumisLe);
+    }
+
     private static final ZoneId PARIS = ZoneId.of("Europe/Paris");
 
     @Test
@@ -66,9 +68,8 @@ class RevueVirementTest {
 
     @Test
     void le_virement_suspendu_a_une_heure_butoir_a_24_heures_et_le_virement_refuse_aucune() {
-        Virement suspendu = Virement.suspendre(12, 7, SOURCE, DESTINATAIRE, new BigDecimal("10000.00"), "loyer",
-                SEUILS, SOUMIS, "motif");
-        Virement refuse = Virement.refuser(13, 7, 1, 2, new BigDecimal("50.00"), " ", SEUILS, SOUMIS);
+        Virement suspendu = Virement.suspendre(soumission(12, "10000.00", "loyer", SOUMIS), SEUILS, "motif");
+        Virement refuse = Virement.refuser(soumission(13, "50.00", " ", SOUMIS), SEUILS);
 
         assertThat(suspendu.etat()).isEqualTo(EtatVirement.SUSPENDU);
         assertThat(suspendu.heureButoir()).isEqualTo(SOUMIS.plus(Duration.ofHours(24)))
@@ -77,28 +78,26 @@ class RevueVirementTest {
         assertThat(suspendu.statut()).isEqualTo(StatutAffichage.PENDING);
         assertThat(refuse.etat()).isEqualTo(EtatVirement.REFUSE_ERREUR_CONTROLE);
         assertThat(refuse.heureButoir()).isNull();
-        assertThat(refuse.motif()).isNull();
+        assertThat(refuse.motif()).isEqualTo(Motif.AUCUN);
         assertThat(refuse.statut()).isEqualTo(StatutAffichage.SUCCESS);
     }
 
     @Test
     @Tag("FR-027-17")
     void l_heure_butoir_fait_foi_a_l_instant_exact_et_apres() {
-        Virement suspendu = Virement.suspendre(12, 7, SOURCE, DESTINATAIRE, new BigDecimal("10000.00"), null, SEUILS,
-                SOUMIS, "motif");
+        Virement suspendu = Virement.suspendre(soumission(12, "10000.00", null, SOUMIS), SEUILS, "motif");
         Instant butoir = suspendu.heureButoir();
 
         assertThat(suspendu.heureButoirAtteinte(butoir.minusSeconds(1))).isFalse();
         assertThat(suspendu.heureButoirAtteinte(butoir)).isTrue();
         assertThat(suspendu.heureButoirAtteinte(butoir.plusSeconds(1))).isTrue();
-        Virement execute = Virement.executer(14, 7, SOURCE, DESTINATAIRE, new BigDecimal("100.00"), null, SEUILS,
-                SOUMIS).virement();
+        Virement execute = Virement.executer(soumission(14, "100.00", null, SOUMIS), SOURCE, DESTINATAIRE, SEUILS).virement();
         assertThat(execute.heureButoirAtteinte(butoir.plusSeconds(1))).isFalse();
     }
 
     @Test
     void un_virement_libere_est_execute_avec_ses_deux_operations_datees_du_debit_et_au_statut_de_la_soumission() {
-        Virement libere = new Virement(12, 7, 1, 2, new BigDecimal("10000.00"), "loyer", EtatVirement.LIBERE,
+        Virement libere = new Virement(12, 7, new CompteId(1), new CompteId(2), Montant.lire("10000.00"), Motif.lire("loyer"), EtatVirement.LIBERE,
                 StatutAffichage.PENDING, SOUMIS, SOUMIS.plusSeconds(86400), "motif");
         Instant debit = SOUMIS.plusSeconds(3600);
 
@@ -106,26 +105,25 @@ class RevueVirementTest {
 
         assertThat(execution.virement().etat()).isEqualTo(EtatVirement.EXECUTE);
         assertThat(execution.debit().date()).isEqualTo(debit);
-        assertThat(execution.debit().soldeApres()).isEqualByComparingTo("10000.00");
+        assertThat(execution.debit().soldeApres().texte()).isEqualTo("10000.00");
         assertThat(execution.debit().description()).isEqualTo("[EN ATTENTE] Virement vers FR76-0001-0002 - loyer");
-        assertThat(execution.credit().soldeApres()).isEqualByComparingTo("10100.00");
+        assertThat(execution.credit().soldeApres().texte()).isEqualTo("10100.00");
         assertThat(execution.credit().date()).isEqualTo(debit);
     }
 
     @Test
     void les_controles_de_propriete_et_de_solde_precedent_le_controle_de_fraude() {
-        assertThatThrownBy(() -> Virement.verifierComptes(8, SOURCE, DESTINATAIRE, BigDecimal.ONE))
+        assertThatThrownBy(() -> Virement.verifierComptes(8, SOURCE, DESTINATAIRE, Montant.lire("1.00")))
                 .isInstanceOf(ErreurVirement.class).hasMessage("Accès refusé");
-        assertThatThrownBy(() -> Virement.verifierComptes(7, SOURCE, DESTINATAIRE, new BigDecimal("20000.01")))
+        assertThatThrownBy(() -> Virement.verifierComptes(7, SOURCE, DESTINATAIRE, Montant.lire("20000.01")))
                 .hasMessage("Solde insuffisant sur le compte source");
-        Virement.verifierComptes(7, SOURCE, DESTINATAIRE, new BigDecimal("20000.00"));
+        Virement.verifierComptes(7, SOURCE, DESTINATAIRE, Montant.lire("20000.00"));
     }
 
     @Test
     @Tag("FR-003-16")
     void l_avis_de_suspension_est_le_texte_exact_sans_fraude_score_ni_signal() {
-        Virement suspendu = Virement.suspendre(12, 7, SOURCE, DESTINATAIRE, new BigDecimal("10000.00"), null, SEUILS,
-                Instant.parse("2026-11-05T09:15:00Z"), "Score cumulé 130 - signaux : LARGE_AMOUNT");
+        Virement suspendu = Virement.suspendre(soumission(12, "10000.00", null, Instant.parse("2026-11-05T09:15:00Z")), SEUILS, "Score cumulé 130 - signaux : LARGE_AMOUNT");
 
         NotificationVirement notification = NotificationVirement.pourSuspension(suspendu, "FR76-0001-0002", PARIS);
 

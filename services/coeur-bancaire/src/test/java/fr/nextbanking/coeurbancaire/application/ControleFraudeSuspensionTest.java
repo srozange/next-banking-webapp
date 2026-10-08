@@ -1,5 +1,7 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.application.port.in.ExecuterVirement.Commande;
@@ -42,8 +44,8 @@ class ControleFraudeSuspensionTest {
     }
 
     private void aucuneEcritureFinanciere() {
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("20000.00");
-        assertThat(memoire.comptes.get(2L).solde()).isEqualByComparingTo("100.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("20000.00");
+        assertThat(memoire.comptes.get(2L).solde().texte()).isEqualTo("100.00");
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.outbox).isEmpty();
         assertThat(memoire.journal).doesNotContain("debiter", "crediter");
@@ -73,7 +75,7 @@ class ControleFraudeSuspensionTest {
         assertThat(resultat.etat()).isEqualTo(EtatVirement.SUSPENDU);
         assertThat(memoire.alertes).hasSize(3).allSatisfy(a -> assertThat(a.virementId()).isEqualTo(13));
         assertThat(memoire.virements.get(13L).motifSuspension()).startsWith("Score cumulé 130 - signaux : ");
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("14999.50");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("14999.50");
     }
 
     @Test
@@ -113,7 +115,7 @@ class ControleFraudeSuspensionTest {
 
         assertThat(resultat.etat()).isEqualTo(EtatVirement.EXECUTE);
         assertThat(resultat.heureButoir()).isNull();
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("10000.01");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("10000.01");
         assertThat(memoire.decisions.getFirst().notification().type()).isEqualTo(TypeNotification.ALERTE);
         assertThat(memoire.outboxAudit).extracting(e -> e.action(), e -> e.detail()).containsExactly(
                 org.assertj.core.groups.Tuple.tuple(ActionAudit.VIREMENT,

@@ -1,12 +1,11 @@
 package fr.nextbanking.coeurbancaire.domain;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 /**
  * Opération inscrite au relevé d'un compte, avec le solde après l'opération.
  */
-public record Operation(long compteId, TypeOperation type, BigDecimal montant, BigDecimal soldeApres,
+public record Operation(long compteId, TypeOperation type, Montant montant, Montant soldeApres,
         String description, Instant date, long virementId) {
 
     public Operation {

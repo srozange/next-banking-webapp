@@ -100,7 +100,7 @@ public class PointEntreeVirements {
     public TableauDeBordClient tableauDeBord(@AuthenticationPrincipal Jwt jeton) {
         ConsulterTableauDeBord.TableauDeBord vue = consulterTableauDeBord.tableauDeBord(clientId(jeton));
         return new TableauDeBordClient(vue.comptes().stream().map(PointEntreeVirements::compte).toList(),
-                vue.soldeTotal().toPlainString(),
+                vue.soldeTotal().texte(),
                 vue.dernieresOperations().stream().map(PointEntreeVirements::operation).toList());
     }
 
@@ -109,12 +109,12 @@ public class PointEntreeVirements {
     }
 
     private static CompteClient compte(Compte compte) {
-        return new CompteClient(compte.id(), compte.type().name(), compte.numero(), compte.solde().toPlainString());
+        return new CompteClient(compte.id(), compte.type().name(), compte.numero(), compte.solde().texte());
     }
 
     private static OperationReleve operation(Operation operation) {
         return new OperationReleve(operation.date().toString(), operation.description(), operation.type().name(),
-                operation.montant().toPlainString(), operation.soldeApres().toPlainString());
+                operation.montant().texte(), operation.soldeApres().texte());
     }
 
     /** Corps de la demande : les champs absents sont contrôlés par le domaine. */

@@ -1,5 +1,8 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -11,7 +14,6 @@ import fr.nextbanking.coeurbancaire.domain.LigneSuivi;
 import fr.nextbanking.coeurbancaire.domain.Role;
 import fr.nextbanking.coeurbancaire.domain.StatutAffichage;
 import fr.nextbanking.coeurbancaire.domain.Virement;
-import java.math.BigDecimal;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -35,7 +37,7 @@ class ConsulterRevueCasUsageTest {
     }
 
     private void virement(long id, EtatVirement etat, long minutesApresSoumission, boolean enRevue) {
-        memoire.virements.put(id, new Virement(id, 7, 1, 2, new BigDecimal("100.00"), null, etat,
+        memoire.virements.put(id, new Virement(id, 7, new CompteId(1), new CompteId(2), Montant.lire("100.00"), Motif.AUCUN, etat,
                 StatutAffichage.SUCCESS, RevueTestes.SOUMIS.plusSeconds(60 * minutesApresSoumission),
                 enRevue ? RevueTestes.BUTOIR.plusSeconds(60 * minutesApresSoumission) : null,
                 enRevue ? "motif" : null));

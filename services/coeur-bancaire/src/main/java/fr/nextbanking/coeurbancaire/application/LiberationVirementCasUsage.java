@@ -88,8 +88,9 @@ public class LiberationVirementCasUsage implements LibererVirement {
             rejeter(virement, acteur, motif, IssueRevue.REJETE_HEURE_BUTOIR, maintenant);
             return new Resultat(IssueDecision.REFUSEE_HEURE_BUTOIR, 0);
         }
-        List<Compte> verrouilles = comptes.verrouiller(virement.compteSourceId(), virement.compteDestinataireId());
-        Compte source = verrouilles.stream().filter(compte -> compte.id() == virement.compteSourceId()).findFirst()
+        List<Compte> verrouilles = comptes.verrouiller(virement.compteSourceId().valeur(),
+                virement.compteDestinataireId().valeur());
+        Compte source = verrouilles.stream().filter(compte -> compte.id() == virement.compteSourceId().valeur()).findFirst()
                 .orElseThrow(() -> new ErreurVirement(Cause.COMPTE_INTROUVABLE));
         if (source.solde().compareTo(virement.montant()) < 0) {
             rejeter(virement, acteur, motif, IssueRevue.REJETE, maintenant);

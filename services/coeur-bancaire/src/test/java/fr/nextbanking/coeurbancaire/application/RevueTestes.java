@@ -1,5 +1,8 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
@@ -31,15 +34,15 @@ final class RevueTestes {
     /** Mémoire avec les comptes 1 (20 000,00) et 2 (100,00) du client 7 ; l'horloge de la mémoire est à {@code SOUMIS}. */
     static MemoireCoeurBancaire memoire() {
         MemoireCoeurBancaire memoire = new MemoireCoeurBancaire();
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
-        memoire.comptes.put(2L, new Compte(2, 7, "FR76-0001-0002", TypeCompte.EPARGNE, new BigDecimal("100.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
+        memoire.comptes.put(2L, new Compte(2, 7, "FR76-0001-0002", TypeCompte.EPARGNE, Montant.lire("100.00")));
         memoire.noms.put(7L, "Claire Martin");
         return memoire;
     }
 
     /** Virement suspendu 12 de 12 000,00 avec deux alertes OPEN et une alerte CONFIRMED. */
     static Virement suspendu(MemoireCoeurBancaire memoire) {
-        Virement virement = new Virement(12, 7, 1, 2, new BigDecimal("12000.00"), "loyer", EtatVirement.SUSPENDU,
+        Virement virement = new Virement(12, 7, new CompteId(1), new CompteId(2), Montant.lire("12000.00"), Motif.lire("loyer"), EtatVirement.SUSPENDU,
                 StatutAffichage.PENDING, SOUMIS, BUTOIR, "Score cumulé 130 - signaux : LARGE_AMOUNT");
         memoire.virements.put(12L, virement);
         memoire.alertes.add(alerte(StatutAlerte.OPEN, TypeSignal.LARGE_AMOUNT));

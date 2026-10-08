@@ -1,5 +1,8 @@
 package fr.nextbanking.coeurbancaire.application;
 
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
@@ -35,9 +38,9 @@ class ExecuterVirementCasUsageTest {
 
     @BeforeEach
     void preparer() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("2130.00")));
-        memoire.comptes.put(2L, new Compte(2, 7, "FR76-0001-0002", TypeCompte.EPARGNE, new BigDecimal("15200.00")));
-        memoire.comptes.put(3L, new Compte(3, 8, "FR76-0002-0001", TypeCompte.COURANT, new BigDecimal("500.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("2130.00")));
+        memoire.comptes.put(2L, new Compte(2, 7, "FR76-0001-0002", TypeCompte.EPARGNE, Montant.lire("15200.00")));
+        memoire.comptes.put(3L, new Compte(3, 8, "FR76-0002-0001", TypeCompte.COURANT, Montant.lire("500.00")));
         cas = assembler(memoire);
     }
 
@@ -56,8 +59,8 @@ class ExecuterVirementCasUsageTest {
     }
 
     private void aucuneEcriture() {
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2130.00");
-        assertThat(memoire.comptes.get(2L).solde()).isEqualByComparingTo("15200.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("2130.00");
+        assertThat(memoire.comptes.get(2L).solde().texte()).isEqualTo("15200.00");
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.virements).isEmpty();
         assertThat(memoire.outbox).isEmpty();
@@ -72,14 +75,14 @@ class ExecuterVirementCasUsageTest {
 
         assertThat(resultat).isEqualTo(new Resultat(12, EtatVirement.EXECUTE, null, StatutAffichage.SUCCESS, 1, 2,
                 new BigDecimal("100.00"), "loyer"));
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2030.00");
-        assertThat(memoire.comptes.get(2L).solde()).isEqualByComparingTo("15300.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("2030.00");
+        assertThat(memoire.comptes.get(2L).solde().texte()).isEqualTo("15300.00");
         assertThat(memoire.operations).extracting(o -> o.type(), o -> o.description(), o -> o.soldeApres())
                 .containsExactly(
                         org.assertj.core.groups.Tuple.tuple(TypeOperation.DEBIT,
-                                "Virement vers FR76-0001-0002 - loyer", new BigDecimal("2030.00")),
+                                "Virement vers FR76-0001-0002 - loyer", Montant.lire("2030.00")),
                         org.assertj.core.groups.Tuple.tuple(TypeOperation.CREDIT,
-                                "Virement depuis FR76-0001-0001 - loyer", new BigDecimal("15300.00")));
+                                "Virement depuis FR76-0001-0001 - loyer", Montant.lire("15300.00")));
         assertThat(memoire.journal).containsExactly("verrouiller", "verrou-client", "historique",
                 "debiter", "crediter");
     }
@@ -88,7 +91,7 @@ class ExecuterVirementCasUsageTest {
     @Tag("FR-003-10")
     void a_5000_euros_le_virement_est_pending_et_a_4999_99_il_est_success() {
         memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
 
         Resultat pending = cas.executer(commande(1L, 2L, "5000.00", "loyer", null));
         Resultat succes = cas.executer(commande(1L, 2L, "4999.99", "loyer", null));
@@ -107,10 +110,10 @@ class ExecuterVirementCasUsageTest {
 
         assertThat(memoire.outbox).singleElement().satisfies(remise -> {
             assertThat(remise.virementId()).isEqualTo(12);
-            assertThat(remise.montant()).isEqualByComparingTo("100.00");
+            assertThat(remise.montant().texte()).isEqualTo("100.00");
             assertThat(remise.emetteurId()).isEqualTo(7);
-            assertThat(remise.compteDestinataireId()).isEqualTo(2);
-            assertThat(remise.motif()).isEqualTo("loyer");
+            assertThat(remise.compteDestinataireId()).isEqualTo(new CompteId(2));
+            assertThat(remise.motif().texte()).isEqualTo("loyer");
             assertThat(remise.horodatage()).isEqualTo(MemoireCoeurBancaire.MAINTENANT);
         });
         assertThat(memoire.publies).containsExactly(101L);
@@ -156,7 +159,7 @@ class ExecuterVirementCasUsageTest {
     @Tag("FR-025-02")
     void a_5000_euros_la_notification_est_une_alerte_et_a_4999_99_une_confirmation() {
         memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
 
         cas.executer(commande(1L, 2L, "5000.00", "loyer", null));
         cas.executer(commande(1L, 2L, "4999.99", "loyer", null));
@@ -286,7 +289,7 @@ class ExecuterVirementCasUsageTest {
         Resultat resultat = cas.executer(commande(1L, 2L, "100", "loyer", null));
 
         assertThat(resultat.etat()).isEqualTo(EtatVirement.EXECUTE);
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2030.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("2030.00");
         assertThat(memoire.auditPublie).isEmpty();
     }
 
@@ -315,7 +318,7 @@ class ExecuterVirementCasUsageTest {
 
         assertThat(second).isEqualTo(premier);
         assertThat(memoire.virements).hasSize(1);
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2030.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("2030.00");
         assertThat(memoire.outboxAudit).hasSize(2);
     }
 
@@ -324,8 +327,8 @@ class ExecuterVirementCasUsageTest {
     void une_cle_d_idempotence_qui_gagne_la_course_rend_le_virement_du_gagnant() {
         // Le gagnant enregistre sa clé entre la première lecture et l'écriture de ce virement.
         memoire.cles.put("7/cle-2", 5L);
-        memoire.virements.put(5L, new fr.nextbanking.coeurbancaire.domain.Virement(5, 7, 1, 2,
-                new BigDecimal("100.00"), "loyer", EtatVirement.EXECUTE, StatutAffichage.SUCCESS,
+        memoire.virements.put(5L, new fr.nextbanking.coeurbancaire.domain.Virement(5, 7, new CompteId(1), new CompteId(2),
+                Montant.lire("100.00"), Motif.lire("loyer"), EtatVirement.EXECUTE, StatutAffichage.SUCCESS,
                 MemoireCoeurBancaire.MAINTENANT, null, null));
         MemoireCoeurBancaire course = new MemoireCoeurBancaire() {
             private int lectures;
@@ -343,7 +346,7 @@ class ExecuterVirementCasUsageTest {
         Resultat resultat = concurrent.executer(commande(1L, 2L, "100", "loyer", "cle-2"));
 
         assertThat(resultat.virementId()).isEqualTo(5);
-        assertThat(course.comptes.get(1L).solde()).isEqualByComparingTo("2130.00");
+        assertThat(course.comptes.get(1L).solde().texte()).isEqualTo("2130.00");
         assertThat(course.outboxAudit).isEmpty();
     }
 
@@ -385,14 +388,14 @@ class ExecuterVirementCasUsageTest {
 
         assertThat(resultat.etat()).isEqualTo(EtatVirement.EXECUTE);
         assertThat(memoire.alertes).isEmpty();
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2030.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("2030.00");
     }
 
     @Test
     @Tag("FR-003-25")
     @Tag("FR-027-03")
     void a_75_aucune_alerte_et_a_80_ou_plus_une_alerte_open_par_signal_dans_la_transaction_du_virement() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
 
         // 5000.50 : LARGE_AMOUNT 40 + NEW_BENEFICIARY 35 = 75.
         Resultat a75 = cas.executer(commande(1L, 2L, "5000.50", null, null));
@@ -417,7 +420,7 @@ class ExecuterVirementCasUsageTest {
     @Test
     @Tag("FR-003-25")
     void les_alertes_sont_annulees_avec_le_virement_quand_la_remise_est_impossible() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
         memoire.outboxRefusee = true;
 
         assertThat(refus(commande(1L, 2L, "5000.00", null, null)).motif()).isEqualTo(Cause.REMISE_IMPOSSIBLE);
@@ -436,7 +439,7 @@ class ExecuterVirementCasUsageTest {
 
         assertThat(erreur.motif()).isEqualTo(Cause.CONTROLE_EN_ERREUR);
         assertThat(erreur.getCause()).hasCauseInstanceOf(IllegalStateException.class);
-        assertThat(memoire.comptes.get(1L).solde()).isEqualByComparingTo("2130.00");
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("2130.00");
         assertThat(memoire.journal).doesNotContain("debiter", "crediter");
     }
 
@@ -444,19 +447,19 @@ class ExecuterVirementCasUsageTest {
     @Tag("FR-027-06")
     @Tag("BUG-085")
     void les_operations_du_jour_comptent_debits_et_credits_et_excluent_les_jours_precedents() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
         memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         for (int i = 0; i < 100; i++) {
             memoire.operations.add(new fr.nextbanking.coeurbancaire.domain.Operation(1, TypeOperation.DEBIT,
-                    BigDecimal.ONE, BigDecimal.ONE, "ancienne", MemoireCoeurBancaire.MAINTENANT.minusSeconds(86400L * 2),
+                    Montant.lire("1.00"), Montant.lire("1.00"), "ancienne", MemoireCoeurBancaire.MAINTENANT.minusSeconds(86400L * 2),
                     1));
         }
         // 3 virements = 6 opérations du jour (débits et crédits), plus 2 : 8 au plus, jamais de signal.
         for (int i = 0; i < 4; i++) {
             memoire.operations.add(new fr.nextbanking.coeurbancaire.domain.Operation(1, TypeOperation.DEBIT,
-                    BigDecimal.ONE, BigDecimal.ONE, "du jour", MemoireCoeurBancaire.MAINTENANT, 1));
+                    Montant.lire("1.00"), Montant.lire("1.00"), "du jour", MemoireCoeurBancaire.MAINTENANT, 1));
             memoire.operations.add(new fr.nextbanking.coeurbancaire.domain.Operation(2, TypeOperation.CREDIT,
-                    BigDecimal.ONE, BigDecimal.ONE, "du jour", MemoireCoeurBancaire.MAINTENANT, 1));
+                    Montant.lire("1.00"), Montant.lire("1.00"), "du jour", MemoireCoeurBancaire.MAINTENANT, 1));
         }
         memoire.dernierVirement = java.util.Optional.empty();
 
@@ -472,7 +475,7 @@ class ExecuterVirementCasUsageTest {
     @Test
     @Tag("FR-027-10")
     void la_velocite_compte_les_virements_executes_de_plus_de_500_euros_de_la_derniere_heure() {
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, new BigDecimal("20000.00")));
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
         memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         memoire.dernierVirement = java.util.Optional.empty();
         memoire.virementsImportants = 5L;

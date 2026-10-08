@@ -2,8 +2,9 @@ package fr.nextbanking.coeurbancaire.adapter.out.persistance;
 
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -52,23 +53,23 @@ public class ComptesJdbc implements Comptes {
     }
 
     @Override
-    public boolean debiter(long compteId, BigDecimal montant) {
+    public boolean debiter(CompteId compteId, Montant montant) {
         return jdbc.sql("update comptes set solde = solde - :montant where id = :id and solde >= :montant")
-                .param("montant", montant)
-                .param("id", compteId)
+                .param("montant", montant.valeur())
+                .param("id", compteId.valeur())
                 .update() == 1;
     }
 
     @Override
-    public void crediter(long compteId, BigDecimal montant) {
+    public void crediter(CompteId compteId, Montant montant) {
         jdbc.sql("update comptes set solde = solde + :montant where id = :id")
-                .param("montant", montant)
-                .param("id", compteId)
+                .param("montant", montant.valeur())
+                .param("id", compteId.valeur())
                 .update();
     }
 
     private static Compte compte(ResultSet ligne, int numero) throws SQLException {
         return new Compte(ligne.getLong("id"), ligne.getLong("client_id"), ligne.getString("numero"),
-                TypeCompte.valueOf(ligne.getString("type")), ligne.getBigDecimal("solde"));
+                TypeCompte.valueOf(ligne.getString("type")), new Montant(ligne.getBigDecimal("solde")));
     }
 }
