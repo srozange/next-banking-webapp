@@ -126,7 +126,7 @@ class ReceptionVirementDecideTest {
         arguments.add("--spring.kafka.listener.auto-startup=false");
         arguments.add("--server.port=0");
         try (ConfigurableApplicationContext redemarre = new SpringApplicationBuilder(ApplicationNotifications.class)
-                .web(WebApplicationType.NONE).run(arguments.toArray(String[]::new))) {
+                .web(WebApplicationType.SERVLET).run(arguments.toArray(String[]::new))) {
             List<Map<String, Object>> apres = redemarre.getBean(JdbcClient.class).sql(LECTURE)
                     .param("c", clientId).query().listOfRows();
 

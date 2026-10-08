@@ -77,6 +77,26 @@ class RecevoirVirementDecideCasUsageTest {
                 public void conserverLesPlusRecentes(long clientId, int plafond) {
                     journal.add("plafonner " + clientId + " " + plafond);
                 }
+
+                @Override
+                public List<fr.nextbanking.notifications.domain.NotificationDuClient> duClient(long clientId) {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public java.util.Optional<fr.nextbanking.notifications.domain.NotificationDuClient> parId(long id) {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public void marquerToutesLues(long clientId) {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public void supprimerToutes(long clientId) {
+                    throw new UnsupportedOperationException();
+                }
             },
             idEvenement -> {
                 journal.add("marquer");

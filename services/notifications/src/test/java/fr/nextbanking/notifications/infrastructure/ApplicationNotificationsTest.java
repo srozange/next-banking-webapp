@@ -58,6 +58,18 @@ class ApplicationNotificationsTest {
     }
 
     @Test
+    void refuse_de_demarrer_sans_cle_publique_du_jeton() {
+        assertThatThrownBy(() -> demarrer(avec("--nb.jeton.cle-publique=")))
+                .hasStackTraceContaining("nb.jeton.cle-publique est obligatoire");
+    }
+
+    @Test
+    void refuse_de_demarrer_avec_une_cle_publique_illisible() {
+        assertThatThrownBy(() -> demarrer(avec("--nb.jeton.cle-publique=pas-une-cle")))
+                .hasStackTraceContaining("n'est pas une clé publique RSA X.509 lisible");
+    }
+
+    @Test
     void refuse_de_demarrer_sans_mot_de_passe_de_base() {
         assertThatThrownBy(() -> demarrer(Conteneurs.arguments().stream()
                         .filter(argument -> !argument.startsWith("--spring.datasource.password="))
@@ -69,7 +81,7 @@ class ApplicationNotificationsTest {
     @Test
     void main_demarre_le_service() {
         List<String> arguments = new ArrayList<>(Conteneurs.arguments());
-        arguments.add("--spring.main.web-application-type=none");
+        arguments.add("--server.port=0");
         arguments.add("--spring.main.sources=" + ContexteDemarre.class.getName());
         ApplicationNotifications.main(arguments.toArray(String[]::new));
 
@@ -79,11 +91,22 @@ class ApplicationNotificationsTest {
         }
     }
 
-    // Arguments de ligne de commande : priment sur application.properties.
+    // Remplace l'argument de même nom : un doublon ne l'emporterait pas sur le premier.
+    private static String[] avec(String argument) {
+        String prefixe = argument.substring(0, argument.indexOf('=') + 1);
+        List<String> arguments = new ArrayList<>(Conteneurs.arguments().stream()
+                .filter(existant -> !existant.startsWith(prefixe)).toList());
+        arguments.add(argument);
+        return arguments.toArray(String[]::new);
+    }
+
+    // Arguments de ligne de commande : priment sur application.properties. Contexte web (sécurité comprise).
     private static void demarrer(String... arguments) {
+        List<String> complets = new ArrayList<>(List.of(arguments));
+        complets.add("--server.port=0");
         new SpringApplicationBuilder(ApplicationNotifications.class)
-                .web(WebApplicationType.NONE)
-                .run(arguments)
+                .web(WebApplicationType.SERVLET)
+                .run(complets.toArray(String[]::new))
                 .close();
     }
 }

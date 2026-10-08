@@ -5,6 +5,7 @@ import type { ClientBourse } from '../application/consulterBourse';
 import type { ClientProduits } from '../application/consulterProduits';
 import type { ClientReleve } from '../application/consulterReleve';
 import type { ClientTableauDeBord } from '../application/consulterTableauDeBord';
+import type { ClientNotifications } from '../application/gererNotifications';
 import type { ClientComptesTiers } from '../application/comptesTiers';
 import type { ClientConversation } from '../application/dialoguerAvecSophie';
 import type { ClientPrets } from '../application/prets';
@@ -65,6 +66,7 @@ const NOMS_CLIENTS_AUTHENTIFIES = [
   'comptes tiers',
   'prets',
   'tableau de bord',
+  'notifications',
   'virement',
   'releve',
   'revue',
@@ -91,6 +93,7 @@ async function clientsDeMain() {
     ['comptes tiers', () => (ecran('/comptes-tiers').client as ClientComptesTiers).lireEtat()],
     ['prets', () => (ecran('/prets').client as ClientPrets).lister()],
     ['tableau de bord', () => (ecran('/tableau-de-bord').client as ClientTableauDeBord).lire()],
+    ['notifications', () => (ecran('/tableau-de-bord').clientNotifications as ClientNotifications).lister()],
     ['virement', () => (ecran('/virement').client as ClientVirement).lireComptes()],
     ['releve', () => (ecran('/releve').releve as ClientReleve).lireOperations(1)],
     ['revue', () => revue.client.lireFile()],

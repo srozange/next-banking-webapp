@@ -7,6 +7,7 @@ import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientTableauDeBord } from '../../application/consulterTableauDeBord';
+import type { ClientNotifications } from '../../application/gererNotifications';
 import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientVirement } from '../../application/virement';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
@@ -43,11 +44,12 @@ export interface Dependances {
   clientRevue: ClientRevue;
   clientReleve: ClientReleve;
   clientTableauDeBord: ClientTableauDeBord;
+  clientNotifications: ClientNotifications;
   clientPrets: ClientPrets;
 }
 
 /**
- * Routes protégées : déclarées ici ; le tableau de bord a son écran (comptes, opérations, puis la section « Suivi de mes virements »),
+ * Routes protégées : déclarées ici ; le tableau de bord a son écran (comptes, opérations, puis les sections « Centre de notifications » et « Suivi de mes virements »),
  * l'administration la section de revue des virements suspendus et /prets l'écran Prêts ; le reste du contenu arrive
  * avec les stories suivantes.
  */
@@ -72,6 +74,7 @@ export function creerRoutes({
   clientRevue,
   clientReleve,
   clientTableauDeBord,
+  clientNotifications,
   clientPrets,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil session={session.locale} />;
@@ -105,7 +108,7 @@ export function creerRoutes({
                 path === '/prets' ? (
                   <EcranPrets client={clientPrets} session={session.locale} />
                 ) : path === '/tableau-de-bord' ? (
-                  <EcranTableauDeBord client={clientTableauDeBord} clientVirement={clientVirement} />
+                  <EcranTableauDeBord client={clientTableauDeBord} clientNotifications={clientNotifications} clientVirement={clientVirement} />
                 ) : (
                   <>
                     <title>{TITRES_ONGLET[path]}</title>

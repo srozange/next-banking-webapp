@@ -62,6 +62,24 @@ describe('accessibilité (axe)', () => {
     expect(await reglesViolees()).toEqual([]);
   });
 
+  it('[axe] /tableau-de-bord avec des notifications lues et non lues (badge, pastille, boutons) ne relève aucune violation', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    rendreApplication('/tableau-de-bord', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+      lister: () =>
+        Promise.resolve({
+          statut: 'liste' as const,
+          notifications: [
+            { id: 2, type: 'FRAUDE', message: 'Virement suspendu', creeLe: '2026-11-17T11:00:00Z', lue: false },
+            { id: 1, type: 'ALERTE', message: 'Virement important', creeLe: '2026-11-17T10:00:00Z', lue: true },
+          ],
+        }),
+    });
+    await screen.findByTestId('notifications-non-lu-2');
+    await waitFor(() => expect(screen.getByTestId('application-racine').getAttribute('aria-busy')).toBeNull());
+
+    expect(await reglesViolees()).toEqual([]);
+  });
+
   it('[axe] /prets avec résultat de simulation, échéancier déplié, liste de prêts et erreur ne relève aucune violation', async () => {
     const { default: userEvent } = await import('@testing-library/user-event');
     const utilisateur = userEvent.setup();

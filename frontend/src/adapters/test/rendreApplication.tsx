@@ -10,6 +10,7 @@ import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientReleve, ReponseOperations } from '../../application/consulterReleve';
 import type { ClientTableauDeBord, ReponseTableauDeBord } from '../../application/consulterTableauDeBord';
+import type { ClientNotifications, ReponseActionNotifications, ReponseNotifications } from '../../application/gererNotifications';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
 import type {
   ClientPrets,
@@ -36,7 +37,7 @@ import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
  * `jetonDeTest({ sub: '1', roles })` quand la connexion est acceptée avec un rôle connu) et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
  * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
- * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) ; `allerVers` simule l'envoi du navigateur à Powens.
+ * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) et un client des notifications simulé (par défaut, aucune notification) ; `allerVers` simule l'envoi du navigateur à Powens.
  */
 export function rendreApplication(
   chemin: string,
@@ -53,6 +54,7 @@ export function rendreApplication(
   clientPrets: Partial<ClientPrets> = {},
   clientComptesTiers: Partial<ClientComptesTiers> = {},
   clientTableauDeBord: Partial<ClientTableauDeBord> = {},
+  clientNotifications: Partial<ClientNotifications> = {},
 ) {
   const deconnecter = vi.fn(clientSession.deconnecter ?? (() => Promise.resolve()));
   const renouveler = vi.fn(
@@ -82,6 +84,11 @@ export function rendreApplication(
   const lireTableauDeBord = vi.fn(
     clientTableauDeBord.lire ?? (() => Promise.resolve<ReponseTableauDeBord>({ statut: 'tableau', comptes: [], dernieresOperations: [] })),
   );
+  const listerNotifications = vi.fn(
+    clientNotifications.lister ?? (() => Promise.resolve<ReponseNotifications>({ statut: 'liste', notifications: [] })),
+  );
+  const toutMarquerLu = vi.fn(clientNotifications.toutMarquerLu ?? (() => Promise.resolve<ReponseActionNotifications>({ statut: 'effectuee' })));
+  const toutEffacer = vi.fn(clientNotifications.toutEffacer ?? (() => Promise.resolve<ReponseActionNotifications>({ statut: 'effectuee' })));
   const tiers: ClientComptesTiers = {
     lireEtat: vi.fn(clientComptesTiers.lireEtat ?? technique),
     connecter: vi.fn(clientComptesTiers.connecter ?? technique),
@@ -121,6 +128,7 @@ export function rendreApplication(
       clientRevue: { lireFile, lireHistorique, decider },
       clientReleve: { lireOperations },
       clientTableauDeBord: { lire: lireTableauDeBord },
+      clientNotifications: { lister: listerNotifications, toutMarquerLu, toutEffacer },
       clientComptesTiers: tiers,
       allerVers,
       clientPrets: { simuler, lister, deposer, echeances, payer, supprimer },
@@ -128,5 +136,5 @@ export function rendreApplication(
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, lireTableauDeBord, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
 }

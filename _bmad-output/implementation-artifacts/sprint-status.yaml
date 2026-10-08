@@ -68,7 +68,7 @@ development_status:
   3-6-refaire-un-virement-refusé-depuis-un-formulaire-prérempli: optional
   3-7-consulter-le-relevé-d-un-compte: done
   3-8-voir-ses-comptes-et-ses-dernières-opérations-sur-le-tableau: done
-  3-9-lire-et-gérer-ses-notifications-sur-le-tableau-de-bord: backlog
+  3-9-lire-et-gérer-ses-notifications-sur-le-tableau-de-bord: done
   3-10-lever-une-alerte-de-fraude-après-des-échecs-de-connexion-rép: optional
   epic-3-retrospective: optional
 

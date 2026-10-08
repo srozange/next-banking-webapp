@@ -1,0 +1,111 @@
+.centre-notifications {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.centre-notifications__entete {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.centre-notifications__titre {
+  margin: 0;
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
+
+.centre-notifications__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.centre-notifications__vide {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.centre-notifications__liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Ligne (composant `notification`) : barre gauche de 4px à la couleur du type, fond et texte de la variante. */
+.centre-notifications__ligne {
+  box-sizing: border-box;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-left: 4px solid currentcolor;
+  border-radius: var(--radius-none);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.centre-notifications__ligne > p {
+  margin: 0;
+}
+
+.centre-notifications__ligne--confirmation {
+  background-color: var(--color-success-container);
+  color: var(--color-success);
+}
+
+.centre-notifications__ligne--alerte {
+  background-color: var(--color-warning-container);
+  color: var(--color-warning);
+}
+
+.centre-notifications__ligne--fraude {
+  background-color: var(--color-error-container);
+  color: var(--color-error);
+  font-weight: var(--font-weight-label);
+}
+
+.centre-notifications__ligne--neutre {
+  background-color: var(--color-surface-alt);
+  color: var(--color-ink);
+}
+
+.centre-notifications__type {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: var(--font-weight-label);
+}
+
+.centre-notifications__icone {
+  font-size: calc(var(--spacing-md) + var(--spacing-xs));
+  line-height: 1;
+}
+
+/* Pastille « Non lu » : 8px, couleur primary. */
+.centre-notifications__pastille {
+  display: inline-block;
+  width: var(--spacing-sm);
+  height: var(--spacing-sm);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+}
+
+.centre-notifications__message {
+  color: var(--color-ink);
+}
+
+.centre-notifications__horodatage {
+  color: var(--color-text-secondary);
+  font-family: var(--font-caption);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-caption);
+}

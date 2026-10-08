@@ -5,6 +5,7 @@ import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
 import { creerClientComptesTiersHttp } from '../adapters/http/ClientComptesTiersHttp';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
 import { creerClientConversationHttp } from '../adapters/http/ClientConversationHttp';
+import { creerClientNotificationsHttp } from '../adapters/http/ClientNotificationsHttp';
 import { creerClientPretsHttp } from '../adapters/http/ClientPretsHttp';
 import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
@@ -52,6 +53,7 @@ const routeur = createBrowserRouter(
     clientRevue: creerClientRevueHttp(fetchAuthentifie),
     clientReleve: creerClientReleveHttp(fetchAuthentifie),
     clientTableauDeBord: creerClientTableauDeBordHttp(fetchAuthentifie),
+    clientNotifications: creerClientNotificationsHttp(fetchAuthentifie),
     clientPrets: creerClientPretsHttp(fetchAuthentifie),
   }),
 );

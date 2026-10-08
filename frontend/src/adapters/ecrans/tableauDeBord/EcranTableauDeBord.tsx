@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { chargerTableauDeBord, type ClientTableauDeBord, type TableauDeBord } from '../../../application/consulterTableauDeBord';
+import type { ClientNotifications } from '../../../application/gererNotifications';
 import type { ClientVirement } from '../../../application/virement';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
 import { BoutonSecondaire } from '../../ui/BoutonSecondaire';
 import { Carte } from '../../ui/Carte';
 import { Tableau } from '../../ui/Tableau';
+import { SectionCentreNotifications } from '../notifications/SectionCentreNotifications';
 import { formaterDate } from '../releve/formaterDate';
 import { SectionSuiviVirements } from '../virement/SectionSuiviVirements';
 import './EcranTableauDeBord.css';
@@ -16,16 +18,18 @@ const COLONNES = [T.colonnes.date, T.colonnes.description, T.colonnes.type, T.co
 
 interface Proprietes {
   client: ClientTableauDeBord;
+  /** Client de la section « Centre de notifications », placée après le contenu comparé et avant « Suivi de mes virements ». */
+  clientNotifications: ClientNotifications;
   /** Client de la section « Suivi de mes virements », toujours la dernière de la page (UX-DR153). */
   clientVirement: ClientVirement;
 }
 
 /**
  * Écran /tableau-de-bord (FEAT-002) : solde total, une carte par compte, 5 dernières opérations du compte COURANT,
- * puis « Suivi de mes virements ». Le chargement part au rendu, sans attendre l'identité (appels en parallèle) ;
+ * puis « Centre de notifications » et « Suivi de mes virements » (UX-DR153). Le chargement part au rendu, sans attendre l'identité (appels en parallèle) ;
  * aria-busy tant qu'il dure, ni squelette ni texte. Erreur du service : texte technique, rien d'autre.
  */
-export function EcranTableauDeBord({ client, clientVirement }: Proprietes) {
+export function EcranTableauDeBord({ client, clientNotifications, clientVirement }: Proprietes) {
   const navigate = useNavigate();
   const [tableau, setTableau] = useState<TableauDeBord | null | undefined>(undefined);
 
@@ -121,6 +125,7 @@ export function EcranTableauDeBord({ client, clientVirement }: Proprietes) {
           </section>
         </>
       )}
+      <SectionCentreNotifications client={clientNotifications} />
       <SectionSuiviVirements client={clientVirement} testId="dashboard-virements-revue" />
     </div>
   );

@@ -13,6 +13,8 @@ afterEach(() => {
   localStorage.clear();
 });
 
+const MESSAGE_NOTIFICATIONS_VIDE =
+  'Aucune notification - effectuez un virement pour voir les messages publies via ActiveMQ Artemis en temps reel';
 const COMPTES = [
   { id: 1, type: 'COURANT', numero: 'FR76-0001-0001', solde: '2130.00' },
   { id: 2, type: 'EPARGNE', numero: 'FR76-0001-0002', solde: '15200.00' },
@@ -126,8 +128,11 @@ describe('écran du tableau de bord', () => {
     await screen.findByTestId('dashboard-operations');
     const sections = Array.from(screen.getByTestId('dashboard-ecran').children).filter((enfant) => enfant.tagName === 'SECTION');
     expect(sections.at(-1)?.getAttribute('data-testid')).toBe('dashboard-virements-revue');
-    const texte = screen.getByTestId('application-racine').textContent ?? '';
-    expect(texte.lastIndexOf('Suivi de mes virements')).toBeGreaterThan(texte.indexOf('Dernieres operations'));
+    const complet = screen.getByTestId('application-racine').textContent ?? '';
+    expect(complet.lastIndexOf('Suivi de mes virements')).toBeGreaterThan(complet.indexOf('Dernieres operations'));
+    // Seul le message d'état vide du centre de notifications cite « Artemis », repris à l'identique (FR-002-07).
+    const texte = complet.replace(MESSAGE_NOTIFICATIONS_VIDE, '');
+    expect(texte.length).toBeLessThan(complet.length);
     for (const technique of ['Legacy', 'JEE', 'Artemis', 'NamedQuery', 'JPA']) {
       expect(texte).not.toContain(technique);
     }

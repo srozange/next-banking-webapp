@@ -145,6 +145,18 @@ export const TEXTES = {
     },
     voirReleve: 'Voir le releve complet',
   },
+  /**
+   * Centre de notifications du tableau de bord : FEAT-002 MESSAGES.md (MSG-002-031, 033 à 037), casse comprise.
+   * Étiquettes techniques du legacy (MSG-002-030, 032, 038) non reprises (A-002-4).
+   */
+  notifications: {
+    titre: 'Centre de notifications',
+    nouvelles: (nombre: number) => `${nombre} nouvelle(s)`,
+    toutMarquerLu: 'Tout marquer lu',
+    effacerTout: 'Effacer tout',
+    vide: 'Aucune notification - effectuez un virement pour voir les messages publies via ActiveMQ Artemis en temps reel',
+    nonLu: 'Non lu',
+  },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {
     titre: 'Relevé de compte',
