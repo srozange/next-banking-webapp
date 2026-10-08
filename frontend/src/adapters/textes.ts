@@ -124,6 +124,8 @@ export const TEXTES = {
     /** FEAT-005 MESSAGES.md, titre de page. */
     releve: 'BankApp Demo - Relevé de compte',
     comptesTiers: 'BankApp Demo - Comptes Tiers',
+    /** MSG-013-001 */
+    beneficiaires: 'BankApp Demo - Beneficiaires',
   },
   /**
    * Tableau de bord : FEAT-002 MESSAGES.md (MSG-002-050 à 067), orthographe du source sans accent ; les capitales
@@ -156,6 +158,26 @@ export const TEXTES = {
     effacerTout: 'Effacer tout',
     vide: 'Aucune notification - effectuez un virement pour voir les messages publies via ActiveMQ Artemis en temps reel',
     nonLu: 'Non lu',
+  },
+  /** Écran Bénéficiaires : FEAT-013 MESSAGES.md (MSG-013-080, 090 à 104), casse et absence d'accents comprises. */
+  beneficiaires: {
+    separateur: 'Mes beneficiaires enregistres',
+    titre: (nombre: number) => `Beneficiaires (${nombre})`,
+    colonnes: {
+      libelle: 'Libelle',
+      titulaire: 'Titulaire',
+      iban: 'IBAN',
+      bic: 'BIC',
+      banque: 'Banque',
+      zoneSepa: 'Zone SEPA',
+      action: 'Action',
+    },
+    aucun: 'Aucun beneficiaire enregistre. Utilisez le formulaire ci-dessus pour en ajouter un.',
+    absent: '—',
+    sepa: '✓ SEPA',
+    horsSepa: 'Hors SEPA',
+    supprimer: 'Supprimer',
+    erreurSuppression: 'Erreur lors de la suppression.',
   },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {

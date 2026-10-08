@@ -37,6 +37,7 @@ class CoeurBancaireSecuriteIT {
     private static final String RESSOURCE_INTROUVABLE = "{\"message\":\"Ressource introuvable\"}";
     private static final List<String> CHEMINS = List.of("/api/coeur-bancaire/traitements",
             "/api/coeur-bancaire/traitements?limite=50", "/api/coeur-bancaire/tableau-de-bord",
+            "/api/coeur-bancaire/beneficiaires",
             "/api/coeur-bancaire/temoin", "/api/coeur-bancaire/temoin/", "/api/coeur-bancaire/inconnu",
             "/actuator/info");
 

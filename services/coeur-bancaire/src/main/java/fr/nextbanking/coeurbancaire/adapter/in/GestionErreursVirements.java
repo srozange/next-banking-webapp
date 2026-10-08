@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.adapter.in;
 
+import fr.nextbanking.coeurbancaire.domain.ErreurBeneficiaire;
 import fr.nextbanking.coeurbancaire.domain.ErreurReleve;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * Consulté avant le gestionnaire général {@link GestionErreurs}, qui capte aussi {@code Exception}.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class})
+@RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class, PointEntreeBeneficiaires.class})
 public class GestionErreursVirements {
 
     static final String ISSUE_REFUS_CONTROLE = "REFUSE_ERREUR_CONTROLE";
@@ -58,6 +59,14 @@ public class GestionErreursVirements {
     @ExceptionHandler(ErreurReleve.class)
     public ResponseEntity<Message> releveRefuse(ErreurReleve refus) {
         HttpStatus statut = refus.motif() == ErreurReleve.Cause.COMPTE_ETRANGER ? HttpStatus.FORBIDDEN
+                : HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(statut).contentType(MediaType.APPLICATION_JSON)
+                .body(new Message(refus.getMessage()));
+    }
+
+    @ExceptionHandler(ErreurBeneficiaire.class)
+    public ResponseEntity<Message> beneficiaireRefuse(ErreurBeneficiaire refus) {
+        HttpStatus statut = refus.motif() == ErreurBeneficiaire.Cause.ETRANGER ? HttpStatus.FORBIDDEN
                 : HttpStatus.NOT_FOUND;
         return ResponseEntity.status(statut).contentType(MediaType.APPLICATION_JSON)
                 .body(new Message(refus.getMessage()));

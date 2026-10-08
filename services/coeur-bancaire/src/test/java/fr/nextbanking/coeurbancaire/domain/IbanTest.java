@@ -44,4 +44,24 @@ class IbanTest {
         assertThatThrownBy(() -> new Iban(null)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> new Iban("  ")).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @Tag("FR-013-03")
+    void l_affichage_garde_quatre_caracteres_de_chaque_cote_derriere_trois_etoiles() {
+        assertThat(new Iban("FR3530004000000123456789010").affichage()).isEqualTo("FR35***9010");
+        assertThat(new Iban("123456789").affichage()).isEqualTo("1234***6789");
+        assertThat(new Iban("12345678").affichage()).isEqualTo("***");
+        assertThat(new Iban("FR3530004000000123456789010")).hasToString("FR35****9010");
+    }
+
+    @Test
+    @Tag("FR-013-03")
+    void la_zone_sepa_est_calculee_depuis_le_code_pays() {
+        assertThat(new Iban("FR3530004000000123456789010").zoneSepa()).isTrue();
+        assertThat(new Iban("de89370400440532013000").zoneSepa()).isTrue();
+        assertThat(new Iban("GB29NWBK60161331926819").zoneSepa()).isTrue();
+        assertThat(new Iban("US12345678901234").zoneSepa()).isFalse();
+        assertThat(new Iban("F").zoneSepa()).isFalse();
+        assertThat(new Iban("FR").zoneSepa()).isTrue();
+    }
 }

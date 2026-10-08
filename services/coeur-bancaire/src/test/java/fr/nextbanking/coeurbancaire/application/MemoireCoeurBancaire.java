@@ -16,6 +16,7 @@ import fr.nextbanking.coeurbancaire.application.port.out.ProjectionClients;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
+import fr.nextbanking.coeurbancaire.domain.BeneficiaireExterne;
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.DecisionRevue;
 import fr.nextbanking.coeurbancaire.domain.LigneRevue;
@@ -70,6 +71,10 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final List<AlerteFraude> alertes = new ArrayList<>();
     /** Numéros des bénéficiaires actifs, par client. */
     final Map<Long, Set<String>> beneficiairesActifs = new HashMap<>();
+    /** Bénéficiaires externes actifs, par identifiant (la désactivation les retire). */
+    final Map<Long, BeneficiaireExterne> beneficiairesExternes = new HashMap<>();
+    /** Désactivations perdues d'avance (un autre traitement a gagné la course). */
+    final Set<Long> desactivationsPerdues = new HashSet<>();
     /** Signaux d'historique forcés ; absents : calculés sur les opérations et virements écrits. */
     Long operationsDuJour;
     Optional<Instant> dernierVirement;
@@ -312,6 +317,28 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     @Override
     public boolean estActif(long clientId, String numero) {
         return beneficiairesActifs.getOrDefault(clientId, Set.of()).contains(numero);
+    }
+
+    @Override
+    public List<BeneficiaireExterne> actifsDuClient(long clientId) {
+        return beneficiairesExternes.values().stream().filter(b -> b.clientId() == clientId)
+                .sorted(java.util.Comparator.comparingLong(BeneficiaireExterne::id).reversed()).toList();
+    }
+
+    @Override
+    public Optional<BeneficiaireExterne> trouverActif(long beneficiaireId) {
+        return Optional.ofNullable(beneficiairesExternes.get(beneficiaireId));
+    }
+
+    @Override
+    public boolean desactiver(long beneficiaireId, long clientId) {
+        journal.add("desactiver " + beneficiaireId);
+        BeneficiaireExterne actif = beneficiairesExternes.get(beneficiaireId);
+        if (desactivationsPerdues.contains(beneficiaireId) || actif == null || !actif.appartientA(clientId)) {
+            return false;
+        }
+        beneficiairesExternes.remove(beneficiaireId);
+        return true;
     }
 
     @Override

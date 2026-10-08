@@ -8,3 +8,9 @@
 insert into comptes (id, numero, type, solde, client_id) values (1, 'FR76-0001-0001', 'COURANT', 2130.00, 1);
 insert into comptes (id, numero, type, solde, client_id) values (2, 'FR76-0001-0002', 'EPARGNE', 15200.00, 1);
 select setval(pg_get_serial_sequence('comptes', 'id'), (select max(id) from comptes));
+
+-- Bénéficiaire externe SEPA de user1 (client 1) : IBAN en FR76, BIC et banque renseignés ; écran Bénéficiaires
+-- (FEAT-013, SC-013-01 : « FR76*** » et « ✓ SEPA »). Date de création en littéral : aucun now() dans les données.
+insert into beneficiaires_externes (client_id, titulaire, iban, libelle, banque, bic, zone_sepa, actif, cree_le)
+values (1, 'Marie Durand', 'FR7630006000011234567890189', 'Loyer', 'Banque Exemple', 'AGRIFRPP', true, true,
+        '2026-10-01T08:00:00Z');

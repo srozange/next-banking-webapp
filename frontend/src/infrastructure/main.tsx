@@ -11,6 +11,7 @@ import { creerClientProduitsHttp } from '../adapters/http/ClientProduitsHttp';
 import { creerClientProfilHttp } from '../adapters/http/ClientProfilHttp';
 import { creerClientRevueHttp } from '../adapters/http/ClientRevueHttp';
 import { creerClientReleveHttp } from '../adapters/http/ClientReleveHttp';
+import { creerClientBeneficiairesHttp } from '../adapters/http/ClientBeneficiairesHttp';
 import { creerClientTableauDeBordHttp } from '../adapters/http/ClientTableauDeBordHttp';
 import { creerClientVirementHttp } from '../adapters/http/ClientVirementHttp';
 import { creerClientSessionHttp } from '../adapters/http/ClientSessionHttp';
@@ -52,6 +53,7 @@ const routeur = createBrowserRouter(
     clientVirement: creerClientVirementHttp(fetchAuthentifie),
     clientRevue: creerClientRevueHttp(fetchAuthentifie),
     clientReleve: creerClientReleveHttp(fetchAuthentifie),
+    clientBeneficiaires: creerClientBeneficiairesHttp(fetchAuthentifie),
     clientTableauDeBord: creerClientTableauDeBordHttp(fetchAuthentifie),
     clientNotifications: creerClientNotificationsHttp(fetchAuthentifie),
     clientPrets: creerClientPretsHttp(fetchAuthentifie),

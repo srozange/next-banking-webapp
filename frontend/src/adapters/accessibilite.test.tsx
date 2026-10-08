@@ -292,4 +292,24 @@ describe('accessibilité (axe)', () => {
     await utilisateur.click(screen.getByTestId('virement-executer'));
     expect(await reglesViolees()).toEqual([]);
   });
+
+  it('[axe] /beneficiaires, avec bénéficiaires puis vide, ne relève aucune violation', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    const { default: userEvent } = await import('@testing-library/user-event');
+    let actifs = [{ id: 1, libelle: 'Loyer', titulaire: 'Marie', iban: 'FR76***0189', bic: null, banque: null, zoneSepa: true }];
+    rendreApplication('/beneficiaires', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+      lister: () => Promise.resolve({ statut: 'liste' as const, beneficiaires: actifs }),
+      supprimer: () => {
+        actifs = [];
+        return Promise.resolve({ statut: 'refuse' as const });
+      },
+    });
+    await screen.findByTestId('beneficiaires-ligne-1');
+    expect(await reglesViolees()).toEqual([]);
+
+    await userEvent.setup().click(screen.getByTestId('beneficiaires-supprimer-1'));
+    await screen.findByTestId('beneficiaires-message-erreur');
+    await screen.findByTestId('beneficiaires-aucun');
+    expect(await reglesViolees()).toEqual([]);
+  });
 });

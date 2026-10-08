@@ -9,6 +9,7 @@ import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientTableauDeBord } from '../../application/consulterTableauDeBord';
 import type { ClientNotifications } from '../../application/gererNotifications';
 import type { ClientReleve } from '../../application/consulterReleve';
+import type { ClientBeneficiaires } from '../../application/gererBeneficiaires';
 import type { ClientVirement } from '../../application/virement';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
 import type { ClientConnexion } from '../../application/seConnecter';
@@ -20,6 +21,7 @@ import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
 import { SectionRevueVirements } from '../ecrans/administration/SectionRevueVirements';
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
+import { EcranBeneficiaires } from '../ecrans/beneficiaires/EcranBeneficiaires';
 import { EcranReleve } from '../ecrans/releve/EcranReleve';
 import { EcranVirement } from '../ecrans/virement/EcranVirement';
 import { EcranTableauDeBord } from '../ecrans/tableauDeBord/EcranTableauDeBord';
@@ -43,6 +45,7 @@ export interface Dependances {
   clientVirement: ClientVirement;
   clientRevue: ClientRevue;
   clientReleve: ClientReleve;
+  clientBeneficiaires: ClientBeneficiaires;
   clientTableauDeBord: ClientTableauDeBord;
   clientNotifications: ClientNotifications;
   clientPrets: ClientPrets;
@@ -73,6 +76,7 @@ export function creerRoutes({
   clientVirement,
   clientRevue,
   clientReleve,
+  clientBeneficiaires,
   clientTableauDeBord,
   clientNotifications,
   clientPrets,
@@ -119,6 +123,8 @@ export function creerRoutes({
             { path: '/virement', element: <EcranVirement client={clientVirement} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-005-01) : seuls les comptes du jeton sont proposés.
             { path: '/releve', element: <EcranReleve comptes={clientVirement} releve={clientReleve} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-013-01) : seuls les bénéficiaires du client du jeton sont rendus.
+            { path: '/beneficiaires', element: <EcranBeneficiaires client={clientBeneficiaires} /> },
           ],
         },
         { path: '/', element: accueil },
