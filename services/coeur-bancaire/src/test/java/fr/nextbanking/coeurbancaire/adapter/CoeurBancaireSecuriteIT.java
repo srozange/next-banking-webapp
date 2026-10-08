@@ -83,6 +83,23 @@ class CoeurBancaireSecuriteIT {
     }
 
     @Test
+    @Tag("FR-013-04")
+    void sans_jeton_ou_avec_un_jeton_invalide_les_deux_posts_des_beneficiaires_rendent_401() throws Exception {
+        Instant maintenant = Instant.now();
+        String expire = Jetons.jeton(Conteneurs.CLES, "CLIENT", maintenant.minusSeconds(7200),
+                maintenant.minusSeconds(3600));
+
+        for (String chemin : new String[] {"/api/coeur-bancaire/beneficiaires",
+                "/api/coeur-bancaire/beneficiaires/verification-iban"}) {
+            for (String jeton : new String[] {null, expire, "illisible"}) {
+                HttpResponse<String> reponse = Jetons.envoyer(port, "POST", chemin, jeton, "{}");
+                assertThat(reponse.statusCode()).as(chemin).isEqualTo(401);
+                assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
+            }
+        }
+    }
+
+    @Test
     void avec_un_jeton_valide_une_route_inconnue_rend_404() throws Exception {
         Instant maintenant = Instant.now();
         String valide = Jetons.jeton(Conteneurs.CLES, "ADMIN", maintenant, maintenant.plusSeconds(1800));

@@ -9,7 +9,7 @@ import type { ClientBourse } from '../../application/consulterBourse';
 import type { ClientConversation } from '../../application/dialoguerAvecSophie';
 import type { ClientProduits } from '../../application/consulterProduits';
 import type { ClientReleve, ReponseOperations } from '../../application/consulterReleve';
-import type { ClientBeneficiaires, ReponseBeneficiaires, ReponseSuppression } from '../../application/gererBeneficiaires';
+import type { ClientBeneficiaires, ReponseAjout, ReponseBeneficiaires, ReponseSuppression, ReponseVerificationIban } from '../../application/gererBeneficiaires';
 import type { ClientTableauDeBord, ReponseTableauDeBord } from '../../application/consulterTableauDeBord';
 import type { ClientNotifications, ReponseActionNotifications, ReponseNotifications } from '../../application/gererNotifications';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
@@ -85,6 +85,8 @@ export function rendreApplication(
   const lireOperations = vi.fn(clientReleve.lireOperations ?? (() => Promise.resolve<ReponseOperations>({ statut: 'operations', operations: [] })));
   const listerBeneficiaires = vi.fn(clientBeneficiaires.lister ?? (() => Promise.resolve<ReponseBeneficiaires>({ statut: 'liste', beneficiaires: [] })));
   const supprimerBeneficiaire = vi.fn(clientBeneficiaires.supprimer ?? (() => Promise.resolve<ReponseSuppression>({ statut: 'technique' })));
+  const verifierIbanBeneficiaire = vi.fn(clientBeneficiaires.verifierIban ?? (() => Promise.resolve<ReponseVerificationIban>({ statut: 'technique' })));
+  const ajouterBeneficiaire = vi.fn(clientBeneficiaires.ajouter ?? (() => Promise.resolve<ReponseAjout>({ statut: 'technique' })));
   const lireTableauDeBord = vi.fn(
     clientTableauDeBord.lire ?? (() => Promise.resolve<ReponseTableauDeBord>({ statut: 'tableau', comptes: [], dernieresOperations: [] })),
   );
@@ -131,7 +133,7 @@ export function rendreApplication(
       clientVirement: { lireComptes, executer, lireSuivi },
       clientRevue: { lireFile, lireHistorique, decider },
       clientReleve: { lireOperations },
-      clientBeneficiaires: { lister: listerBeneficiaires, supprimer: supprimerBeneficiaire },
+      clientBeneficiaires: { lister: listerBeneficiaires, supprimer: supprimerBeneficiaire, verifierIban: verifierIbanBeneficiaire, ajouter: ajouterBeneficiaire },
       clientTableauDeBord: { lire: lireTableauDeBord },
       clientNotifications: { lister: listerNotifications, toutMarquerLu, toutEffacer },
       clientComptesTiers: tiers,
@@ -141,5 +143,5 @@ export function rendreApplication(
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
+  return { ...rendu, routeur, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
 }

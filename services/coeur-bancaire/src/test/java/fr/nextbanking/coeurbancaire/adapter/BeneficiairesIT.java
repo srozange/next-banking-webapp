@@ -2,10 +2,13 @@ package fr.nextbanking.coeurbancaire.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import fr.nextbanking.coeurbancaire.application.AjouterBeneficiaireCasUsage;
 import fr.nextbanking.coeurbancaire.application.SupprimerBeneficiaireCasUsage;
 import fr.nextbanking.coeurbancaire.infrastructure.ApplicationCoeurBancaire;
 import fr.nextbanking.coeurbancaire.infrastructure.Conteneurs;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
@@ -205,6 +208,174 @@ class BeneficiairesIT {
             journal.removeHandler(capteur);
         }
 
+        assertThat(String.join("\n", lignes)).contains("FR35****9010").doesNotContain(IBAN);
+    }
+
+    private static final String VERIFICATION = CHEMIN + "/verification-iban";
+    private static final String IBAN_FAUX = "FR3530004000000123456789011";
+
+    private String corpsAjout(String libelle, String titulaire, String iban, String bic, String banque) {
+        return json.createObjectNode().put("libelle", libelle).put("titulaire", titulaire).put("iban", iban)
+                .put("bic", bic).put("banque", banque).toString();
+    }
+
+    private long compter() {
+        return jdbc.sql("select count(*) from beneficiaires_externes").query(Long.class).single();
+    }
+
+    @Test
+    @Tag("FR-013-04")
+    void sans_jeton_la_verification_et_l_ajout_rendent_401() throws Exception {
+        HttpResponse<String> verification = Jetons.envoyer(port, "POST", VERIFICATION, null, "{\"iban\":\"\"}");
+        HttpResponse<String> ajout = Jetons.envoyer(port, "POST", CHEMIN, null,
+                corpsAjout("a", "b", IBAN, null, null));
+
+        assertThat(verification.statusCode()).isEqualTo(401);
+        assertThat(ajout.statusCode()).isEqualTo(401);
+        assertThat(compter()).isEqualTo(1L);
+    }
+
+    @Test
+    @Tag("FR-013-04")
+    void la_verification_rend_un_statut_structure_sans_texte() throws Exception {
+        String jeton = Jetons.pour(1, "CLIENT");
+
+        assertThat(verifier(jeton, "{}")).isEqualTo("{\"statut\":\"vide\",\"codePays\":null,\"zoneSepa\":false}");
+        assertThat(verifier(jeton, "{\"iban\":\"  \"}")).contains("\"statut\":\"vide\"");
+        assertThat(verifier(jeton, "{\"iban\":\"" + IBAN_FAUX + "\"}")).contains("\"statut\":\"invalide\"");
+        assertThat(verifier(jeton, "{\"iban\":\"" + IBAN + "\"}"))
+                .isEqualTo("{\"statut\":\"valide\",\"codePays\":\"FR\",\"zoneSepa\":true}");
+        assertThat(verifier(jeton, "{\"iban\":\"TR330006100519786457841326\"}"))
+                .isEqualTo("{\"statut\":\"valide\",\"codePays\":\"TR\",\"zoneSepa\":false}");
+        assertThat(compter()).isEqualTo(1L);
+    }
+
+    private String verifier(String jeton, String corps) throws Exception {
+        HttpResponse<String> reponse = Jetons.envoyer(port, "POST", VERIFICATION, jeton, corps);
+        assertThat(reponse.statusCode()).isEqualTo(200);
+        return reponse.body();
+    }
+
+    @Test
+    @Tag("FR-013-07")
+    @Tag("FR-013-08")
+    void l_ajout_nominal_normalise_et_enregistre_un_beneficiaire_actif() throws Exception {
+        String jeton = Jetons.pour(1, "CLIENT");
+
+        HttpResponse<String> reponse = Jetons.envoyer(port, "POST", CHEMIN, jeton, corpsAjout(
+                "[retro] test beneficiaire", "Retro Test SA", " fr35 3000 4000 0001 2345 6789 010 ", " hsbcfrppxxx ",
+                "   "));
+
+        assertThat(reponse.statusCode()).isEqualTo(201);
+        JsonNode cree = json.readTree(reponse.body());
+        assertThat(cree.get("iban").asString()).isEqualTo("FR35***9010");
+        assertThat(cree.get("bic").asString()).isEqualTo("HSBCFRPPXXX");
+        assertThat(cree.get("banque").isNull()).isTrue();
+        assertThat(cree.get("zoneSepa").asBoolean()).isTrue();
+        assertThat(reponse.body()).doesNotContain(IBAN);
+        var ligne = jdbc.sql("select client_id, iban, bic, banque, zone_sepa, actif, "
+                + "(cree_le at time zone 'Europe/Paris')::date as jour from beneficiaires_externes where id = :id")
+                .param("id", cree.get("id").asLong()).query().singleRow();
+        assertThat(ligne.get("client_id")).isEqualTo(1L);
+        assertThat(ligne.get("iban")).isEqualTo(IBAN);
+        assertThat(ligne.get("bic")).isEqualTo("HSBCFRPPXXX");
+        assertThat(ligne.get("banque")).isNull();
+        assertThat(ligne.get("zone_sepa")).isEqualTo(true);
+        assertThat(ligne.get("actif")).isEqualTo(true);
+        assertThat(ligne.get("jour").toString()).isEqualTo(LocalDate.now(ZoneId.of("Europe/Paris")).toString());
+        HttpResponse<String> liste = Jetons.envoyer(port, "GET", CHEMIN, jeton, null);
+        assertThat(json.readTree(liste.body())).hasSize(2);
+    }
+
+    @Test
+    @Tag("FR-013-07")
+    void un_iban_hors_sepa_est_enregistre_hors_zone() throws Exception {
+        HttpResponse<String> reponse = Jetons.envoyer(port, "POST", CHEMIN, Jetons.pour(1, "CLIENT"),
+                corpsAjout("Istanbul", "Titulaire", "TR330006100519786457841326", "ABCDTR2A", "Banque"));
+
+        assertThat(reponse.statusCode()).isEqualTo(201);
+        assertThat(json.readTree(reponse.body()).get("zoneSepa").asBoolean()).isFalse();
+    }
+
+    @Test
+    @Tag("FR-013-05")
+    void les_saisies_refusees_rendent_400_avec_le_texte_et_le_champ_sans_rien_enregistrer() throws Exception {
+        String jeton = Jetons.pour(1, "CLIENT");
+
+        refuse(jeton, corpsAjout("", "b", IBAN, null, null), "Le libellé est obligatoire.", "libelle");
+        refuse(jeton, corpsAjout("a", "b", "", null, null), "L'IBAN est obligatoire.", "iban");
+        refuse(jeton, corpsAjout("a", "b", IBAN_FAUX, null, null),
+                "IBAN invalide. Veuillez saisir un IBAN correct (algorithme MOD-97).", "iban");
+        refuse(jeton, corpsAjout("a", "", IBAN, null, null), "Le nom du titulaire est obligatoire.", "titulaire");
+        refuse(jeton, corpsAjout("a", "b", IBAN, "HSBCFR", null),
+                "BIC invalide. Format attendu : 8 ou 11 caractères alphanumériques.", "bic");
+        refuse(jeton, "{}", "Le libellé est obligatoire.", "libelle");
+        assertThat(compter()).isEqualTo(1L);
+    }
+
+    private void refuse(String jeton, String corps, String message, String champ) throws Exception {
+        HttpResponse<String> reponse = Jetons.envoyer(port, "POST", CHEMIN, jeton, corps);
+        assertThat(reponse.statusCode()).isEqualTo(400);
+        JsonNode erreur = json.readTree(reponse.body());
+        assertThat(erreur.get("message").asString()).isEqualTo(message);
+        assertThat(erreur.get("champ").asString()).isEqualTo(champ);
+    }
+
+    @Test
+    @Tag("FR-013-06")
+    void cent_un_caracteres_rendent_400_sans_enregistrement() throws Exception {
+        String jeton = Jetons.pour(1, "CLIENT");
+        String long101 = "x".repeat(101);
+
+        for (String corps : new String[] {corpsAjout(long101, "b", IBAN, null, null),
+                corpsAjout("a", long101, IBAN, null, null), corpsAjout("a", "b", IBAN, null, long101)}) {
+            HttpResponse<String> reponse = Jetons.envoyer(port, "POST", CHEMIN, jeton, corps);
+            assertThat(reponse.statusCode()).isEqualTo(400);
+            assertThat(json.readTree(reponse.body()).get("message").asString()).isEqualTo("Requête invalide");
+        }
+        HttpResponse<String> limite = Jetons.envoyer(port, "POST", CHEMIN, jeton,
+                corpsAjout("x".repeat(100), "b", IBAN, null, "y".repeat(100)));
+        assertThat(limite.statusCode()).isEqualTo(201);
+        assertThat(compter()).isEqualTo(2L);
+    }
+
+    @Test
+    @Tag("FR-013-05")
+    void un_corps_illisible_rend_400() throws Exception {
+        HttpResponse<String> reponse = Jetons.envoyer(port, "POST", CHEMIN, Jetons.pour(1, "CLIENT"), "pas du json");
+
+        assertThat(reponse.statusCode()).isEqualTo(400);
+        assertThat(compter()).isEqualTo(1L);
+    }
+
+    @Test
+    @Tag("FR-013-07")
+    @Tag("BUG-086")
+    void l_ajout_ne_laisse_aucune_ligne_de_journal_avec_l_iban_en_clair() throws Exception {
+        List<String> lignes = new ArrayList<>();
+        Handler capteur = new Handler() {
+            @Override
+            public void publish(LogRecord ligne) {
+                lignes.add(ligne.getMessage());
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() {
+            }
+        };
+        Logger journal = Logger.getLogger(AjouterBeneficiaireCasUsage.class.getName());
+        journal.addHandler(capteur);
+        try {
+            Jetons.envoyer(port, "POST", CHEMIN, Jetons.pour(1, "CLIENT"), corpsAjout("a", "b", IBAN, null, null));
+        } finally {
+            journal.removeHandler(capteur);
+        }
+
+        assertThat(lignes).hasSize(1);
         assertThat(String.join("\n", lignes)).contains("FR35****9010").doesNotContain(IBAN);
     }
 

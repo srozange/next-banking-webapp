@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import fr.nextbanking.coeurbancaire.adapter.DonneesDeReference;
 import fr.nextbanking.coeurbancaire.application.port.out.Beneficiaires;
 import fr.nextbanking.coeurbancaire.domain.BeneficiaireExterne;
+import fr.nextbanking.coeurbancaire.domain.DemandeBeneficiaire;
 import fr.nextbanking.coeurbancaire.infrastructure.ApplicationCoeurBancaire;
 import fr.nextbanking.coeurbancaire.infrastructure.Conteneurs;
+import java.time.Instant;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,7 @@ import org.springframework.test.context.DynamicPropertySource;
 @DirtiesContext
 @Tag("FR-013-02")
 @Tag("FR-013-09")
+@Tag("FR-013-07")
 class BeneficiairesJdbcIT {
 
     @DynamicPropertySource
@@ -90,6 +93,25 @@ class BeneficiairesJdbcIT {
         assertThat(beneficiaires.estActif(1, "FR7630006000011234567890189")).isFalse();
         assertThat(jdbc.sql("select count(*) from beneficiaires_externes where id = 1").query(Long.class).single())
                 .isEqualTo(1L);
+    }
+
+    @Test
+    void l_insertion_enregistre_un_beneficiaire_actif_avec_sa_zone_et_sa_date() {
+        Instant creeLe = Instant.parse("2026-11-16T23:00:00Z");
+
+        BeneficiaireExterne cree = beneficiaires.ajouter(1, DemandeBeneficiaire.valider("Istanbul", "Titulaire",
+                "tr33 0006 1005 1978 6457 8413 26", "abcdtr2a", " Banque "), creeLe);
+
+        assertThat(beneficiaires.trouverActif(cree.id())).contains(cree);
+        assertThat(cree.banque()).isEqualTo("Banque");
+        var ligne = jdbc.sql("select zone_sepa, actif, cree_le from beneficiaires_externes where id = :id")
+                .param("id", cree.id()).query().singleRow();
+        assertThat(ligne.get("zone_sepa")).isEqualTo(false);
+        assertThat(ligne.get("actif")).isEqualTo(true);
+        assertThat(((java.sql.Timestamp) ligne.get("cree_le")).toInstant()).isEqualTo(creeLe);
+        BeneficiaireExterne sansOptions = beneficiaires.ajouter(1, DemandeBeneficiaire.valider("Sans", "Titulaire",
+                "FR3530004000000123456789010", null, null), creeLe);
+        assertThat(beneficiaires.trouverActif(sansOptions.id()).orElseThrow().bic()).isNull();
     }
 
     private long ajouter(long clientId, String libelle, boolean actif) {

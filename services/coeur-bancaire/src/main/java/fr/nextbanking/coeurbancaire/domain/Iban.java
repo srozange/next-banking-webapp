@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.domain;
 
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Numéro de compte destinataire. {@code toString()} le masque ({@code FR76****0189} : 4 premiers caractères,
@@ -13,6 +14,9 @@ public record Iban(String valeur) {
     private static final String MASQUE = "****";
     private static final String MASQUE_AFFICHAGE = "***";
     private static final int LONGUEUR_CODE_PAYS = 2;
+    private static final int RANG_DEBUT_CHIFFRES = 4;
+    private static final int MODULO = 97;
+    private static final Pattern FORMAT = Pattern.compile("[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}");
     /** Pays de la zone SEPA (RG-013-010) : UE, EEE, Suisse, Royaume-Uni, Monaco, Saint-Marin, Vatican, Andorre. */
     private static final Set<String> ZONE_SEPA = Set.of("AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
             "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE",
@@ -22,6 +26,34 @@ public record Iban(String valeur) {
         if (valeur == null || valeur.isBlank()) {
             throw new IllegalArgumentException("Le numéro de compte est obligatoire.");
         }
+    }
+
+    /** Saisie normalisée (RG-013-021) : tous les blancs supprimés, majuscules ; absente, elle donne le texte vide. */
+    public static String normaliser(String saisie) {
+        return saisie == null ? "" : saisie.replaceAll("\\s+", "").toUpperCase(Locale.ROOT);
+    }
+
+    /** Code pays : les deux premiers caractères, en majuscules (le numéro entier s'il est plus court). */
+    public String codePays() {
+        return valeur.substring(0, Math.min(valeur.length(), LONGUEUR_CODE_PAYS)).toUpperCase(Locale.ROOT);
+    }
+
+    /**
+     * Contrôle MOD-97 (ISO 13616) : format pays, clé et 11 à 30 caractères alphanumériques, puis les quatre premiers
+     * caractères déplacés à la fin, les lettres remplacées par 10 à 35, et un reste de 1 modulo 97.
+     */
+    public boolean controleMod97() {
+        String majuscules = valeur.toUpperCase(Locale.ROOT);
+        if (!FORMAT.matcher(majuscules).matches()) {
+            return false;
+        }
+        String reordonne = majuscules.substring(RANG_DEBUT_CHIFFRES) + majuscules.substring(0, RANG_DEBUT_CHIFFRES);
+        int reste = 0;
+        for (char caractere : reordonne.toCharArray()) {
+            int chiffre = Character.digit(caractere, 36);
+            reste = (chiffre < 10 ? reste * 10 + chiffre : reste * 100 + chiffre) % MODULO;
+        }
+        return reste == 1;
     }
 
     /** Vrai si le numéro commence par le préfixe, sans tenir compte de la casse. */

@@ -64,4 +64,31 @@ class IbanTest {
         assertThat(new Iban("F").zoneSepa()).isFalse();
         assertThat(new Iban("FR").zoneSepa()).isTrue();
     }
+
+    @Test
+    @Tag("FR-013-07")
+    void la_normalisation_supprime_les_blancs_et_met_en_majuscules() {
+        assertThat(Iban.normaliser(" fr35 3000\t4000 0001 2345 6789 010 ")).isEqualTo("FR3530004000000123456789010");
+        assertThat(Iban.normaliser(null)).isEmpty();
+        assertThat(Iban.normaliser("   ")).isEmpty();
+    }
+
+    @Test
+    @Tag("FR-013-04")
+    void le_code_pays_est_en_majuscules() {
+        assertThat(new Iban("fr35").codePays()).isEqualTo("FR");
+        assertThat(new Iban("F").codePays()).isEqualTo("F");
+    }
+
+    @Test
+    @Tag("FR-013-04")
+    void le_controle_mod_97_accepte_les_cles_justes_et_refuse_les_autres() {
+        assertThat(new Iban("FR3530004000000123456789010").controleMod97()).isTrue();
+        assertThat(new Iban("fr3530004000000123456789010").controleMod97()).isTrue();
+        assertThat(new Iban("TR330006100519786457841326").controleMod97()).isTrue();
+        assertThat(new Iban("GB29NWBK60161331926819").controleMod97()).isTrue();
+        assertThat(new Iban("FR3530004000000123456789011").controleMod97()).isFalse();
+        assertThat(new Iban("FR76-0001-0002").controleMod97()).isFalse();
+        assertThat(new Iban("FR35300040").controleMod97()).isFalse();
+    }
 }

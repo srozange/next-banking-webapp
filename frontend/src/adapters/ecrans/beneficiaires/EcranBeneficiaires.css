@@ -26,3 +26,39 @@
 .ecran-beneficiaires .tableau__table th {
   text-transform: uppercase;
 }
+
+.ecran-beneficiaires__separateur:not(:first-child) {
+  margin-top: var(--spacing-lg);
+}
+
+.ecran-beneficiaires__formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.ecran-beneficiaires__iban {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+}
+
+.ecran-beneficiaires__iban .champ-texte {
+  flex: 1;
+}
+
+.ecran-beneficiaires__verification {
+  margin: 0;
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.ecran-beneficiaires__verification--valide {
+  color: var(--color-success);
+}
+
+.ecran-beneficiaires__verification--refus {
+  color: var(--color-error);
+}

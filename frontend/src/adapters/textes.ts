@@ -178,6 +178,31 @@ export const TEXTES = {
     horsSepa: 'Hors SEPA',
     supprimer: 'Supprimer',
     erreurSuppression: 'Erreur lors de la suppression.',
+    /** FEAT-013 MESSAGES.md : MSG-013-030 à 043 (formulaire), 060 à 063 (vérification), 076 (succès). */
+    ajouter: 'Ajouter un beneficiaire',
+    nouveau: 'Nouveau beneficiaire SEPA',
+    champs: {
+      libelle: 'Libelle',
+      titulaire: 'Nom du titulaire',
+      iban: 'IBAN',
+      bic: 'BIC (optionnel)',
+      banque: 'Banque (optionnel)',
+    },
+    placeholders: {
+      iban: 'ex: FR76 3000 1007 9412 3456 7890 185',
+      bic: 'ex: BNPAFRPPXXX',
+      banque: 'ex: BNP Paribas',
+    },
+    verifierIban: "Verifier l'IBAN",
+    ajouterBeneficiaire: 'Ajouter le beneficiaire',
+    verification: {
+      vide: 'Veuillez saisir un IBAN.',
+      invalide: 'IBAN invalide (echec MOD-97). Verifiez la saisie.',
+      valide: (codePays: string, zoneSepa: boolean) => `IBAN valide — ${codePays} (${zoneSepa ? 'Zone SEPA' : 'Hors zone SEPA'})`,
+    },
+    succes: 'Bénéficiaire ajouté avec succès.',
+    /** beneficiaire.erreur.ajout de textes-nouveaux.md (remplace MSG-013-077) : unique, sans détail. */
+    erreurAjout: "Erreur lors de l'ajout du bénéficiaire. Veuillez réessayer.",
   },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {

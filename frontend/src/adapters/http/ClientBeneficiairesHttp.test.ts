@@ -72,3 +72,71 @@ describe('ClientBeneficiairesHttp.supprimer', () => {
     expect(await client.supprimer(3)).toEqual({ statut: 'technique' });
   });
 });
+
+describe('ClientBeneficiairesHttp.verifierIban', () => {
+  it('[FR-013-04] poste l’IBAN saisi et lit le résultat', async () => {
+    const appeler = vi.fn((_e: unknown, _o?: unknown) => json({ statut: 'valide', codePays: 'FR', zoneSepa: true }, 200));
+    const client = creerClientBeneficiairesHttp(appeler as unknown as typeof fetch);
+
+    expect(await client.verifierIban('fr35 3000')).toEqual({ statut: 'verifiee', verification: { statut: 'valide', codePays: 'FR', zoneSepa: true } });
+    expect(appeler).toHaveBeenCalledWith('/api/coeur-bancaire/beneficiaires/verification-iban', expect.objectContaining({ method: 'POST', body: '{"iban":"fr35 3000"}' }));
+  });
+
+  it.each(['vide', 'invalide'])('[FR-013-04] lit le statut %s', async (statut) => {
+    const client = creerClientBeneficiairesHttp((() => json({ statut, codePays: null, zoneSepa: false }, 200)) as unknown as typeof fetch);
+
+    expect(await client.verifierIban('x')).toEqual({ statut: 'verifiee', verification: { statut } });
+  });
+
+  it.each([
+    ['un 401', () => json({}, 401)],
+    ['un 500', () => json({}, 500)],
+    ['un statut inconnu', () => json({ statut: 'peut-etre' }, 200)],
+    ['un corps nul', () => json(null, 200)],
+    ['un pays manquant', () => json({ statut: 'valide', zoneSepa: true }, 200)],
+    ['une zone manquante', () => json({ statut: 'valide', codePays: 'FR' }, 200)],
+    ['un corps illisible', () => Promise.resolve(new Response('pas du json', { status: 200 }))],
+    ['une coupure', () => Promise.reject(new Error('réseau'))],
+  ])('[FR-013-04] rend technique pour %s', async (_nom, reponse) => {
+    const client = creerClientBeneficiairesHttp(reponse as unknown as typeof fetch);
+
+    expect(await client.verifierIban('x')).toEqual({ statut: 'technique' });
+  });
+});
+
+describe('ClientBeneficiairesHttp.ajouter', () => {
+  const formulaire = { libelle: 'a', titulaire: 'b', iban: 'FR35', bic: '', banque: '' };
+
+  it('[FR-013-08] poste la saisie telle que tapée et lit le 201', async () => {
+    const appeler = vi.fn((_e: unknown, _o?: unknown) => json({ id: 9 }, 201));
+    const client = creerClientBeneficiairesHttp(appeler as unknown as typeof fetch);
+
+    expect(await client.ajouter(formulaire)).toEqual({ statut: 'ajoute' });
+    expect(appeler).toHaveBeenCalledWith('/api/coeur-bancaire/beneficiaires', expect.objectContaining({ method: 'POST', body: JSON.stringify(formulaire) }));
+  });
+
+  it('[FR-013-05] un 400 rend le texte et le champ du service', async () => {
+    const client = creerClientBeneficiairesHttp((() => json({ message: 'BIC invalide.', champ: 'bic' }, 400)) as unknown as typeof fetch);
+
+    expect(await client.ajouter(formulaire)).toEqual({ statut: 'refuse', message: 'BIC invalide.', champ: 'bic' });
+  });
+
+  it('[FR-013-06] un 400 sans champ connu rend un refus sans champ', async () => {
+    const client = creerClientBeneficiairesHttp((() => json({ message: 'Requête invalide', champ: 'inconnu' }, 400)) as unknown as typeof fetch);
+
+    expect(await client.ajouter(formulaire)).toEqual({ statut: 'refuse', message: 'Requête invalide', champ: null });
+  });
+
+  it.each([
+    ['un 400 sans message', () => json({ champ: 'bic' }, 400)],
+    ['un 400 nul', () => json(null, 400)],
+    ['un 500', () => json({ message: 'x' }, 500)],
+    ['un 401', () => json({ message: 'x' }, 401)],
+    ['un 400 illisible', () => Promise.resolve(new Response('pas du json', { status: 400 }))],
+    ['une coupure', () => Promise.reject(new Error('réseau'))],
+  ])('[FR-013-08] rend technique pour %s', async (_nom, reponse) => {
+    const client = creerClientBeneficiairesHttp(reponse as unknown as typeof fetch);
+
+    expect(await client.ajouter(formulaire)).toEqual({ statut: 'technique' });
+  });
+});

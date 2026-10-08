@@ -75,6 +75,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final Map<Long, BeneficiaireExterne> beneficiairesExternes = new HashMap<>();
     /** Désactivations perdues d'avance (un autre traitement a gagné la course). */
     final Set<Long> desactivationsPerdues = new HashSet<>();
+    final List<Ajout> ajouts = new ArrayList<>();
+    boolean ajoutEnErreur;
     /** Signaux d'historique forcés ; absents : calculés sur les opérations et virements écrits. */
     Long operationsDuJour;
     Optional<Instant> dernierVirement;
@@ -328,6 +330,25 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     @Override
     public Optional<BeneficiaireExterne> trouverActif(long beneficiaireId) {
         return Optional.ofNullable(beneficiairesExternes.get(beneficiaireId));
+    }
+
+    @Override
+    public BeneficiaireExterne ajouter(long clientId, fr.nextbanking.coeurbancaire.domain.DemandeBeneficiaire demande,
+            Instant creeLe) {
+        journal.add("ajouter " + clientId);
+        if (ajoutEnErreur) {
+            throw new IllegalStateException("base indisponible");
+        }
+        long id = beneficiairesExternes.keySet().stream().mapToLong(Long::longValue).max().orElse(0) + 1;
+        BeneficiaireExterne cree = new BeneficiaireExterne(id, clientId, demande.libelle(), demande.titulaire(),
+                demande.iban(), demande.bic(), demande.banque());
+        beneficiairesExternes.put(id, cree);
+        ajouts.add(new Ajout(cree, demande.zoneSepa(), creeLe));
+        return cree;
+    }
+
+    /** Ajout enregistré : bénéficiaire, zone SEPA calculée et date de création. */
+    record Ajout(BeneficiaireExterne beneficiaire, boolean zoneSepa, Instant creeLe) {
     }
 
     @Override

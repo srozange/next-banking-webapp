@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.adapter.in;
 
 import fr.nextbanking.coeurbancaire.domain.ErreurBeneficiaire;
 import fr.nextbanking.coeurbancaire.domain.ErreurReleve;
+import fr.nextbanking.coeurbancaire.domain.ErreurSaisieBeneficiaire;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
@@ -72,6 +73,14 @@ public class GestionErreursVirements {
                 .body(new Message(refus.getMessage()));
     }
 
+    /** Saisie refusée : 400 {@code {"message", "champ"}} ; un dépassement de longueur répond « Requête invalide ». */
+    @ExceptionHandler(ErreurSaisieBeneficiaire.class)
+    public ResponseEntity<Object> saisieRefusee(ErreurSaisieBeneficiaire refus) {
+        String message = refus.motif() == ErreurSaisieBeneficiaire.Cause.TROP_LONG ? Textes.REQUETE_INVALIDE
+                : refus.getMessage();
+        return corps(HttpStatus.BAD_REQUEST, new MessageAvecChamp(message, refus.champ().nom()));
+    }
+
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})
     public ResponseEntity<Object> requeteInvalide() {
         return reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
@@ -110,6 +119,10 @@ public class GestionErreursVirements {
 
     /** Corps d'erreur. */
     public record Message(String message) {
+    }
+
+    /** Corps d'erreur d'une saisie refusée : {@code champ} désigne le champ du formulaire en cause. */
+    public record MessageAvecChamp(String message, String champ) {
     }
 
     /** Corps d'erreur du contrôle de fraude en erreur : la référence est l'identifiant de la trace courante. */

@@ -312,4 +312,32 @@ describe('accessibilité (axe)', () => {
     await screen.findByTestId('beneficiaires-aucun');
     expect(await reglesViolees()).toEqual([]);
   });
+
+  it('[axe] /beneficiaires, formulaire d’ajout avec résultat de vérification, erreur de champ puis succès, ne relève aucune violation', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const reponses = [
+      { statut: 'refuse' as const, message: 'Le libellé est obligatoire.', champ: 'libelle' as const },
+      { statut: 'ajoute' as const },
+    ];
+    rendreApplication('/beneficiaires', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+      verifierIban: () => Promise.resolve({ statut: 'verifiee' as const, verification: { statut: 'valide' as const, codePays: 'FR', zoneSepa: true } }),
+      ajouter: () => Promise.resolve(reponses.shift() ?? { statut: 'technique' as const }),
+    });
+    await screen.findByTestId('beneficiaires-aucun');
+    expect(await reglesViolees()).toEqual([]);
+    const utilisateur = userEvent.setup();
+
+    await utilisateur.click(screen.getByTestId('beneficiaires-verifier-iban'));
+    await screen.findByText('IBAN valide — FR (Zone SEPA)');
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('beneficiaires-ajouter'));
+    await screen.findByRole('alert');
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('beneficiaires-ajouter'));
+    await screen.findByTestId('beneficiaires-message-info');
+    expect(await reglesViolees()).toEqual([]);
+  });
 });

@@ -2,7 +2,10 @@ package fr.nextbanking.coeurbancaire.adapter.out.persistance;
 
 import fr.nextbanking.coeurbancaire.application.port.out.Beneficiaires;
 import fr.nextbanking.coeurbancaire.domain.BeneficiaireExterne;
+import fr.nextbanking.coeurbancaire.domain.DemandeBeneficiaire;
 import fr.nextbanking.coeurbancaire.domain.Iban;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -58,5 +61,26 @@ public class BeneficiairesJdbc implements Beneficiaires {
                 .param("id", beneficiaireId)
                 .param("clientId", clientId)
                 .update() == 1;
+    }
+
+    @Override
+    public BeneficiaireExterne ajouter(long clientId, DemandeBeneficiaire demande, Instant creeLe) {
+        long id = jdbc.sql("""
+                insert into beneficiaires_externes (client_id, titulaire, iban, libelle, banque, bic, zone_sepa, actif,
+                    cree_le)
+                values (:clientId, :titulaire, :iban, :libelle, :banque, :bic, :zoneSepa, true, :creeLe)
+                returning id""")
+                .param("clientId", clientId)
+                .param("titulaire", demande.titulaire())
+                .param("iban", demande.iban().enClair())
+                .param("libelle", demande.libelle())
+                .param("banque", demande.banque())
+                .param("bic", demande.bic())
+                .param("zoneSepa", demande.zoneSepa())
+                .param("creeLe", Timestamp.from(creeLe))
+                .query(Long.class)
+                .single();
+        return new BeneficiaireExterne(id, clientId, demande.libelle(), demande.titulaire(), demande.iban(),
+                demande.bic(), demande.banque());
     }
 }

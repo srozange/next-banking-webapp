@@ -1,6 +1,8 @@
 package fr.nextbanking.coeurbancaire.application.port.out;
 
 import fr.nextbanking.coeurbancaire.domain.BeneficiaireExterne;
+import fr.nextbanking.coeurbancaire.domain.DemandeBeneficiaire;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +23,7 @@ public interface Beneficiaires {
      * actif vers inactif, faux si un autre traitement a déjà désactivé la ligne. La ligne est conservée.
      */
     boolean desactiver(long beneficiaireId, long clientId);
+
+    /** Enregistre le bénéficiaire du client, actif, avec sa zone SEPA calculée et sa date de création ; rend la ligne créée. */
+    BeneficiaireExterne ajouter(long clientId, DemandeBeneficiaire demande, Instant creeLe);
 }
