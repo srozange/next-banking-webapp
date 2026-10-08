@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banking : legacy vs next</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #F3F4F6; --surface: #FFFFFF; --ink: #16202E; --muted: #5A6577; --line: #DDE2EA; --track: #E9ECF1;
+  --accent: #1F4E8C;
+  --s1: #B42318; --s2: #D9631E; --s3: #C99A06; --s4: #5E9E3A; --s5: #2E7D4F;
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F151E; --surface: #17202C; --ink: #E6EAF0; --muted: #9AA5B5; --line: #2A3546; --track: #222C3A;
+  --accent: #7FA8E0;
+  --s1: #F07A6E; --s2: #F29A5C; --s3: #E3C04F; --s4: #93C873; --s5: #5FC08A;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0F151E; --surface: #17202C; --ink: #E6EAF0; --muted: #9AA5B5; --line: #2A3546; --track: #222C3A;
+  --accent: #7FA8E0;
+  --s1: #F07A6E; --s2: #F29A5C; --s3: #E3C04F; --s4: #93C873; --s5: #5FC08A;
+  color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.45 var(--font-body); overflow: hidden; }
+/* Slide 16:9 dessinée en 1280×720, mise à l'échelle de la fenêtre (une seule slide, pas de défilement) */
+.stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.slide { width: 1280px; height: 720px; padding: 34px 44px 26px; display: grid; grid-template-rows: auto 1fr auto auto; gap: 18px; transform-origin: center center; }
+.eyebrow { font: 600 13px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+h1 { font: 600 38px/1.1 var(--font-display); margin: 10px 0 0; }
+.top { display: grid; grid-template-columns: 330px 1fr; gap: 34px; min-height: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 24px; display: grid; gap: 14px; align-content: center; }
+.score-block { display: grid; gap: 6px; }
+.score-block + .score-block { border-top: 1px solid var(--line); padding-top: 14px; }
+.sb-head { display: flex; justify-content: space-between; align-items: baseline; }
+.sb-name { font-weight: 600; font-size: 14px; color: var(--muted); }
+.sb-name b { color: var(--ink); }
+.big { font: 600 64px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.big small { font-size: 24px; color: var(--muted); font-weight: 500; }
+.big.legacy { font-size: 46px; }
+.gain { font: 600 14px var(--font-mono); color: var(--s5); }
+.dist-bar { display: flex; height: 10px; gap: 3px; }
+.dist-bar div { border-radius: 2px; min-width: 8px; }
+.dist-leg { font-size: 12.5px; color: var(--muted); }
+.dist-leg b { font-weight: 600; }
+.dist-leg span { display: block; }
+.fams { display: grid; align-content: center; gap: 9px; }
+.fams-head { display: grid; grid-template-columns: 210px 1fr 92px 54px; gap: 18px; font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+.legend { display: flex; gap: 16px; font-weight: 500; }
+.legend i { display: inline-block; width: 22px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 1px; }
+.legend .lg-leg { background: var(--s2); opacity: .35; }
+.legend .lg-next { background: var(--s4); }
+.fam-row { display: grid; grid-template-columns: 210px 1fr 92px 54px; gap: 18px; align-items: center; }
+.fam-label { font-weight: 600; font-size: 15.5px; }
+.fam-bars { display: grid; gap: 4px; }
+.track { height: 9px; background: var(--track); border-radius: 2px; }
+.track + .track { height: 13px; }
+.fill { height: 100%; border-radius: 2px; }
+.fill.legacy { opacity: .35; }
+.fam-vals { display: flex; justify-content: flex-end; gap: 12px; align-items: baseline; font-variant-numeric: tabular-nums; }
+.v-leg { font: 500 13px var(--font-mono); opacity: .7; }
+.v-next { font: 600 17px var(--font-body); }
+.fam-delta { font: 600 13px var(--font-mono); color: var(--s5); text-align: right; }
+.s1 { background: var(--s1); } .s2 { background: var(--s2); } .s3 { background: var(--s3); } .s4 { background: var(--s4); } .s5 { background: var(--s5); }
+.t1 { color: var(--s1); } .t2 { color: var(--s2); } .t3 { color: var(--s3); } .t4 { color: var(--s4); } .t5 { color: var(--s5); }
+.kpis { border-top: 1.5px solid var(--ink); padding-top: 14px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+.kpi-vals { display: flex; align-items: baseline; gap: 8px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kv-leg { font: 500 17px var(--font-display); opacity: .75; text-decoration: line-through; text-decoration-thickness: 1px; }
+.arrow { color: var(--muted); font-size: 15px; }
+.kv-next { font: 600 30px/1.05 var(--font-display); }
+.kpi-lbl { font-size: 14px; color: var(--ink); margin-top: 2px; }
+.kpi-note { font-size: 11.5px; color: var(--muted); line-height: 1.3; margin-top: 2px; }
+footer { font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+/* Téléphone / écran étroit : la slide se réorganise en colonne au lieu d'être réduite */
+body.flow { overflow: auto; height: auto; }
+body.flow .stage { position: static; display: block; }
+body.flow .slide { width: auto; height: auto; transform: none !important; padding: 20px 16px 28px; gap: 22px; grid-template-rows: none; }
+body.flow h1 { font-size: 26px; }
+body.flow .top { grid-template-columns: 1fr; gap: 22px; }
+body.flow .card { padding: 16px 18px; }
+body.flow .big { font-size: 56px; }
+body.flow .big.legacy { font-size: 40px; }
+body.flow .fams-head { grid-template-columns: 1fr auto; row-gap: 6px; }
+body.flow .fams-head > span:nth-child(3), body.flow .fams-head > span:nth-child(4) { display: none; }
+body.flow .fam-row { grid-template-columns: 1fr auto auto; gap: 4px 12px; }
+body.flow .fam-label { grid-column: 1 / -1; font-size: 15px; }
+body.flow .fam-bars { grid-column: 1; }
+body.flow .fam-vals { gap: 8px; }
+body.flow .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; }
+body.flow .kv-next { font-size: 26px; }
+body.flow .kpi-vals { white-space: normal; flex-wrap: wrap; }
+@media (max-width: 380px) { body.flow .kpis { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="stage"><section class="slide" id="slide">
+  <header>
+    <div class="eyebrow">Évaluation d'architecture · legacy vs next</div>
+    <h1>Banking Next : une architecture saine, dette localisée</h1>
+  </header>
+
+  <div class="top">
+    <div class="card">
+      <div class="score-block">
+        <div class="sb-head"><span class="sb-name"><b>Next</b> · score global</span><span class="gain">+1,86 pt</span></div>
+        <div class="big t4">4,02<small> / 5</small></div>
+        <div class="dist-bar"><div class="s3" style="flex:2"></div><div class="s5" style="flex:26"></div></div><div class="dist-leg"><b class="t1">0</b> à 1 · <b class="t2">0</b> à 2 · <b class="t3">2</b> à 3 · <b class="t5">26</b> à 4-5 <span>sur 28 critères notés</span></div>
+      </div>
+      <div class="score-block">
+        <div class="sb-head"><span class="sb-name"><b>Legacy</b> · score global</span></div>
+        <div class="big legacy t2">2,16<small> / 5</small></div>
+        <div class="dist-bar"><div class="s1" style="flex:8"></div><div class="s2" style="flex:13"></div><div class="s3" style="flex:5"></div><div class="s5" style="flex:2"></div></div><div class="dist-leg"><b class="t1">8</b> à 1 · <b class="t2">13</b> à 2 · <b class="t3">5</b> à 3 · <b class="t5">2</b> à 4-5 <span>sur 28 critères notés</span></div>
+      </div>
+    </div>
+
+    <div class="fams">
+      <div class="fams-head"><span>Score par famille (sur 5)</span><span class="legend"><span><i class="lg-leg"></i>legacy</span><span><i class="lg-next"></i>next</span></span><span style="text-align:right">legacy · next</span><span style="text-align:right">écart</span></div>
+      
+      <div class="fam-row">
+        <div class="fam-label">Conception des modules</div>
+        <div class="fam-bars">
+          <div class="track"><div class="fill legacy s2" style="width:46.7%"></div></div>
+          <div class="track"><div class="fill s3" style="width:66.7%"></div></div>
+        </div>
+        <div class="fam-vals"><span class="v-leg t2">2,3</span><span class="v-next t3">3,3</span></div>
+        <div class="fam-delta">+1,0</div>
+      </div>
+      <div class="fam-row">
+        <div class="fam-label">Alignement métier</div>
+        <div class="fam-bars">
+          <div class="track"><div class="fill legacy s3" style="width:53.3%"></div></div>
+          <div class="track"><div class="fill s5" style="width:93.3%"></div></div>
+        </div>
+        <div class="fam-vals"><span class="v-leg t3">2,7</span><span class="v-next t5">4,7</span></div>
+        <div class="fam-delta">+2,0</div>
+      </div>
+      <div class="fam-row">
+        <div class="fam-label">Refactorabilité</div>
+        <div class="fam-bars">
+          <div class="track"><div class="fill legacy s2" style="width:46.7%"></div></div>
+          <div class="track"><div class="fill s4" style="width:86.7%"></div></div>
+        </div>
+        <div class="fam-vals"><span class="v-leg t2">2,3</span><span class="v-next t4">4,3</span></div>
+        <div class="fam-delta">+2,0</div>
+      </div>
+      <div class="fam-row">
+        <div class="fam-label">Qualité du code</div>
+        <div class="fam-bars">
+          <div class="track"><div class="fill legacy s2" style="width:42.9%"></div></div>
+          <div class="track"><div class="fill s4" style="width:80.0%"></div></div>
+        </div>
+        <div class="fam-vals"><span class="v-leg t2">2,1</span><span class="v-next t4">4,0</span></div>
+        <div class="fam-delta">+1,9</div>
+      </div>
+      <div class="fam-row">
+        <div class="fam-label">Principes SOLID</div>
+        <div class="fam-bars">
+          <div class="track"><div class="fill legacy s2" style="width:40.0%"></div></div>
+          <div class="track"><div class="fill s4" style="width:80.0%"></div></div>
+        </div>
+        <div class="fam-vals"><span class="v-leg t2">2,0</span><span class="v-next t4">4,0</span></div>
+        <div class="fam-delta">+2,0</div>
+      </div>
+      <div class="fam-row">
+        <div class="fam-label">Prêt pour le cloud</div>
+        <div class="fam-bars">
+          <div class="track"><div class="fill legacy s1" style="width:36.0%"></div></div>
+          <div class="track"><div class="fill s4" style="width:80.0%"></div></div>
+        </div>
+        <div class="fam-vals"><span class="v-leg t1">1,8</span><span class="v-next t4">4,0</span></div>
+        <div class="fam-delta">+2,2</div>
+      </div>
+      <div class="fam-row">
+        <div class="fam-label">Sécurité</div>
+        <div class="fam-bars">
+          <div class="track"><div class="fill legacy s1" style="width:30.0%"></div></div>
+          <div class="track"><div class="fill s4" style="width:85.0%"></div></div>
+        </div>
+        <div class="fam-vals"><span class="v-leg t1">1,5</span><span class="v-next t4">4,2</span></div>
+        <div class="fam-delta">+2,8</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-vals"><span class="kv-leg t1">0,8 %</span><span class="arrow">→</span><span class="kv-next t5">99,5 %</span></div>
+        <div class="kpi-lbl">couverture de tests</div>
+        <div class="kpi-note">JaCoCo + Vitest, mesurée par Sonar</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-vals"><span class="kv-leg t1">2</span><span class="arrow">→</span><span class="kv-next t5">0 CVE</span></div>
+        <div class="kpi-lbl">critiques dans le livrable</div>
+        <div class="kpi-note">legacy : Log4Shell · next : 2 CVE moyennes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-vals"><span class="kv-leg t1">4</span><span class="arrow">→</span><span class="kv-next t5">0</span></div>
+        <div class="kpi-lbl">failles applicatives connues</div>
+        <div class="kpi-note">IBAN en clair, session, secrets, droits : corrigées</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-vals"><span class="kv-leg t2">848</span><span class="arrow">→</span><span class="kv-next t3">452</span></div>
+        <div class="kpi-lbl">lignes dans le plus gros fichier</div>
+        <div class="kpi-note">EcranBourse.tsx · 221 max en Java</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-vals"><span class="kv-leg t5">1,4 %</span><span class="arrow">→</span><span class="kv-next t5">0,3 %</span></div>
+        <div class="kpi-lbl">code dupliqué (Sonar)</div>
+        <div class="kpi-note">par module · 6,3 % entre services (jscpd)</div>
+      </div>
+  </div>
+
+  <footer>Même grille de 29 critères (Ousterhout, Evans, Fowler, Martin, 12-Factor, OWASP…), médiane de 3 juges · SonarQube 26.7 · OWASP dependency-check · legacy : 7 445 lignes, analyse du 18/09/2026 · next : 18 708 lignes (7 services + front), analyse du 06/10/2026 · juges de modèles différents (Sonnet 4.6 / Opus 5.5).</footer>
+</section></div>
+<script>
+(function () {
+  var s = document.getElementById('slide');
+  function fit() {
+    var w = window.innerWidth, h = window.innerHeight;
+    var flow = w < 900 || h > w * 1.1;
+    document.body.classList.toggle('flow', flow);
+    s.style.transform = flow ? '' : 'scale(' + Math.min(w / 1280, h / 720) + ')';
+  }
+  window.addEventListener('resize', fit); fit();
+})();
+</script>
+</body>
+</html>

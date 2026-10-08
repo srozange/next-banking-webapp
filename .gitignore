@@ -17,3 +17,11 @@ _bmad/render/
 .env.tmp
 .secrets/
 .stryker-tmp/
+
+# arch-eval : jetons Sonar éphémères, jamais versionnés
+.arch-eval/**/.sonar-token
+.arch-eval/**/.sonar-secrets
+# arch-eval : sorties de scan rejouables (30 Mo) ; seuls l'instantané et les rapports sont versionnés
+.arch-eval/modules/
+.arch-eval/sca-runtime/
+.arch-eval/ancienne-grille-22-criteres/

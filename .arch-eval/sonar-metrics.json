@@ -1,0 +1,645 @@
+{
+  "source": "sonar",
+  "project_key": "next-banking-webapp",
+  "sonar_host": "http://localhost:9000",
+  "sonar_version": "26.7.0.124771",
+  "stack": "mixed",
+  "tools": [
+    "sonarqube",
+    "dependency-check",
+    "trivy"
+  ],
+  "depth": "coverage",
+  "raw_measures": {
+    "complexity": 2981.0,
+    "cognitive_complexity": 1204.0,
+    "functions": 1635.0,
+    "classes": 511.0,
+    "ncloc": 18708.0,
+    "code_smells": 222.0,
+    "bugs": 13.0,
+    "vulnerabilities": 0.0,
+    "sqale_index": 1582.0,
+    "duplicated_lines": 61.0,
+    "lines_to_cover": 6142.0,
+    "uncovered_lines": 29.0,
+    "duplicated_lines_density": 0.33,
+    "coverage": 99.5
+  },
+  "computed": {
+    "3.2": {
+      "id": "3.2_duplication",
+      "source_book": "Refactoring (Fowler)",
+      "source": "sonar",
+      "score": 5,
+      "measure": {
+        "duplicated_lines_density": 0.33
+      },
+      "evidence": [
+        {
+          "file": "(projet)",
+          "symbol": "duplicated_lines_density",
+          "observation": "0.5% de lignes dupliquées (Sonar)."
+        }
+      ],
+      "violations": []
+    },
+    "6.5": {
+      "id": "6.5_supply_chain_security",
+      "source_book": "OWASP / supply chain security",
+      "source": "dependency-check",
+      "score": 4,
+      "measure": {
+        "cve_critical": 0,
+        "cve_high": 0,
+        "cve_medium": 16,
+        "cve_low": 0,
+        "top_deps": [
+          {
+            "dep": "kafka-clients-4.2.1.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-41115"
+          },
+          {
+            "dep": "opentelemetry-api-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          }
+        ],
+        "all_deps": [
+          {
+            "dep": "kafka-clients-4.2.1.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-41115"
+          },
+          {
+            "dep": "opentelemetry-api-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-context-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-otlp-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-otlp-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-sender-okhttp-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-extension-trace-propagators-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-proto-1.10.0-alpha.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-extension-autoconfigure-spi-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-logs-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-metrics-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-trace-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          }
+        ],
+        "by_module": [
+          {
+            "module": "coeur-bancaire",
+            "stack": "java-maven",
+            "tool": "dependency-check",
+            "cve_critical": 0,
+            "cve_high": 0,
+            "cve_medium": 16,
+            "cve_low": 0,
+            "top_deps": [
+              {
+                "dep": "kafka-clients-4.2.1.jar",
+                "severity": "MEDIUM",
+                "cve": "CVE-2026-41115"
+              },
+              {
+                "dep": "opentelemetry-api-1.62.0.jar",
+                "severity": "MEDIUM",
+                "cve": "CVE-2026-54285"
+              },
+              {
+                "dep": "opentelemetry-common-1.62.0.jar",
+                "severity": "MEDIUM",
+                "cve": "CVE-2026-54285"
+              }
+            ]
+          },
+          {
+            "module": "frontend",
+            "stack": "js-node",
+            "tool": "trivy",
+            "cve_critical": 0,
+            "cve_high": 0,
+            "cve_medium": 0,
+            "cve_low": 0
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "file": "(dépendances)",
+          "symbol": "OWASP dependency-check",
+          "observation": "CVE par sévérité — critique: 0, haute: 0, moyenne: 16, basse: 0."
+        },
+        {
+          "file": "(dépendances)",
+          "symbol": "kafka-clients-4.2.1.jar",
+          "observation": "MEDIUM — CVE-2026-41115"
+        },
+        {
+          "file": "(dépendances)",
+          "symbol": "opentelemetry-api-1.62.0.jar",
+          "observation": "MEDIUM — CVE-2026-54285"
+        },
+        {
+          "file": "(dépendances)",
+          "symbol": "opentelemetry-common-1.62.0.jar",
+          "observation": "MEDIUM — CVE-2026-54285"
+        }
+      ],
+      "rationale": "0 CVE critique(s), 0 haute(s), 16 moyenne(s). Dépendances les plus critiques : kafka-clients-4.2.1.jar (MEDIUM — CVE-2026-41115) ; opentelemetry-api-1.62.0.jar (MEDIUM — CVE-2026-54285) ; opentelemetry-common-1.62.0.jar (MEDIUM — CVE-2026-54285).",
+      "violations": [],
+      "tools": [
+        "dependency-check",
+        "trivy"
+      ]
+    },
+    "7.4": {
+      "id": "7.4_vulnerabilites_code_sast",
+      "source_book": "OWASP ASVS / SAST",
+      "source": "sonar",
+      "score": 5,
+      "measure": {
+        "vuln_blocker": 0,
+        "vuln_critical": 0,
+        "vuln_major": 0,
+        "vuln_minor": 0,
+        "vuln_info": 0,
+        "hotspots_to_review": 0,
+        "hotspots_high": 0
+      },
+      "evidence": [
+        {
+          "file": "(projet)",
+          "symbol": "sonar_vulnerabilities",
+          "observation": "Vulnérabilités SAST par sévérité — blocker: 0, critical: 0, major: 0, minor: 0, info: 0."
+        },
+        {
+          "file": "(projet)",
+          "symbol": "security_hotspots",
+          "observation": "0 security hotspot(s) non revu(s), dont 0 à probabilité haute."
+        }
+      ],
+      "violations": []
+    }
+  },
+  "evidence_pack": {
+    "3.1": [
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 573 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "174 classes, 369 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues_severity",
+        "observation": "Sévérité des code smells Sonar : 9 CRITICAL, 8 MAJOR (sur 27 au total)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 185 min (~3 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 64 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "29 classes, 47 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 9 min (~0 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 218 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "62 classes, 145 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 5 min (~0 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 59 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "20 classes, 30 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 0 min (~0 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 252 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "90 classes, 179 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues_severity",
+        "observation": "Sévérité des code smells Sonar : 3 MAJOR (sur 27 au total)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 180 min (~3 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 199 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "47 classes, 119 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues_severity",
+        "observation": "Sévérité des code smells Sonar : 4 MAJOR (sur 43 au total)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 260 min (~4 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 355 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "89 classes, 228 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues_severity",
+        "observation": "Sévérité des code smells Sonar : 8 CRITICAL, 6 MAJOR (sur 27 au total)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 253 min (~4 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 1261 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "0 classes, 518 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues_severity",
+        "observation": "Sévérité des code smells Sonar : 21 MAJOR (sur 94 au total)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 690 min (~12 h de remédiation)."
+      }
+    ],
+    "4.2": [
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 214 / 369 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.6."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues",
+        "observation": "1 fonction(s) signalée(s) trop longues/complexes/trop d'arguments."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 0.5 (total 24 / 47 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.4."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 86 / 145 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.5."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 19 / 30 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 2.0."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 0.5 (total 89 / 179 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.4."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 72 / 119 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.7."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 145 / 228 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.6."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues",
+        "observation": "1 fonction(s) signalée(s) trop longues/complexes/trop d'arguments."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 1.1 (total 555 / 518 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 2.4."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues",
+        "observation": "1 fonction(s) signalée(s) trop longues/complexes/trop d'arguments."
+      }
+    ],
+    "4.5": [
+      {
+        "file": "(projet)",
+        "symbol": "dead_code",
+        "observation": "1 occurrence(s) de code mort / inutilisé / commenté signalées par Sonar."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "bugs",
+        "observation": "1 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "bugs",
+        "observation": "1 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "dead_code",
+        "observation": "1 occurrence(s) de code mort / inutilisé / commenté signalées par Sonar."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "bugs",
+        "observation": "7 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "bugs",
+        "observation": "3 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "bugs",
+        "observation": "1 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
+      }
+    ],
+    "3.3": [
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 99.7% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 100% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 98.8% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 98.9% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 99.2% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 99.5% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 99.3% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 98.6% (Sonar, import JaCoCo/LCOV)."
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "coeur-bancaire",
+      "stack": "java-maven",
+      "ncloc": 3719,
+      "tools": [
+        "sonarqube",
+        "dependency-check"
+      ]
+    },
+    {
+      "name": "notifications",
+      "stack": "java-maven",
+      "ncloc": 441,
+      "tools": [
+        "sonarqube"
+      ]
+    },
+    {
+      "name": "identite-clients",
+      "stack": "java-maven",
+      "ncloc": 1398,
+      "tools": [
+        "sonarqube"
+      ]
+    },
+    {
+      "name": "audit",
+      "stack": "java-maven",
+      "ncloc": 375,
+      "tools": [
+        "sonarqube"
+      ]
+    },
+    {
+      "name": "credits",
+      "stack": "java-maven",
+      "ncloc": 1649,
+      "tools": [
+        "sonarqube"
+      ]
+    },
+    {
+      "name": "bourse",
+      "stack": "java-maven",
+      "ncloc": 1112,
+      "tools": [
+        "sonarqube"
+      ]
+    },
+    {
+      "name": "open-banking-conseiller",
+      "stack": "java-maven",
+      "ncloc": 2106,
+      "tools": [
+        "sonarqube"
+      ]
+    },
+    {
+      "name": "frontend",
+      "stack": "js-node",
+      "ncloc": 7908,
+      "tools": [
+        "sonarqube",
+        "trivy"
+      ]
+    }
+  ]
+}
