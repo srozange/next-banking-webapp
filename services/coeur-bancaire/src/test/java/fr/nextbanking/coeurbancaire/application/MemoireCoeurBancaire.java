@@ -30,6 +30,7 @@ import fr.nextbanking.coeurbancaire.domain.EntreeAudit;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.Operation;
+import fr.nextbanking.coeurbancaire.domain.EcheanceNonExecutee;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
 import fr.nextbanking.coeurbancaire.domain.Virement;
@@ -66,6 +67,7 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final List<VirementATraiter> outbox = new ArrayList<>();
     final List<VirementDecide> decisions = new ArrayList<>();
     final List<Long> decisionsPubliees = new ArrayList<>();
+    final List<Long> echeancesPubliees = new ArrayList<>();
     final List<Long> publies = new ArrayList<>();
     final List<EntreeAudit> outboxAudit = new ArrayList<>();
     final List<Long> auditPublie = new ArrayList<>();
@@ -130,6 +132,46 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     /** Prises d'échéance perdues d'avance (un autre passage a gagné la course). */
     final Set<Long> prisesPerdues = new HashSet<>();
     boolean lectureDuesEnErreur;
+    /** Échéances notifiées : « identifiant|échéance ». */
+    final Set<String> echeancesNotifiees = new HashSet<>();
+    final List<EcheanceNonExecutee> echeancesNonExecutees = new ArrayList<>();
+    /** Désactivations d'échéance perdues d'avance (un autre traitement a gagné la course). */
+    final Set<Long> desactivationsEcheancePerdues = new HashSet<>();
+    boolean marqueEnErreur;
+
+    @Override
+    public boolean desactiver(long id, Instant echeancePrevue) {
+        journal.add("desactiver-echeance");
+        for (int i = 0; i < virementsProgrammes.size(); i++) {
+            VirementProgramme v = virementsProgrammes.get(i);
+            if (v.id() == id && v.actif() && v.prochaineExecution().equals(echeancePrevue)
+                    && !desactivationsEcheancePerdues.contains(id)) {
+                virementsProgrammes.set(i, new VirementProgramme(v.id(), v.clientId(), v.compteSourceId(),
+                        v.numeroBeneficiaire(), v.libelleBeneficiaire(), v.montant(), v.frequence(), v.motif(),
+                        v.prochaineExecution(), false, v.nbExecutions(), v.creeLe()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean marquerNotifiee(long id, Instant echeance, Instant le) {
+        journal.add("marquer");
+        if (marqueEnErreur) {
+            throw new IllegalStateException("marque en erreur");
+        }
+        return echeancesNotifiees.add(id + "|" + echeance);
+    }
+
+    @Override
+    public long consigner(EcheanceNonExecutee evenement) {
+        if (outboxRefusee) {
+            throw new IllegalStateException("outbox refusée");
+        }
+        echeancesNonExecutees.add(evenement);
+        return 400L + echeancesNonExecutees.size();
+    }
 
     @Override
     public VirementProgramme enregistrer(long clientId, DemandeVirementProgramme demande,
@@ -476,7 +518,9 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
 
     @Override
     public void publier(long idLigne) {
-        if (idLigne >= 300) {
+        if (idLigne >= 400) {
+            echeancesPubliees.add(idLigne);
+        } else if (idLigne >= 300) {
             decisionsPubliees.add(idLigne);
         } else if (idLigne >= 200) {
             auditPublie.add(idLigne);
@@ -510,6 +554,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         List<AlerteFraude> alertesAvant = new ArrayList<>(alertes);
         Map<Long, DecisionRevue> decisionsRevueAvant = new HashMap<>(decisionsRevue);
         Set<UUID> traitesAvant = new HashSet<>(traites);
+        Set<String> notifieesAvant = new HashSet<>(echeancesNotifiees);
+        int echeancesAvant = echeancesNonExecutees.size();
         List<VirementProgramme> programmesAvant = new ArrayList<>(virementsProgrammes);
         Map<Long, Instant> derniereAvant = new HashMap<>(derniereExecution);
         try {
@@ -536,6 +582,11 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             decisionsRevue.putAll(decisionsRevueAvant);
             traites.clear();
             traites.addAll(traitesAvant);
+            echeancesNotifiees.clear();
+            echeancesNotifiees.addAll(notifieesAvant);
+            while (echeancesNonExecutees.size() > echeancesAvant) {
+                echeancesNonExecutees.removeLast();
+            }
             virementsProgrammes.clear();
             virementsProgrammes.addAll(programmesAvant);
             derniereExecution.clear();

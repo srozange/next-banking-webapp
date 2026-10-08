@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.domain.ActionAudit;
 import fr.nextbanking.coeurbancaire.domain.Compte;
+import fr.nextbanking.coeurbancaire.domain.TypeNotification;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.FrequenceVirement;
 import fr.nextbanking.coeurbancaire.domain.Montant;
@@ -36,6 +37,15 @@ import org.junit.jupiter.api.Test;
 @Tag("FR-021-08")
 @Tag("FR-021-10")
 @Tag("FR-004-07")
+@Tag("FR-004-12")
+@Tag("FR-004-13")
+@Tag("FR-004-15")
+@Tag("FR-021-04")
+@Tag("FR-021-09")
+@Tag("BUG-014")
+@Tag("BUG-015")
+@Tag("BUG-068")
+@Tag("BUG-070")
 @Tag("FR-004-11")
 @Tag("FR-004-14")
 @Tag("BUG-069")
@@ -59,7 +69,7 @@ class ExecuterEcheancesCasUsageTest {
         memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         ControleFraudeCasUsage controle = new ControleFraudeCasUsage(memoire, memoire, memoire, memoire,
                 ControleFraudeTestes.PARAMETRES);
-        cas = new ExecuterEcheancesCasUsage(memoire, memoire, memoire, memoire, memoire, memoire, memoire, memoire,
+        cas = new ExecuterEcheancesCasUsage(memoire, memoire, memoire, memoire, memoire, memoire, memoire, memoire, memoire,
                 new SeuilsFraude(new BigDecimal("5000"), new BigDecimal("5000"), new BigDecimal("10000")), controle);
         Logger.getLogger(ExecuterEcheancesCasUsage.class.getName()).addHandler(collecteur);
     }
@@ -189,20 +199,74 @@ class ExecuterEcheancesCasUsageTest {
     }
 
     @Test
-    void un_solde_insuffisant_ne_change_rien_et_reste_du() {
-        programme(1, 7, 1, "FR76-0001-0002", "5000.00", FrequenceVirement.MENSUEL, null, HUIT_HEURES, true);
-        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("10.00")));
+    void un_solde_insuffisant_ne_change_rien_reste_du_et_notifie_une_seule_fois() {
+        programme(1, 7, 1, "FR76-0001-0002", "500.00", FrequenceVirement.MENSUEL, null, HUIT_HEURES, true);
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("499.99")));
 
         assertThat(cas.executerLesDues()).isZero();
 
         assertThat(memoire.operations).isEmpty();
         assertThat(memoire.virements).isEmpty();
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("499.99");
         assertThat(lire(1).prochaineExecution()).isEqualTo(HUIT_HEURES);
         assertThat(lire(1).nbExecutions()).isZero();
+        assertThat(lire(1).actif()).isTrue();
         assertThat(memoire.derniereExecution).isEmpty();
+        assertThat(memoire.alertes).isEmpty();
+        assertThat(memoire.journal).doesNotContain("historique", "debiter");
         assertThat(collecteur.messages).contains("Solde insuffisant pour virement programme id=1");
         assertThat(memoire.lignesBatch).containsExactly(
                 "RECURRING_TRANSFERS|0|SUCCESS|Verification virements programmes dus");
+        assertThat(memoire.echeancesNonExecutees).hasSize(1);
+        var evenement = memoire.echeancesNonExecutees.getFirst();
+        assertThat(evenement.virementProgrammeId()).isEqualTo(1L);
+        assertThat(evenement.horodatage()).isEqualTo(DIX_HEURES);
+        assertThat(evenement.notification().clientId()).isEqualTo(7L);
+        assertThat(evenement.notification().type()).isEqualTo(TypeNotification.ALERTE);
+        assertThat(evenement.notification().titre()).isEqualTo("Virement programmé non exécuté");
+        assertThat(evenement.notification().message()).isEqualTo(
+                "Virement programmé vers Epargne non exécuté : solde insuffisant, rien n'a été débité");
+        assertThat(memoire.echeancesPubliees).containsExactly(401L);
+
+        assertThat(cas.executerLesDues()).isZero();
+
+        assertThat(memoire.echeancesNonExecutees).hasSize(1);
+        assertThat(memoire.echeancesPubliees).hasSize(1);
+        assertThat(collecteur.messages).filteredOn("Solde insuffisant pour virement programme id=1"::equals)
+                .hasSize(2);
+    }
+
+    @Test
+    void quand_le_solde_est_retabli_l_echeance_est_executee_sans_notification() {
+        programme(1, 7, 1, "FR76-0001-0002", "500.00", FrequenceVirement.MENSUEL, null, HUIT_HEURES, true);
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("499.99")));
+        cas.executerLesDues();
+
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("600.00")));
+        assertThat(cas.executerLesDues()).isEqualTo(1);
+
+        assertThat(memoire.echeancesNonExecutees).hasSize(1);
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("100.00");
+        assertThat(lire(1).nbExecutions()).isEqualTo(1);
+    }
+
+    @Test
+    void une_ecriture_de_notification_en_erreur_est_comptee_en_echec_et_l_echeance_reste_due() {
+        programme(1, 7, 1, "FR76-0001-0002", "5000.00", FrequenceVirement.MENSUEL, null, HUIT_HEURES, true);
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("10.00")));
+        memoire.marqueEnErreur = true;
+
+        assertThat(cas.executerLesDues()).isZero();
+
+        assertThat(memoire.echeancesNonExecutees).isEmpty();
+        assertThat(memoire.echeancesNotifiees).isEmpty();
+        assertThat(lire(1).prochaineExecution()).isEqualTo(HUIT_HEURES);
+        assertThat(memoire.lignesBatch).containsExactly(
+                "RECURRING_TRANSFERS|0|FAILED|Echec execution virement programme id=1");
+
+        memoire.marqueEnErreur = false;
+        cas.executerLesDues();
+        assertThat(memoire.echeancesNonExecutees).hasSize(1);
     }
 
     @Test
@@ -219,15 +283,45 @@ class ExecuterEcheancesCasUsageTest {
     }
 
     @Test
-    void un_destinataire_introuvable_ne_change_rien_et_n_est_pas_compte() {
-        programme(1, 7, 1, "FR76-9999-9999", "100.00", FrequenceVirement.MENSUEL, null, HUIT_HEURES, true);
+    void un_destinataire_introuvable_est_refuse_avant_le_solde_desactive_et_notifie() {
+        programme(1, 7, 1, "FR76-9999-9999", "5000.00", FrequenceVirement.MENSUEL, null, HUIT_HEURES, true);
+        memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("10.00")));
 
         assertThat(cas.executerLesDues()).isZero();
 
-        rien();
+        assertThat(memoire.operations).isEmpty();
+        assertThat(memoire.virements).isEmpty();
+        assertThat(memoire.comptes.get(1L).solde().texte()).isEqualTo("10.00");
+        assertThat(lire(1).actif()).isFalse();
         assertThat(lire(1).prochaineExecution()).isEqualTo(HUIT_HEURES);
-        assertThat(memoire.journal).doesNotContain("verrouiller", "prendre");
+        assertThat(lire(1).nbExecutions()).isZero();
+        assertThat(memoire.journal).doesNotContain("verrouiller", "prendre", "debiter");
+        assertThat(collecteur.messages).contains("Echec execution virement programme id=1");
         assertThat(collecteur.niveaux).contains(Level.WARNING);
+        assertThat(memoire.echeancesNonExecutees).hasSize(1);
+        var notification = memoire.echeancesNonExecutees.getFirst().notification();
+        assertThat(notification.type()).isEqualTo(TypeNotification.ALERTE);
+        assertThat(notification.titre()).isEqualTo("Virement programmé refusé");
+        assertThat(notification.message()).isEqualTo(
+                "Virement programmé vers Epargne refusé : compte destinataire introuvable, rien n'a été débité");
+        assertThat(memoire.echeancesPubliees).hasSize(1);
+        assertThat(memoire.lignesBatch).containsExactly(
+                "RECURRING_TRANSFERS|0|SUCCESS|Verification virements programmes dus");
+
+        assertThat(cas.executerLesDues()).isZero();
+        assertThat(memoire.echeancesNonExecutees).hasSize(1);
+    }
+
+    @Test
+    void un_refus_dont_la_desactivation_est_perdue_n_a_aucun_effet() {
+        programme(1, 7, 1, "FR76-9999-9999", "100.00", FrequenceVirement.MENSUEL, null, HUIT_HEURES, true);
+        memoire.desactivationsEcheancePerdues.add(1L);
+
+        assertThat(cas.executerLesDues()).isZero();
+
+        assertThat(memoire.echeancesNonExecutees).isEmpty();
+        assertThat(memoire.echeancesNotifiees).isEmpty();
+        assertThat(memoire.echeancesPubliees).isEmpty();
     }
 
     @Test
@@ -277,6 +371,7 @@ class ExecuterEcheancesCasUsageTest {
         assertThat(lire(2).prochaineExecution()).isEqualTo(HUIT_HEURES);
         assertThat(lire(3).nbExecutions()).isEqualTo(1);
         assertThat(memoire.comptes.get(3L).solde().texte()).isEqualTo("500.00");
+        assertThat(collecteur.messages).contains("Echec execution virement programme id=2");
         assertThat(memoire.lignesBatch).containsExactly(
                 "RECURRING_TRANSFERS|2|PARTIAL|Echec execution virement programme id=2");
     }

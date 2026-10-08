@@ -6,6 +6,7 @@ import fr.nextbanking.coeurbancaire.application.ControleFraudeCasUsage;
 import fr.nextbanking.coeurbancaire.application.ExecuterEcheancesCasUsage;
 import fr.nextbanking.coeurbancaire.application.port.in.ExecuterEcheances;
 import fr.nextbanking.coeurbancaire.application.port.out.DepotVirements;
+import fr.nextbanking.coeurbancaire.application.port.out.EvenementsSortants;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalAudit;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalBatch;
 import fr.nextbanking.coeurbancaire.application.port.out.Operations;
@@ -41,9 +42,10 @@ public class AssemblageVirementsProgrammes {
     @Bean
     ExecuterEcheances executerEcheances(VirementsProgrammes virements, Comptes comptes, Operations operations,
             DepotVirements depotVirements, JournalAudit journalAudit, JournalBatch journalBatch,
-            Transaction transaction, Horloge horloge, SeuilsFraude seuils, ControleFraudeCasUsage controleFraude) {
+            Transaction transaction, EvenementsSortants evenements, Horloge horloge, SeuilsFraude seuils,
+            ControleFraudeCasUsage controleFraude) {
         return new ExecuterEcheancesCasUsage(virements, comptes, operations, depotVirements, journalAudit,
-                journalBatch, transaction, horloge, seuils, controleFraude);
+                journalBatch, transaction, evenements, horloge, seuils, controleFraude);
     }
 
     @Bean

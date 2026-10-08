@@ -69,8 +69,8 @@ describe('accessibilité (axe)', () => {
         Promise.resolve({
           statut: 'liste' as const,
           notifications: [
-            { id: 2, type: 'FRAUDE', message: 'Virement suspendu', creeLe: '2026-11-17T11:00:00Z', lue: false },
-            { id: 1, type: 'ALERTE', message: 'Virement important', creeLe: '2026-11-17T10:00:00Z', lue: true },
+            { id: 2, type: 'FRAUDE', titre: null, message: 'Virement suspendu', creeLe: '2026-11-17T11:00:00Z', lue: false },
+            { id: 1, type: 'ALERTE', titre: null, message: 'Virement important', creeLe: '2026-11-17T10:00:00Z', lue: true },
           ],
         }),
     });

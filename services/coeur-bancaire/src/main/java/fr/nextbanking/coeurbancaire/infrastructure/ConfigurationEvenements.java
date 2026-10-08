@@ -23,6 +23,9 @@ public class ConfigurationEvenements {
     /** Décision d'un virement et notification rendue : consommé par le service notifications. */
     static final String TOPIC_VIREMENT_DECIDE = "coeur-bancaire.virement-decide.v1";
 
+    /** Échéance de virement programmé non exécutée et notification rendue : consommé par notifications. */
+    static final String TOPIC_ECHEANCE_NON_EXECUTEE = "coeur-bancaire.echeance-non-executee.v1";
+
     @Bean
     NewTopic topicTemoinEcrit() {
         return TopicBuilder.name(TOPIC_TEMOIN_ECRIT).partitions(3).replicas(1).build();
@@ -41,5 +44,10 @@ public class ConfigurationEvenements {
     @Bean
     NewTopic topicVirementDecide() {
         return TopicBuilder.name(TOPIC_VIREMENT_DECIDE).partitions(3).replicas(1).build();
+    }
+
+    @Bean
+    NewTopic topicEcheanceNonExecutee() {
+        return TopicBuilder.name(TOPIC_ECHEANCE_NON_EXECUTEE).partitions(3).replicas(1).build();
     }
 }

@@ -36,4 +36,16 @@ public record NotificationVirement(long clientId, TypeNotification type, String 
                 TextesVirement.avisSuspension(virement.montant().texte(), numeroDestinataire,
                         virement.heureButoir(), fuseau));
     }
+
+    /** Notification ALERTE d'une échéance non exécutée pour solde insuffisant. */
+    public static NotificationVirement pourEcheanceSoldeInsuffisant(long clientId, String libelleBeneficiaire) {
+        return new NotificationVirement(clientId, TypeNotification.ALERTE, TextesVirement.TITRE_ECHEANCE_SOLDE,
+                TextesVirement.messageEcheanceSolde(libelleBeneficiaire));
+    }
+
+    /** Notification ALERTE d'une échéance refusée : compte destinataire introuvable. */
+    public static NotificationVirement pourEcheanceCompteIntrouvable(long clientId, String libelleBeneficiaire) {
+        return new NotificationVirement(clientId, TypeNotification.ALERTE, TextesVirement.TITRE_ECHEANCE_INTROUVABLE,
+                TextesVirement.messageEcheanceIntrouvable(libelleBeneficiaire));
+    }
 }

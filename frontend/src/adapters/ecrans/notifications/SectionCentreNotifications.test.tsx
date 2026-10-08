@@ -15,9 +15,9 @@ afterEach(() => {
 const VIDE = 'Aucune notification - effectuez un virement pour voir les messages publies via ActiveMQ Artemis en temps reel';
 // De la plus récente à la plus ancienne, comme le service les rend.
 const NOTIFICATIONS: readonly NotificationBrute[] = [
-  { id: 3, type: 'FRAUDE', message: 'Virement suspendu', creeLe: '2026-11-17T11:00:00Z', lue: false },
-  { id: 2, type: 'ALERTE', message: 'Virement important', creeLe: '2026-11-17T10:00:00Z', lue: true },
-  { id: 1, type: 'CONFIRMATION', message: 'Virement confirmé', creeLe: '2026-07-01T10:00:00Z', lue: false },
+  { id: 3, type: 'FRAUDE', titre: null, message: 'Virement suspendu', creeLe: '2026-11-17T11:00:00Z', lue: false },
+  { id: 2, type: 'ALERTE', titre: null, message: 'Virement important', creeLe: '2026-11-17T10:00:00Z', lue: true },
+  { id: 1, type: 'CONFIRMATION', titre: null, message: 'Virement confirmé', creeLe: '2026-07-01T10:00:00Z', lue: false },
 ];
 const liste = (notifications: readonly NotificationBrute[]): Promise<ReponseNotifications> =>
   Promise.resolve({ statut: 'liste', notifications });
@@ -49,6 +49,22 @@ describe('section Centre de notifications', () => {
     expect(screen.getByTestId('notifications-message-3').textContent).toBe('Virement suspendu');
     expect(screen.getByTestId('notifications-horodatage-3').textContent).toBe('17/11/2026 12:00:00');
     expect(screen.getByTestId('notifications-horodatage-1').textContent).toBe('01/07/2026 12:00:00');
+  });
+
+  it('[FR-004-12] affiche le titre avant le message quand il existe, et rien quand il est nul', async () => {
+    ouvrir({
+      lister: () =>
+        liste([
+          { id: 4, type: 'ALERTE', titre: 'Virement programmé non exécuté', message: 'Texte rendu', creeLe: '2026-11-17T12:00:00Z', lue: false },
+          ...NOTIFICATIONS,
+        ]),
+    });
+    await screen.findByTestId('notifications-notification-4');
+
+    const titre = screen.getByTestId('notifications-titre-4');
+    expect(titre.textContent).toBe('Virement programmé non exécuté');
+    expect(titre.compareDocumentPosition(screen.getByTestId('notifications-message-4')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByTestId('notifications-titre-3')).toBeNull();
   });
 
   it('[FR-025-05] l’icône est décorative (aria-hidden) et le titre technique n’est pas affiché', async () => {

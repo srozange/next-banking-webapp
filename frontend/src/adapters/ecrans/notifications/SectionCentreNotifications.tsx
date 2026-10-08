@@ -108,6 +108,11 @@ export function SectionCentreNotifications({ client }: Proprietes) {
                       />
                     )}
                   </p>
+                  {notification.titre !== null && (
+                    <p className="centre-notifications__titre-notification" data-testid={`notifications-titre-${notification.id}`}>
+                      {notification.titre}
+                    </p>
+                  )}
                   <p className="centre-notifications__message" data-testid={`notifications-message-${notification.id}`}>
                     {notification.message}
                   </p>

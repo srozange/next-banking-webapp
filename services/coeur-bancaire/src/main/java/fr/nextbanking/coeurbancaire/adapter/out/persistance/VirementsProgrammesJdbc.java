@@ -97,6 +97,28 @@ public class VirementsProgrammesJdbc implements VirementsProgrammes {
     }
 
     @Override
+    public boolean desactiver(long id, Instant echeancePrevue) {
+        return jdbc.sql("""
+                update virements_programmes set actif = false
+                where id = :id and actif and prochaine_execution = :prevue""")
+                .param("id", id)
+                .param("prevue", Timestamp.from(echeancePrevue))
+                .update() > 0;
+    }
+
+    @Override
+    public boolean marquerNotifiee(long id, Instant echeance, Instant le) {
+        return jdbc.sql("""
+                insert into echeances_notifiees (virement_programme_id, echeance, notifiee_le)
+                values (:id, :echeance, :le)
+                on conflict do nothing""")
+                .param("id", id)
+                .param("echeance", Timestamp.from(echeance))
+                .param("le", Timestamp.from(le))
+                .update() > 0;
+    }
+
+    @Override
     public boolean supprimer(long id, long clientId) {
         return jdbc.sql("delete from virements_programmes where id = :id and client_id = :clientId")
                 .param("id", id)

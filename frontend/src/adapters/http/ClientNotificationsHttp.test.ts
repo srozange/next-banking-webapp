@@ -3,7 +3,7 @@ import { creerClientNotificationsHttp } from './ClientNotificationsHttp';
 
 const json = (corps: unknown, status: number) => Promise.resolve(new Response(JSON.stringify(corps), { status }));
 const vide = (status: number) => Promise.resolve(new Response(null, { status }));
-const notification = { id: 3, type: 'FRAUDE', message: 'm', creeLe: '2026-11-17T11:00:00Z', lue: false };
+const notification = { id: 3, type: 'FRAUDE', titre: null, message: 'm', creeLe: '2026-11-17T11:00:00Z', lue: false };
 
 describe('ClientNotificationsHttp', () => {
   it('[FR-002-07] lit les notifications sans aucun paramètre', async () => {
@@ -21,6 +21,8 @@ describe('ClientNotificationsHttp', () => {
     ['une notification nulle', () => json([null], 200)],
     ['un identifiant illisible', () => json([{ ...notification, id: 'a' }], 200)],
     ['un type absent', () => json([{ ...notification, type: 1 }], 200)],
+    ['un titre illisible', () => json([{ ...notification, titre: 3 }], 200)],
+    ['un titre absent', () => json([{ id: 3, type: 'FRAUDE', message: 'm', creeLe: '2026-11-17T11:00:00Z', lue: false }], 200)],
     ['un message absent', () => json([{ ...notification, message: null }], 200)],
     ['une date absente', () => json([{ ...notification, creeLe: 1 }], 200)],
     ['une date illisible', () => json([{ ...notification, creeLe: 'hier' }], 200)],

@@ -9,6 +9,7 @@ const estNotification = (valeur: unknown): valeur is NotificationBrute => {
   return (
     typeof notification?.id === 'number' &&
     typeof notification.type === 'string' &&
+    (notification.titre === null || typeof notification.titre === 'string') &&
     typeof notification.message === 'string' &&
     typeof notification.creeLe === 'string' &&
     !Number.isNaN(Date.parse(notification.creeLe)) &&

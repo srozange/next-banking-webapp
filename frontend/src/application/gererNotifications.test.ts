@@ -11,8 +11,8 @@ import {
 const LISTE: ReponseNotifications = {
   statut: 'liste',
   notifications: [
-    { id: 3, type: 'FRAUDE', message: 'trois', creeLe: '2026-11-17T11:00:00Z', lue: false },
-    { id: 2, type: 'ALERTE', message: 'deux', creeLe: '2026-11-17T10:00:00Z', lue: true },
+    { id: 3, type: 'FRAUDE', titre: null, message: 'trois', creeLe: '2026-11-17T11:00:00Z', lue: false },
+    { id: 2, type: 'ALERTE', titre: null, message: 'deux', creeLe: '2026-11-17T10:00:00Z', lue: true },
   ],
 };
 const EFFECTUEE: ReponseActionNotifications = { statut: 'effectuee' };

@@ -1,6 +1,8 @@
 package fr.nextbanking.notifications.infrastructure;
 
+import fr.nextbanking.notifications.application.RecevoirEcheanceNonExecuteeCasUsage;
 import fr.nextbanking.notifications.application.RecevoirVirementDecideCasUsage;
+import fr.nextbanking.notifications.application.port.in.RecevoirEcheanceNonExecutee;
 import fr.nextbanking.notifications.application.port.in.RecevoirVirementDecide;
 import fr.nextbanking.notifications.application.port.out.EvenementsTraites;
 import fr.nextbanking.notifications.application.port.out.Horloge;
@@ -12,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Assemble le cas d'usage de réception de la décision d'un virement, écrit en Java pur, et valide au démarrage le
+ * Assemble les cas d'usage de réception de la décision d'un virement et d'une échéance non exécutée, écrit en Java pur, et valide au démarrage le
  * plafond {@code nb.notifications.plafond} : zéro ou négatif empêche le service de démarrer.
  */
 @Configuration
@@ -27,5 +29,13 @@ public class AssemblageReceptionVirementDecide {
     RecevoirVirementDecide recevoirVirementDecide(Notifications notifications, EvenementsTraites evenementsTraites,
             Transaction transaction, Horloge horloge, PlafondNotifications plafond) {
         return new RecevoirVirementDecideCasUsage(notifications, evenementsTraites, transaction, horloge, plafond);
+    }
+
+    @Bean
+    RecevoirEcheanceNonExecutee recevoirEcheanceNonExecutee(Notifications notifications,
+            EvenementsTraites evenementsTraites, Transaction transaction, Horloge horloge,
+            PlafondNotifications plafond) {
+        return new RecevoirEcheanceNonExecuteeCasUsage(notifications, evenementsTraites, transaction, horloge,
+                plafond);
     }
 }

@@ -99,6 +99,11 @@
   background-color: var(--color-primary);
 }
 
+.centre-notifications__titre-notification {
+  color: var(--color-ink);
+  font-weight: var(--font-weight-label);
+}
+
 .centre-notifications__message {
   color: var(--color-ink);
 }

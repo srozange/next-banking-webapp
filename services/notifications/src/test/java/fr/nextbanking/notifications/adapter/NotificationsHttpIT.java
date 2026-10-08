@@ -56,7 +56,8 @@ class NotificationsHttpIT {
         // user1 (id 1) : trois types, du plus ancien au plus récent ; user2 (id 2) : deux notifications.
         inserer(1, "CONFIRMATION", "confirmation de user1", true, "2026-11-17T09:00:00Z");
         inserer(2, "ALERTE", "alerte de user2", false, "2026-11-17T09:30:00Z");
-        inserer(1, "ALERTE", "alerte de user1", false, "2026-11-17T10:00:00.123456Z");
+        insererEcheance(1, "ALERTE", "Virement programmé non exécuté", "alerte de user1", false,
+                "2026-11-17T10:00:00.123456Z");
         inserer(2, "FRAUDE", "fraude de user2", false, "2026-11-17T10:30:00Z");
         inserer(1, "FRAUDE", "fraude de user1", false, "2026-11-17T11:00:00Z");
     }
@@ -64,9 +65,18 @@ class NotificationsHttpIT {
     private void inserer(long clientId, String type, String message, boolean lue, String creeLe) {
         jdbc.sql("""
                 insert into notifications (virement_id, client_id, type, titre, message, lue, cree_le)
-                values (10, :c, :t, 'titre non affiché', :m, :l, cast(:d as timestamptz))""")
+                values (10, :c, :t, null, :m, :l, cast(:d as timestamptz))""")
                 .param("c", clientId).param("t", type).param("m", message).param("l", lue).param("d", creeLe)
                 .update();
+    }
+
+    private void insererEcheance(long clientId, String type, String titre, String message, boolean lue,
+            String creeLe) {
+        jdbc.sql("""
+                insert into notifications (virement_programme_id, client_id, type, titre, message, lue, cree_le)
+                values (3, :c, :t, :titre, :m, :l, cast(:d as timestamptz))""")
+                .param("c", clientId).param("t", type).param("titre", titre).param("m", message).param("l", lue)
+                .param("d", creeLe).update();
     }
 
     @SuppressWarnings("unchecked")
@@ -89,7 +99,9 @@ class NotificationsHttpIT {
                 .containsExactly("fraude de user1", "alerte de user1", "confirmation de user1");
         assertThat(liste).extracting(n -> n.get("type")).containsExactly("FRAUDE", "ALERTE", "CONFIRMATION");
         assertThat(liste).extracting(n -> n.get("lue")).containsExactly(false, false, true);
-        assertThat(liste.getFirst().keySet()).containsExactlyInAnyOrder("id", "type", "message", "creeLe", "lue");
+        assertThat(liste.getFirst().keySet()).containsExactlyInAnyOrder("id", "type", "titre", "message", "creeLe",
+                "lue");
+        assertThat(liste).extracting(n -> n.get("titre")).containsExactly(null, "Virement programmé non exécuté", null);
         assertThat(lister("2")).extracting(n -> n.get("message"))
                 .containsExactly("fraude de user2", "alerte de user2");
         assertThat(lister("3")).isEmpty();

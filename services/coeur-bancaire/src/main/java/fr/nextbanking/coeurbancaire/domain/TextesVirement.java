@@ -210,6 +210,23 @@ public final class TextesVirement {
                 + " minutes (limit: " + nombreMax + ")";
     }
 
+    /** vp.notif.solde.titre */
+    public static final String TITRE_ECHEANCE_SOLDE = "Virement programmé non exécuté";
+    /** vp.notif.introuvable.titre */
+    public static final String TITRE_ECHEANCE_INTROUVABLE = "Virement programmé refusé";
+
+    /** vp.notif.solde.message ({@code {beneficiaire}} = libellé du bénéficiaire). */
+    public static String messageEcheanceSolde(String beneficiaire) {
+        return "Virement programmé vers " + beneficiaire
+                + " non exécuté : solde insuffisant, rien n'a été débité";
+    }
+
+    /** vp.notif.introuvable.message ({@code {beneficiaire}} = libellé du bénéficiaire). */
+    public static String messageEcheanceIntrouvable(String beneficiaire) {
+        return "Virement programmé vers " + beneficiaire
+                + " refusé : compte destinataire introuvable, rien n'a été débité";
+    }
+
     /** MSG-021-001 et MSG-021-002 : opération DEBIT d'une échéance (le motif absent n'est pas repris). */
     public static String libelleDebitProgramme(String libelleBeneficiaire, String motif) {
         return avecMotif("Virement programme vers " + libelleBeneficiaire, motif);

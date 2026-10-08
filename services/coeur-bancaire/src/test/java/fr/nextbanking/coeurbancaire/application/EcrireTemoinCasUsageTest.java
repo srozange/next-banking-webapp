@@ -50,6 +50,11 @@ class EcrireTemoinCasUsageTest {
         }
 
         @Override
+        public long consigner(fr.nextbanking.coeurbancaire.domain.EcheanceNonExecutee evenement) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public void publier(long idLigne) {
             journal.add("publier " + idLigne);
         }

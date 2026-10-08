@@ -23,7 +23,7 @@ class GererNotificationsCasUsageTest {
         private final List<NotificationDuClient> lignes = new ArrayList<>();
 
         void ajouter(long clientId, String message, boolean lue) {
-            lignes.add(new NotificationDuClient(lignes.size() + 1L, clientId, "CONFIRMATION", message, lue, T));
+            lignes.add(new NotificationDuClient(lignes.size() + 1L, clientId, "CONFIRMATION", null, message, lue, T));
         }
 
         @Override
@@ -50,7 +50,7 @@ class GererNotificationsCasUsageTest {
         @Override
         public void marquerToutesLues(long clientId) {
             lignes.replaceAll(n -> n.clientId() == clientId
-                    ? new NotificationDuClient(n.id(), n.clientId(), n.type(), n.message(), true, n.creeLe()) : n);
+                    ? new NotificationDuClient(n.id(), n.clientId(), n.type(), n.titre(), n.message(), true, n.creeLe()) : n);
         }
 
         @Override

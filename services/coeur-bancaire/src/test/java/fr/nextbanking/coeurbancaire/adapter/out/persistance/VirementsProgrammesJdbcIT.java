@@ -175,4 +175,39 @@ class VirementsProgrammesJdbcIT {
                 Instant.parse("2026-12-17T07:00:00Z"), Instant.parse("2026-11-17T07:04:00Z"))).isFalse();
         assertThat(virements.listerDuClient(1).getFirst().nbExecutions()).isZero();
     }
+
+    @Test
+    @Tag("FR-004-12")
+    @Tag("FR-021-04")
+    void la_desactivation_est_conditionnelle_a_l_echeance_prevue_et_a_l_etat_actif() {
+        VirementProgramme cree = enregistrer(1, null, "2027-01-01", "2026-11-17T07:00:00Z");
+        Instant prevue = cree.prochaineExecution();
+
+        assertThat(virements.desactiver(cree.id(), prevue.plusSeconds(1))).isFalse();
+        assertThat(virements.listerDuClient(1).getFirst().actif()).isTrue();
+        assertThat(virements.desactiver(cree.id(), prevue)).isTrue();
+        assertThat(virements.desactiver(cree.id(), prevue)).isFalse();
+
+        VirementProgramme relu = virements.listerDuClient(1).getFirst();
+        assertThat(relu.actif()).isFalse();
+        assertThat(relu.prochaineExecution()).isEqualTo(prevue);
+        assertThat(relu.nbExecutions()).isZero();
+    }
+
+    @Test
+    @Tag("FR-004-12")
+    @Tag("FR-021-04")
+    void la_marque_de_notification_n_est_posee_qu_une_fois_par_virement_et_par_echeance() {
+        Instant echeance = Instant.parse("2026-11-17T07:00:00Z");
+        Instant le = Instant.parse("2026-11-17T09:00:00Z");
+
+        assertThat(virements.marquerNotifiee(5, echeance, le)).isTrue();
+        assertThat(virements.marquerNotifiee(5, echeance, le.plusSeconds(300))).isFalse();
+        assertThat(virements.marquerNotifiee(5, echeance.plusSeconds(3600), le)).isTrue();
+        assertThat(virements.marquerNotifiee(6, echeance, le)).isTrue();
+        assertThat(jdbc.sql("select count(*) from echeances_notifiees").query(Long.class).single()).isEqualTo(3L);
+        assertThat(jdbc.sql("select notifiee_le from echeances_notifiees where virement_programme_id = 5"
+                + " and echeance = :echeance").param("echeance", java.sql.Timestamp.from(echeance))
+                .query(java.sql.Timestamp.class).single().toInstant()).isEqualTo(le);
+    }
 }

@@ -4,6 +4,8 @@
 export interface NotificationBrute {
   id: number;
   type: string;
+  /** Titre rendu par le producteur ; nul pour une notification de virement. */
+  titre: string | null;
   message: string;
   creeLe: string;
   lue: boolean;
@@ -20,6 +22,8 @@ export interface NotificationAffichee {
   /** Icône d'accompagnement (décorative), absente pour un type sans icône prévue. */
   icone: string | null;
   variante: VarianteNotification;
+  /** Titre rendu par le producteur ; nul s'il n'y en a pas (rien n'est alors affiché). */
+  titre: string | null;
   message: string;
   /** `dd/MM/yyyy HH:mm:ss` en Europe/Paris. */
   horodatage: string;
@@ -64,6 +68,7 @@ export function notificationAffichee(notification: NotificationBrute): Notificat
     type: notification.type,
     icone: connu?.icone ?? null,
     variante: connu?.variante ?? 'neutre',
+    titre: notification.titre,
     message: notification.message,
     horodatage: formaterHorodatage(notification.creeLe),
     lue: notification.lue,

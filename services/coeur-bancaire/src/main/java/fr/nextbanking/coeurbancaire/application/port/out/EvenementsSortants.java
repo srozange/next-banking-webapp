@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.application.port.out;
 
+import fr.nextbanking.coeurbancaire.domain.EcheanceNonExecutee;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
 import fr.nextbanking.coeurbancaire.domain.VirementDecide;
@@ -17,6 +18,9 @@ public interface EvenementsSortants {
 
     /** Consigne la décision d'un virement et sa notification, dans la transaction courante ; rend la ligne. */
     long consigner(VirementDecide evenement);
+
+    /** Consigne une échéance non exécutée et sa notification, dans la transaction courante ; rend la ligne. */
+    long consigner(EcheanceNonExecutee evenement);
 
     /** Publie la ligne d'outbox après validation ; un échec la laisse au relais. */
     void publier(long idLigne);

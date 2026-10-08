@@ -37,6 +37,11 @@ import tools.jackson.databind.json.JsonMapper;
 @Tag("FR-021-08")
 @Tag("FR-021-10")
 @Tag("FR-004-07")
+@Tag("FR-004-12")
+@Tag("FR-004-13")
+@Tag("FR-021-04")
+@Tag("BUG-014")
+@Tag("BUG-068")
 class EcheancesIT {
 
     @DynamicPropertySource
@@ -137,17 +142,66 @@ class EcheancesIT {
                 .single().toInstant()).isEqualTo(Instant.parse("2026-02-15T07:00:00Z"));
     }
 
+    private List<String> evenements() {
+        return jdbc.sql("select charge from outbox where topic = 'coeur-bancaire.echeance-non-executee.v1'"
+                + " order by id").query(String.class).list();
+    }
+
     @Test
-    void un_solde_insuffisant_laisse_l_echeance_due_sans_aucune_ecriture() {
-        jdbc.sql("update comptes set solde = 10.00 where id = 1").update();
+    void un_solde_insuffisant_laisse_l_echeance_due_sans_ecriture_et_notifie_une_seule_fois() {
+        jdbc.sql("update comptes set solde = 99.99 where id = 1").update();
 
         assertThat(echeances.executerLesDues()).isZero();
 
         assertThat(jdbc.sql("select count(*) from operations").query(Long.class).single()).isZero();
         assertThat(jdbc.sql("select count(*) from virements").query(Long.class).single()).isZero();
+        assertThat(jdbc.sql("select solde from comptes where id = 1").query(java.math.BigDecimal.class).single())
+                .isEqualByComparingTo("99.99");
         assertThat(jdbc.sql("select nb_executions from virements_programmes").query(Integer.class).single())
                 .isZero();
-        assertThat(jdbc.sql("select count(*) from virements_programmes where derniere_execution is null")
-                .query(Long.class).single()).isEqualTo(1);
+        assertThat(jdbc.sql("select count(*) from virements_programmes where derniere_execution is null"
+                + " and actif and prochaine_execution = '2026-01-15T07:00:00Z'").query(Long.class).single())
+                .isEqualTo(1);
+        List<String> charges = evenements();
+        assertThat(charges).hasSize(1);
+        var donnees = json.readTree(charges.getFirst()).get("donnees");
+        assertThat(donnees.get("virementProgrammeId").asLong()).isEqualTo(1L);
+        assertThat(donnees.get("notification").get("clientId").asLong()).isEqualTo(1L);
+        assertThat(donnees.get("notification").get("type").asString()).isEqualTo("ALERTE");
+        assertThat(donnees.get("notification").get("titre").asString()).isEqualTo("Virement programmé non exécuté");
+        assertThat(donnees.get("notification").get("message").asString()).isEqualTo(
+                "Virement programmé vers Livret non exécuté : solde insuffisant, rien n'a été débité");
+
+        horloge.regler(Instant.parse("2026-01-15T07:09:00Z"));
+        assertThat(echeances.executerLesDues()).isZero();
+        assertThat(evenements()).hasSize(1);
+
+        jdbc.sql("update comptes set solde = 2130.00 where id = 1").update();
+        horloge.regler(Instant.parse("2026-01-15T07:14:00Z"));
+        assertThat(echeances.executerLesDues()).isEqualTo(1);
+        assertThat(evenements()).hasSize(1);
+    }
+
+    @Test
+    void un_compte_destinataire_introuvable_est_refuse_avant_le_solde_et_desactive_le_virement() {
+        jdbc.sql("update comptes set solde = 10.00 where id = 1").update();
+        jdbc.sql("update virements_programmes set numero_beneficiaire = 'FR76-9999-9999'").update();
+
+        assertThat(echeances.executerLesDues()).isZero();
+
+        assertThat(jdbc.sql("select count(*) from operations").query(Long.class).single()).isZero();
+        assertThat(jdbc.sql("select count(*) from virements").query(Long.class).single()).isZero();
+        assertThat(jdbc.sql("select solde from comptes where id = 1").query(java.math.BigDecimal.class).single())
+                .isEqualByComparingTo("10.00");
+        assertThat(jdbc.sql("select actif from virements_programmes").query(Boolean.class).single()).isFalse();
+        List<String> charges = evenements();
+        assertThat(charges).hasSize(1);
+        assertThat(json.readTree(charges.getFirst()).get("donnees").get("notification").get("titre").asString())
+                .isEqualTo("Virement programmé refusé");
+
+        horloge.regler(Instant.parse("2026-01-15T07:09:00Z"));
+        assertThat(echeances.executerLesDues()).isZero();
+        assertThat(evenements()).hasSize(1);
+        assertThat(jdbc.sql("select count(*) from echeances_notifiees").query(Long.class).single()).isEqualTo(1L);
     }
 }

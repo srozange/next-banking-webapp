@@ -69,11 +69,13 @@ public class PointEntreeNotifications {
         }
     }
 
-    /** Notification : champs en français, {@code creeLe} en instant ISO-8601 UTC. Le titre n'est pas servi. */
-    public record NotificationJson(long id, String type, String message, String creeLe, boolean lue) {
+    /** Notification : champs en français, {@code creeLe} en instant ISO-8601 UTC. Le titre est nul pour une notification de virement. */
+    public record NotificationJson(long id, String type, String titre, String message, String creeLe,
+            boolean lue) {
 
         static NotificationJson de(NotificationDuClient notification) {
-            return new NotificationJson(notification.id(), notification.type(), notification.message(),
+            return new NotificationJson(notification.id(), notification.type(), notification.titre(),
+                    notification.message(),
                     notification.creeLe().truncatedTo(ChronoUnit.MILLIS).toString(), notification.lue());
         }
     }

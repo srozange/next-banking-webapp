@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationsJdbc implements Notifications {
 
-    private static final String LECTURE = "select id, client_id, type, message, lue, cree_le from notifications";
+    private static final String LECTURE = "select id, client_id, type, titre, message, lue, cree_le from notifications";
 
     private final JdbcClient jdbc;
 
@@ -29,9 +29,11 @@ public class NotificationsJdbc implements Notifications {
     @Override
     public void ajouter(Notification notification) {
         jdbc.sql("""
-                insert into notifications (virement_id, client_id, type, titre, message, lue, cree_le)
-                values (:virementId, :clientId, :type, :titre, :message, :lue, :creeLe)""")
+                insert into notifications (virement_id, virement_programme_id, client_id, type, titre, message, lue,
+                    cree_le)
+                values (:virementId, :virementProgrammeId, :clientId, :type, :titre, :message, :lue, :creeLe)""")
                 .param("virementId", notification.virementId())
+                .param("virementProgrammeId", notification.virementProgrammeId())
                 .param("clientId", notification.clientId())
                 .param("type", notification.type())
                 .param("titre", notification.titre())
@@ -85,7 +87,7 @@ public class NotificationsJdbc implements Notifications {
 
     private static NotificationDuClient notification(ResultSet ligne, int rang) throws SQLException {
         return new NotificationDuClient(ligne.getLong("id"), ligne.getLong("client_id"), ligne.getString("type"),
-                ligne.getString("message"), ligne.getBoolean("lue"),
+                ligne.getString("titre"), ligne.getString("message"), ligne.getBoolean("lue"),
                 ligne.getObject("cree_le", OffsetDateTime.class).toInstant());
     }
 }

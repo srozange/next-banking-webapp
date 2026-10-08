@@ -28,6 +28,32 @@ class NotificationTest {
     }
 
     @Test
+    @Tag("FR-004-12")
+    @Tag("FR-021-04")
+    void une_notification_d_echeance_se_rattache_au_virement_programme_et_garde_son_titre() {
+        Notification notification = Notification.recuePourEcheance(3, 7, "ALERTE", "Titre", "Texte", T);
+
+        assertThat(notification.virementId()).isNull();
+        assertThat(notification.virementProgrammeId()).isEqualTo(3L);
+        assertThat(notification.titre()).isEqualTo("Titre");
+        assertThat(notification.lue()).isFalse();
+    }
+
+    @Test
+    @Tag("FR-004-12")
+    @Tag("FR-021-04")
+    void exactement_un_rattachement_positif_est_exige() {
+        assertThatThrownBy(() -> new Notification(null, null, 7, "ALERTE", null, "m", false, T))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Notification(12L, 3L, 7, "ALERTE", null, "m", false, T))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Notification.recuePourEcheance(0, 7, "ALERTE", "t", "m", T))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Notification.recuePourEcheance(3, 0, "ALERTE", "t", "m", T))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void refuse_une_notification_incomplete() {
         assertThatThrownBy(() -> Notification.recue(0, 7, "ALERTE", null, "m", T))
                 .isInstanceOf(IllegalArgumentException.class);

@@ -4,6 +4,7 @@ import { compterNonLues, formaterHorodatage, notificationAffichee, type Notifica
 const brute = (id: number, type: string, lue: boolean, creeLe = '2026-11-17T09:05:07Z'): NotificationBrute => ({
   id,
   type,
+  titre: null,
   message: `message ${id}`,
   creeLe,
   lue,
@@ -46,10 +47,17 @@ describe('notificationAffichee', () => {
       type,
       icone,
       variante,
+      titre: null,
       message: 'message 4',
       horodatage: '17/11/2026 10:05:07',
       lue: false,
     });
+  });
+
+  it('[FR-004-12] le titre rendu par le producteur est conservé', () => {
+    expect(notificationAffichee({ ...brute(6, 'ALERTE', false), titre: 'Virement programmé non exécuté' }).titre).toBe(
+      'Virement programmé non exécuté',
+    );
   });
 
   it('[FR-025-05] un type sans icône prévue garde son libellé, sans icône ni variante', () => {

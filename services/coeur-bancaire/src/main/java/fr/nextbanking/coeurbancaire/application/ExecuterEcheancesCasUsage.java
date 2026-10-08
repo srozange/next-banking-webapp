@@ -4,6 +4,7 @@ import fr.nextbanking.coeurbancaire.application.EcritureAudit.Entree;
 import fr.nextbanking.coeurbancaire.application.port.in.ExecuterEcheances;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.application.port.out.DepotVirements;
+import fr.nextbanking.coeurbancaire.application.port.out.EvenementsSortants;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalAudit;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalBatch;
@@ -17,10 +18,12 @@ import fr.nextbanking.coeurbancaire.domain.CompteId;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude.Decision;
 import fr.nextbanking.coeurbancaire.domain.ControleFraude.Evaluation;
 import fr.nextbanking.coeurbancaire.domain.DemandeVirement;
+import fr.nextbanking.coeurbancaire.domain.EcheanceNonExecutee;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.Motif;
+import fr.nextbanking.coeurbancaire.domain.NotificationVirement;
 import fr.nextbanking.coeurbancaire.domain.SeuilsFraude;
 import fr.nextbanking.coeurbancaire.domain.Soumission;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
@@ -31,6 +34,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,8 +42,11 @@ import java.util.logging.Logger;
  * Cas d'usage planifié : exécute les échéances dues des virements programmés (FEAT-021). Une échéance par virement et
  * par passage, chacune dans sa transaction : numéro du bénéficiaire, verrou des deux comptes, prise conditionnelle de
  * l'échéance (une prise perdue est sans effet), solde, contrôle de fraude puis débit, crédit et deux opérations. Un
- * échec isole l'échéance (annulée entièrement) sans arrêter les autres. Aucune notification. Chaque passage écrit une
- * ligne {@code RECURRING_TRANSFERS} au journal d'exécution.
+ * échec isole l'échéance (annulée entièrement) sans arrêter les autres. Une échéance exécutée ne notifie pas ; une
+ * échéance dont le destinataire est introuvable (évalué avant le solde) est refusée et désactivée, une échéance au
+ * solde insuffisant reste due (transaction annulée) : chacune notifie le client une seule fois (événement par
+ * l'outbox, seconde transaction pour le solde insuffisant). Chaque passage écrit une ligne {@code RECURRING_TRANSFERS}
+ * au journal d'exécution.
  */
 public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
 
@@ -55,13 +62,14 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
     private final EcritureAudit audit;
     private final JournalBatch journalBatch;
     private final Transaction transaction;
+    private final EvenementsSortants evenements;
     private final Horloge horloge;
     private final SeuilsFraude seuils;
     private final ControleFraudeCasUsage controle;
 
     public ExecuterEcheancesCasUsage(VirementsProgrammes echeances, Comptes comptes, Operations operations,
             DepotVirements virements, JournalAudit audit, JournalBatch journalBatch, Transaction transaction,
-            Horloge horloge, SeuilsFraude seuils, ControleFraudeCasUsage controle) {
+            EvenementsSortants evenements, Horloge horloge, SeuilsFraude seuils, ControleFraudeCasUsage controle) {
         this.echeances = echeances;
         this.comptes = comptes;
         this.operations = operations;
@@ -69,6 +77,7 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         this.audit = new EcritureAudit(audit, transaction);
         this.journalBatch = journalBatch;
         this.transaction = transaction;
+        this.evenements = evenements;
         this.horloge = horloge;
         this.seuils = seuils;
         this.controle = controle;
@@ -96,6 +105,7 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
             } catch (ErreurVirement refus) {
                 if (refus.motif() == Cause.SOLDE_INSUFFISANT) {
                     JOURNAL.warning(TextesVirement.journalSoldeInsuffisant(due.id()));
+                    notifierSoldeInsuffisant(due, echecs);
                 } else {
                     echouer(due, echecs, refus);
                 }
@@ -120,15 +130,17 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         echecs.add(texte);
     }
 
-    /** Exécute l'échéance dans sa transaction ; faux si elle est ignorée (destinataire introuvable, prise perdue). */
+    /** Exécute l'échéance dans sa transaction ; faux si elle n'est pas exécutée (destinataire introuvable, prise perdue). */
     private boolean executer(VirementProgramme due) {
         Instant executeLe = horloge.instant();
-        Optional<Execution> execution = Optional.ofNullable(
-                transaction.executer(() -> ecrire(due, executeLe)));
-        if (execution.isEmpty()) {
+        Resultat resultat = transaction.executer(() -> ecrire(due, executeLe));
+        if (resultat.ligne() != null) {
+            evenements.publier(resultat.ligne());
+        }
+        if (resultat.execution() == null) {
             return false;
         }
-        Virement virement = execution.get().virement();
+        Virement virement = resultat.execution().virement();
         String montant = virement.montant().texte();
         String utilisateur = Long.toString(due.clientId());
         audit.ecrire(virement.id(), executeLe, List.of(
@@ -140,11 +152,11 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         return true;
     }
 
-    private Execution ecrire(VirementProgramme due, Instant executeLe) {
+    private Resultat ecrire(VirementProgramme due, Instant executeLe) {
         Optional<Compte> beneficiaire = comptes.parNumero(due.numeroBeneficiaire());
         if (beneficiaire.isEmpty()) {
             JOURNAL.warning(TextesVirement.journalEchec(due.id()));
-            return null;
+            return refuser(due);
         }
         long sourceId = due.compteSourceId();
         long destinataireId = beneficiaire.get().id();
@@ -153,7 +165,7 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         Compte destinataire = trouver(verrouilles, destinataireId);
         Instant prochaine = due.frequence().suivante(due.prochaineExecution(), horloge.fuseau());
         if (!echeances.prendreEcheance(due.id(), due.prochaineExecution(), prochaine, executeLe)) {
-            return null;
+            return Resultat.AUCUN;
         }
         Virement.verifierEcheance(due.clientId(), source, due.montant());
         Evaluation evaluation = controle.evaluer(due.clientId(), due.montant().valeur(), destinataire.numero(),
@@ -177,7 +189,47 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         comptes.crediter(new CompteId(destinataireId), due.montant());
         operations.enregistrer(execution.debit());
         operations.enregistrer(execution.credit());
-        return execution;
+        return new Resultat(execution, null);
+    }
+
+    /**
+     * Refus « compte introuvable », avant tout contrôle du solde : désactive le virement programmé (mise à jour
+     * conditionnelle, une désactivation perdue est sans effet), marque l'échéance et consigne l'événement dans la
+     * même transaction. Aucune écriture de compte, d'opération ni de virement.
+     */
+    private Resultat refuser(VirementProgramme due) {
+        if (!echeances.desactiver(due.id(), due.prochaineExecution())) {
+            return Resultat.AUCUN;
+        }
+        Long ligne = consignerNotification(due,
+                NotificationVirement.pourEcheanceCompteIntrouvable(due.clientId(), due.libelleBeneficiaire()));
+        return new Resultat(null, ligne);
+    }
+
+    /**
+     * Solde insuffisant : la transaction d'exécution est annulée (échéance intacte, toujours due) ; la notification est
+     * écrite dans une seconde transaction, puis publiée après validation. Un échec de cette écriture est compté en
+     * échec du passage.
+     */
+    private void notifierSoldeInsuffisant(VirementProgramme due, List<String> echecs) {
+        try {
+            Long ligne = transaction.executer(() -> consignerNotification(due,
+                    NotificationVirement.pourEcheanceSoldeInsuffisant(due.clientId(), due.libelleBeneficiaire())));
+            if (ligne != null) {
+                evenements.publier(ligne);
+            }
+        } catch (RuntimeException echec) {
+            echouer(due, echecs, echec);
+        }
+    }
+
+    /** Marque l'échéance notifiée et consigne l'événement ; rend la ligne d'outbox, ou nul si déjà notifiée. */
+    private Long consignerNotification(VirementProgramme due, NotificationVirement notification) {
+        Instant maintenant = horloge.instant();
+        if (!echeances.marquerNotifiee(due.id(), due.prochaineExecution(), maintenant)) {
+            return null;
+        }
+        return evenements.consigner(new EcheanceNonExecutee(UUID.randomUUID(), due.id(), notification, maintenant));
     }
 
     private static Compte trouver(List<Compte> comptes, long id) {
@@ -191,6 +243,11 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         } catch (RuntimeException echec) {
             JOURNAL.log(Level.SEVERE, "Ligne du journal d'exécution " + JOB + " non écrite", echec);
         }
+    }
+
+    /** Issue de l'écriture d'une échéance : virement exécuté, et ligne d'outbox à publier après validation. */
+    private record Resultat(Execution execution, Long ligne) {
+        static final Resultat AUCUN = new Resultat(null, null);
     }
 
     /** Échéance non exécutée (suspendue par le contrôle de fraude) : annule la transaction, sans échec compté. */
