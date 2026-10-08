@@ -74,7 +74,7 @@ development_status:
 
   epic-4: backlog
   4-1-consulter-ses-bénéficiaires-externes-et-en-supprimer-un: done
-  4-2-vérifier-un-iban-et-ajouter-un-bénéficiaire: backlog
+  4-2-vérifier-un-iban-et-ajouter-un-bénéficiaire: done
   4-3-créer-un-virement-programmé-et-voir-ses-virements-programmés: backlog
   4-4-suspendre-réactiver-ou-supprimer-un-virement-programmé: backlog
   4-5-journaliser-les-traitements-planifiés-relevés-mensuels-et-se: optional
