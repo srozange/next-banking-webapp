@@ -58,13 +58,13 @@ function serviceBourse({ valeurs = REFERENCE, series = {}, graphique = SVG }: Op
   let liste = [...valeurs];
   const par = {
     lireWatchlist: vi.fn<ClientBourse['lireWatchlist']>(() => Promise.resolve({ statut: 'ok', donnees: [...liste] })),
-    lireHistorique: vi.fn<ClientBourse['lireHistorique']>((_jeton, symbole, periode) =>
+    lireHistorique: vi.fn<ClientBourse['lireHistorique']>((symbole, periode) =>
       Promise.resolve({
         statut: 'ok',
         donnees: { symbole, periode, points: series[symbole] ?? [], graphique: (series[symbole]?.length ?? 0) > 0 ? graphique : null },
       }),
     ),
-    ajouter: vi.fn<ClientBourse['ajouter']>((_jeton, demande) => {
+    ajouter: vi.fn<ClientBourse['ajouter']>((demande) => {
       const symbole = demande.symbole.trim().toUpperCase();
       if (symbole === '') {
         return Promise.resolve<ReponseAjout>({ statut: 'refusee', message: 'Le symbole est obligatoire (ex: AMZN, SG.PA)' });
@@ -79,7 +79,7 @@ function serviceBourse({ valeurs = REFERENCE, series = {}, graphique = SVG }: Op
       liste = [...liste, ajoutee];
       return Promise.resolve<ReponseAjout>({ statut: 'ok', donnees: ajoutee });
     }),
-    retirer: vi.fn<ClientBourse['retirer']>((_jeton, id) => {
+    retirer: vi.fn<ClientBourse['retirer']>((id) => {
       liste = liste.filter((existante) => existante.id !== id);
       return Promise.resolve<ReponseBourse<null>>({ statut: 'ok', donnees: null });
     }),
@@ -148,7 +148,7 @@ describe('écran Bourse : ouverture', () => {
     expect(screen.getByTestId('bourse-contenu').getAttribute('aria-busy')).toBe('true');
     expect(screen.queryByTestId('bourse-valeur')).toBeNull();
     await waitFor(() => expect(service.lireHistorique).toHaveBeenCalledOnce());
-    expect(service.lireHistorique).toHaveBeenCalledWith(expect.any(String), 'AI.PA', '1M');
+    expect(service.lireHistorique).toHaveBeenCalledWith('AI.PA', '1M');
     expect(screen.queryByTestId('bourse-valeur')).toBeNull();
 
     rendre({ statut: 'technique' });
@@ -220,7 +220,7 @@ describe('écran Bourse : indicateurs, graphique et séances', () => {
     expect(screen.getByText('▲ +1.50%').className).toContain('ecran-bourse--hausse');
     expect(screen.getByText('+1.50 USD').className).toContain('ecran-bourse--hausse');
     expect(screen.getByText('101.50 USD')).toBeTruthy();
-    expect(service.lireHistorique).toHaveBeenLastCalledWith(expect.any(String), 'MSFT', '1M');
+    expect(service.lireHistorique).toHaveBeenLastCalledWith('MSFT', '1M');
   });
 
   it('[FR-009-06][FR-029-08] affiche le SVG du service dans une carte image nommée, sous son titre', async () => {
@@ -297,7 +297,7 @@ describe('écran Bourse : valeur et période', () => {
     const { service } = await ecranCharge();
 
     await utilisateur.selectOptions(liste('bourse-periode'), '5Y');
-    await waitFor(() => expect(service.lireHistorique).toHaveBeenLastCalledWith(expect.any(String), 'AI.PA', '5Y'));
+    await waitFor(() => expect(service.lireHistorique).toHaveBeenLastCalledWith('AI.PA', '5Y'));
     await waitFor(() => expect(screen.getByTestId('bourse-contenu').getAttribute('aria-busy')).toBeNull());
 
     expect(service.lireWatchlist).toHaveBeenCalledOnce();
@@ -325,7 +325,7 @@ describe('écran Bourse : valeur et période', () => {
     const { service } = await ecranCharge();
     const reponses: Array<() => void> = [];
     service.lireHistorique.mockImplementation(
-      (_jeton, symbole, periode) =>
+      (symbole, periode) =>
         new Promise((resolve) => {
           // Première demande (MSFT) : hausse ; dernière demande (GOOGL) : baisse.
           const points = symbole === 'MSFT' ? SERIE_HAUSSE : SERIE_BAISSE;
@@ -459,7 +459,7 @@ describe('écran Bourse : formulaire d’ajout', () => {
     await utilisateur.click(screen.getByTestId('bourse-formulaire-ajouter'));
 
     await waitFor(() => expect(screen.getByTestId('bourse-message-succes').textContent).toBe('Valeur ajoutée !'));
-    expect(service.ajouter).toHaveBeenCalledWith(expect.any(String), {
+    expect(service.ajouter).toHaveBeenCalledWith({
       symbole: 'sg.pa',
       nom: 'Société Générale',
       marche: 'Euronext Paris',
@@ -468,7 +468,7 @@ describe('écran Bourse : formulaire d’ajout', () => {
     expect(screen.queryByTestId('bourse-symbole')).toBeNull();
     expect(document.activeElement).toBe(screen.getByTestId('bourse-ajouter'));
     expect(liste('bourse-valeur').value).toBe('SG.PA');
-    expect(service.lireHistorique).toHaveBeenLastCalledWith(expect.any(String), 'SG.PA', '1M');
+    expect(service.lireHistorique).toHaveBeenLastCalledWith('SG.PA', '1M');
     expect(screen.getByText('⭐ Ma Watchlist (10 valeurs)')).toBeTruthy();
     expect(contenu()).toContain('Société Générale — SG.PA');
   });
@@ -495,7 +495,7 @@ describe('écran Bourse : formulaire d’ajout', () => {
     await utilisateur.click(screen.getByTestId('bourse-formulaire-ajouter'));
 
     await waitFor(() =>
-      expect(service.ajouter).toHaveBeenCalledWith(expect.any(String), { symbole: 'vod.l', nom: 'Vodafone', marche: 'LSE', devise: 'GBP' }),
+      expect(service.ajouter).toHaveBeenCalledWith({ symbole: 'vod.l', nom: 'Vodafone', marche: 'LSE', devise: 'GBP' }),
     );
   });
 
@@ -544,11 +544,11 @@ describe('écran Bourse : retrait', () => {
     await utilisateur.click(screen.getByTestId('bourse-retirer-1'));
 
     await waitFor(() => expect(liste('bourse-valeur').value).toBe('BNP.PA'));
-    expect(service.retirer).toHaveBeenCalledWith(expect.any(String), 1);
+    expect(service.retirer).toHaveBeenCalledWith(1);
     expect(screen.getByText('⭐ Ma Watchlist (8 valeurs)')).toBeTruthy();
     expect(screen.getByText('(8 valeurs)')).toBeTruthy();
     expect(screen.queryByTestId('bourse-retirer-1')).toBeNull();
-    expect(service.lireHistorique).toHaveBeenLastCalledWith(expect.any(String), 'BNP.PA', '1M');
+    expect(service.lireHistorique).toHaveBeenLastCalledWith('BNP.PA', '1M');
   });
 
   it('[FR-009-13] retirer une autre valeur conserve la sélection', async () => {

@@ -1,14 +1,13 @@
 import type { Catalogue, Traitement } from '../domain/produits';
-import { jetonOuFin } from './consulterBourse';
-import type { StockageJeton } from './seConnecter';
+import { sessionOuverteOuFin, type SessionLocale } from './session';
 
 /** Réponse d'un appel à un service, traduite par l'adaptateur HTTP (jamais d'exception). */
 export type ReponseProduits<T> = { statut: 'ok'; donnees: T } | { statut: 'nonAuthentifie' } | { statut: 'technique' };
 
 /** Port sortant : catalogue (open-banking-conseiller) et journal des traitements nocturnes (cœur bancaire). */
 export interface ClientProduits {
-  lireCatalogue(jeton: string): Promise<ReponseProduits<Catalogue>>;
-  lireTraitements(jeton: string): Promise<ReponseProduits<readonly Traitement[]>>;
+  lireCatalogue(): Promise<ReponseProduits<Catalogue>>;
+  lireTraitements(): Promise<ReponseProduits<readonly Traitement[]>>;
 }
 
 /** Ce que montre l'écran ; une partie absente (service en panne) n'est pas affichée, la panne est annoncée. */
@@ -24,17 +23,16 @@ const DECONNECTE: ResultatProduits = { type: 'deconnecte' };
 
 /**
  * Cas d'usage (FR-011-02) : lit le catalogue et le journal en parallèle, jamais en cascade ; sert aussi au
- * « Rafraichir ». Un 401 de l'un des deux termine la session (jeton supprimé) ; la panne de l'un n'empêche pas
+ * « Rafraichir ». Un 401 de l'un des deux termine la session (session terminée) ; la panne de l'un n'empêche pas
  * d'afficher l'autre.
  */
-export async function chargerProduits(client: ClientProduits, stockage: StockageJeton): Promise<ResultatProduits> {
-  const jeton = jetonOuFin(stockage);
-  if (jeton === null) {
+export async function chargerProduits(client: ClientProduits, session: SessionLocale): Promise<ResultatProduits> {
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
-  const [catalogue, traitements] = await Promise.all([client.lireCatalogue(jeton), client.lireTraitements(jeton)]);
+  const [catalogue, traitements] = await Promise.all([client.lireCatalogue(), client.lireTraitements()]);
   if (catalogue.statut === 'nonAuthentifie' || traitements.statut === 'nonAuthentifie') {
-    stockage.supprimer();
+    session.terminer();
     return DECONNECTE;
   }
   return {

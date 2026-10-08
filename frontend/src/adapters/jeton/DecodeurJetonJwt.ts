@@ -1,4 +1,7 @@
-import type { DecodeurJeton } from '../../application/seConnecter';
+/** Lit les rôles portés par un jeton, ou null s'il est illisible. */
+export interface DecodeurJeton {
+  roles(jeton: string): readonly string[] | null;
+}
 
 /** Décode un segment base64url (sans remplissage) en texte UTF-8. */
 function decoderBase64Url(segment: string): string {

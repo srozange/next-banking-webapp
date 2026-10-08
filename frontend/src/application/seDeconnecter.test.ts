@@ -1,34 +1,49 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { StockageJeton } from './seConnecter';
 import { seDeconnecter } from './seDeconnecter';
+import type { SessionLocale } from './session';
 
-function stockage(jeton: string | null) {
-  return { lire: () => jeton, enregistrer: vi.fn(), supprimer: vi.fn() } satisfies StockageJeton;
+function sessionEnMemoire(ouverte = true, roles: readonly string[] | null = null) {
+  let enCours = ouverte;
+  return {
+    ouverte: vi.fn(() => enCours),
+    roles: vi.fn(() => roles),
+    terminer: vi.fn(() => {
+      enCours = false;
+    }),
+    secondesRestantes: vi.fn(() => null),
+  } satisfies SessionLocale;
 }
 
 describe('seDeconnecter', () => {
-  it('[FR-001-10] supprime le jeton, informe le service avec ce jeton et rend /login', () => {
-    const jetons = stockage('jeton-user1');
-    const deconnecter = vi.fn(() => Promise.resolve());
+  it('[FR-001-10] informe le service avant de terminer la session, et rend /login', () => {
+    const session = sessionEnMemoire(true);
+    const ordre: string[] = [];
+    const deconnecter = vi.fn(() => {
+      ordre.push(session.ouverte() ? 'service, session encore ouverte' : 'service, session terminée');
+      return Promise.resolve();
+    });
 
-    expect(seDeconnecter({ deconnecter }, jetons)).toBe('/login');
+    expect(seDeconnecter({ deconnecter }, session)).toBe('/login');
 
-    expect(jetons.supprimer).toHaveBeenCalledOnce();
-    expect(deconnecter).toHaveBeenCalledExactlyOnceWith('jeton-user1');
+    expect(session.terminer).toHaveBeenCalledOnce();
+    expect(deconnecter).toHaveBeenCalledOnce();
+    expect(ordre).toEqual(['service, session encore ouverte']);
   });
 
-  it('[FR-001-10] sans jeton, rend /login sans appeler le service', () => {
+  it('[FR-001-10] sans session, rend /login sans appeler le service', () => {
     const deconnecter = vi.fn(() => Promise.resolve());
+    const session = sessionEnMemoire(false);
 
-    expect(seDeconnecter({ deconnecter }, stockage(null))).toBe('/login');
+    expect(seDeconnecter({ deconnecter }, session)).toBe('/login');
 
     expect(deconnecter).not.toHaveBeenCalled();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
   it('[FR-001-10] une panne du service, asynchrone ou immédiate, ne retient pas l’utilisateur', async () => {
-    const jetons = stockage('jeton');
+    const session = { ...sessionEnMemoire(true), ouverte: () => true };
 
-    expect(seDeconnecter({ deconnecter: () => Promise.reject(new Error('réseau')) }, jetons)).toBe('/login');
+    expect(seDeconnecter({ deconnecter: () => Promise.reject(new Error('réseau')) }, session)).toBe('/login');
     expect(
       seDeconnecter(
         {
@@ -36,11 +51,11 @@ describe('seDeconnecter', () => {
             throw new Error('immédiat');
           },
         },
-        jetons,
+        session,
       ),
     ).toBe('/login');
 
     await Promise.resolve();
-    expect(jetons.supprimer).toHaveBeenCalledTimes(2);
+    expect(session.terminer).toHaveBeenCalledTimes(2);
   });
 });

@@ -6,6 +6,7 @@ import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
 import { jetonDeTest } from '../jeton/jetonDeTest';
 import { creerExpirationJeton } from '../session/ExpirationJetonJwt';
 import { horlogeSysteme } from '../session/horloge';
+import { creerSessionLocale } from '../session/SessionLocaleJwt';
 import { creerSignalExpiration } from '../session/signalExpiration';
 import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
 import { rendreApplication } from '../test/rendreApplication';
@@ -29,12 +30,10 @@ function rendreGarde(chemin: string) {
       {
         element: (
           <RouteProtegee
-            stockage={creerStockageJetonLocal()}
-            decodeur={decodeurJetonJwt}
             clientProfil={{ lire: () => Promise.resolve({ statut: 'profil', nomComplet: 'Jean Dupont' }) }}
             session={{
               client: { deconnecter: () => Promise.resolve(), renouveler: () => Promise.resolve({ statut: 'technique' }) },
-              expiration: creerExpirationJeton(horlogeSysteme),
+              locale: creerSessionLocale(creerStockageJetonLocal(), decodeurJetonJwt, creerExpirationJeton(horlogeSysteme)),
               signal: creerSignalExpiration(),
             }}
           />

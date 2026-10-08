@@ -16,7 +16,7 @@ import {
   type Traitement,
 } from '../../../domain/produits';
 import { chargerProduits, type ClientProduits, type EtatProduits } from '../../../application/consulterProduits';
-import type { StockageJeton } from '../../../application/seConnecter';
+import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
 import { BoutonSecondaire } from '../../ui/BoutonSecondaire';
@@ -27,7 +27,7 @@ const T = TEXTES.produits;
 
 interface Proprietes {
   client: ClientProduits;
-  stockage: StockageJeton;
+  session: SessionLocale;
 }
 
 /** Statuts connus du journal : une classe de couleur ; tout autre statut s'affiche sans badge coloré. */
@@ -42,7 +42,7 @@ const CLASSES_STATUT: Readonly<Record<string, string>> = {
  * (service open-banking-conseiller) et journal des traitements nocturnes (cœur bancaire), chargés en parallèle ;
  * « Rafraichir » refait les deux appels. La panne d'un service n'empêche pas d'afficher l'autre.
  */
-export function EcranProduits({ client, stockage }: Proprietes) {
+export function EcranProduits({ client, session }: Proprietes) {
   const naviguer = useNavigate();
   const [etat, setEtat] = useState<EtatProduits | null>(null);
   const [occupe, setOccupe] = useState(true);
@@ -53,7 +53,7 @@ export function EcranProduits({ client, stockage }: Proprietes) {
   async function charger() {
     const numero = ++demande.current;
     setOccupe(true);
-    const resultat = await chargerProduits(client, stockage);
+    const resultat = await chargerProduits(client, session);
     if (!actif.current || numero !== demande.current) {
       return;
     }

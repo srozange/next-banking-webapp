@@ -122,12 +122,11 @@ describe('écran Produits : accès', () => {
     await waitFor(() => expect(contenu.getAttribute('aria-busy')).toBeNull());
   });
 
-  it('[FR-011-02] appelle les deux services une fois à l’ouverture, avec le jeton', async () => {
-    const jeton = jetonDeTest({ sub: '1', roles: ['CLIENT'] });
+  it('[FR-011-02] appelle les deux services une fois à l’ouverture', async () => {
     const { client } = await ecranCharge();
 
-    expect(client.lireCatalogue).toHaveBeenCalledWith(jeton);
-    expect(client.lireTraitements).toHaveBeenCalledWith(jeton);
+    expect(client.lireCatalogue).toHaveBeenCalledWith();
+    expect(client.lireTraitements).toHaveBeenCalledWith();
     expect(client.lireCatalogue).toHaveBeenCalledTimes(1);
   });
 });

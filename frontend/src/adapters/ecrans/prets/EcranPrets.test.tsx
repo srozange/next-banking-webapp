@@ -126,7 +126,7 @@ describe('écran Prêts', () => {
     for (const etiquette of ['Mensualite', 'Cout total', 'Total interets']) {
       expect(screen.getByText(etiquette, { selector: 'dt' })).toBeTruthy();
     }
-    expect(simuler).toHaveBeenCalledWith(expect.any(String), { montant: '10000', tauxAnnuel: '3.50', dureeMois: '36' });
+    expect(simuler).toHaveBeenCalledWith({ montant: '10000', tauxAnnuel: '3.50', dureeMois: '36' });
 
     const lien = screen.getByTestId('pret-sim-echeancier-lien');
     expect(lien.textContent).toBe('Voir l echeancier complet (36 echeances)');
@@ -170,7 +170,7 @@ describe('écran Prêts', () => {
     await utilisateur.type(champ('pret-sim-duree'), '{Enter}');
 
     await screen.findByTestId('pret-sim-echeancier-lien');
-    expect(simuler).toHaveBeenLastCalledWith(expect.any(String), { montant: '12000', tauxAnnuel: '0', dureeMois: '24' });
+    expect(simuler).toHaveBeenLastCalledWith({ montant: '12000', tauxAnnuel: '0', dureeMois: '24' });
     await utilisateur.click(screen.getByTestId('pret-sim-echeancier-lien'));
     await utilisateur.click(screen.getByTestId('pret-sim-calculer'));
     await waitFor(() => expect(screen.getByTestId('pret-sim-echeancier-lien').getAttribute('aria-expanded')).toBe('false'));
@@ -311,7 +311,7 @@ describe('écran Prêts', () => {
       'Demande transmise au service credit — traitement en cours (rechargez la page dans quelques secondes)',
     );
     expect(info.getAttribute('role')).toBe('status');
-    expect(deposer).toHaveBeenCalledWith(expect.any(String), DEMANDE_SAISIE);
+    expect(deposer).toHaveBeenCalledWith(DEMANDE_SAISIE);
     expect(await screen.findByTestId('pret-statut-3')).toBeTruthy();
     expect(lister).toHaveBeenCalledTimes(2);
     expect(within(tableEmprunts()).getByText('En attente d approbation')).toBeTruthy();
@@ -577,7 +577,7 @@ describe('écran Prêts', () => {
       await utilisateur.click(await screen.findByTestId('pret-voir-1'));
 
       const titre = await screen.findByRole('heading', { name: 'Detail des echeances' });
-      expect(echeances).toHaveBeenCalledWith(expect.any(String), 1);
+      expect(echeances).toHaveBeenCalledWith(1);
       expect(document.activeElement).toBe(titre);
       expect(container.querySelector('.card-muted')?.contains(titre)).toBe(true);
       const separateurs = Array.from(container.querySelectorAll('h2')).map((h) => h.textContent);
@@ -646,7 +646,7 @@ describe('écran Prêts', () => {
       await utilisateur.click(await screen.findByTestId('pret-marquer-paye-1'));
 
       expect((await screen.findByTestId('pret-message-succes')).textContent).toBe('Echeance marquee comme payee');
-      expect(payer).toHaveBeenCalledWith(expect.any(String), 1);
+      expect(payer).toHaveBeenCalledWith(1);
       await waitFor(() => expect(screen.queryByTestId('pret-marquer-paye-1')).toBeNull());
       expect(screen.getByTestId('pret-statut-1').textContent).toBe('Rembourse');
       expect(echeances).toHaveBeenCalledTimes(2);
@@ -725,7 +725,7 @@ describe('écran Prêts', () => {
       await utilisateur.click(screen.getByTestId('pret-supprimer-1'));
 
       await waitFor(() => expect(screen.queryByTestId('pret-statut-1')).toBeNull());
-      expect(supprimer).toHaveBeenCalledWith(expect.any(String), 1);
+      expect(supprimer).toHaveBeenCalledWith(1);
       expect(screen.getByTestId('pret-statut-2')).toBeTruthy();
       expect(screen.queryByText('Detail des echeances')).toBeNull();
       expect(screen.queryByTestId('pret-message-erreur')).toBeNull();

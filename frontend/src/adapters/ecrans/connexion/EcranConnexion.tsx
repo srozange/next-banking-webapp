@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import type { ChampConnexion } from '../../../domain/connexion';
-import { seConnecter, type ClientConnexion, type StockageJeton } from '../../../application/seConnecter';
+import { seConnecter, type ClientConnexion } from '../../../application/seConnecter';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
 import { BoutonPrimaire } from '../../ui/BoutonPrimaire';
@@ -13,7 +13,6 @@ const T = TEXTES.connexion;
 
 interface Proprietes {
   client: ClientConnexion;
-  stockage: StockageJeton;
 }
 
 /** Erreur globale affichée ; `numero` change à chaque soumission pour reprendre le focus. */
@@ -23,7 +22,7 @@ interface ErreurGlobale {
 }
 
 /** Écran /login (FEAT-001) : formulaire soumis par Entrée, validation locale, connexion, accueil du rôle. */
-export function EcranConnexion({ client, stockage }: Proprietes) {
+export function EcranConnexion({ client }: Proprietes) {
   const naviguer = useNavigate();
   const [identifiant, setIdentifiant] = useState('');
   const [motDePasse, setMotDePasse] = useState('');
@@ -48,7 +47,7 @@ export function EcranConnexion({ client, stockage }: Proprietes) {
     }
     envoiEnCours.current = true;
     setOccupe(true);
-    const resultat = await seConnecter(identifiant, motDePasse, client, stockage);
+    const resultat = await seConnecter(identifiant, motDePasse, client);
     if (resultat.type === 'accepte') {
       naviguer(resultat.route, { replace: true });
       return;

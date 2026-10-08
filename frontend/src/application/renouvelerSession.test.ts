@@ -5,10 +5,16 @@ import {
   type ClientRenouvellement,
   type ReponseRenouvellement,
 } from './renouvelerSession';
-import type { StockageJeton } from './seConnecter';
+import type { SessionLocale } from './session';
 
-function stockage(jeton: string | null) {
-  return { lire: vi.fn(() => jeton), enregistrer: vi.fn(), supprimer: vi.fn() } satisfies StockageJeton;
+/** Session simulée : `secondes` est le temps restant lu par la session (null : aucune session lisible). */
+function session(secondes: number | null) {
+  return {
+    ouverte: vi.fn(() => secondes !== null),
+    roles: vi.fn(() => null),
+    terminer: vi.fn(),
+    secondesRestantes: vi.fn(() => secondes),
+  } satisfies SessionLocale;
 }
 
 function client(reponse: ReponseRenouvellement | Error) {
@@ -16,61 +22,51 @@ function client(reponse: ReponseRenouvellement | Error) {
   return { renouveler } satisfies ClientRenouvellement;
 }
 
-const restant = (secondes: number | null) => ({ secondesRestantes: () => secondes });
-
 describe('renouvelerSession', () => {
   it('[FR-030-05] le seuil est de 600 secondes', () => {
     expect(SEUIL_RENOUVELLEMENT_SECONDES).toBe(600);
   });
 
-  it('[FR-030-05] sans jeton, aucun appel', async () => {
+  it('[FR-030-05] sans session lisible, aucun appel', async () => {
     const appels = client({ statut: 'technique' });
-    await expect(renouvelerSession(appels, stockage(null), restant(0))).resolves.toBe('aucun');
-    expect(appels.renouveler).not.toHaveBeenCalled();
-  });
-
-  it('[FR-030-05] expiration illisible, aucun appel', async () => {
-    const appels = client({ statut: 'technique' });
-    await expect(renouvelerSession(appels, stockage('j'), restant(null))).resolves.toBe('aucun');
+    await expect(renouvelerSession(appels, session(null))).resolves.toBe('aucun');
     expect(appels.renouveler).not.toHaveBeenCalled();
   });
 
   it('[FR-030-05] 600 secondes restantes ou plus : aucun appel', async () => {
     const appels = client({ statut: 'technique' });
-    await expect(renouvelerSession(appels, stockage('j'), restant(600))).resolves.toBe('inutile');
+    await expect(renouvelerSession(appels, session(600))).resolves.toBe('inutile');
     expect(appels.renouveler).not.toHaveBeenCalled();
   });
 
-  it('[FR-030-05] 599 secondes restantes : appel, le jeton neuf remplace l’ancien', async () => {
-    const jetons = stockage('ancien');
-    const appels = client({ statut: 'renouvelee', jeton: 'neuf' });
+  it('[FR-030-05] 599 secondes restantes : appel, la session neuve remplace l’ancienne', async () => {
+    const courante = session(599);
+    const appels = client({ statut: 'renouvelee' });
 
-    await expect(renouvelerSession(appels, jetons, restant(599))).resolves.toBe('renouvelee');
+    await expect(renouvelerSession(appels, courante)).resolves.toBe('renouvelee');
 
-    expect(appels.renouveler).toHaveBeenCalledExactlyOnceWith('ancien');
-    expect(jetons.enregistrer).toHaveBeenCalledExactlyOnceWith('neuf');
+    expect(appels.renouveler).toHaveBeenCalledExactlyOnceWith();
+    expect(courante.terminer).not.toHaveBeenCalled();
   });
 
-  it('[FR-030-05] jeton déjà expiré : le renouvellement est tenté', async () => {
+  it('[FR-030-05] session déjà expirée : le renouvellement est tenté', async () => {
     const appels = client({ statut: 'nonAuthentifie' });
-    await expect(renouvelerSession(appels, stockage('j'), restant(-5))).resolves.toBe('deconnecte');
+    await expect(renouvelerSession(appels, session(-5))).resolves.toBe('deconnecte');
     expect(appels.renouveler).toHaveBeenCalledOnce();
   });
 
-  it('[FR-030-05] 401 (client désactivé) : jeton supprimé, session terminée', async () => {
-    const jetons = stockage('j');
-    await expect(renouvelerSession(client({ statut: 'nonAuthentifie' }), jetons, restant(10))).resolves.toBe('deconnecte');
-    expect(jetons.supprimer).toHaveBeenCalledOnce();
-    expect(jetons.enregistrer).not.toHaveBeenCalled();
+  it('[FR-030-05] 401 (client désactivé) : session terminée', async () => {
+    const courante = session(10);
+    await expect(renouvelerSession(client({ statut: 'nonAuthentifie' }), courante)).resolves.toBe('deconnecte');
+    expect(courante.terminer).toHaveBeenCalledOnce();
   });
 
   it.each<[string, ReponseRenouvellement | Error]>([
     ['réponse technique', { statut: 'technique' }],
     ['exception', new Error('réseau')],
-  ])('[FR-030-05] %s : le jeton est conservé', async (_cas, reponse) => {
-    const jetons = stockage('j');
-    await expect(renouvelerSession(client(reponse), jetons, restant(10))).resolves.toBe('echec');
-    expect(jetons.supprimer).not.toHaveBeenCalled();
-    expect(jetons.enregistrer).not.toHaveBeenCalled();
+  ])('[FR-030-05] %s : la session est conservée', async (_cas, reponse) => {
+    const courante = session(10);
+    await expect(renouvelerSession(client(reponse), courante)).resolves.toBe('echec');
+    expect(courante.terminer).not.toHaveBeenCalled();
   });
 });

@@ -10,7 +10,7 @@ import type { ClientTableauDeBord } from '../../application/consulterTableauDeBo
 import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientVirement } from '../../application/virement';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
-import type { ClientConnexion, DecodeurJeton, StockageJeton } from '../../application/seConnecter';
+import type { ClientConnexion } from '../../application/seConnecter';
 import { Application } from '../Application';
 import type { Session } from '../session/session';
 import { EcranComptesTiers } from '../ecrans/comptesTiers/EcranComptesTiers';
@@ -31,8 +31,6 @@ import { RouteProtegee } from './RouteProtegee';
 /** Adaptateurs dont dépendent les écrans, assemblés par src/infrastructure. */
 export interface Dependances {
   clientConnexion: ClientConnexion;
-  stockageJeton: StockageJeton;
-  decodeurJeton: DecodeurJeton;
   clientProfil: ClientProfil;
   clientBourse: ClientBourse;
   clientProduits: ClientProduits;
@@ -63,8 +61,6 @@ const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], 
 
 export function creerRoutes({
   clientConnexion,
-  stockageJeton,
-  decodeurJeton,
   clientProfil,
   clientBourse,
   clientProduits,
@@ -78,7 +74,7 @@ export function creerRoutes({
   clientTableauDeBord,
   clientPrets,
 }: Dependances): RouteObject[] {
-  const accueil = <RedirectionAccueil stockage={stockageJeton} decodeur={decodeurJeton} />;
+  const accueil = <RedirectionAccueil session={session.locale} />;
   return [
     {
       element: <Application />,
@@ -87,27 +83,27 @@ export function creerRoutes({
           path: ROUTE_CONNEXION,
           element: (
             <ContenuPrincipal>
-              <EcranConnexion client={clientConnexion} stockage={stockageJeton} />
+              <EcranConnexion client={clientConnexion} />
             </ContenuPrincipal>
           ),
         },
         {
           // Garde par session puis par rôle, puis gabarit authentifié (en-tête, contenu principal).
-          element: <RouteProtegee stockage={stockageJeton} decodeur={decodeurJeton} clientProfil={clientProfil} session={session} />,
+          element: <RouteProtegee clientProfil={clientProfil} session={session} />,
           children: [
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-009-01).
-            { path: '/bourse', element: <EcranBourse client={clientBourse} stockage={stockageJeton} /> },
+            { path: '/bourse', element: <EcranBourse client={clientBourse} session={session.locale} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-010-01).
-            { path: '/mon-conseiller', element: <EcranConseiller client={clientConversation} stockage={stockageJeton} /> },
+            { path: '/mon-conseiller', element: <EcranConseiller client={clientConversation} session={session.locale} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-011-01).
-            { path: '/produits', element: <EcranProduits client={clientProduits} stockage={stockageJeton} /> },
+            { path: '/produits', element: <EcranProduits client={clientProduits} session={session.locale} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-012-01).
-            { path: '/comptes-tiers', element: <EcranComptesTiers client={clientComptesTiers} stockage={stockageJeton} allerVers={allerVers} /> },
+            { path: '/comptes-tiers', element: <EcranComptesTiers client={clientComptesTiers} session={session.locale} allerVers={allerVers} /> },
             ...ROUTES_PROTEGEES.map((path) => ({
               path,
               element:
                 path === '/prets' ? (
-                  <EcranPrets client={clientPrets} stockage={stockageJeton} />
+                  <EcranPrets client={clientPrets} session={session.locale} />
                 ) : path === '/tableau-de-bord' ? (
                   <EcranTableauDeBord client={clientTableauDeBord} clientVirement={clientVirement} />
                 ) : (

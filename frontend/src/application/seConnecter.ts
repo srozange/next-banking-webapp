@@ -1,27 +1,15 @@
 import { accueilDuRole, ROUTE_CONNEXION, validerIdentifiants, type ChampConnexion } from '../domain/connexion';
-import { rolesDeLaSession } from './chargerProfil';
+import type { SessionLocale } from './session';
 
-/** Réponse de l'API de connexion, traduite par l'adaptateur HTTP (rôles lus dans le jeton). */
+/** Réponse de l'API de connexion, traduite par l'adaptateur HTTP, qui a déjà ouvert la session (rôles connus). */
 export type ReponseConnexion =
-  | { statut: 'acceptee'; jeton: string; roles: readonly string[] }
+  | { statut: 'acceptee'; roles: readonly string[] }
   | { statut: 'refusee' }
   | { statut: 'technique' };
 
 /** Port sortant : appelle l'API de connexion. */
 export interface ClientConnexion {
   connecter(identifiant: string, motDePasse: string): Promise<ReponseConnexion>;
-}
-
-/** Port sortant : conserve le jeton de session. */
-export interface StockageJeton {
-  lire(): string | null;
-  enregistrer(jeton: string): void;
-  supprimer(): void;
-}
-
-/** Port sortant : lit les rôles portés par un jeton, ou null s'il est illisible. */
-export interface DecodeurJeton {
-  roles(jeton: string): readonly string[] | null;
 }
 
 export type ResultatConnexion =
@@ -33,14 +21,13 @@ export type ResultatConnexion =
 const TECHNIQUE: ResultatConnexion = { type: 'technique' };
 
 /**
- * Cas d'usage : valide les champs sans appeler l'API, puis se connecte. Le jeton n'est enregistré
+ * Cas d'usage : valide les champs sans appeler l'API, puis se connecte. La session n'est ouverte par l'adaptateur
  * que si la connexion est acceptée et que le rôle mène à un écran d'accueil connu.
  */
 export async function seConnecter(
   identifiant: string,
   motDePasse: string,
   client: ClientConnexion,
-  stockage: StockageJeton,
 ): Promise<ResultatConnexion> {
   const champs = validerIdentifiants(identifiant, motDePasse);
   if (champs.length > 0) {
@@ -58,7 +45,6 @@ export async function seConnecter(
     if (route === null) {
       return TECHNIQUE;
     }
-    stockage.enregistrer(reponse.jeton);
     return { type: 'accepte', route };
   } catch {
     return TECHNIQUE;
@@ -66,11 +52,11 @@ export async function seConnecter(
 }
 
 /**
- * Cas d'usage : écran d'accueil de la session en cours. Sans jeton, la connexion ; un jeton illisible
- * ou sans rôle connu est supprimé et mène aussi à la connexion.
+ * Cas d'usage : écran d'accueil de la session en cours. Sans session, la connexion ; une session illisible
+ * ou sans rôle connu est terminée et mène aussi à la connexion.
  */
-export function accueilDeLaSession(stockage: StockageJeton, decodeur: DecodeurJeton): string {
-  const roles = rolesDeLaSession(stockage, decodeur);
-  // rolesDeLaSession ne rend que des rôles dont l'accueil est connu.
+export function accueilDeLaSession(session: SessionLocale): string {
+  const roles = session.roles();
+  // La session ne rend que des rôles dont l'accueil est connu.
   return roles === null ? ROUTE_CONNEXION : (accueilDuRole(roles) as string);
 }

@@ -1,5 +1,5 @@
 import type { EtatComptesTiers } from '../domain/comptesTiers';
-import type { StockageJeton } from './seConnecter';
+import { sessionOuverteOuFin, type SessionLocale } from './session';
 
 /** Réponse d'un appel au service Powens, traduite par l'adaptateur HTTP (jamais d'exception). */
 export type ReponseTiers<T> =
@@ -11,12 +11,12 @@ export type ReponseTiers<T> =
 
 /** Port sortant : service open-banking-conseiller, intégration Powens. */
 export interface ClientComptesTiers {
-  lireEtat(jeton: string): Promise<ReponseTiers<EtatComptesTiers>>;
+  lireEtat(): Promise<ReponseTiers<EtatComptesTiers>>;
   /** Lance la connexion ; rend l'adresse de la page web de Powens. */
-  connecter(jeton: string): Promise<ReponseTiers<string>>;
-  selectionner(jeton: string, compteId: number): Promise<ReponseTiers<EtatComptesTiers>>;
-  rafraichir(jeton: string): Promise<ReponseTiers<EtatComptesTiers>>;
-  deconnecter(jeton: string): Promise<ReponseTiers<null>>;
+  connecter(): Promise<ReponseTiers<string>>;
+  selectionner(compteId: number): Promise<ReponseTiers<EtatComptesTiers>>;
+  rafraichir(): Promise<ReponseTiers<EtatComptesTiers>>;
+  deconnecter(): Promise<ReponseTiers<null>>;
 }
 
 /** Résultat d'un cas d'usage : la valeur, une indisponibilité de Powens, une panne technique, ou la fin de session. */
@@ -26,19 +26,17 @@ export type ResultatTiers<T> =
   | { type: 'technique' }
   | { type: 'deconnecte' };
 
-/** Exécute un appel avec le jeton de la session ; sans jeton ou sur 401, le jeton est supprimé et la session terminée. */
-async function executer<T>(stockage: StockageJeton, appel: (jeton: string) => Promise<ReponseTiers<T>>): Promise<ResultatTiers<T>> {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    stockage.supprimer();
+/** Exécute un appel dans la session ; sans session ou sur 401, la session est terminée. */
+async function executer<T>(session: SessionLocale, appel: () => Promise<ReponseTiers<T>>): Promise<ResultatTiers<T>> {
+  if (!sessionOuverteOuFin(session)) {
     return { type: 'deconnecte' };
   }
-  const reponse = await appel(jeton);
+  const reponse = await appel();
   switch (reponse.statut) {
     case 'ok':
       return { type: 'ok', valeur: reponse.donnees };
     case 'nonAuthentifie':
-      stockage.supprimer();
+      session.terminer();
       return { type: 'deconnecte' };
     case 'indisponible':
       return { type: 'indisponible' };
@@ -48,21 +46,21 @@ async function executer<T>(stockage: StockageJeton, appel: (jeton: string) => Pr
 }
 
 /** Cas d'usage : lit l'état Powens du client (FR-012-03, FR-012-04). */
-export const chargerComptesTiers = (client: ClientComptesTiers, stockage: StockageJeton) =>
-  executer(stockage, (jeton) => client.lireEtat(jeton));
+export const chargerComptesTiers = (client: ClientComptesTiers, session: SessionLocale) =>
+  executer(session, () => client.lireEtat());
 
 /** Cas d'usage : lance la connexion à une banque ; la valeur est l'adresse où envoyer le navigateur (FR-012-05). */
-export const connecterBanque = (client: ClientComptesTiers, stockage: StockageJeton) =>
-  executer(stockage, (jeton) => client.connecter(jeton));
+export const connecterBanque = (client: ClientComptesTiers, session: SessionLocale) =>
+  executer(session, () => client.connecter());
 
 /** Cas d'usage : sélectionne un compte et rend l'état avec ses transactions (FR-012-13, FR-012-14). */
-export const selectionnerCompte = (client: ClientComptesTiers, stockage: StockageJeton, compteId: number) =>
-  executer(stockage, (jeton) => client.selectionner(jeton, compteId));
+export const selectionnerCompte = (client: ClientComptesTiers, session: SessionLocale, compteId: number) =>
+  executer(session, () => client.selectionner(compteId));
 
 /** Cas d'usage : relit les comptes chez Powens (FR-012-16). */
-export const rafraichirComptes = (client: ClientComptesTiers, stockage: StockageJeton) =>
-  executer(stockage, (jeton) => client.rafraichir(jeton));
+export const rafraichirComptes = (client: ClientComptesTiers, session: SessionLocale) =>
+  executer(session, () => client.rafraichir());
 
 /** Cas d'usage : déconnecte Powens (FR-012-15). */
-export const deconnecterPowens = (client: ClientComptesTiers, stockage: StockageJeton) =>
-  executer(stockage, (jeton) => client.deconnecter(jeton));
+export const deconnecterPowens = (client: ClientComptesTiers, session: SessionLocale) =>
+  executer(session, () => client.deconnecter());

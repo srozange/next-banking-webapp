@@ -22,11 +22,11 @@ async function corpsDe(reponse: Response): Promise<Record<string, unknown> | nul
  */
 export function creerClientConversationHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientConversation {
   return {
-    async envoyer(jeton, message, historique) {
+    async envoyer(message, historique) {
       try {
         const reponse = await appeler(CHEMIN_CHAT, {
           method: 'POST',
-          headers: { Authorization: `Bearer ${jeton}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({ message, historique }),
         });
         if (reponse.status === 401) {

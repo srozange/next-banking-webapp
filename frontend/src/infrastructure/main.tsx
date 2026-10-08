@@ -16,6 +16,7 @@ import { creerClientSessionHttp } from '../adapters/http/ClientSessionHttp';
 import { decodeurJetonJwt } from '../adapters/jeton/DecodeurJetonJwt';
 import { creerRoutes } from '../adapters/routes/routes';
 import { creerExpirationJeton } from '../adapters/session/ExpirationJetonJwt';
+import { creerSessionLocale } from '../adapters/session/SessionLocaleJwt';
 import { creerFetchAuthentifie } from '../adapters/session/fetchAuthentifie';
 import { horlogeSysteme } from '../adapters/session/horloge';
 import { creerSignalExpiration } from '../adapters/session/signalExpiration';
@@ -35,17 +36,16 @@ const fetchAuthentifie = creerFetchAuthentifie(stockageJeton, signalExpiration);
 
 const routeur = createBrowserRouter(
   creerRoutes({
-    clientConnexion: creerClientConnexionHttp(decodeurJetonJwt),
-    stockageJeton,
-    decodeurJeton: decodeurJetonJwt,
+    // Seul client non authentifié : il enregistre le jeton reçu, et ne passe donc pas par fetchAuthentifie.
+    clientConnexion: creerClientConnexionHttp(stockageJeton, decodeurJetonJwt),
     clientProfil: creerClientProfilHttp(fetchAuthentifie),
     clientBourse: creerClientBourseHttp(fetchAuthentifie),
     clientProduits: creerClientProduitsHttp(fetchAuthentifie),
     clientConversation: creerClientConversationHttp(fetchAuthentifie),
     clientComptesTiers: creerClientComptesTiersHttp(fetchAuthentifie),
     session: {
-      client: creerClientSessionHttp(fetchAuthentifie),
-      expiration: creerExpirationJeton(horlogeSysteme),
+      client: creerClientSessionHttp(stockageJeton, fetchAuthentifie),
+      locale: creerSessionLocale(stockageJeton, decodeurJetonJwt, creerExpirationJeton(horlogeSysteme)),
       signal: signalExpiration,
     },
     clientVirement: creerClientVirementHttp(fetchAuthentifie),

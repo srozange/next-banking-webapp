@@ -1,12 +1,12 @@
 import { Navigate } from 'react-router';
-import { accueilDeLaSession, type DecodeurJeton, type StockageJeton } from '../../application/seConnecter';
+import type { SessionLocale } from '../../application/session';
+import { accueilDeLaSession } from '../../application/seConnecter';
 
 interface Proprietes {
-  stockage: StockageJeton;
-  decodeur: DecodeurJeton;
+  session: SessionLocale;
 }
 
 /** `/` et toute route non déclarée : accueil du rôle de la session, sinon /login (remplacement). */
-export function RedirectionAccueil({ stockage, decodeur }: Proprietes) {
-  return <Navigate to={accueilDeLaSession(stockage, decodeur)} replace />;
+export function RedirectionAccueil({ session }: Proprietes) {
+  return <Navigate to={accueilDeLaSession(session)} replace />;
 }

@@ -98,8 +98,8 @@ function echeance(valeur: unknown): Echeance | null {
     : null;
 }
 
-function entetes(jeton: string, avecCorps: boolean): Record<string, string> {
-  const communs = { Authorization: `Bearer ${jeton}`, Accept: 'application/json' };
+function entetes(avecCorps: boolean): Record<string, string> {
+  const communs = { Accept: 'application/json' };
   return avecCorps ? { ...communs, 'Content-Type': 'application/json' } : communs;
 }
 
@@ -114,11 +114,11 @@ export const CHEMIN_ECHEANCES = '/api/credits/echeances';
 
 export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientPrets {
   return {
-    async simuler(jeton: string, saisie: SaisieSimulation): Promise<ReponseSimulation> {
+    async simuler(saisie: SaisieSimulation): Promise<ReponseSimulation> {
       try {
         const reponse = await appeler(CHEMIN_SIMULATIONS, {
           method: 'POST',
-          headers: entetes(jeton, true),
+          headers: entetes(true),
           body: JSON.stringify(saisie),
         });
         if (reponse.status === 401) {
@@ -136,11 +136,11 @@ export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) =
       }
     },
 
-    async deposer(jeton: string, saisie: SaisieDemande): Promise<ReponseDepot> {
+    async deposer(saisie: SaisieDemande): Promise<ReponseDepot> {
       try {
         const reponse = await appeler(CHEMIN_PRETS, {
           method: 'POST',
-          headers: entetes(jeton, true),
+          headers: entetes(true),
           body: JSON.stringify(saisie),
         });
         if (reponse.status === 401) {
@@ -158,9 +158,9 @@ export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) =
       }
     },
 
-    async lister(jeton: string): Promise<ReponsePrets> {
+    async lister(): Promise<ReponsePrets> {
       try {
-        const reponse = await appeler(CHEMIN_PRETS, { method: 'GET', headers: entetes(jeton, false) });
+        const reponse = await appeler(CHEMIN_PRETS, { method: 'GET', headers: entetes(false) });
         if (reponse.status === 401) {
           return { statut: 'nonAuthentifie' };
         }
@@ -175,9 +175,9 @@ export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) =
       }
     },
 
-    async echeances(jeton: string, pretId: number): Promise<ReponseEcheances> {
+    async echeances(pretId: number): Promise<ReponseEcheances> {
       try {
-        const reponse = await appeler(`${CHEMIN_PRETS}/${pretId}/echeances`, { method: 'GET', headers: entetes(jeton, false) });
+        const reponse = await appeler(`${CHEMIN_PRETS}/${pretId}/echeances`, { method: 'GET', headers: entetes(false) });
         if (reponse.status === 401) {
           return { statut: 'nonAuthentifie' };
         }
@@ -192,9 +192,9 @@ export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) =
       }
     },
 
-    async payer(jeton: string, echeanceId: number): Promise<ReponseAction> {
+    async payer(echeanceId: number): Promise<ReponseAction> {
       try {
-        const reponse = await appeler(`${CHEMIN_ECHEANCES}/${echeanceId}/paiement`, { method: 'POST', headers: entetes(jeton, false) });
+        const reponse = await appeler(`${CHEMIN_ECHEANCES}/${echeanceId}/paiement`, { method: 'POST', headers: entetes(false) });
         if (reponse.status === 401) {
           return { statut: 'nonAuthentifie' };
         }
@@ -208,9 +208,9 @@ export function creerClientPretsHttp(appeler: typeof fetch = (entree, options) =
       }
     },
 
-    async supprimer(jeton: string, pretId: number): Promise<ReponseAction> {
+    async supprimer(pretId: number): Promise<ReponseAction> {
       try {
-        const reponse = await appeler(`${CHEMIN_PRETS}/${pretId}`, { method: 'DELETE', headers: entetes(jeton, false) });
+        const reponse = await appeler(`${CHEMIN_PRETS}/${pretId}`, { method: 'DELETE', headers: entetes(false) });
         if (reponse.status === 401) {
           return { statut: 'nonAuthentifie' };
         }

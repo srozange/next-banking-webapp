@@ -6,7 +6,7 @@ function repondre(statut: number, corps: string) {
 }
 
 const reseauCoupe = () => vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')));
-const ENTETES = { Authorization: 'Bearer jeton', Accept: 'application/json' };
+const ENTETES = { Accept: 'application/json' };
 
 const EPARGNE = '{"id":1,"nom":"Livret A","description":"d","taux":"0.0300","depotMin":"10.00","capitalGaranti":true,"dureeMaxMois":null}';
 const CREDIT = '{"id":2,"nom":"Credit Personnel","description":null,"taux":"0.0598","dureeMaxMois":84,"ltvMax":null,"assuranceRequise":false}';
@@ -15,10 +15,10 @@ const CATALOGUE = `{"epargne":[${EPARGNE}],"credit":[${CREDIT}],"investissement"
 const TRAITEMENT = '{"job":"CLOTURE","debut":"2026-10-06T02:00+02:00","fin":null,"dureeMs":0,"enregistrements":null,"statut":"SUCCESS","details":null}';
 
 describe('ClientProduitsHttp', () => {
-  it('[FR-011-02] lit le catalogue en GET avec le jeton en Bearer', async () => {
+  it('[FR-011-02] lit le catalogue en GET', async () => {
     const appeler = repondre(200, CATALOGUE);
 
-    const reponse = await creerClientProduitsHttp(appeler).lireCatalogue('jeton');
+    const reponse = await creerClientProduitsHttp(appeler).lireCatalogue();
 
     expect(reponse).toEqual({
       statut: 'ok',
@@ -34,12 +34,12 @@ describe('ClientProduitsHttp', () => {
 
   it('[FR-011-08] rend un catalogue aux groupes vides, et des champs facultatifs omis comme absents', async () => {
     await expect(
-      creerClientProduitsHttp(repondre(200, '{"epargne":[],"credit":[],"investissement":[]}')).lireCatalogue('j'),
+      creerClientProduitsHttp(repondre(200, '{"epargne":[],"credit":[],"investissement":[]}')).lireCatalogue(),
     ).resolves.toEqual({ statut: 'ok', donnees: { epargne: [], credit: [], investissement: [] } });
     const sansFacultatifs = '{"id":3,"nom":"X","capitalGaranti":false}';
     const reponse = await creerClientProduitsHttp(
       repondre(200, `{"epargne":[${sansFacultatifs}],"credit":[],"investissement":[]}`),
-    ).lireCatalogue('j');
+    ).lireCatalogue();
     expect(reponse).toEqual({
       statut: 'ok',
       donnees: {
@@ -53,7 +53,7 @@ describe('ClientProduitsHttp', () => {
   it('[FR-011-09] lit le journal avec la limite de 50, dans l’ordre du service', async () => {
     const appeler = repondre(200, `[${TRAITEMENT},${TRAITEMENT.replace('CLOTURE', 'AUTRE')}]`);
 
-    const reponse = await creerClientProduitsHttp(appeler).lireTraitements('jeton');
+    const reponse = await creerClientProduitsHttp(appeler).lireTraitements();
 
     expect(reponse).toMatchObject({
       statut: 'ok',
@@ -67,8 +67,8 @@ describe('ClientProduitsHttp', () => {
   });
 
   it('[FR-011-09] rend un journal vide ; début, fin et champs facultatifs omis sont absents', async () => {
-    await expect(creerClientProduitsHttp(repondre(200, '[]')).lireTraitements('j')).resolves.toEqual({ statut: 'ok', donnees: [] });
-    await expect(creerClientProduitsHttp(repondre(200, '[{"job":"J","dureeMs":5}]')).lireTraitements('j')).resolves.toEqual({
+    await expect(creerClientProduitsHttp(repondre(200, '[]')).lireTraitements()).resolves.toEqual({ statut: 'ok', donnees: [] });
+    await expect(creerClientProduitsHttp(repondre(200, '[{"job":"J","dureeMs":5}]')).lireTraitements()).resolves.toEqual({
       statut: 'ok',
       donnees: [{ job: 'J', debut: null, fin: null, dureeMs: 5, enregistrements: null, statut: null, details: null }],
     });
@@ -77,15 +77,15 @@ describe('ClientProduitsHttp', () => {
   it('[FR-010-01] rend non authentifié sur 401, pour chaque appel', async () => {
     const client = creerClientProduitsHttp(repondre(401, ''));
 
-    await expect(client.lireCatalogue('j')).resolves.toEqual({ statut: 'nonAuthentifie' });
-    await expect(client.lireTraitements('j')).resolves.toEqual({ statut: 'nonAuthentifie' });
+    await expect(client.lireCatalogue()).resolves.toEqual({ statut: 'nonAuthentifie' });
+    await expect(client.lireTraitements()).resolves.toEqual({ statut: 'nonAuthentifie' });
   });
 
   it('[FR-011-02] 5xx ou réseau coupé : erreur technique', async () => {
     for (const appeler of [repondre(500, '{}'), repondre(204, ''), reseauCoupe()]) {
       const client = creerClientProduitsHttp(appeler);
-      await expect(client.lireCatalogue('j')).resolves.toEqual({ statut: 'technique' });
-      await expect(client.lireTraitements('j')).resolves.toEqual({ statut: 'technique' });
+      await expect(client.lireCatalogue()).resolves.toEqual({ statut: 'technique' });
+      await expect(client.lireTraitements()).resolves.toEqual({ statut: 'technique' });
     }
   });
 
@@ -103,7 +103,7 @@ describe('ClientProduitsHttp', () => {
     ['risque non entier', `{"epargne":[],"credit":[],"investissement":[${INVEST.replace('"niveauRisque":4', '"niveauRisque":"4"')}]}`],
     ['nom manquant', `{"epargne":[],"credit":[],"investissement":[${INVEST.replace('"nom":"SCPI",', '')}]}`],
   ])('[FR-011-05] catalogue illisible (%s) : erreur technique', async (_cas, corps) => {
-    await expect(creerClientProduitsHttp(repondre(200, corps)).lireCatalogue('j')).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientProduitsHttp(repondre(200, corps)).lireCatalogue()).resolves.toEqual({ statut: 'technique' });
   });
 
   it.each([
@@ -113,13 +113,13 @@ describe('ClientProduitsHttp', () => {
     ['durée non entière', `[${TRAITEMENT.replace('"dureeMs":0', '"dureeMs":"0"')}]`],
     ['job manquant', `[${TRAITEMENT.replace('"job":"CLOTURE",', '')}]`],
   ])('[FR-011-09] journal illisible (%s) : erreur technique', async (_cas, corps) => {
-    await expect(creerClientProduitsHttp(repondre(200, corps)).lireTraitements('j')).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientProduitsHttp(repondre(200, corps)).lireTraitements()).resolves.toEqual({ statut: 'technique' });
   });
 
   it('appelle le fetch global par défaut', async () => {
     const global = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('[]', { status: 200 }));
 
-    await expect(creerClientProduitsHttp().lireTraitements('j')).resolves.toEqual({ statut: 'ok', donnees: [] });
+    await expect(creerClientProduitsHttp().lireTraitements()).resolves.toEqual({ statut: 'ok', donnees: [] });
     expect(global).toHaveBeenCalled();
     global.mockRestore();
   });

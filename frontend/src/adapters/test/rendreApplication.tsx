@@ -20,16 +20,20 @@ import type {
   ReponseSimulation,
 } from '../../application/prets';
 import type { ClientConnexion, ReponseConnexion } from '../../application/seConnecter';
+import { accueilDuRole } from '../../domain/connexion';
 import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
+import { jetonDeTest } from '../jeton/jetonDeTest';
 import { creerRoutes } from '../routes/routes';
 import { creerExpirationJeton } from '../session/ExpirationJetonJwt';
+import { creerSessionLocale } from '../session/SessionLocaleJwt';
 import { horlogeSysteme, type Horloge } from '../session/horloge';
 import { creerSignalExpiration } from '../session/signalExpiration';
 import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
 
 /**
  * Outil des tests DOM (jsdom) : rend l'application complète sur un chemin, avec un routeur en mémoire,
- * le vrai stockage localStorage, un client de connexion simulé et un client de profil simulé
+ * le vrai stockage localStorage, un client de connexion simulé (qui, comme l'adaptateur HTTP, enregistre un jeton
+ * `jetonDeTest({ sub: '1', roles })` quand la connexion est acceptée avec un rôle connu) et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
  * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
  * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) ; `allerVers` simule l'envoi du navigateur à Powens.
@@ -94,17 +98,25 @@ export function rendreApplication(
   const payer = vi.fn(clientPrets.payer ?? (() => Promise.resolve<ReponseAction>({ statut: 'technique' })));
   const supprimer = vi.fn(clientPrets.supprimer ?? (() => Promise.resolve<ReponseAction>({ statut: 'technique' })));
   const connecter = vi.fn(repondre);
+  const stockage = creerStockageJetonLocal();
+  const clientConnexion: ClientConnexion = {
+    async connecter(identifiant, motDePasse) {
+      const reponse = await connecter(identifiant, motDePasse);
+      if (reponse.statut === 'acceptee' && accueilDuRole(reponse.roles) !== null) {
+        stockage.enregistrer(jetonDeTest({ sub: '1', roles: reponse.roles }));
+      }
+      return reponse;
+    },
+  };
   const lire = vi.fn(lireProfil);
   const routeur = createMemoryRouter(
     creerRoutes({
-      clientConnexion: { connecter },
-      stockageJeton: creerStockageJetonLocal(),
-      decodeurJeton: decodeurJetonJwt,
+      clientConnexion,
       clientProfil: { lire },
       clientBourse: bourse,
       clientProduits: produits,
       clientConversation: conversation,
-      session: { client: { deconnecter, renouveler }, expiration: creerExpirationJeton(horloge), signal },
+      session: { client: { deconnecter, renouveler }, locale: creerSessionLocale(stockage, decodeurJetonJwt, creerExpirationJeton(horloge)), signal },
       clientVirement: { lireComptes, executer, lireSuivi },
       clientRevue: { lireFile, lireHistorique, decider },
       clientReleve: { lireOperations },

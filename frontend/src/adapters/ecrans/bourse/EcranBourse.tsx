@@ -12,7 +12,7 @@ import {
 } from '../../../domain/bourse';
 import { chargerBourse, chargerHistorique, type ClientBourse, type EtatBourse } from '../../../application/consulterBourse';
 import { ajouterValeur, retirerValeur } from '../../../application/gererWatchlist';
-import type { StockageJeton } from '../../../application/seConnecter';
+import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
 import { BoutonPrimaire } from '../../ui/BoutonPrimaire';
@@ -35,7 +35,7 @@ const OPTIONS_DEVISE = T.devises.map((devise) => ({ valeur: devise, libelle: dev
 
 interface Proprietes {
   client: ClientBourse;
-  stockage: StockageJeton;
+  session: SessionLocale;
 }
 
 const SAISIE_VIDE = { symbole: '', nom: '', marche: MARCHE_PAR_DEFAUT, devise: DEVISE_PAR_DEFAUT };
@@ -47,7 +47,7 @@ const classeSens = (hausse: boolean) => (hausse ? 'ecran-bourse--hausse' : 'ecra
  * graphique SVG du service, dernières séances, ajout et retrait d'une valeur. Le choix de valeur ou de période
  * recharge seulement l'historique, sans bouton.
  */
-export function EcranBourse({ client, stockage }: Proprietes) {
+export function EcranBourse({ client, session }: Proprietes) {
   const naviguer = useNavigate();
   const [etat, setEtat] = useState<EtatBourse | null>(null);
   const [periode, setPeriode] = useState<CodePeriode>(PERIODE_PAR_DEFAUT);
@@ -76,7 +76,7 @@ export function EcranBourse({ client, stockage }: Proprietes) {
 
   useEffect(() => {
     let actif = true;
-    void chargerBourse(client, stockage, null, PERIODE_PAR_DEFAUT).then((resultat) => {
+    void chargerBourse(client, session, null, PERIODE_PAR_DEFAUT).then((resultat) => {
       if (!actif) {
         return;
       }
@@ -115,7 +115,7 @@ export function EcranBourse({ client, stockage }: Proprietes) {
     const numero = ++demande.current;
     setHistoriqueEnCours(true);
     setConfirmation(false);
-    const resultat = await chargerHistorique(client, stockage, symbole, codePeriode);
+    const resultat = await chargerHistorique(client, session, symbole, codePeriode);
     if (numero !== demande.current) {
       return;
     }
@@ -169,7 +169,7 @@ export function EcranBourse({ client, stockage }: Proprietes) {
     setRefus(null);
     ++demande.current;
     setHistoriqueEnCours(false);
-    const resultat = await ajouterValeur(client, stockage, saisie, periode);
+    const resultat = await ajouterValeur(client, session, saisie, periode);
     envoiEnCours.current = false;
     setOccupe(false);
     if (resultat.type === 'deconnecte') {
@@ -194,7 +194,7 @@ export function EcranBourse({ client, stockage }: Proprietes) {
     ++demande.current;
     setHistoriqueEnCours(false);
     setConfirmation(false);
-    const resultat = await retirerValeur(client, stockage, valeur.id, etat.selection, periode);
+    const resultat = await retirerValeur(client, session, valeur.id, etat.selection, periode);
     if (resultat.type === 'deconnecte') {
       finDeSession();
     } else if (resultat.type === 'technique') {

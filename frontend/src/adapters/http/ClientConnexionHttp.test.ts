@@ -1,17 +1,22 @@
 import { describe, expect, it, vi } from 'vitest';
 import { decodeurJetonJwt } from '../jeton/DecodeurJetonJwt';
 import { jetonDeTest } from '../jeton/jetonDeTest';
+import type { StockageJeton } from '../stockage/StockageJetonLocal';
 import { CHEMIN_CONNEXION, creerClientConnexionHttp } from './ClientConnexionHttp';
 
 function repondre(statut: number, corps: string) {
   return vi.fn<typeof fetch>(() => Promise.resolve(new Response(corps, { status: statut })));
 }
 
+function stockageEnMemoire() {
+  return { lire: vi.fn(() => null), enregistrer: vi.fn(), supprimer: vi.fn() } satisfies StockageJeton;
+}
+
 describe('ClientConnexionHttp', () => {
   it('envoie identifiant et mot de passe en JSON par POST', async () => {
     const appeler = repondre(401, '{"message":"Identifiants incorrects"}');
 
-    await creerClientConnexionHttp(decodeurJetonJwt, appeler).connecter('user1', 'secret');
+    await creerClientConnexionHttp(stockageEnMemoire(), decodeurJetonJwt, appeler).connecter('user1', 'secret');
 
     expect(appeler).toHaveBeenCalledWith(CHEMIN_CONNEXION, {
       method: 'POST',
@@ -21,15 +26,26 @@ describe('ClientConnexionHttp', () => {
     expect(CHEMIN_CONNEXION).toBe('/api/identite-clients/connexion');
   });
 
-  it('[FR-001-04] rend le jeton et les rôles qu’il porte sur 200', async () => {
+  it('[FR-001-04] enregistre le jeton et rend les rôles qu’il porte sur 200', async () => {
     const jeton = jetonDeTest({ roles: ['CONSEILLER'] });
-    const client = creerClientConnexionHttp(decodeurJetonJwt, repondre(200, JSON.stringify({ jeton })));
+    const stockage = stockageEnMemoire();
+    const client = creerClientConnexionHttp(stockage, decodeurJetonJwt, repondre(200, JSON.stringify({ jeton })));
 
-    await expect(client.connecter('sophie', 'x')).resolves.toEqual({ statut: 'acceptee', jeton, roles: ['CONSEILLER'] });
+    await expect(client.connecter('sophie', 'x')).resolves.toEqual({ statut: 'acceptee', roles: ['CONSEILLER'] });
+    expect(stockage.enregistrer).toHaveBeenCalledExactlyOnceWith(jeton);
+  });
+
+  it('rend une erreur technique, sans rien enregistrer, pour un rôle inconnu', async () => {
+    const stockage = stockageEnMemoire();
+    const jeton = jetonDeTest({ roles: ['INVITE'] });
+    const client = creerClientConnexionHttp(stockage, decodeurJetonJwt, repondre(200, JSON.stringify({ jeton })));
+
+    await expect(client.connecter('u', 'p')).resolves.toEqual({ statut: 'technique' });
+    expect(stockage.enregistrer).not.toHaveBeenCalled();
   });
 
   it('[FR-001-06] rend un refus sur 401', async () => {
-    const client = creerClientConnexionHttp(decodeurJetonJwt, repondre(401, '{"message":"Identifiants incorrects"}'));
+    const client = creerClientConnexionHttp(stockageEnMemoire(), decodeurJetonJwt, repondre(401, '{"message":"Identifiants incorrects"}'));
 
     await expect(client.connecter('user1', 'faux')).resolves.toEqual({ statut: 'refusee' });
   });
@@ -43,7 +59,7 @@ describe('ClientConnexionHttp', () => {
     ['200 au jeton illisible', repondre(200, '{"jeton":"illisible"}')],
     ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
   ])('rend une erreur technique : %s', async (_cas, appeler) => {
-    await expect(creerClientConnexionHttp(decodeurJetonJwt, appeler).connecter('u', 'p')).resolves.toEqual({
+    await expect(creerClientConnexionHttp(stockageEnMemoire(), decodeurJetonJwt, appeler).connecter('u', 'p')).resolves.toEqual({
       statut: 'technique',
     });
   });
@@ -52,7 +68,7 @@ describe('ClientConnexionHttp', () => {
     const appeler = repondre(401, '{}');
     vi.stubGlobal('fetch', appeler);
     try {
-      await expect(creerClientConnexionHttp(decodeurJetonJwt).connecter('u', 'p')).resolves.toEqual({
+      await expect(creerClientConnexionHttp(stockageEnMemoire(), decodeurJetonJwt).connecter('u', 'p')).resolves.toEqual({
         statut: 'refusee',
       });
       expect(appeler).toHaveBeenCalledOnce();

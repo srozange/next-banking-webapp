@@ -18,7 +18,7 @@ import {
   type ClientComptesTiers,
   type ResultatTiers,
 } from '../../../application/comptesTiers';
-import type { StockageJeton } from '../../../application/seConnecter';
+import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
 import { BoutonPrimaire } from '../../ui/BoutonPrimaire';
@@ -33,7 +33,7 @@ const TRANSACTIONS_MAX = 20;
 
 interface Proprietes {
   client: ClientComptesTiers;
-  stockage: StockageJeton;
+  session: SessionLocale;
   /** Envoie le navigateur à l'adresse de Powens ; par défaut `window.location.assign`, substituable en test. */
   allerVers?: (adresse: string) => void;
 }
@@ -47,7 +47,7 @@ const aller = (adresse: string) => window.location.assign(adresse);
  * de Powens, patrimoine total, comptes externes, transactions du compte sélectionné, rafraîchissement et déconnexion.
  * L'état vient du service ; rien de cet état n'est écrit dans le navigateur.
  */
-export function EcranComptesTiers({ client, stockage, allerVers = aller }: Proprietes) {
+export function EcranComptesTiers({ client, session, allerVers = aller }: Proprietes) {
   const naviguer = useNavigate();
   const [etat, setEtat] = useState<EtatComptesTiers | null>(null);
   /** Message d'une action qui a échoué (prioritaire sur le message de l'état). */
@@ -61,7 +61,7 @@ export function EcranComptesTiers({ client, stockage, allerVers = aller }: Propr
 
   useEffect(() => {
     let actif = true;
-    void chargerComptesTiers(client, stockage).then((resultat) => {
+    void chargerComptesTiers(client, session).then((resultat) => {
       if (!actif) {
         return;
       }
@@ -109,7 +109,7 @@ export function EcranComptesTiers({ client, stockage, allerVers = aller }: Propr
 
   const connecter = () =>
     agir(
-      () => connecterBanque(client, stockage),
+      () => connecterBanque(client, session),
       (adresse) => allerVers(adresse),
       T.connexionImpossible,
       undefined,
@@ -121,7 +121,7 @@ export function EcranComptesTiers({ client, stockage, allerVers = aller }: Propr
       return;
     }
     return agir(
-      () => selectionnerCompte(client, stockage, compteId),
+      () => selectionnerCompte(client, session, compteId),
       (nouvelEtat) => {
         setIndisponiblePour(null);
         setEtat(nouvelEtat);
@@ -133,7 +133,7 @@ export function EcranComptesTiers({ client, stockage, allerVers = aller }: Propr
 
   const rafraichir = () =>
     agir(
-      () => rafraichirComptes(client, stockage),
+      () => rafraichirComptes(client, session),
       (nouvelEtat) => {
         setIndisponiblePour(null);
         setEtat(nouvelEtat);
@@ -143,7 +143,7 @@ export function EcranComptesTiers({ client, stockage, allerVers = aller }: Propr
 
   const deconnecter = () =>
     agir(
-      () => deconnecterPowens(client, stockage),
+      () => deconnecterPowens(client, session),
       () => {
         setIndisponiblePour(null);
         setEtat(ETAT_VIDE);

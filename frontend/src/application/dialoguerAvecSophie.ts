@@ -1,6 +1,5 @@
 import type { Echange } from '../domain/conversation';
-import { jetonOuFin } from './consulterBourse';
-import type { StockageJeton } from './seConnecter';
+import { sessionOuverteOuFin, type SessionLocale } from './session';
 
 /** Réponse du service de conversation, traduite par l'adaptateur HTTP (jamais d'exception). */
 export type ReponseConversation =
@@ -11,7 +10,7 @@ export type ReponseConversation =
 
 /** Port sortant : envoie le message et l'historique à Sophie (service open-banking-conseiller). */
 export interface ClientConversation {
-  envoyer(jeton: string, message: string, historique: readonly Echange[]): Promise<ReponseConversation>;
+  envoyer(message: string, historique: readonly Echange[]): Promise<ReponseConversation>;
 }
 
 export type ResultatDialogue = { type: 'reponse'; texte: string } | { type: 'deconnecte' };
@@ -21,22 +20,21 @@ const DECONNECTE: ResultatDialogue = { type: 'deconnecte' };
 /**
  * Cas d'usage (FR-010-05, FR-010-06, FR-010-09, BUG-038) : envoie le message avec l'historique des échanges déjà
  * affichés. Une panne est une réponse de Sophie : le message du service tel quel, sinon `repli` ; aucun code
- * technique n'est jamais rendu. Sans jeton ou sur 401, le jeton est supprimé et la session est terminée.
+ * technique n'est jamais rendu. Sans session ou sur 401, la session est terminée.
  */
 export async function dialoguer(
   client: ClientConversation,
-  stockage: StockageJeton,
+  session: SessionLocale,
   historique: readonly Echange[],
   message: string,
   repli: string,
 ): Promise<ResultatDialogue> {
-  const jeton = jetonOuFin(stockage);
-  if (jeton === null) {
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
   let reponse: ReponseConversation;
   try {
-    reponse = await client.envoyer(jeton, message, historique);
+    reponse = await client.envoyer(message, historique);
   } catch {
     return { type: 'reponse', texte: repli };
   }
@@ -46,7 +44,7 @@ export async function dialoguer(
     case 'indisponible':
       return { type: 'reponse', texte: reponse.message };
     case 'nonAuthentifie':
-      stockage.supprimer();
+      session.terminer();
       return DECONNECTE;
     case 'technique':
       return { type: 'reponse', texte: repli };

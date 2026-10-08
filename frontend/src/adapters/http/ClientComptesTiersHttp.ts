@@ -94,12 +94,11 @@ export function creerClientComptesTiersHttp(appeler: typeof fetch = (entree, opt
   async function lire<T>(
     entree: string,
     methode: 'GET' | 'POST' | 'DELETE',
-    jeton: string,
     attendu: number,
     convertir: ((corps: unknown) => T | null) | null,
   ): Promise<ReponseTiers<T>> {
     try {
-      const reponse = await appeler(entree, { method: methode, headers: { Authorization: `Bearer ${jeton}`, Accept: 'application/json' } });
+      const reponse = await appeler(entree, { method: methode, headers: { Accept: 'application/json' } });
       if (reponse.status === 401) {
         return NON_AUTHENTIFIE;
       }
@@ -120,15 +119,15 @@ export function creerClientComptesTiersHttp(appeler: typeof fetch = (entree, opt
   }
 
   return {
-    lireEtat: (jeton) => lire(CHEMIN_POWENS, 'GET', jeton, 200, etatDepuis),
-    connecter: (jeton) =>
-      lire(CHEMIN_CONNEXION, 'POST', jeton, 200, (corps) => {
+    lireEtat: () => lire(CHEMIN_POWENS, 'GET', 200, etatDepuis),
+    connecter: () =>
+      lire(CHEMIN_CONNEXION, 'POST', 200, (corps) => {
         const adresse = enregistrement(corps)?.adresse;
         return typeof adresse === 'string' && adresse !== '' ? adresse : null;
       }),
-    selectionner: (jeton, compteId) =>
-      lire(`${CHEMIN_POWENS}/comptes/${encodeURIComponent(String(compteId))}/selection`, 'POST', jeton, 200, etatDepuis),
-    rafraichir: (jeton) => lire(CHEMIN_RAFRAICHISSEMENT, 'POST', jeton, 200, etatDepuis),
-    deconnecter: (jeton) => lire<null>(CHEMIN_CONNEXION, 'DELETE', jeton, 204, null),
+    selectionner: (compteId) =>
+      lire(`${CHEMIN_POWENS}/comptes/${encodeURIComponent(String(compteId))}/selection`, 'POST', 200, etatDepuis),
+    rafraichir: () => lire(CHEMIN_RAFRAICHISSEMENT, 'POST', 200, etatDepuis),
+    deconnecter: () => lire<null>(CHEMIN_CONNEXION, 'DELETE', 204, null),
   };
 }

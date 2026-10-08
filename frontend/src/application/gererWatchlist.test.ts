@@ -2,20 +2,19 @@ import { describe, expect, it, vi } from 'vitest';
 import type { HistoriqueCours, ValeurWatchlist } from '../domain/bourse';
 import type { ClientBourse, DemandeAjout } from './consulterBourse';
 import { ajouterValeur, retirerValeur } from './gererWatchlist';
-import type { StockageJeton } from './seConnecter';
+import type { SessionLocale } from './session';
 
 // Outils de test, répétés de consulterBourse.test.ts : un fichier de test n'en importe pas un autre.
-function stockageEnMemoire(initial: string | null = 'jeton') {
-  let jeton = initial;
+function sessionEnMemoire(ouverte = true, roles: readonly string[] | null = null) {
+  let enCours = ouverte;
   return {
-    lire: vi.fn(() => jeton),
-    enregistrer: vi.fn((valeur: string) => {
-      jeton = valeur;
+    ouverte: vi.fn(() => enCours),
+    roles: vi.fn(() => roles),
+    terminer: vi.fn(() => {
+      enCours = false;
     }),
-    supprimer: vi.fn(() => {
-      jeton = null;
-    }),
-  } satisfies StockageJeton;
+    secondesRestantes: vi.fn(() => null),
+  } satisfies SessionLocale;
 }
 
 const AIR_LIQUIDE: ValeurWatchlist = { id: 1, symbole: 'AI.PA', nom: 'Air Liquide', marche: 'Euronext Paris', devise: 'EUR' };
@@ -39,7 +38,7 @@ function clientBourse(surcharge: Partial<ClientBourse> = {}) {
       surcharge.lireWatchlist ?? (() => Promise.resolve({ statut: 'ok', donnees: [AIR_LIQUIDE, BNP] })),
     ),
     lireHistorique: vi.fn<ClientBourse['lireHistorique']>(
-      surcharge.lireHistorique ?? ((_jeton, symbole) => Promise.resolve({ statut: 'ok', donnees: historiqueDe(symbole) })),
+      surcharge.lireHistorique ?? ((symbole) => Promise.resolve({ statut: 'ok', donnees: historiqueDe(symbole) })),
     ),
     ajouter: vi.fn<ClientBourse['ajouter']>(surcharge.ajouter ?? (() => Promise.resolve({ statut: 'technique' }))),
     retirer: vi.fn<ClientBourse['retirer']>(surcharge.retirer ?? (() => Promise.resolve({ statut: 'ok', donnees: null }))),
@@ -57,10 +56,10 @@ describe('ajouterValeur', () => {
       lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [AIR_LIQUIDE, BNP, SG] }),
     });
 
-    const resultat = await ajouterValeur(client, stockageEnMemoire(), DEMANDE, '1Y');
+    const resultat = await ajouterValeur(client, sessionEnMemoire(), DEMANDE, '1Y');
 
-    expect(client.ajouter).toHaveBeenCalledWith('jeton', DEMANDE);
-    expect(client.lireHistorique).toHaveBeenCalledWith('jeton', 'SG.PA', '1Y');
+    expect(client.ajouter).toHaveBeenCalledWith(DEMANDE);
+    expect(client.lireHistorique).toHaveBeenCalledWith('SG.PA', '1Y');
     expect(resultat).toEqual({
       type: 'etat',
       etat: { valeurs: [AIR_LIQUIDE, BNP, SG], selection: 'SG.PA', historique: historiqueDe('SG.PA'), technique: false },
@@ -73,30 +72,30 @@ describe('ajouterValeur', () => {
   ])('%s : le message du service est rendu, rien n’est relu', async (_cas, message) => {
     const client = clientBourse({ ajouter: () => Promise.resolve({ statut: 'refusee', message }) });
 
-    await expect(ajouterValeur(client, stockageEnMemoire(), DEMANDE, '1M')).resolves.toEqual({ type: 'refuse', message });
+    await expect(ajouterValeur(client, sessionEnMemoire(), DEMANDE, '1M')).resolves.toEqual({ type: 'refuse', message });
     expect(client.lireWatchlist).not.toHaveBeenCalled();
   });
 
   it('une panne technique est rendue, rien n’est relu', async () => {
     const client = clientBourse();
 
-    await expect(ajouterValeur(client, stockageEnMemoire(), DEMANDE, '1M')).resolves.toEqual({ type: 'technique' });
+    await expect(ajouterValeur(client, sessionEnMemoire(), DEMANDE, '1M')).resolves.toEqual({ type: 'technique' });
     expect(client.lireWatchlist).not.toHaveBeenCalled();
   });
 
-  it('sans jeton : session terminée, sans appel', async () => {
+  it('sans session : session terminée, sans appel', async () => {
     const client = clientBourse();
 
-    await expect(ajouterValeur(client, stockageEnMemoire(null), DEMANDE, '1M')).resolves.toEqual({ type: 'deconnecte' });
+    await expect(ajouterValeur(client, sessionEnMemoire(false), DEMANDE, '1M')).resolves.toEqual({ type: 'deconnecte' });
     expect(client.ajouter).not.toHaveBeenCalled();
   });
 
-  it('un 401 supprime le jeton et termine la session', async () => {
-    const stockage = stockageEnMemoire();
+  it('un 401 termine la session', async () => {
+    const session = sessionEnMemoire();
     const client = clientBourse({ ajouter: () => Promise.resolve({ statut: 'nonAuthentifie' }) });
 
-    await expect(ajouterValeur(client, stockage, DEMANDE, '1M')).resolves.toEqual({ type: 'deconnecte' });
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    await expect(ajouterValeur(client, session, DEMANDE, '1M')).resolves.toEqual({ type: 'deconnecte' });
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 });
 
@@ -104,17 +103,17 @@ describe('retirerValeur', () => {
   it('[FR-009-13][FR-029-12] retire sans confirmation ; la valeur sélectionnée retirée, la première restante est sélectionnée', async () => {
     const client = clientBourse({ lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [BNP] }) });
 
-    const resultat = await retirerValeur(client, stockageEnMemoire(), 1, 'AI.PA', '1M');
+    const resultat = await retirerValeur(client, sessionEnMemoire(), 1, 'AI.PA', '1M');
 
-    expect(client.retirer).toHaveBeenCalledWith('jeton', 1);
-    expect(client.lireHistorique).toHaveBeenCalledWith('jeton', 'BNP.PA', '1M');
+    expect(client.retirer).toHaveBeenCalledWith(1);
+    expect(client.lireHistorique).toHaveBeenCalledWith('BNP.PA', '1M');
     expect(resultat).toMatchObject({ type: 'etat', etat: { valeurs: [BNP], selection: 'BNP.PA' } });
   });
 
   it('[FR-009-13] une autre valeur retirée : la sélection est conservée', async () => {
     const client = clientBourse({ lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [AIR_LIQUIDE] }) });
 
-    const resultat = await retirerValeur(client, stockageEnMemoire(), 2, 'AI.PA', '1M');
+    const resultat = await retirerValeur(client, sessionEnMemoire(), 2, 'AI.PA', '1M');
 
     expect(resultat).toMatchObject({ type: 'etat', etat: { selection: 'AI.PA' } });
   });
@@ -122,7 +121,7 @@ describe('retirerValeur', () => {
   it('[FR-009-13][FR-029-12] la dernière valeur retirée : sélection effacée, aucun historique', async () => {
     const client = clientBourse({ lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [] }) });
 
-    const resultat = await retirerValeur(client, stockageEnMemoire(), 1, 'AI.PA', '1M');
+    const resultat = await retirerValeur(client, sessionEnMemoire(), 1, 'AI.PA', '1M');
 
     expect(resultat).toEqual({ type: 'etat', etat: { valeurs: [], selection: null, historique: null, technique: false } });
     expect(client.lireHistorique).not.toHaveBeenCalled();
@@ -131,22 +130,22 @@ describe('retirerValeur', () => {
   it('une panne technique est rendue, rien n’est relu', async () => {
     const client = clientBourse({ retirer: () => Promise.resolve({ statut: 'technique' }) });
 
-    await expect(retirerValeur(client, stockageEnMemoire(), 1, 'AI.PA', '1M')).resolves.toEqual({ type: 'technique' });
+    await expect(retirerValeur(client, sessionEnMemoire(), 1, 'AI.PA', '1M')).resolves.toEqual({ type: 'technique' });
     expect(client.lireWatchlist).not.toHaveBeenCalled();
   });
 
-  it('sans jeton : session terminée, sans appel', async () => {
+  it('sans session : session terminée, sans appel', async () => {
     const client = clientBourse();
 
-    await expect(retirerValeur(client, stockageEnMemoire(null), 1, null, '1M')).resolves.toEqual({ type: 'deconnecte' });
+    await expect(retirerValeur(client, sessionEnMemoire(false), 1, null, '1M')).resolves.toEqual({ type: 'deconnecte' });
     expect(client.retirer).not.toHaveBeenCalled();
   });
 
-  it('un 401 supprime le jeton et termine la session', async () => {
-    const stockage = stockageEnMemoire();
+  it('un 401 termine la session', async () => {
+    const session = sessionEnMemoire();
     const client = clientBourse({ retirer: () => Promise.resolve({ statut: 'nonAuthentifie' }) });
 
-    await expect(retirerValeur(client, stockage, 1, 'AI.PA', '1M')).resolves.toEqual({ type: 'deconnecte' });
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    await expect(retirerValeur(client, session, 1, 'AI.PA', '1M')).resolves.toEqual({ type: 'deconnecte' });
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 });

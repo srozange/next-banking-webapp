@@ -136,13 +136,12 @@ describe('gabarit authentifié', () => {
     ]);
   });
 
-  it('[FR-001-05] salue l’utilisateur avec le nom complet lu par /moi, avec le jeton de la session', async () => {
+  it('[FR-001-05] salue l’utilisateur avec le nom complet lu par /moi', async () => {
     connecter('CLIENT');
-    const jeton = localStorage.getItem('nb.jeton');
     const { lire } = rendreApplication('/tableau-de-bord');
 
     expect((await screen.findByTestId('nav-salutation')).textContent).toBe('Bonjour, Jean Dupont');
-    expect(lire).toHaveBeenCalledWith(jeton);
+    expect(lire).toHaveBeenCalledWith();
   });
 
   it('[FR-001-05] profil en attente : contenu aria-busy, sans salutation ni texte de chargement', () => {
@@ -201,13 +200,21 @@ describe('gabarit authentifié', () => {
     connecter('CLIENT');
     const jeton = localStorage.getItem('nb.jeton');
     const utilisateur = userEvent.setup();
-    const { routeur, deconnecter } = rendreApplication('/tableau-de-bord');
+    // Le décorateur fetch lit le jeton à l'appel : il doit encore être là quand le client est appelé.
+    let jetonALAppel: string | null = null;
+    const { routeur, deconnecter } = rendreApplication('/tableau-de-bord', undefined, undefined, undefined, {
+      deconnecter: () => {
+        jetonALAppel = localStorage.getItem('nb.jeton');
+        return Promise.resolve();
+      },
+    });
     await attendreProfil();
 
     await utilisateur.click(screen.getByTestId('nav-deconnexion'));
 
     expect(localStorage.getItem('nb.jeton')).toBeNull();
-    expect(deconnecter).toHaveBeenCalledExactlyOnceWith(jeton);
+    expect(deconnecter).toHaveBeenCalledExactlyOnceWith();
+    expect(jetonALAppel).toBe(jeton);
     await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
     expect(routeur.state.historyAction).toBe('REPLACE');
     expect(await screen.findByTestId('login-identifiant')).toBeTruthy();
@@ -256,14 +263,18 @@ describe('gabarit authentifié', () => {
       localStorage.setItem('nb.jeton', ancien);
       const utilisateur = userEvent.setup();
       const { renouveler } = rendreApplication('/tableau-de-bord', undefined, undefined, horloge, {
-        renouveler: () => Promise.resolve({ statut: 'renouvelee', jeton: neuf }),
+        // Comme l'adaptateur HTTP, le client enregistre le jeton neuf.
+        renouveler: () => {
+          localStorage.setItem('nb.jeton', neuf);
+          return Promise.resolve({ statut: 'renouvelee' });
+        },
       });
       await attendreProfil();
 
       await utilisateur.click(document.body);
 
       await waitFor(() => expect(localStorage.getItem('nb.jeton')).toBe(neuf));
-      expect(renouveler).toHaveBeenCalledExactlyOnceWith(ancien);
+      expect(renouveler).toHaveBeenCalledExactlyOnceWith();
     });
 
     it('[FR-030-05] 600 s restantes ou plus : aucun appel', async () => {

@@ -162,9 +162,8 @@ describe('écran de connexion', () => {
     '[FR-001-04][FR-001-05][FR-030-03] %s (%s) : jeton dans localStorage nb.jeton, arrivée sur %s',
     async (login, role, route) => {
       const utilisateur = userEvent.setup();
-      const jeton = jetonDeTest({ sub: '1', roles: [role] });
       const { routeur, connecter } = rendreApplication('/login', () =>
-        Promise.resolve({ statut: 'acceptee', jeton, roles: [role] }),
+        Promise.resolve({ statut: 'acceptee', roles: [role] }),
       );
 
       await utilisateur.type(champ('login-identifiant'), login);
@@ -173,7 +172,7 @@ describe('écran de connexion', () => {
       await waitFor(() => expect(routeur.state.location.pathname).toBe(route));
       expect(routeur.state.historyAction).toBe('REPLACE');
       expect(connecter).toHaveBeenCalledWith(login, 'secret');
-      expect(localStorage.getItem('nb.jeton')).toBe(jeton);
+      expect(localStorage.getItem('nb.jeton')).toBe(jetonDeTest({ sub: '1', roles: [role] }));
       expect(sessionStorage.length).toBe(0);
       // Le routeur change d'état avant que React n'ait rendu la page suivante (en-tête compris).
       await waitFor(() => expect(screen.queryByTestId('login-identifiant')).toBeNull());
@@ -182,8 +181,7 @@ describe('écran de connexion', () => {
 
   it('[FR-001-05] envoie au clic de la souris aussi', async () => {
     const utilisateur = userEvent.setup();
-    const jeton = jetonDeTest({ roles: ['CLIENT'] });
-    const { routeur } = rendreApplication('/login', () => Promise.resolve({ statut: 'acceptee', jeton, roles: ['CLIENT'] }));
+    const { routeur } = rendreApplication('/login', () => Promise.resolve({ statut: 'acceptee', roles: ['CLIENT'] }));
 
     await utilisateur.type(champ('login-identifiant'), 'user1');
     await utilisateur.type(champ('login-mot-de-passe'), 'secret');

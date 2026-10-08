@@ -1,6 +1,10 @@
-import type { ExpirationJeton } from '../../application/renouvelerSession';
 import { expirationDuJeton } from '../jeton/DecodeurJetonJwt';
 import type { Horloge } from './horloge';
+
+/** Temps restant avant l'expiration d'un jeton, null si illisible. */
+export interface ExpirationJeton {
+  secondesRestantes(jeton: string): number | null;
+}
 
 /** Secondes restantes avant la revendication `exp` du jeton, lue sur l'horloge injectée ; null si `exp` est illisible. */
 export function creerExpirationJeton(horloge: Horloge): ExpirationJeton {

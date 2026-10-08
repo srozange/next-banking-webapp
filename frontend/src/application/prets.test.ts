@@ -14,19 +14,18 @@ import {
   type ReponsePrets,
   type ReponseSimulation,
 } from './prets';
-import type { StockageJeton } from './seConnecter';
+import type { SessionLocale } from './session';
 
-function stockageEnMemoire(initial: string | null = null) {
-  let jeton = initial;
+function sessionEnMemoire(ouverte = true, roles: readonly string[] | null = null) {
+  let enCours = ouverte;
   return {
-    lire: vi.fn(() => jeton),
-    enregistrer: vi.fn((valeur: string) => {
-      jeton = valeur;
+    ouverte: vi.fn(() => enCours),
+    roles: vi.fn(() => roles),
+    terminer: vi.fn(() => {
+      enCours = false;
     }),
-    supprimer: vi.fn(() => {
-      jeton = null;
-    }),
-  } satisfies StockageJeton;
+    secondesRestantes: vi.fn(() => null),
+  } satisfies SessionLocale;
 }
 
 const SAISIE = { montant: '10000', tauxAnnuel: '3.50', dureeMois: '36' };
@@ -65,82 +64,82 @@ function client(
 }
 
 describe('simulerEmprunt', () => {
-  it('[FR-007-03] rend la simulation du service, appelée avec le jeton et la saisie', async () => {
+  it('[FR-007-03] rend la simulation du service, appelée avec la saisie', async () => {
     const c = client({ statut: 'simulation', simulation: SIMULATION });
 
-    await expect(simulerEmprunt(c, stockageEnMemoire('jeton'), SAISIE)).resolves.toEqual({
+    await expect(simulerEmprunt(c, sessionEnMemoire(), SAISIE)).resolves.toEqual({
       type: 'simulation',
       simulation: SIMULATION,
     });
-    expect(c.simuler).toHaveBeenCalledWith('jeton', SAISIE);
+    expect(c.simuler).toHaveBeenCalledWith(SAISIE);
   });
 
   it('[FR-007-02] rend le message du service sur un refus 400', async () => {
     const c = client({ statut: 'refusee', message: 'Taux invalide (0-30%)' });
 
-    await expect(simulerEmprunt(c, stockageEnMemoire('jeton'), SAISIE)).resolves.toEqual({
+    await expect(simulerEmprunt(c, sessionEnMemoire(), SAISIE)).resolves.toEqual({
       type: 'refus',
       message: 'Taux invalide (0-30%)',
     });
   });
 
-  it('[FR-007-01] sans jeton : session terminée, sans appel', async () => {
+  it('[FR-007-01] sans session : session terminée, sans appel', async () => {
     const c = client({ statut: 'simulation', simulation: SIMULATION });
-    const stockage = stockageEnMemoire();
+    const session = sessionEnMemoire(false);
 
-    await expect(simulerEmprunt(c, stockage, SAISIE)).resolves.toEqual({ type: 'deconnecte' });
+    await expect(simulerEmprunt(c, session, SAISIE)).resolves.toEqual({ type: 'deconnecte' });
     expect(c.simuler).not.toHaveBeenCalled();
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it('[FR-007-01] sur 401 : jeton purgé et session terminée', async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it('[FR-007-01] sur 401 : session terminée', async () => {
+    const session = sessionEnMemoire();
 
-    await expect(simulerEmprunt(client({ statut: 'nonAuthentifie' }), stockage, SAISIE)).resolves.toEqual({ type: 'deconnecte' });
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    await expect(simulerEmprunt(client({ statut: 'nonAuthentifie' }), session, SAISIE)).resolves.toEqual({ type: 'deconnecte' });
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it('[FR-007-03] sur une panne du service ou du réseau : indisponible, jeton conservé', async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it('[FR-007-03] sur une panne du service ou du réseau : indisponible, session conservée', async () => {
+    const session = sessionEnMemoire();
 
-    await expect(simulerEmprunt(client({ statut: 'technique' }), stockage, SAISIE)).resolves.toEqual({ type: 'indisponible' });
-    await expect(simulerEmprunt(client(new Error('réseau')), stockage, SAISIE)).resolves.toEqual({ type: 'indisponible' });
-    expect(stockage.supprimer).not.toHaveBeenCalled();
+    await expect(simulerEmprunt(client({ statut: 'technique' }), session, SAISIE)).resolves.toEqual({ type: 'indisponible' });
+    await expect(simulerEmprunt(client(new Error('réseau')), session, SAISIE)).resolves.toEqual({ type: 'indisponible' });
+    expect(session.terminer).not.toHaveBeenCalled();
   });
 });
 
 describe('listerPrets', () => {
-  it('[FR-007-08] rend les prêts lus avec le jeton de la session', async () => {
+  it('[FR-007-08] rend les prêts lus dans la session', async () => {
     const c = client({ statut: 'technique' }, { statut: 'prets', prets: [PRET] });
 
-    await expect(listerPrets(c, stockageEnMemoire('jeton'))).resolves.toEqual({ type: 'prets', prets: [PRET] });
-    expect(c.lister).toHaveBeenCalledWith('jeton');
+    await expect(listerPrets(c, sessionEnMemoire())).resolves.toEqual({ type: 'prets', prets: [PRET] });
+    expect(c.lister).toHaveBeenCalledWith();
   });
 
-  it('[FR-007-01] sans jeton : session terminée, sans appel', async () => {
+  it('[FR-007-01] sans session : session terminée, sans appel', async () => {
     const c = client({ statut: 'technique' });
-    const stockage = stockageEnMemoire();
+    const session = sessionEnMemoire(false);
 
-    await expect(listerPrets(c, stockage)).resolves.toEqual({ type: 'deconnecte' });
+    await expect(listerPrets(c, session)).resolves.toEqual({ type: 'deconnecte' });
     expect(c.lister).not.toHaveBeenCalled();
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it('[FR-007-01] sur 401 : jeton purgé et session terminée', async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it('[FR-007-01] sur 401 : session terminée', async () => {
+    const session = sessionEnMemoire();
 
     await expect(
-      listerPrets(client({ statut: 'technique' }, { statut: 'nonAuthentifie' }), stockage),
+      listerPrets(client({ statut: 'technique' }, { statut: 'nonAuthentifie' }), session),
     ).resolves.toEqual({ type: 'deconnecte' });
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
   it('[FR-007-08] sur une panne du service ou du réseau : indisponible', async () => {
     await expect(
-      listerPrets(client({ statut: 'technique' }, { statut: 'technique' }), stockageEnMemoire('jeton')),
+      listerPrets(client({ statut: 'technique' }, { statut: 'technique' }), sessionEnMemoire()),
     ).resolves.toEqual({ type: 'indisponible' });
     await expect(
-      listerPrets(client({ statut: 'technique' }, new Error('réseau')), stockageEnMemoire('jeton')),
+      listerPrets(client({ statut: 'technique' }, new Error('réseau')), sessionEnMemoire()),
     ).resolves.toEqual({ type: 'indisponible' });
   });
 });
@@ -149,48 +148,48 @@ describe('deposerDemande', () => {
   const DEMANDE = { type: 'CONSOMMATION', montant: '10000', tauxAnnuel: '3.50', dureeMois: '300', objet: 'Voiture' };
   const sansDepot = { statut: 'technique' } as const;
 
-  it('[FR-007-07] rend le prêt déposé, appelé avec le jeton et la saisie', async () => {
+  it('[FR-007-07] rend le prêt déposé, appelé avec la saisie', async () => {
     const c = client(sansDepot, undefined, { statut: 'deposee', pret: PRET });
 
-    await expect(deposerDemande(c, stockageEnMemoire('jeton'), DEMANDE)).resolves.toEqual({ type: 'deposee', pret: PRET });
-    expect(c.deposer).toHaveBeenCalledWith('jeton', DEMANDE);
+    await expect(deposerDemande(c, sessionEnMemoire(), DEMANDE)).resolves.toEqual({ type: 'deposee', pret: PRET });
+    expect(c.deposer).toHaveBeenCalledWith(DEMANDE);
   });
 
   it('[FR-007-05] rend le message du service sur un refus', async () => {
     const c = client(sansDepot, undefined, { statut: 'refusee', message: 'Duree invalide' });
 
-    await expect(deposerDemande(c, stockageEnMemoire('jeton'), DEMANDE)).resolves.toEqual({
+    await expect(deposerDemande(c, sessionEnMemoire(), DEMANDE)).resolves.toEqual({
       type: 'refus',
       message: 'Duree invalide',
     });
   });
 
-  it('[FR-007-01] sans jeton : session terminée, sans appel', async () => {
+  it('[FR-007-01] sans session : session terminée, sans appel', async () => {
     const c = client(sansDepot);
-    const stockage = stockageEnMemoire();
+    const session = sessionEnMemoire(false);
 
-    await expect(deposerDemande(c, stockage, DEMANDE)).resolves.toEqual({ type: 'deconnecte' });
+    await expect(deposerDemande(c, session, DEMANDE)).resolves.toEqual({ type: 'deconnecte' });
     expect(c.deposer).not.toHaveBeenCalled();
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it('[FR-007-01] sur 401 : jeton purgé et session terminée', async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it('[FR-007-01] sur 401 : session terminée', async () => {
+    const session = sessionEnMemoire();
 
     await expect(
-      deposerDemande(client(sansDepot, undefined, { statut: 'nonAuthentifie' }), stockage, DEMANDE),
+      deposerDemande(client(sansDepot, undefined, { statut: 'nonAuthentifie' }), session, DEMANDE),
     ).resolves.toEqual({ type: 'deconnecte' });
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it('[FR-024-02] sur une panne du service ou du réseau : indisponible, jeton conservé', async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it('[FR-024-02] sur une panne du service ou du réseau : indisponible, session conservée', async () => {
+    const session = sessionEnMemoire();
 
-    await expect(deposerDemande(client(sansDepot), stockage, DEMANDE)).resolves.toEqual({ type: 'indisponible' });
-    await expect(deposerDemande(client(sansDepot, undefined, new Error('réseau')), stockage, DEMANDE)).resolves.toEqual({
+    await expect(deposerDemande(client(sansDepot), session, DEMANDE)).resolves.toEqual({ type: 'indisponible' });
+    await expect(deposerDemande(client(sansDepot, undefined, new Error('réseau')), session, DEMANDE)).resolves.toEqual({
       type: 'indisponible',
     });
-    expect(stockage.supprimer).not.toHaveBeenCalled();
+    expect(session.terminer).not.toHaveBeenCalled();
   });
 });
 
@@ -208,44 +207,44 @@ const ECHEANCE: Echeance = {
 const sansEcheances = { statut: 'technique' } as const;
 
 describe('consulterEcheances', () => {
-  it('[FR-007-11] rend les échéances du prêt, appelées avec le jeton et l’identifiant', async () => {
+  it('[FR-007-11] rend les échéances du prêt, appelées avec l’identifiant', async () => {
     const c = client(sansEcheances, undefined, undefined, { statut: 'echeances', echeances: [ECHEANCE] });
 
-    await expect(consulterEcheances(c, stockageEnMemoire('jeton'), 1)).resolves.toEqual({
+    await expect(consulterEcheances(c, sessionEnMemoire(), 1)).resolves.toEqual({
       type: 'echeances',
       echeances: [ECHEANCE],
     });
-    expect(c.echeances).toHaveBeenCalledWith('jeton', 1);
+    expect(c.echeances).toHaveBeenCalledWith(1);
   });
 
-  it('[FR-007-11] sans jeton : session terminée, sans appel', async () => {
+  it('[FR-007-11] sans session : session terminée, sans appel', async () => {
     const c = client(sansEcheances);
-    const stockage = stockageEnMemoire();
+    const session = sessionEnMemoire(false);
 
-    await expect(consulterEcheances(c, stockage, 1)).resolves.toEqual({ type: 'deconnecte' });
+    await expect(consulterEcheances(c, session, 1)).resolves.toEqual({ type: 'deconnecte' });
     expect(c.echeances).not.toHaveBeenCalled();
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it('[FR-007-11] sur 401 : jeton purgé et session terminée', async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it('[FR-007-11] sur 401 : session terminée', async () => {
+    const session = sessionEnMemoire();
 
     await expect(
-      consulterEcheances(client(sansEcheances, undefined, undefined, { statut: 'nonAuthentifie' }), stockage, 1),
+      consulterEcheances(client(sansEcheances, undefined, undefined, { statut: 'nonAuthentifie' }), session, 1),
     ).resolves.toEqual({ type: 'deconnecte' });
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it('[FR-007-11] sur une panne du service ou du réseau : indisponible, jeton conservé', async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it('[FR-007-11] sur une panne du service ou du réseau : indisponible, session conservée', async () => {
+    const session = sessionEnMemoire();
 
     await expect(
-      consulterEcheances(client(sansEcheances, undefined, undefined, { statut: 'technique' }), stockage, 1),
+      consulterEcheances(client(sansEcheances, undefined, undefined, { statut: 'technique' }), session, 1),
     ).resolves.toEqual({ type: 'indisponible' });
     await expect(
-      consulterEcheances(client(sansEcheances, undefined, undefined, new Error('réseau')), stockage, 1),
+      consulterEcheances(client(sansEcheances, undefined, undefined, new Error('réseau')), session, 1),
     ).resolves.toEqual({ type: 'indisponible' });
-    expect(stockage.supprimer).not.toHaveBeenCalled();
+    expect(session.terminer).not.toHaveBeenCalled();
   });
 });
 
@@ -253,39 +252,39 @@ describe.each([
   ['FR-007-12', 'payerEcheance', payerEcheance, 'payer'],
   ['FR-007-13', 'supprimerPret', supprimerPret, 'supprimer'],
 ] as const)('[%s] %s', (etiquette, _nom, cas, methode) => {
-  it(`[${etiquette}] réussit avec le jeton et l’identifiant`, async () => {
+  it(`[${etiquette}] réussit avec l’identifiant`, async () => {
     const c = client(sansEcheances);
 
-    await expect(cas(c, stockageEnMemoire('jeton'), 7)).resolves.toEqual({ type: 'faite' });
-    expect(c[methode]).toHaveBeenCalledWith('jeton', 7);
+    await expect(cas(c, sessionEnMemoire(), 7)).resolves.toEqual({ type: 'faite' });
+    expect(c[methode]).toHaveBeenCalledWith(7);
   });
 
-  it(`[${etiquette}] sans jeton : session terminée, sans appel`, async () => {
+  it(`[${etiquette}] sans session : session terminée, sans appel`, async () => {
     const c = client(sansEcheances);
-    const stockage = stockageEnMemoire();
+    const session = sessionEnMemoire(false);
 
-    await expect(cas(c, stockage, 7)).resolves.toEqual({ type: 'deconnecte' });
+    await expect(cas(c, session, 7)).resolves.toEqual({ type: 'deconnecte' });
     expect(c[methode]).not.toHaveBeenCalled();
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it(`[${etiquette}] sur 401 : jeton purgé et session terminée`, async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it(`[${etiquette}] sur 401 : session terminée`, async () => {
+    const session = sessionEnMemoire();
     const c = client(sansEcheances, undefined, undefined, undefined, { statut: 'nonAuthentifie' });
 
-    await expect(cas(c, stockage, 7)).resolves.toEqual({ type: 'deconnecte' });
-    expect(stockage.supprimer).toHaveBeenCalledOnce();
+    await expect(cas(c, session, 7)).resolves.toEqual({ type: 'deconnecte' });
+    expect(session.terminer).toHaveBeenCalledOnce();
   });
 
-  it(`[${etiquette}] sur toute panne : indisponible, jeton conservé`, async () => {
-    const stockage = stockageEnMemoire('jeton');
+  it(`[${etiquette}] sur toute panne : indisponible, session conservée`, async () => {
+    const session = sessionEnMemoire();
 
     await expect(
-      cas(client(sansEcheances, undefined, undefined, undefined, { statut: 'technique' }), stockage, 7),
+      cas(client(sansEcheances, undefined, undefined, undefined, { statut: 'technique' }), session, 7),
     ).resolves.toEqual({ type: 'indisponible' });
     await expect(
-      cas(client(sansEcheances, undefined, undefined, undefined, new Error('réseau')), stockage, 7),
+      cas(client(sansEcheances, undefined, undefined, undefined, new Error('réseau')), session, 7),
     ).resolves.toEqual({ type: 'indisponible' });
-    expect(stockage.supprimer).not.toHaveBeenCalled();
+    expect(session.terminer).not.toHaveBeenCalled();
   });
 });

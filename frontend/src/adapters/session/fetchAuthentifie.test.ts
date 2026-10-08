@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { StockageJeton } from '../../application/seConnecter';
+import type { StockageJeton } from '../stockage/StockageJetonLocal';
 import { creerFetchAuthentifie } from './fetchAuthentifie';
 import { creerSignalExpiration } from './signalExpiration';
 

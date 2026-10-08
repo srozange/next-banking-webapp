@@ -118,7 +118,7 @@ describe('EcranConseiller', () => {
       await u.click(screen.getByTestId('chat-action-projet-immobilier'));
 
       await screen.findByText('Voici');
-      expect(envoyer).toHaveBeenCalledWith(expect.any(String), 'Je souhaite acheter un appartement, comment preparer mon dossier ?', []);
+      expect(envoyer).toHaveBeenCalledWith('Je souhaite acheter un appartement, comment preparer mon dossier ?', []);
       expect(utilisateur()[0]?.textContent).toBe('Je souhaite acheter un appartement, comment preparer mon dossier ?');
       expect(actions.some((a) => screen.queryByTestId(`chat-action-${a}`) !== null)).toBe(false);
     });
@@ -136,7 +136,7 @@ describe('EcranConseiller', () => {
 
       await screen.findByText('Réponse de Sophie');
       expect(utilisateur().map((b) => b.textContent)).toEqual(['Bonjour']);
-      expect(envoyer).toHaveBeenCalledWith(expect.any(String), 'Bonjour', []);
+      expect(envoyer).toHaveBeenCalledWith('Bonjour', []);
       expect(saisie().value).toBe('Bonjour');
       expect(screen.getByTestId('chat-messages').scrollTop).toBe(1234);
     });
@@ -202,7 +202,7 @@ describe('EcranConseiller', () => {
 
       await u.type(saisie(), '{Enter}');
       await screen.findByText('R');
-      expect(envoyer).toHaveBeenCalledWith(expect.any(String), 'a\nb', []);
+      expect(envoyer).toHaveBeenCalledWith('a\nb', []);
     });
 
     it('le champ a un nom accessible et la liste est annoncée poliment', async () => {
@@ -227,9 +227,8 @@ describe('EcranConseiller', () => {
       await u.type(saisie(), '{Enter}');
 
       await screen.findByText('R2');
-      expect(envoyer.mock.calls[0]?.[2]).toEqual([]);
+      expect(envoyer.mock.calls[0]?.[1]).toEqual([]);
       expect(envoyer.mock.calls[1]).toEqual([
-        expect.any(String),
         'Un',
         [
           { role: 'utilisateur', contenu: 'Un' },

@@ -1,7 +1,7 @@
 import { useId, useState, type FormEvent } from 'react';
 import { TYPE_PRET_DEFAUT, TYPES_PRET, type SaisieDemande } from '../../../domain/pret';
 import { deposerDemande, type ClientPrets } from '../../../application/prets';
-import type { StockageJeton } from '../../../application/seConnecter';
+import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
 import { AlerteInfo } from '../../ui/AlerteInfo';
@@ -15,7 +15,7 @@ const T = TEXTES.prets.demande;
 
 interface Proprietes {
   client: ClientPrets;
-  stockage: StockageJeton;
+  session: SessionLocale;
   /** Session perdue pendant l'envoi. */
   surDeconnexion: () => void;
   /** Demande transmise : la liste des emprunts doit être relue. */
@@ -27,7 +27,7 @@ interface Proprietes {
  * credits. Succès : message d'information et liste relue ; refus (400, 503) : message du service ; autre panne : texte
  * fixe. Les valeurs saisies sont conservées dans tous les cas.
  */
-export function SectionDemande({ client, stockage, surDeconnexion, surDepot }: Proprietes) {
+export function SectionDemande({ client, session, surDeconnexion, surDepot }: Proprietes) {
   const [type, setType] = useState<string>(TYPE_PRET_DEFAUT);
   const [montant, setMontant] = useState('');
   const [taux, setTaux] = useState('3.50');
@@ -42,7 +42,7 @@ export function SectionDemande({ client, stockage, surDeconnexion, surDepot }: P
     evenement.preventDefault();
     const saisie: SaisieDemande = { type, montant, tauxAnnuel: taux, dureeMois: duree, objet };
     setOccupe(true);
-    const resultat = await deposerDemande(client, stockage, saisie);
+    const resultat = await deposerDemande(client, session, saisie);
     if (resultat.type === 'deconnecte') {
       surDeconnexion();
       return;

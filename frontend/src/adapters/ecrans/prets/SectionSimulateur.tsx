@@ -7,7 +7,7 @@ import {
   type Simulation,
 } from '../../../domain/pret';
 import { simulerEmprunt, type ClientPrets } from '../../../application/prets';
-import type { StockageJeton } from '../../../application/seConnecter';
+import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
 import { BoutonDepliant } from '../../ui/BoutonDepliant';
@@ -21,7 +21,7 @@ const T = TEXTES.prets.simulateur;
 
 interface Proprietes {
   client: ClientPrets;
-  stockage: StockageJeton;
+  session: SessionLocale;
   /** Session perdue pendant la simulation. */
   surDeconnexion: () => void;
 }
@@ -30,7 +30,7 @@ interface Proprietes {
  * Section « Simulateur de pret » (FR-007-02, FR-007-03) : saisie préremplie, calcul par le service, résultat avec
  * échéancier repliable. Un refus du service affiche son message, une panne le texte fixe, sans résultat.
  */
-export function SectionSimulateur({ client, stockage, surDeconnexion }: Proprietes) {
+export function SectionSimulateur({ client, session, surDeconnexion }: Proprietes) {
   const [saisie, setSaisie] = useState<SaisieSimulation>({ ...SAISIE_SIMULATION_DEFAUT });
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export function SectionSimulateur({ client, stockage, surDeconnexion }: Propriet
   async function calculer(evenement: FormEvent<HTMLFormElement>) {
     evenement.preventDefault();
     setOccupe(true);
-    const resultat = await simulerEmprunt(client, stockage, saisie);
+    const resultat = await simulerEmprunt(client, session, saisie);
     if (resultat.type === 'deconnecte') {
       surDeconnexion();
       return;

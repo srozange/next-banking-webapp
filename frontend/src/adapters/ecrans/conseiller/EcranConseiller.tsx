@@ -4,7 +4,7 @@ import { ROUTE_CONNEXION } from '../../../domain/connexion';
 import { prenomDe, saisieVide, type Echange } from '../../../domain/conversation';
 import type { ResultatProfil } from '../../../application/chargerProfil';
 import { dialoguer, type ClientConversation } from '../../../application/dialoguerAvecSophie';
-import type { StockageJeton } from '../../../application/seConnecter';
+import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
 import { BoutonFantome } from '../../ui/BoutonFantome';
 import { BoutonPrimaire } from '../../ui/BoutonPrimaire';
@@ -16,7 +16,7 @@ const T = TEXTES.conseiller;
 
 interface Proprietes {
   client: ClientConversation;
-  stockage: StockageJeton;
+  session: SessionLocale;
 }
 
 /**
@@ -25,7 +25,7 @@ interface Proprietes {
  * se charge) ; rien n'est affiché avant sa résolution. Une panne est une bulle de Sophie. Les actions rapides ne
  * sont visibles que sur une conversation neuve ; « Nouvelle conversation » ignore une réponse encore en vol.
  */
-export function EcranConseiller({ client, stockage }: Proprietes) {
+export function EcranConseiller({ client, session }: Proprietes) {
   const naviguer = useNavigate();
   const profil = useOutletContext<ResultatProfil | null>();
   const [echanges, setEchanges] = useState<readonly Echange[]>([]);
@@ -58,7 +58,7 @@ export function EcranConseiller({ client, stockage }: Proprietes) {
     const numero = conversation.current;
     setEchanges([...historique, { role: 'utilisateur', contenu: message }]);
     setOccupe(true);
-    const resultat = await dialoguer(client, stockage, historique, message, T.indisponible);
+    const resultat = await dialoguer(client, session, historique, message, T.indisponible);
     if (!actif.current || numero !== conversation.current) {
       return;
     }

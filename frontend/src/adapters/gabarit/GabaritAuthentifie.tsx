@@ -5,7 +5,6 @@ import { sousNavigation } from '../../domain/navigation';
 import { chargerProfil, type ClientProfil, type ResultatProfil } from '../../application/chargerProfil';
 import { renouvelerSession } from '../../application/renouvelerSession';
 import { seDeconnecter } from '../../application/seDeconnecter';
-import type { StockageJeton } from '../../application/seConnecter';
 import type { Session } from '../session/session';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { EnTete } from './EnTete';
@@ -15,26 +14,25 @@ import { SousEnTete } from './SousEnTete';
 const EVENEMENTS_ACTIVITE = ['pointerdown', 'keydown'] as const;
 
 interface Proprietes {
-  /** Rôles de la session, lus dans le jeton par la garde. */
+  /** Rôles de la session, lus par la garde. */
   roles: readonly string[];
   clientProfil: ClientProfil;
-  stockage: StockageJeton;
   session: Session;
 }
 
 /**
  * Gabarit des pages authentifiées : en-tête (landmark banner), sous-en-tête des espaces réservés, puis contenu
  * principal en aria-busy jusqu'à la réponse de /moi. Profil refusé (401) ou tout autre 401 : retour à /login, sans message ;
- * Deconnexion : jeton supprimé, service informé, retour à /login ; renouvellement du jeton sur activité.
+ * Deconnexion : service informé, session terminée, retour à /login ; renouvellement de la session sur activité.
  */
-export function GabaritAuthentifie({ roles, clientProfil, stockage, session }: Proprietes) {
+export function GabaritAuthentifie({ roles, clientProfil, session }: Proprietes) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [profil, setProfil] = useState<ResultatProfil | null>(null);
 
   useEffect(() => {
     let actif = true;
-    void chargerProfil(clientProfil, stockage).then((resultat) => {
+    void chargerProfil(clientProfil, session.locale).then((resultat) => {
       if (actif) {
         setProfil(resultat);
       }
@@ -42,9 +40,9 @@ export function GabaritAuthentifie({ roles, clientProfil, stockage, session }: P
     return () => {
       actif = false;
     };
-  }, [clientProfil, stockage]);
+  }, [clientProfil, session]);
 
-  // Tout 401 de tout service (signal) : le jeton est déjà supprimé, retour à /login sans message.
+  // Tout 401 de tout service (signal) : la session est déjà terminée, retour à /login sans message.
   useEffect(
     () => session.signal.ecouter(() => void navigate(ROUTE_CONNEXION, { replace: true })),
     [session, navigate],
@@ -59,7 +57,7 @@ export function GabaritAuthentifie({ roles, clientProfil, stockage, session }: P
         return;
       }
       enCours = true;
-      void renouvelerSession(session.client, stockage, session.expiration)
+      void renouvelerSession(session.client, session.locale)
         .then((resultat) => {
           if (actif && resultat === 'deconnecte') {
             void navigate(ROUTE_CONNEXION, { replace: true });
@@ -74,10 +72,10 @@ export function GabaritAuthentifie({ roles, clientProfil, stockage, session }: P
       actif = false;
       EVENEMENTS_ACTIVITE.forEach((nom) => document.removeEventListener(nom, surActivite));
     };
-  }, [session, stockage, navigate]);
+  }, [session, navigate]);
 
   const deconnecter = () => {
-    void navigate(seDeconnecter(session.client, stockage), { replace: true });
+    void navigate(seDeconnecter(session.client, session.locale), { replace: true });
   };
 
   if (profil?.type === 'deconnecte') {

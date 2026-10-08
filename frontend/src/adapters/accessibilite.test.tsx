@@ -125,7 +125,7 @@ describe('accessibilité (axe)', () => {
       localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
       return rendreApplication('/bourse', undefined, undefined, undefined, undefined, undefined, undefined, {
         lireWatchlist: () => Promise.resolve({ statut: 'ok', donnees: [valeur(1, 'AI.PA', 'Air Liquide'), valeur(2, 'BNP.PA', 'BNP Paribas')] }),
-        lireHistorique: (_jeton, symbole, periode) =>
+        lireHistorique: (symbole, periode) =>
           Promise.resolve({ statut: 'ok', donnees: { symbole, periode, points, graphique: points.length > 0 ? SVG : null } }),
         ajouter: () => Promise.resolve({ statut: 'refusee', message: 'Le symbole est obligatoire (ex: AMZN, SG.PA)' }),
       });

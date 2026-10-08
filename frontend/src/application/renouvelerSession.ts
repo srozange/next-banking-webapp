@@ -1,45 +1,35 @@
 import type { ClientDeconnexion } from './seDeconnecter';
-import type { StockageJeton } from './seConnecter';
+import type { SessionLocale } from './session';
 
-/** Réponse de `POST /api/identite-clients/renouvellement`, traduite par l'adaptateur HTTP. */
+/** Réponse de `POST /api/identite-clients/renouvellement`, traduite par l'adaptateur HTTP, qui a déjà enregistré la session neuve. */
 export type ReponseRenouvellement =
-  | { statut: 'renouvelee'; jeton: string }
+  | { statut: 'renouvelee' }
   | { statut: 'nonAuthentifie' }
   | { statut: 'technique' };
 
-/** Port sortant : demande un jeton neuf. */
+/** Port sortant : demande une session neuve. */
 export interface ClientRenouvellement {
-  renouveler(jeton: string): Promise<ReponseRenouvellement>;
+  renouveler(): Promise<ReponseRenouvellement>;
 }
 
 /** Port sortant du service identité et clients pour la session : déconnexion et renouvellement. */
 export interface ClientSession extends ClientDeconnexion, ClientRenouvellement {}
 
-/** Port sortant : temps restant avant l'expiration d'un jeton (calcul de temps dans les adaptateurs), null si illisible. */
-export interface ExpirationJeton {
-  secondesRestantes(jeton: string): number | null;
-}
-
-/** Le jeton est renouvelé quand il reste moins de 10 minutes avant son expiration. */
+/** La session est renouvelée quand il reste moins de 10 minutes avant son expiration. */
 export const SEUIL_RENOUVELLEMENT_SECONDES = 600;
 
 export type ResultatRenouvellement = 'aucun' | 'inutile' | 'renouvelee' | 'deconnecte' | 'echec';
 
 /**
- * Cas d'usage : renouvelle la session sur activité (FR-030-05). Aucun appel sans jeton lisible ni tant qu'il
- * reste au moins 600 s ; le jeton neuf remplace l'ancien ; sur 401 (client désactivé, jeton expiré) le jeton
- * est supprimé et la session est terminée.
+ * Cas d'usage : renouvelle la session sur activité (FR-030-05). Aucun appel sans session lisible ni tant qu'il
+ * reste au moins 600 s ; la session neuve remplace l'ancienne ; sur 401 (client désactivé, session expirée) la
+ * session est terminée.
  */
 export async function renouvelerSession(
   client: ClientRenouvellement,
-  stockage: StockageJeton,
-  expiration: ExpirationJeton,
+  session: SessionLocale,
 ): Promise<ResultatRenouvellement> {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    return 'aucun';
-  }
-  const restant = expiration.secondesRestantes(jeton);
+  const restant = session.secondesRestantes();
   if (restant === null) {
     return 'aucun';
   }
@@ -47,15 +37,14 @@ export async function renouvelerSession(
     return 'inutile';
   }
   try {
-    const reponse = await client.renouveler(jeton);
+    const reponse = await client.renouveler();
     if (reponse.statut === 'nonAuthentifie') {
-      stockage.supprimer();
+      session.terminer();
       return 'deconnecte';
     }
     if (reponse.statut === 'technique') {
       return 'echec';
     }
-    stockage.enregistrer(reponse.jeton);
     return 'renouvelee';
   } catch {
     return 'echec';

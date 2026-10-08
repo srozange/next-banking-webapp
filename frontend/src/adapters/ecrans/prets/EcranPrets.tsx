@@ -9,7 +9,7 @@ import {
   supprimerPret,
   type ClientPrets,
 } from '../../../application/prets';
-import type { StockageJeton } from '../../../application/seConnecter';
+import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
 import { SectionDemande } from './SectionDemande';
 import { SectionEcheancier } from './SectionEcheancier';
@@ -19,7 +19,7 @@ import './EcranPrets.css';
 
 interface Proprietes {
   client: ClientPrets;
-  stockage: StockageJeton;
+  session: SessionLocale;
 }
 
 /**
@@ -27,7 +27,7 @@ interface Proprietes {
  * emprunts de l'utilisateur, relue après chaque demande transmise, paiement d'échéance ou suppression, et échéancier
  * d'un prêt à la demande. Session perdue : retour à /login.
  */
-export function EcranPrets({ client, stockage }: Proprietes) {
+export function EcranPrets({ client, session }: Proprietes) {
   const [prets, setPrets] = useState<readonly Pret[] | null>(null);
   const [listeIndisponible, setListeIndisponible] = useState(false);
   const [deconnecte, setDeconnecte] = useState(false);
@@ -37,7 +37,7 @@ export function EcranPrets({ client, stockage }: Proprietes) {
 
   const charger = useCallback(
     async (estActif: () => boolean) => {
-      const resultat = await listerPrets(client, stockage);
+      const resultat = await listerPrets(client, session);
       if (!estActif()) {
         return;
       }
@@ -50,12 +50,12 @@ export function EcranPrets({ client, stockage }: Proprietes) {
         setPrets(resultat.prets);
       }
     },
-    [client, stockage],
+    [client, session],
   );
 
   /** Lit l'échéancier du prêt et l'ouvre ; rend faux (avec le texte d'erreur technique) si la lecture échoue. */
   async function ouvrirEcheancier(pretId: number): Promise<boolean> {
-    const resultat = await consulterEcheances(client, stockage, pretId);
+    const resultat = await consulterEcheances(client, session, pretId);
     if (resultat.type === 'deconnecte') {
       setDeconnecte(true);
       return false;
@@ -75,7 +75,7 @@ export function EcranPrets({ client, stockage }: Proprietes) {
   }
 
   async function payer(echeanceId: number) {
-    const resultat = await payerEcheance(client, stockage, echeanceId);
+    const resultat = await payerEcheance(client, session, echeanceId);
     if (resultat.type === 'deconnecte') {
       setDeconnecte(true);
       return;
@@ -94,7 +94,7 @@ export function EcranPrets({ client, stockage }: Proprietes) {
   }
 
   async function supprimer(pretId: number) {
-    const resultat = await supprimerPret(client, stockage, pretId);
+    const resultat = await supprimerPret(client, session, pretId);
     if (resultat.type === 'deconnecte') {
       setDeconnecte(true);
       return;
@@ -125,10 +125,10 @@ export function EcranPrets({ client, stockage }: Proprietes) {
   return (
     <div className="ecran-prets">
       <title>{TEXTES.titresOnglet.prets}</title>
-      <SectionSimulateur client={client} stockage={stockage} surDeconnexion={() => setDeconnecte(true)} />
+      <SectionSimulateur client={client} session={session} surDeconnexion={() => setDeconnecte(true)} />
       <SectionDemande
         client={client}
-        stockage={stockage}
+        session={session}
         surDeconnexion={() => setDeconnecte(true)}
         surDepot={() => void charger(() => true)}
       />

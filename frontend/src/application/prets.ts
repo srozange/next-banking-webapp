@@ -1,5 +1,5 @@
 import type { Echeance, Pret, SaisieDemande, SaisieSimulation, Simulation } from '../domain/pret';
-import type { StockageJeton } from './seConnecter';
+import { sessionOuverteOuFin, type SessionLocale } from './session';
 
 /** Réponse de `POST /api/credits/simulations`, traduite par l'adaptateur HTTP ; `refusee` porte le message du service (400). */
 export type ReponseSimulation =
@@ -32,12 +32,12 @@ export type ReponseAction = { statut: 'faite' } | { statut: 'nonAuthentifie' } |
 
 /** Port sortant : service credits. */
 export interface ClientPrets {
-  simuler(jeton: string, saisie: SaisieSimulation): Promise<ReponseSimulation>;
-  lister(jeton: string): Promise<ReponsePrets>;
-  deposer(jeton: string, saisie: SaisieDemande): Promise<ReponseDepot>;
-  echeances(jeton: string, pretId: number): Promise<ReponseEcheances>;
-  payer(jeton: string, echeanceId: number): Promise<ReponseAction>;
-  supprimer(jeton: string, pretId: number): Promise<ReponseAction>;
+  simuler(saisie: SaisieSimulation): Promise<ReponseSimulation>;
+  lister(): Promise<ReponsePrets>;
+  deposer(saisie: SaisieDemande): Promise<ReponseDepot>;
+  echeances(pretId: number): Promise<ReponseEcheances>;
+  payer(echeanceId: number): Promise<ReponseAction>;
+  supprimer(pretId: number): Promise<ReponseAction>;
 }
 
 export type ResultatSimulation =
@@ -66,24 +66,22 @@ const DECONNECTE = { type: 'deconnecte' } as const;
 const INDISPONIBLE = { type: 'indisponible' } as const;
 
 /**
- * Cas d'usage : simule un emprunt par le service credits (FR-007-02, FR-007-03). Sans jeton ou sur 401, le jeton est
- * supprimé et la session est terminée ; un refus 400 rend le message du service ; toute autre panne est
+ * Cas d'usage : simule un emprunt par le service credits (FR-007-02, FR-007-03). Sans session ou sur 401, la session
+ * est terminée ; un refus 400 rend le message du service ; toute autre panne est
  * « indisponible » (le texte fixe est celui de l'écran).
  */
 export async function simulerEmprunt(
   client: ClientPrets,
-  stockage: StockageJeton,
+  session: SessionLocale,
   saisie: SaisieSimulation,
 ): Promise<ResultatSimulation> {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    stockage.supprimer();
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
   try {
-    const reponse = await client.simuler(jeton, saisie);
+    const reponse = await client.simuler(saisie);
     if (reponse.statut === 'nonAuthentifie') {
-      stockage.supprimer();
+      session.terminer();
       return DECONNECTE;
     }
     if (reponse.statut === 'technique') {
@@ -99,16 +97,14 @@ export async function simulerEmprunt(
 }
 
 /** Cas d'usage : prêts de l'utilisateur connecté (FR-007-08), même traitement de la session que la simulation. */
-export async function listerPrets(client: ClientPrets, stockage: StockageJeton): Promise<ResultatPrets> {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    stockage.supprimer();
+export async function listerPrets(client: ClientPrets, session: SessionLocale): Promise<ResultatPrets> {
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
   try {
-    const reponse = await client.lister(jeton);
+    const reponse = await client.lister();
     if (reponse.statut === 'nonAuthentifie') {
-      stockage.supprimer();
+      session.terminer();
       return DECONNECTE;
     }
     if (reponse.statut === 'technique') {
@@ -121,24 +117,22 @@ export async function listerPrets(client: ClientPrets, stockage: StockageJeton):
 }
 
 /**
- * Cas d'usage : dépose une demande de prêt auprès du service credits (FR-007-05, FR-007-07, FR-024-02). Sans jeton ou
- * sur 401, le jeton est supprimé et la session est terminée ; un refus (400, 503) rend le message du service ; toute
+ * Cas d'usage : dépose une demande de prêt auprès du service credits (FR-007-05, FR-007-07, FR-024-02). Sans session ou
+ * sur 401, la session est terminée ; un refus (400, 503) rend le message du service ; toute
  * autre panne est « indisponible » (le texte fixe est celui de l'écran).
  */
 export async function deposerDemande(
   client: ClientPrets,
-  stockage: StockageJeton,
+  session: SessionLocale,
   saisie: SaisieDemande,
 ): Promise<ResultatDepot> {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    stockage.supprimer();
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
   try {
-    const reponse = await client.deposer(jeton, saisie);
+    const reponse = await client.deposer(saisie);
     if (reponse.statut === 'nonAuthentifie') {
-      stockage.supprimer();
+      session.terminer();
       return DECONNECTE;
     }
     if (reponse.statut === 'technique') {
@@ -156,18 +150,16 @@ export async function deposerDemande(
 /** Cas d'usage : échéancier d'un prêt de l'utilisateur (FR-007-11), même traitement de la session que la liste. */
 export async function consulterEcheances(
   client: ClientPrets,
-  stockage: StockageJeton,
+  session: SessionLocale,
   pretId: number,
 ): Promise<ResultatEcheances> {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    stockage.supprimer();
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
   try {
-    const reponse = await client.echeances(jeton, pretId);
+    const reponse = await client.echeances(pretId);
     if (reponse.statut === 'nonAuthentifie') {
-      stockage.supprimer();
+      session.terminer();
       return DECONNECTE;
     }
     return reponse.statut === 'technique' ? INDISPONIBLE : { type: 'echeances', echeances: reponse.echeances };
@@ -177,18 +169,16 @@ export async function consulterEcheances(
 }
 
 async function agir(
-  stockage: StockageJeton,
-  action: (jeton: string) => Promise<ReponseAction>,
+  session: SessionLocale,
+  action: () => Promise<ReponseAction>,
 ): Promise<ResultatAction> {
-  const jeton = stockage.lire();
-  if (jeton === null) {
-    stockage.supprimer();
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
   try {
-    const reponse = await action(jeton);
+    const reponse = await action();
     if (reponse.statut === 'nonAuthentifie') {
-      stockage.supprimer();
+      session.terminer();
       return DECONNECTE;
     }
     return reponse.statut === 'technique' ? INDISPONIBLE : { type: 'faite' };
@@ -197,12 +187,12 @@ async function agir(
   }
 }
 
-/** Cas d'usage : marque une échéance payée (FR-007-12). Sans jeton ou sur 401, la session est terminée. */
-export function payerEcheance(client: ClientPrets, stockage: StockageJeton, echeanceId: number): Promise<ResultatAction> {
-  return agir(stockage, (jeton) => client.payer(jeton, echeanceId));
+/** Cas d'usage : marque une échéance payée (FR-007-12). Sans session ou sur 401, la session est terminée. */
+export function payerEcheance(client: ClientPrets, session: SessionLocale, echeanceId: number): Promise<ResultatAction> {
+  return agir(session, () => client.payer(echeanceId));
 }
 
-/** Cas d'usage : supprime un prêt de l'utilisateur (FR-007-13). Sans jeton ou sur 401, la session est terminée. */
-export function supprimerPret(client: ClientPrets, stockage: StockageJeton, pretId: number): Promise<ResultatAction> {
-  return agir(stockage, (jeton) => client.supprimer(jeton, pretId));
+/** Cas d'usage : supprime un prêt de l'utilisateur (FR-007-13). Sans session ou sur 401, la session est terminée. */
+export function supprimerPret(client: ClientPrets, session: SessionLocale, pretId: number): Promise<ResultatAction> {
+  return agir(session, () => client.supprimer(pretId));
 }

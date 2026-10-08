@@ -134,7 +134,7 @@ describe('écran Comptes Tiers : non connecté', () => {
     await userEvent.click(screen.getByTestId('tiers-connecter-banque'));
 
     await waitFor(() => expect(allerVers).toHaveBeenCalledWith('https://webview.powens.test/connect'));
-    expect(client.connecter).toHaveBeenCalledWith(expect.any(String));
+    expect(client.connecter).toHaveBeenCalledWith();
     expect(screen.queryByTestId('tiers-message-erreur')).toBeNull();
   });
 
@@ -287,7 +287,7 @@ describe('écran Comptes Tiers : connecté', () => {
     expect(screen.getByText('Interets')).toBeTruthy();
     expect(screen.queryByText('Salaire')).toBeNull();
     expect(screen.getByTestId('tiers-compte-11')).toBe(carteAvant);
-    expect(client.selectionner).toHaveBeenCalledWith(expect.any(String), 12);
+    expect(client.selectionner).toHaveBeenCalledWith(12);
     expect(screen.getByTestId('tiers-compte-12').getAttribute('aria-pressed')).toBe('true');
   });
 
@@ -391,7 +391,7 @@ describe('écran Comptes Tiers : rafraîchir et déconnecter', () => {
     await userEvent.click(screen.getByTestId('tiers-deconnecter'));
 
     expect(await screen.findByTestId('tiers-connecter-banque')).toBeTruthy();
-    expect(client.deconnecter).toHaveBeenCalledWith(expect.any(String));
+    expect(client.deconnecter).toHaveBeenCalledWith();
     expect(screen.queryByTestId('tiers-message-erreur')).toBeNull();
     expect(texte()).not.toContain('Compte Courant');
     expect(texte()).not.toContain('Salaire');

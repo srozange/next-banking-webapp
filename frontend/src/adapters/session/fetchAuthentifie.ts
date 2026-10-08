@@ -1,4 +1,4 @@
-import type { StockageJeton } from '../../application/seConnecter';
+import type { StockageJeton } from '../stockage/StockageJetonLocal';
 import type { SignalExpiration } from './signalExpiration';
 
 /**

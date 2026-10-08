@@ -2,13 +2,12 @@ import type { CodePeriode } from '../domain/bourse';
 import {
   chargerBourse,
   DECONNECTE,
-  jetonOuFin,
   TECHNIQUE,
   type ClientBourse,
   type DemandeAjout,
   type ResultatBourse,
 } from './consulterBourse';
-import type { StockageJeton } from './seConnecter';
+import { sessionOuverteOuFin, type SessionLocale } from './session';
 
 export type ResultatAjout = ResultatBourse | { type: 'refuse'; message: string };
 
@@ -19,17 +18,16 @@ export type ResultatAjout = ResultatBourse | { type: 'refuse'; message: string }
  */
 export async function ajouterValeur(
   client: ClientBourse,
-  stockage: StockageJeton,
+  session: SessionLocale,
   demande: DemandeAjout,
   periode: CodePeriode,
 ): Promise<ResultatAjout> {
-  const jeton = jetonOuFin(stockage);
-  if (jeton === null) {
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
-  const reponse = await client.ajouter(jeton, demande);
+  const reponse = await client.ajouter(demande);
   if (reponse.statut === 'nonAuthentifie') {
-    stockage.supprimer();
+    session.terminer();
     return DECONNECTE;
   }
   if (reponse.statut === 'technique') {
@@ -38,7 +36,7 @@ export async function ajouterValeur(
   if (reponse.statut === 'refusee') {
     return { type: 'refuse', message: reponse.message };
   }
-  return chargerBourse(client, stockage, reponse.donnees.symbole, periode);
+  return chargerBourse(client, session, reponse.donnees.symbole, periode);
 }
 
 /**
@@ -48,22 +46,21 @@ export async function ajouterValeur(
  */
 export async function retirerValeur(
   client: ClientBourse,
-  stockage: StockageJeton,
+  session: SessionLocale,
   id: number,
   selection: string | null,
   periode: CodePeriode,
 ): Promise<ResultatBourse> {
-  const jeton = jetonOuFin(stockage);
-  if (jeton === null) {
+  if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
-  const reponse = await client.retirer(jeton, id);
+  const reponse = await client.retirer(id);
   if (reponse.statut === 'nonAuthentifie') {
-    stockage.supprimer();
+    session.terminer();
     return DECONNECTE;
   }
   if (reponse.statut === 'technique') {
     return TECHNIQUE;
   }
-  return chargerBourse(client, stockage, selection, periode);
+  return chargerBourse(client, session, selection, periode);
 }

@@ -1,28 +1,32 @@
 import type { ClientSession, ReponseRenouvellement } from '../../application/renouvelerSession';
+import type { StockageJeton } from '../stockage/StockageJetonLocal';
 
 export const CHEMIN_DECONNEXION = '/api/identite-clients/deconnexion';
 export const CHEMIN_RENOUVELLEMENT = '/api/identite-clients/renouvellement';
 
 /**
  * Adaptateur HTTP de la session (service identité et clients).
- * Déconnexion : POST avec le jeton, toute issue est ignorée (le jeton local est déjà supprimé).
- * Renouvellement : 200 `{"jeton"}` : jeton neuf ; 401 : non authentifié ; tout le reste (autre statut, réseau
+ * Déconnexion : POST (le jeton est porté par `fetchAuthentifie`), toute issue est ignorée.
+ * Renouvellement : 200 `{"jeton"}` : jeton neuf, enregistré ici ; 401 : non authentifié ; tout le reste (autre statut, réseau
  * coupé, JSON illisible) : erreur technique. Aucun jeton n'est journalisé.
  */
-export function creerClientSessionHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientSession {
+export function creerClientSessionHttp(
+  stockage: StockageJeton,
+  appeler: typeof fetch = (entree, options) => fetch(entree, options),
+): ClientSession {
   return {
-    async deconnecter(jeton) {
+    async deconnecter() {
       try {
-        await appeler(CHEMIN_DECONNEXION, { method: 'POST', headers: { Authorization: `Bearer ${jeton}` } });
+        await appeler(CHEMIN_DECONNEXION, { method: 'POST' });
       } catch {
         // Panne réseau : la déconnexion locale suffit.
       }
     },
-    async renouveler(jeton): Promise<ReponseRenouvellement> {
+    async renouveler(): Promise<ReponseRenouvellement> {
       try {
         const reponse = await appeler(CHEMIN_RENOUVELLEMENT, {
           method: 'POST',
-          headers: { Authorization: `Bearer ${jeton}`, Accept: 'application/json' },
+          headers: { Accept: 'application/json' },
         });
         if (reponse.status === 401) {
           return { statut: 'nonAuthentifie' };
@@ -32,7 +36,11 @@ export function creerClientSessionHttp(appeler: typeof fetch = (entree, options)
         }
         const corps: unknown = await reponse.json();
         const neuf: unknown = (corps as { jeton?: unknown } | null)?.jeton;
-        return typeof neuf === 'string' ? { statut: 'renouvelee', jeton: neuf } : { statut: 'technique' };
+        if (typeof neuf !== 'string') {
+          return { statut: 'technique' };
+        }
+        stockage.enregistrer(neuf);
+        return { statut: 'renouvelee' };
       } catch {
         return { statut: 'technique' };
       }

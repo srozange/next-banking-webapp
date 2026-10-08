@@ -15,7 +15,7 @@ export type ReponseTableauDeBord =
   | { statut: 'tableau'; comptes: readonly CompteTableauBrut[]; dernieresOperations: readonly OperationBrute[] }
   | { statut: 'technique' };
 
-/** Port sortant : comptes et dernières opérations du client du jeton. */
+/** Port sortant : comptes et dernières opérations du client de la session. */
 export interface ClientTableauDeBord {
   lire(): Promise<ReponseTableauDeBord>;
 }

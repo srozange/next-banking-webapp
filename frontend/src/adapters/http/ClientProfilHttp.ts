@@ -9,11 +9,11 @@ export const CHEMIN_PROFIL = '/api/identite-clients/moi';
  */
 export function creerClientProfilHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientProfil {
   return {
-    async lire(jeton): Promise<ReponseProfil> {
+    async lire(): Promise<ReponseProfil> {
       try {
         const reponse = await appeler(CHEMIN_PROFIL, {
           method: 'GET',
-          headers: { Authorization: `Bearer ${jeton}`, Accept: 'application/json' },
+          headers: { Accept: 'application/json' },
         });
         if (reponse.status === 401) {
           return { statut: 'nonAuthentifie' };

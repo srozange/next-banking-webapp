@@ -84,7 +84,7 @@ function historiqueDepuis(brut: unknown): HistoriqueCours | null {
  * réseau coupé, corps illisible ou inattendu) : erreur technique. Le jeton n'est jamais journalisé.
  */
 export function creerClientBourseHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientBourse {
-  const entetes = (jeton: string): Record<string, string> => ({ Authorization: `Bearer ${jeton}`, Accept: 'application/json' });
+  const entetes = (): Record<string, string> => ({ Accept: 'application/json' });
 
   /** Appel dont le corps JSON de la réponse `attendu` est converti ; le reste est une erreur technique. */
   async function lire<T>(
@@ -109,25 +109,25 @@ export function creerClientBourseHttp(appeler: typeof fetch = (entree, options) 
   }
 
   return {
-    lireWatchlist: (jeton) =>
-      lire(CHEMIN_WATCHLIST, { method: 'GET', headers: entetes(jeton) }, 200, (corps) => {
+    lireWatchlist: () =>
+      lire(CHEMIN_WATCHLIST, { method: 'GET', headers: entetes() }, 200, (corps) => {
         const valeurs = Array.isArray(corps) ? corps.map(valeurDepuis) : null;
         return valeurs !== null && tousPresents(valeurs) ? valeurs : null;
       }),
 
-    lireHistorique: (jeton, symbole, periode) =>
+    lireHistorique: (symbole, periode) =>
       lire(
         `${CHEMIN_HISTORIQUE}?symbole=${encodeURIComponent(symbole)}&periode=${encodeURIComponent(periode)}`,
-        { method: 'GET', headers: entetes(jeton) },
+        { method: 'GET', headers: entetes() },
         200,
         historiqueDepuis,
       ),
 
-    async ajouter(jeton: string, demande: DemandeAjout): Promise<ReponseAjout> {
+    async ajouter(demande: DemandeAjout): Promise<ReponseAjout> {
       try {
         const reponse = await appeler(CHEMIN_WATCHLIST, {
           method: 'POST',
-          headers: { ...entetes(jeton), 'Content-Type': 'application/json' },
+          headers: { ...entetes(), 'Content-Type': 'application/json' },
           body: JSON.stringify(demande),
         });
         if (reponse.status === 401) {
@@ -147,11 +147,11 @@ export function creerClientBourseHttp(appeler: typeof fetch = (entree, options) 
       }
     },
 
-    async retirer(jeton, id) {
+    async retirer(id) {
       try {
         const reponse = await appeler(`${CHEMIN_WATCHLIST}/${encodeURIComponent(String(id))}`, {
           method: 'DELETE',
-          headers: entetes(jeton),
+          headers: entetes(),
         });
         if (reponse.status === 401) {
           return NON_AUTHENTIFIE;

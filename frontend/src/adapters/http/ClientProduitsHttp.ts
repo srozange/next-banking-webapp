@@ -120,11 +120,11 @@ function traitementDepuis(brut: unknown): Traitement | null {
  * coupé, corps illisible ou hors contrat, taux hors format décimal) : erreur technique. Le jeton n'est jamais journalisé.
  */
 export function creerClientProduitsHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientProduits {
-  async function lire<T>(entree: string, jeton: string, convertir: (corps: unknown) => T | null): Promise<ReponseProduits<T>> {
+  async function lire<T>(entree: string, convertir: (corps: unknown) => T | null): Promise<ReponseProduits<T>> {
     try {
       const reponse = await appeler(entree, {
         method: 'GET',
-        headers: { Authorization: `Bearer ${jeton}`, Accept: 'application/json' },
+        headers: { Accept: 'application/json' },
       });
       if (reponse.status === 401) {
         return NON_AUTHENTIFIE;
@@ -140,8 +140,8 @@ export function creerClientProduitsHttp(appeler: typeof fetch = (entree, options
   }
 
   return {
-    lireCatalogue: (jeton) => lire(CHEMIN_CATALOGUE, jeton, catalogueDepuis),
-    lireTraitements: (jeton) =>
-      lire(`${CHEMIN_TRAITEMENTS}?limite=${LIMITE_TRAITEMENTS}`, jeton, (corps) => listeDepuis(corps, traitementDepuis)),
+    lireCatalogue: () => lire(CHEMIN_CATALOGUE, catalogueDepuis),
+    lireTraitements: () =>
+      lire(`${CHEMIN_TRAITEMENTS}?limite=${LIMITE_TRAITEMENTS}`, (corps) => listeDepuis(corps, traitementDepuis)),
   };
 }

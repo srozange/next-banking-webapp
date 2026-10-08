@@ -24,16 +24,16 @@ const PRET = {
 };
 
 describe('ClientPretsHttp.simuler', () => {
-  it('[FR-007-03] poste la saisie en JSON avec le jeton en Bearer et rend la simulation', async () => {
+  it('[FR-007-03] poste la saisie en JSON et rend la simulation', async () => {
     const appeler = repondre(200, JSON.stringify(SIMULATION));
 
-    await expect(creerClientPretsHttp(appeler).simuler('jeton', SAISIE)).resolves.toEqual({
+    await expect(creerClientPretsHttp(appeler).simuler(SAISIE)).resolves.toEqual({
       statut: 'simulation',
       simulation: SIMULATION,
     });
     expect(appeler).toHaveBeenCalledWith(CHEMIN_SIMULATIONS, {
       method: 'POST',
-      headers: { Authorization: 'Bearer jeton', Accept: 'application/json', 'Content-Type': 'application/json' },
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: '{"montant":"10000","tauxAnnuel":"3.50","dureeMois":"36"}',
     });
     expect(CHEMIN_SIMULATIONS).toBe('/api/credits/simulations');
@@ -41,13 +41,13 @@ describe('ClientPretsHttp.simuler', () => {
 
   it('[FR-007-02] rend le message du service sur 400', async () => {
     await expect(
-      creerClientPretsHttp(repondre(400, '{"message":"Duree invalide (1-360 mois)"}')).simuler('j', SAISIE),
+      creerClientPretsHttp(repondre(400, '{"message":"Duree invalide (1-360 mois)"}')).simuler(SAISIE),
     ).resolves.toEqual({ statut: 'refusee', message: 'Duree invalide (1-360 mois)' });
   });
 
   it('[FR-007-01] rend non authentifié sur 401', async () => {
     await expect(
-      creerClientPretsHttp(repondre(401, '{"message":"Authentification requise"}')).simuler('j', SAISIE),
+      creerClientPretsHttp(repondre(401, '{"message":"Authentification requise"}')).simuler(SAISIE),
     ).resolves.toEqual({ statut: 'nonAuthentifie' });
   });
 
@@ -65,31 +65,31 @@ describe('ClientPretsHttp.simuler', () => {
     ['200 à la ligne au capital mal formé', repondre(200, JSON.stringify({ ...SIMULATION, echeancier: [{ ...LIGNE, capital: 1 }] }))],
     ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
   ])('[FR-007-03] rend une erreur technique : %s', async (_cas, appeler) => {
-    await expect(creerClientPretsHttp(appeler).simuler('j', SAISIE)).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientPretsHttp(appeler).simuler(SAISIE)).resolves.toEqual({ statut: 'technique' });
   });
 });
 
 describe('ClientPretsHttp.lister', () => {
-  it('[FR-007-08] lit la liste en GET avec le jeton en Bearer', async () => {
+  it('[FR-007-08] lit la liste en GET', async () => {
     const appeler = repondre(200, JSON.stringify([PRET, { ...PRET, id: 2, objet: null }]));
 
-    await expect(creerClientPretsHttp(appeler).lister('jeton')).resolves.toEqual({
+    await expect(creerClientPretsHttp(appeler).lister()).resolves.toEqual({
       statut: 'prets',
       prets: [PRET, { ...PRET, id: 2, objet: null }],
     });
     expect(appeler).toHaveBeenCalledWith(CHEMIN_PRETS, {
       method: 'GET',
-      headers: { Authorization: 'Bearer jeton', Accept: 'application/json' },
+      headers: { Accept: 'application/json' },
     });
     expect(CHEMIN_PRETS).toBe('/api/credits/prets');
   });
 
   it('[FR-007-08] rend une liste vide', async () => {
-    await expect(creerClientPretsHttp(repondre(200, '[]')).lister('j')).resolves.toEqual({ statut: 'prets', prets: [] });
+    await expect(creerClientPretsHttp(repondre(200, '[]')).lister()).resolves.toEqual({ statut: 'prets', prets: [] });
   });
 
   it('[FR-007-01] rend non authentifié sur 401', async () => {
-    await expect(creerClientPretsHttp(repondre(401, '{}')).lister('j')).resolves.toEqual({ statut: 'nonAuthentifie' });
+    await expect(creerClientPretsHttp(repondre(401, '{}')).lister()).resolves.toEqual({ statut: 'nonAuthentifie' });
   });
 
   it.each([
@@ -111,20 +111,20 @@ describe('ClientPretsHttp.lister', () => {
     ['200 à la date de fin non textuelle', repondre(200, JSON.stringify([{ ...PRET, dateFin: 3 }]))],
     ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
   ])('[FR-007-08] rend une erreur technique : %s', async (_cas, appeler) => {
-    await expect(creerClientPretsHttp(appeler).lister('j')).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientPretsHttp(appeler).lister()).resolves.toEqual({ statut: 'technique' });
   });
 });
 
 describe('ClientPretsHttp.deposer', () => {
   const DEMANDE = { type: 'CONSOMMATION', montant: '10000', tauxAnnuel: '3.50', dureeMois: '300', objet: 'Voiture' };
 
-  it('[FR-007-07] poste la saisie en JSON avec le jeton en Bearer et rend le prêt créé sur 201', async () => {
+  it('[FR-007-07] poste la saisie en JSON et rend le prêt créé sur 201', async () => {
     const appeler = repondre(201, JSON.stringify(PRET));
 
-    await expect(creerClientPretsHttp(appeler).deposer('jeton', DEMANDE)).resolves.toEqual({ statut: 'deposee', pret: PRET });
+    await expect(creerClientPretsHttp(appeler).deposer(DEMANDE)).resolves.toEqual({ statut: 'deposee', pret: PRET });
     expect(appeler).toHaveBeenCalledWith(CHEMIN_PRETS, {
       method: 'POST',
-      headers: { Authorization: 'Bearer jeton', Accept: 'application/json', 'Content-Type': 'application/json' },
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: '{"type":"CONSOMMATION","montant":"10000","tauxAnnuel":"3.50","dureeMois":"300","objet":"Voiture"}',
     });
   });
@@ -134,13 +134,13 @@ describe('ClientPretsHttp.deposer', () => {
     [503, 'Service credit temporairement indisponible, veuillez reessayer plus tard'],
   ])('[FR-007-05] rend le message du service sur %i', async (statut, message) => {
     await expect(
-      creerClientPretsHttp(repondre(statut, JSON.stringify({ message }))).deposer('j', DEMANDE),
+      creerClientPretsHttp(repondre(statut, JSON.stringify({ message }))).deposer(DEMANDE),
     ).resolves.toEqual({ statut: 'refusee', message });
   });
 
   it('[FR-007-01] rend non authentifié sur 401', async () => {
     await expect(
-      creerClientPretsHttp(repondre(401, '{"message":"Authentification requise"}')).deposer('j', DEMANDE),
+      creerClientPretsHttp(repondre(401, '{"message":"Authentification requise"}')).deposer(DEMANDE),
     ).resolves.toEqual({ statut: 'nonAuthentifie' });
   });
 
@@ -154,7 +154,7 @@ describe('ClientPretsHttp.deposer', () => {
     ['200 inattendu', repondre(200, JSON.stringify(PRET))],
     ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
   ])('[FR-024-02] rend une erreur technique : %s', async (_cas, appeler) => {
-    await expect(creerClientPretsHttp(appeler).deposer('j', DEMANDE)).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientPretsHttp(appeler).deposer(DEMANDE)).resolves.toEqual({ statut: 'technique' });
   });
 });
 
@@ -170,13 +170,13 @@ const ECHEANCE = {
   datePaiement: null,
 };
 const ECHEANCE_PAYEE = { ...ECHEANCE, paye: true, datePaiement: '2026-10-06T08:30:01Z' };
-const ENTETES_LECTURE = { Authorization: 'Bearer jeton', Accept: 'application/json' };
+const ENTETES_LECTURE = { Accept: 'application/json' };
 
 describe('ClientPretsHttp.echeances', () => {
-  it('[FR-007-11] lit les échéances du prêt avec le jeton en Bearer', async () => {
+  it('[FR-007-11] lit les échéances du prêt', async () => {
     const appeler = repondre(200, JSON.stringify([ECHEANCE, ECHEANCE_PAYEE]));
 
-    await expect(creerClientPretsHttp(appeler).echeances('jeton', 7)).resolves.toEqual({
+    await expect(creerClientPretsHttp(appeler).echeances(7)).resolves.toEqual({
       statut: 'echeances',
       echeances: [ECHEANCE, ECHEANCE_PAYEE],
     });
@@ -184,7 +184,7 @@ describe('ClientPretsHttp.echeances', () => {
   });
 
   it('[FR-007-11] rend non authentifié sur 401', async () => {
-    await expect(creerClientPretsHttp(repondre(401, '{}')).echeances('j', 7)).resolves.toEqual({ statut: 'nonAuthentifie' });
+    await expect(creerClientPretsHttp(repondre(401, '{}')).echeances(7)).resolves.toEqual({ statut: 'nonAuthentifie' });
   });
 
   it.each([
@@ -200,7 +200,7 @@ describe('ClientPretsHttp.echeances', () => {
     ['200 à l’indicateur mal typé', repondre(200, JSON.stringify([{ ...ECHEANCE, paye: 'oui' }]))],
     ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
   ])('[FR-007-11] rend une erreur technique : %s', async (_cas, appeler) => {
-    await expect(creerClientPretsHttp(appeler).echeances('j', 7)).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientPretsHttp(appeler).echeances(7)).resolves.toEqual({ statut: 'technique' });
   });
 });
 
@@ -208,12 +208,12 @@ describe('ClientPretsHttp.payer', () => {
   it('[FR-007-12] poste le paiement de l’échéance sans corps et rend le succès', async () => {
     const appeler = repondre(200, JSON.stringify(ECHEANCE_PAYEE));
 
-    await expect(creerClientPretsHttp(appeler).payer('jeton', 5)).resolves.toEqual({ statut: 'faite' });
+    await expect(creerClientPretsHttp(appeler).payer(5)).resolves.toEqual({ statut: 'faite' });
     expect(appeler).toHaveBeenCalledWith('/api/credits/echeances/5/paiement', { method: 'POST', headers: ENTETES_LECTURE });
   });
 
   it('[FR-007-12] rend non authentifié sur 401', async () => {
-    await expect(creerClientPretsHttp(repondre(401, '{}')).payer('j', 5)).resolves.toEqual({ statut: 'nonAuthentifie' });
+    await expect(creerClientPretsHttp(repondre(401, '{}')).payer(5)).resolves.toEqual({ statut: 'nonAuthentifie' });
   });
 
   it.each([
@@ -224,7 +224,7 @@ describe('ClientPretsHttp.payer', () => {
     ['200 à l’échéance mal formée', repondre(200, '{"id":5}')],
     ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
   ])('[FR-007-12] rend une erreur technique : %s', async (_cas, appeler) => {
-    await expect(creerClientPretsHttp(appeler).payer('j', 5)).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientPretsHttp(appeler).payer(5)).resolves.toEqual({ statut: 'technique' });
   });
 });
 
@@ -232,12 +232,12 @@ describe('ClientPretsHttp.supprimer', () => {
   it('[FR-007-13] envoie DELETE sur le prêt et rend le succès sur 204', async () => {
     const appeler = vi.fn<typeof fetch>(() => Promise.resolve(new Response(null, { status: 204 })));
 
-    await expect(creerClientPretsHttp(appeler).supprimer('jeton', 7)).resolves.toEqual({ statut: 'faite' });
+    await expect(creerClientPretsHttp(appeler).supprimer(7)).resolves.toEqual({ statut: 'faite' });
     expect(appeler).toHaveBeenCalledWith('/api/credits/prets/7', { method: 'DELETE', headers: ENTETES_LECTURE });
   });
 
   it('[FR-007-13] rend non authentifié sur 401', async () => {
-    await expect(creerClientPretsHttp(repondre(401, '{}')).supprimer('j', 7)).resolves.toEqual({ statut: 'nonAuthentifie' });
+    await expect(creerClientPretsHttp(repondre(401, '{}')).supprimer(7)).resolves.toEqual({ statut: 'nonAuthentifie' });
   });
 
   it.each([
@@ -247,6 +247,6 @@ describe('ClientPretsHttp.supprimer', () => {
     ['200 inattendu', repondre(200, '{}')],
     ['réseau coupé', vi.fn<typeof fetch>(() => Promise.reject(new TypeError('Failed to fetch')))],
   ])('[FR-007-13] rend une erreur technique : %s', async (_cas, appeler) => {
-    await expect(creerClientPretsHttp(appeler).supprimer('j', 7)).resolves.toEqual({ statut: 'technique' });
+    await expect(creerClientPretsHttp(appeler).supprimer(7)).resolves.toEqual({ statut: 'technique' });
   });
 });

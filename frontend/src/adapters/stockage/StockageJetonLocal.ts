@@ -1,4 +1,9 @@
-import type { StockageJeton } from '../../application/seConnecter';
+/** Conserve le jeton de session (adaptateur : l'application ne le voit jamais). */
+export interface StockageJeton {
+  lire(): string | null;
+  enregistrer(jeton: string): void;
+  supprimer(): void;
+}
 
 /** Clé du jeton de session dans le localStorage (jamais le sessionStorage). */
 export const CLE_JETON = 'nb.jeton';
