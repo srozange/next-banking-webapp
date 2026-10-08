@@ -1346,6 +1346,7 @@ Chaque exigence fonctionnelle est rattachée à un seul epic, celui qui la livre
 
 Epic | Titre | FR | Scénarios golden master
 --- | --- | --- | ---
+0 | Redressement d'architecture | 0 | aucun
 1 | Fondations contrôlées | 0 | aucun
 2 | Se connecter et accéder à son espace selon son rôle | 25 | SC-001-01 à SC-001-05
 3 | Consulter ses comptes et virer de l'argent en sécurité | 77 | SC-002-01, SC-002-02, SC-003-01, SC-003-02, SC-003-04, SC-005-01
@@ -1356,6 +1357,98 @@ Epic | Titre | FR | Scénarios golden master
 8 | Agréger ses comptes d'autres banques (Powens) | 38 | SC-012-01, SC-014-01
 9 | Espace conseiller et administration | 24 | SC-015-01, SC-015-02, SC-016-01, SC-016-02
 10 | Recette finale et bascule | 1 | les 31 scénarios (rejeu final) ; SC-003-03 et SC-010-02 exclus (BUG-011, BUG-038)
+
+## Epic 0: Redressement d'architecture
+
+<!-- Ajouté le 2026-10-08 par bmad-correct-course, voir sprint-change-proposal-2026-10-08.md -->
+
+Cet epic corrige deux faiblesses relevées par arch-eval sur le commit `d23bf7d` (tag `v0-demo`) avant que les epics suivants ne les amplifient. Il ne porte aucune exigence fonctionnelle : aucun écran, aucun point d'API et aucun scénario du golden master ne change de comportement. Il s'exécute avant l'epic 4, sur `main`, un seul flux. À sa fin, les critères 1.2 et 1.3 d'arch-eval remontent sans qu'aucun autre critère baisse.
+
+Trois recommandations d'arch-eval ont été **écartées en connaissance de cause**, parce qu'elles reviennent sur des décisions prises exprès. Elles ne doivent pas être rouvertes par une story :
+
+- **Module technique partagé entre services** : AD-17 pose « pas de bibliothèque partagée entre services », avec la duplication et un test de référence commun comme garde-fou retenu. Sortir `HorlogeSysteme` du périmètre scanné affaiblirait de plus la preuve d'AD-19.
+- **Verrous multi-instance sur l'outbox et les `@Scheduled`** : AD-21 pose « une seule instance par service, aucun verrou distribué » et la section *Deferred* de la spine reporte la haute disponibilité. Le double envoi est déjà absorbé par les consommateurs idempotents d'AD-18 et le `versionAgregat` d'AD-22.
+- **Révocation du jeton et limitation des tentatives** : contredit RP-05, tranché le 2026-10-05 (comportement du legacy conservé, l'alerte `MULTIPLE_FAILED_AUTH` couvre les échecs répétés). Les revendications `iss` et `aud` restent hors du contrat du jeton d'AD-16.
+
+### Story 0.1: Confiner le jeton dans le décorateur fetch du front
+
+En tant que développeur de l'équipe,
+je veux que le jeton d'authentification ne soit porté que par le décorateur `fetchAuthentifie`,
+afin qu'un client HTTP ne puisse plus être câblé sans jeton, comme c'est arrivé sur le tableau de bord, le virement, le relevé et la revue.
+
+**Exigences :** NFR-SEC-03, NFR-SEC-07, AR-33, AR-34, AR-106, AR-95
+**Scénarios golden master :** aucun
+**Prérequis :** epics 2 et 3 terminés ; correctif `d23bf7d` en place (`fetchAuthentifie` pose déjà l'en-tête `Authorization` sur tous les appels authentifiés)
+
+**Acceptance Criteria:**
+
+**Given** le dépôt
+**When** je cherche le jeton dans `frontend/src/domain` et `frontend/src/application`
+**Then** aucun type, aucun port, aucun cas d'usage et aucune signature de ces deux dossiers n'accepte, ne lit, ne stocke ni ne transporte le jeton
+**And** aucun de ces fichiers ne mentionne `Authorization`, `Bearer` ni `nb.jeton`
+
+**Given** le dépôt
+**When** je cherche quels fichiers posent l'en-tête `Authorization`
+**Then** `frontend/src/adapters/session/fetchAuthentifie.ts` est le seul
+
+**Given** la composition du front
+**When** je lis `frontend/src/infrastructure/main.tsx`
+**Then** tout client HTTP qui appelle un service authentifié reçoit `fetchAuthentifie`, et un test de la composition échoue si l'un d'eux reçoit `fetch` directement
+
+**Given** une violation introduite volontairement : un client HTTP de `main.tsx` câblé avec `fetch` au lieu de `fetchAuthentifie`
+**When** je lance `cd frontend && npx vitest run`
+**Then** le code de sortie est non nul et le test nomme le client fautif
+
+**Given** une violation introduite volontairement : un cas d'usage de `frontend/src/application` dont la signature reçoit le jeton
+**When** je lance `cd frontend && npx vitest run`
+**Then** le code de sortie est non nul
+
+**Given** la story terminée
+**When** je lance `cd frontend && npx vitest run --coverage` puis `cd frontend && npx tsc --noEmit`
+**Then** les deux commandes sortent en code 0, et les seuils de couverture de `docs/quality-gates.md` sont tenus sans exclusion ajoutée
+
+**Given** la story terminée
+**When** je lance `scripts/gates/build.sh`, `scripts/gates/check-gates-exist.sh`, `scripts/gates/golden-master.sh` et `scripts/gates/trace-smoke.sh`
+**Then** les quatre commandes sortent en code 0
+**And** `git diff --name-only "$(git merge-base origin/main HEAD)"...HEAD -- scripts/gates .bmad-loop/policy.toml .bmad-loop/gates.sha256 .claude/settings.json .claude/hooks docs/quality-gates.md frontend/.dependency-cruiser.cjs .trivyignore config/dependency-check-suppressions.xml e2e/golden-master docs/retro/golden-master/derived replay-mapping.json` est vide
+
+### Story 0.2: Porter les montants et les identifiants par des types du domaine
+
+En tant que développeur de l'équipe,
+je veux des types `Montant`, `CompteId` et `Motif` et un objet de demande pour les fabriques de `Virement`,
+afin que les règles de montant et d'identifiant soient portées une fois par le domaine au lieu d'être répétées à chaque appel.
+
+**Exigences :** NFR-SEC-03, AR-34, AR-50, AR-66, FR-027-16
+**Scénarios golden master :** aucun (comportement inchangé)
+**Prérequis :** epic 3 terminé ; story 0.1 terminée
+
+**Acceptance Criteria:**
+
+**Given** le domaine de `coeur-bancaire`
+**When** je lis le type `Montant`
+**Then** il enveloppe un `BigDecimal` à 2 décimales, refuse à la construction une échelle différente ou une valeur négative là où le métier l'interdit, et n'expose aucun constructeur contournant ces règles
+**And** la représentation JSON reste la chaîne `"100.00"` et la colonne reste `numeric(19,2)`
+
+**Given** le domaine de `coeur-bancaire`
+**When** je lis les types `CompteId` et `Motif`
+**Then** `CompteId` enveloppe l'identifiant numérique échangé entre services et `Motif` porte les règles du libellé, sans qu'aucun des deux n'expose le numéro de compte
+
+**Given** les fabriques de `Virement`
+**When** je lis leur signature
+**Then** elles reçoivent un objet de demande et non une liste de paramètres primitifs, et aucune fabrique de `Virement` ne prend plus de 4 paramètres
+
+**Given** un service qui vérifie le rôle `ADMIN`
+**When** je lis ses cas d'usage
+**Then** le contrôle du rôle est appelé depuis un point unique du service, chaque service continuant de vérifier lui-même les rôles comme l'impose AD-16, sans aucune bibliothèque partagée entre services
+
+**Given** la story terminée
+**When** je lance `mvn -B -q clean verify -DfailIfNoTests=true`
+**Then** le code de sortie est 0, et les seuils de 100 % sur `domain` et `application` sont tenus sans exclusion ajoutée
+
+**Given** la story terminée
+**When** je lance `scripts/gates/build.sh`, `scripts/gates/check-gates-exist.sh`, `scripts/gates/golden-master.sh` et `scripts/gates/trace-smoke.sh`
+**Then** les quatre commandes sortent en code 0
+**And** `git diff --name-only "$(git merge-base origin/main HEAD)"...HEAD -- scripts/gates .bmad-loop/policy.toml .bmad-loop/gates.sha256 .claude/settings.json .claude/hooks docs/quality-gates.md frontend/.dependency-cruiser.cjs .trivyignore config/dependency-check-suppressions.xml e2e/golden-master docs/retro/golden-master/derived replay-mapping.json` est vide
 
 ## Epic 1: Fondations contrôlées
 
