@@ -1,6 +1,6 @@
 import { centimesDepuisChaine } from './montant';
 
-/** Règles pures du relevé de compte (FEAT-005) : mention d'attente, signes et montants en euros, en centimes entiers. */
+/** Règles pures du relevé de compte (FEAT-005) : mentions d'attente et de transaction importante, signes et montants en euros, en centimes entiers. */
 
 export type TypeOperation = 'CREDIT' | 'DEBIT';
 
@@ -18,6 +18,8 @@ export interface LigneReleve {
   date: string;
   libelle: string;
   enAttente: boolean;
+  /** Virement important exécuté et débité (FR-003-29) : badge « Transaction importante ». */
+  transactionImportante: boolean;
   type: TypeOperation;
   /** Montant signé : « + » pour un CREDIT, « - » (tiret ASCII) pour un DEBIT. */
   montant: string;
@@ -27,6 +29,12 @@ export interface LigneReleve {
 
 /** Mention posée par le virement (FR-003-09) : « [EN ATTENTE] » suivi d'une espace, soit 13 caractères. */
 export const PREFIXE_EN_ATTENTE = '[EN ATTENTE] ';
+
+/**
+ * Mention d'un virement important exécuté et débité (FR-003-29, BUG-009 corrigé) : « [TRANSACTION IMPORTANTE] »
+ * suivi d'une espace, traitée comme « [EN ATTENTE] » (FR-005-07). Les opérations déjà en base gardent l'ancienne.
+ */
+export const PREFIXE_TRANSACTION_IMPORTANTE = '[TRANSACTION IMPORTANTE] ';
 
 const SEPARATEUR_MILLIERS = ' ';
 const ESPACE_EURO = ' ';
@@ -44,13 +52,16 @@ export function eurosDepuisChaine(montant: string): string {
   return formaterEuros(centimesDepuisChaine(montant));
 }
 
-/** Ligne affichée d'une opération (FR-005-06, FR-005-07). */
+/** Ligne affichée d'une opération (FR-005-06, FR-005-07, FR-003-29). */
 export function ligneReleve(operation: OperationBrute): LigneReleve {
   const enAttente = operation.description.startsWith(PREFIXE_EN_ATTENTE);
+  const transactionImportante = operation.description.startsWith(PREFIXE_TRANSACTION_IMPORTANTE);
+  const prefixe = enAttente ? PREFIXE_EN_ATTENTE : transactionImportante ? PREFIXE_TRANSACTION_IMPORTANTE : '';
   return {
     date: operation.date,
-    libelle: enAttente ? operation.description.slice(PREFIXE_EN_ATTENTE.length) : operation.description,
+    libelle: operation.description.slice(prefixe.length),
     enAttente,
+    transactionImportante,
     type: operation.type,
     montant: `${operation.type === 'CREDIT' ? '+' : '-'}${eurosDepuisChaine(operation.montant)}`,
     soldeApres: eurosDepuisChaine(operation.soldeApres),

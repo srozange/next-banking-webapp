@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { eurosDepuisChaine, formaterEuros, ligneReleve, PREFIXE_EN_ATTENTE, type OperationBrute } from './releve';
+import { eurosDepuisChaine, formaterEuros, ligneReleve, PREFIXE_EN_ATTENTE, PREFIXE_TRANSACTION_IMPORTANTE, type OperationBrute } from './releve';
 
 const operation = (partielle: Partial<OperationBrute> = {}): OperationBrute => ({
   date: '2026-11-03T08:00:00Z',
@@ -53,6 +53,35 @@ describe('ligneReleve', () => {
     (description) => {
       const ligne = ligneReleve(operation({ description }));
 
+      expect(ligne.enAttente).toBe(false);
+      expect(ligne.libelle).toBe(description);
+    },
+  );
+
+  it('[FR-003-29] [BUG-009] retire « [TRANSACTION IMPORTANTE] » et marque la ligne comme transaction importante', () => {
+    const ligne = ligneReleve(operation({ description: '[TRANSACTION IMPORTANTE] Virement vers X' }));
+
+    expect(PREFIXE_TRANSACTION_IMPORTANTE).toBe('[TRANSACTION IMPORTANTE] ');
+    expect(ligne.transactionImportante).toBe(true);
+    expect(ligne.enAttente).toBe(false);
+    expect(ligne.libelle).toBe('Virement vers X');
+    expect(ligne.libelle.toLowerCase()).not.toMatch(/en attente|verification/);
+  });
+
+  it('[FR-003-29] [FR-005-07] une opération déjà en base « [EN ATTENTE] » reste en attente', () => {
+    const ligne = ligneReleve(operation({ description: '[EN ATTENTE] Virement vers X' }));
+
+    expect(ligne.enAttente).toBe(true);
+    expect(ligne.transactionImportante).toBe(false);
+    expect(ligne.libelle).toBe('Virement vers X');
+  });
+
+  it.each(['Virement vers X', '[TRANSACTION IMPORTANTE]sans espace', '[transaction importante] x', ' [TRANSACTION IMPORTANTE] x'])(
+    '[FR-003-29] « %s » n’est pas une transaction importante',
+    (description) => {
+      const ligne = ligneReleve(operation({ description }));
+
+      expect(ligne.transactionImportante).toBe(false);
       expect(ligne.enAttente).toBe(false);
       expect(ligne.libelle).toBe(description);
     },

@@ -114,6 +114,8 @@ class VirementTest {
 
     @Test
     @Tag("FR-003-10")
+    @Tag("FR-003-29")
+    @Tag("BUG-009")
     void a_partir_du_seuil_de_mise_en_attente_le_virement_est_pending_et_les_operations_sont_prefixees() {
         Compte riche = new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00"));
 
@@ -121,8 +123,8 @@ class VirementTest {
         Virement.Execution succes = Virement.executer(soumission(13, riche, EPARGNE, "4999.99", "loyer"), riche, EPARGNE, SEUILS);
 
         assertThat(pending.virement().statut()).isEqualTo(StatutAffichage.PENDING);
-        assertThat(pending.debit().description()).isEqualTo("[EN ATTENTE] Virement vers FR76-0001-0002 - loyer");
-        assertThat(pending.credit().description()).isEqualTo("[EN ATTENTE] Virement depuis FR76-0001-0001 - loyer");
+        assertThat(pending.debit().description()).isEqualTo("[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - loyer");
+        assertThat(pending.credit().description()).isEqualTo("[TRANSACTION IMPORTANTE] Virement depuis FR76-0001-0001 - loyer");
         assertThat(succes.virement().statut()).isEqualTo(StatutAffichage.SUCCESS);
         assertThat(succes.debit().description()).isEqualTo("Virement vers FR76-0001-0002 - loyer");
     }

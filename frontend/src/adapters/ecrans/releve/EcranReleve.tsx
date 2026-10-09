@@ -100,11 +100,14 @@ export function EcranReleve({ comptes, releve }: Proprietes) {
               </tr>
             ) : (
               contenu.lignes.map((ligne, index) => (
-                <tr key={index} className={ligne.enAttente ? 'ecran-releve__ligne--attente' : undefined} data-testid={`releve-ligne-${index}`}>
+                <tr key={index} className={ligne.enAttente || ligne.transactionImportante ? 'ecran-releve__ligne--attente' : undefined} data-testid={`releve-ligne-${index}`}>
                   <td>{formaterDate(ligne.date)}</td>
                   <td>
                     {ligne.enAttente && <Etiquette data-testid={`releve-en-attente-${index}`}>{T.enAttente}</Etiquette>}
-                    {ligne.enAttente && ' '}
+                    {ligne.transactionImportante && (
+                      <Etiquette data-testid={`releve-transaction-importante-${index}`}>{T.transactionImportante}</Etiquette>
+                    )}
+                    {(ligne.enAttente || ligne.transactionImportante) && ' '}
                     {ligne.libelle}
                   </td>
                   <td className={`ecran-releve__type ecran-releve__type--${ligne.type === 'CREDIT' ? 'credit' : 'debit'}`} data-testid={`releve-type-${index}`}>

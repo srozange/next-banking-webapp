@@ -31,11 +31,17 @@ public final class TextesVirement {
     /** Texte générique d'une ressource inexistante (relevé d'un compte inexistant). */
     public static final String RESSOURCE_INTROUVABLE = "Ressource introuvable";
 
-    /** Mention du legacy ajoutée aux opérations d'un virement PENDING (BUG-009 conservé provisoirement). */
-    public static final String EN_ATTENTE = "[EN ATTENTE]";
-    /** Texte de la notification ALERTE du legacy, rendu par la story 3.3 ({@code {montant}} = montant). */
+    /**
+     * Mention ajoutée aux opérations d'un virement PENDING, exécuté et débité (FR-003-29, BUG-009 corrigé : elle
+     * remplace la mention « en attente » du legacy).
+     */
+    public static final String MENTION_TRANSACTION_IMPORTANTE = "[TRANSACTION IMPORTANTE]";
+    /**
+     * Texte de la notification ALERTE d'un virement important exécuté (FR-003-29, BUG-009 corrigé ;
+     * {@code {montant}}, {@code {numCompte}} = numéro du compte destinataire).
+     */
     public static final String TRANSACTION_IMPORTANTE =
-            "Virement de %s EUR en attente de validation - transaction importante, verification en cours.";
+            "Virement de %s EUR vers le compte %s execute - transaction importante.";
 
     /** Texte de la notification CONFIRMATION du legacy ({@code {montant}}, {@code {numCompte}}). */
     private static final String CONFIRMATION = "Virement de %s EUR vers le compte %s confirme";
@@ -71,9 +77,9 @@ public final class TextesVirement {
     private TextesVirement() {
     }
 
-    /** Message de la notification ALERTE. */
-    public static String transactionImportante(String montant) {
-        return String.format(TRANSACTION_IMPORTANTE, montant);
+    /** Message de la notification ALERTE d'un virement important exécuté (FR-003-29). */
+    public static String transactionImportante(String montant, String numeroDestinataire) {
+        return String.format(TRANSACTION_IMPORTANTE, montant, numeroDestinataire);
     }
 
     /** Message de la notification CONFIRMATION ; un motif absent ou blanc n'est pas repris. */
@@ -268,7 +274,7 @@ public final class TextesVirement {
 
     private static String libelle(String base, String motif, StatutAffichage statut) {
         String avecMotif = motif == null || motif.isBlank() ? base : base + SEPARATEUR_MOTIF + motif;
-        return statut == StatutAffichage.PENDING ? EN_ATTENTE + " " + avecMotif : avecMotif;
+        return statut == StatutAffichage.PENDING ? MENTION_TRANSACTION_IMPORTANTE + " " + avecMotif : avecMotif;
     }
 
     private static String motifOuVide(String motif) {

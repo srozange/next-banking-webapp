@@ -283,7 +283,9 @@ class VirementIT {
 
     @Test
     @Tag("FR-003-10")
-    void a_5000_euros_pending_avec_operations_en_attente_et_a_4999_99_success() throws Exception {
+    @Tag("FR-003-29")
+    @Tag("BUG-009")
+    void a_5000_euros_pending_avec_operations_transaction_importante_et_a_4999_99_success() throws Exception {
         jdbc.sql("update comptes set solde = 20000.00 where id = 1").update();
         jdbc.sql("""
                 insert into beneficiaires_externes (client_id, titulaire, iban, libelle, actif)
@@ -295,9 +297,16 @@ class VirementIT {
         assertThat(json.readTree(pending.body()).get("statut").asString()).isEqualTo("PENDING");
         assertThat(json.readTree(succes.body()).get("statut").asString()).isEqualTo("SUCCESS");
         assertThat(jdbc.sql("select description from operations order by id").query(String.class).list())
-                .containsExactly("[EN ATTENTE] Virement vers FR76-0001-0002 - gros",
-                        "[EN ATTENTE] Virement depuis FR76-0001-0001 - gros",
+                .containsExactly("[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - gros",
+                        "[TRANSACTION IMPORTANTE] Virement depuis FR76-0001-0001 - gros",
                         "Virement vers FR76-0001-0002 - petit", "Virement depuis FR76-0001-0001 - petit");
+        assertThat(jdbc.sql("select charge from outbox where topic = 'coeur-bancaire.virement-decide.v1' order by id")
+                .query(String.class).list()).extracting(charge -> {
+                    JsonNode notification = json.readTree(charge).get("donnees").get("notification");
+                    return notification.get("type").asString() + " " + notification.get("message").asString();
+                }).containsExactly(
+                        "ALERTE Virement de 5000.00 EUR vers le compte FR76-0001-0002 execute - transaction importante.",
+                        "CONFIRMATION Virement de 4999.99 EUR vers le compte FR76-0001-0002 confirme (motif : petit)");
     }
 
     @Test

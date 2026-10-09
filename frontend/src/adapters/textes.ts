@@ -482,6 +482,8 @@ export const TEXTES = {
       soldeApres: 'Solde après',
     },
     enAttente: 'En attente',
+    /** Badge d'un virement important exécuté et débité (FR-003-29). */
+    transactionImportante: 'Transaction importante',
   },
   /**
    * Écran Produits : FEAT-011 MESSAGES.md (casse et absence d'accents comprises) ; titres de section sans

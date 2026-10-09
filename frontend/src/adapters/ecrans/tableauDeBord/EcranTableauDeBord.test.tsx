@@ -148,6 +148,54 @@ describe('écran du tableau de bord', () => {
     }
   });
 
+  it('[BUG-009] [FR-003-29] un virement important exécuté n’est annoncé ni « en attente » ni « verification » : opérations, notification et suivi', async () => {
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
+    const message = 'Virement de 5000.00 EUR vers le compte FR76-0001-0002 execute - transaction importante.';
+    rendreApplication(
+      '/tableau-de-bord',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      {
+        lireSuivi: () =>
+          Promise.resolve({
+            statut: 'suivi',
+            virements: [{ virementId: 12, soumisLe: '2026-11-17T09:00:00Z', compteDestinataire: 'FR76-0001-0002', montant: '5000.00', etat: 'EXECUTE', heureButoir: '2026-11-18T09:00:00Z' }],
+          }),
+      },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      {
+        lire: () =>
+          Promise.resolve({
+            statut: 'tableau',
+            comptes: COMPTES,
+            dernieresOperations: [operation('[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - loyer', 'DEBIT', '5000.00', '2130.00')],
+          }),
+      },
+      {
+        lister: () =>
+          Promise.resolve({ statut: 'liste', notifications: [{ id: 7, type: 'ALERTE', titre: null, message, creeLe: '2026-11-17T09:00:00Z', lue: false }] }),
+      },
+    );
+
+    const etat = await screen.findByTestId('virement-etat-12');
+    expect(etat.textContent).toBe('Exécuté - débité');
+    expect((await screen.findByTestId('notifications-message-7')).textContent).toBe(message);
+    const operationRendue = await screen.findByTestId('dashboard-operation-0');
+    expect(operationRendue.textContent).toContain('[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - loyer');
+    const textes = [operationRendue, screen.getByTestId('notifications-notification-7'), etat.closest('tr')].map((element) => (element?.textContent ?? '').toLowerCase());
+    for (const texte of textes) {
+      expect(texte).not.toMatch(/en attente|verification/);
+    }
+  });
+
   it('[FR-002-11] CLIENT, CONSEILLER et ADMIN voient la navigation du tableau de bord selon leur rôle', async () => {
     const attendus = (conseiller: boolean, administration: boolean) => [
       'Tableau de bord', 'Virement', 'Virements programmes', 'Releve', 'Budget', 'Prets', 'Documents', 'Bourse', 'Mon Conseiller', 'Produits', 'Comptes Tiers', 'Beneficiaires',

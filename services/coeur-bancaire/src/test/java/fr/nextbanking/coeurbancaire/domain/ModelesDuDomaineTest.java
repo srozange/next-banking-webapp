@@ -113,7 +113,8 @@ class ModelesDuDomaineTest {
                 .isEqualTo("Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme");
         assertThat(TextesVirement.confirmation("100.00", "FR76-0001-0002", "loyer"))
                 .isEqualTo("Virement de 100.00 EUR vers le compte FR76-0001-0002 confirme (motif : loyer)");
-        assertThat(TextesVirement.transactionImportante("5000.00")).startsWith("Virement de 5000.00 EUR en attente");
+        assertThat(TextesVirement.transactionImportante("5000.00", "FR76-0001-0002"))
+                .isEqualTo("Virement de 5000.00 EUR vers le compte FR76-0001-0002 execute - transaction importante.");
         assertThat(TextesVirement.descriptionMontantTresEleve("20000.00", "15000"))
                 .isEqualTo("Transaction amount 20000.00 exceeds the very-large threshold of 15000");
         assertThat(TextesVirement.descriptionHeureInhabituelle(3)).isEqualTo(
@@ -123,14 +124,15 @@ class ModelesDuDomaineTest {
     }
 
     @Test
+    @Tag("FR-003-29")
+    @Tag("BUG-009")
     void les_libelles_d_operation_ignorent_un_motif_blanc_et_prefixent_un_virement_pending() {
         assertThat(TextesVirement.libelleDebit("FR76-0001-0002", " ", StatutAffichage.SUCCESS))
                 .isEqualTo("Virement vers FR76-0001-0002");
         assertThat(TextesVirement.libelleCredit("FR76-0001-0001", null, StatutAffichage.PENDING))
-                .isEqualTo("[EN ATTENTE] Virement depuis FR76-0001-0001");
-        assertThat(String.format(TextesVirement.TRANSACTION_IMPORTANTE, "5000.00"))
-                .isEqualTo("Virement de 5000.00 EUR en attente de validation - transaction importante, "
-                        + "verification en cours.");
+                .isEqualTo("[TRANSACTION IMPORTANTE] Virement depuis FR76-0001-0001");
+        assertThat(String.format(TextesVirement.TRANSACTION_IMPORTANTE, "5000.00", "FR76-0001-0002"))
+                .isEqualTo("Virement de 5000.00 EUR vers le compte FR76-0001-0002 execute - transaction importante.");
     }
 
     @Test

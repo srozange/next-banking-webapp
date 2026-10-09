@@ -89,6 +89,8 @@ class ExecuterVirementCasUsageTest {
 
     @Test
     @Tag("FR-003-10")
+    @Tag("FR-003-29")
+    @Tag("BUG-009")
     void a_5000_euros_le_virement_est_pending_et_a_4999_99_il_est_success() {
         memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
@@ -98,8 +100,10 @@ class ExecuterVirementCasUsageTest {
 
         assertThat(pending.statut()).isEqualTo(StatutAffichage.PENDING);
         assertThat(succes.statut()).isEqualTo(StatutAffichage.SUCCESS);
-        assertThat(memoire.operations.getFirst().description()).startsWith("[EN ATTENTE] ");
-        assertThat(memoire.operations.get(2).description()).doesNotContain("EN ATTENTE");
+        assertThat(memoire.operations).extracting(o -> o.description()).containsExactly(
+                "[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - loyer",
+                "[TRANSACTION IMPORTANTE] Virement depuis FR76-0001-0001 - loyer",
+                "Virement vers FR76-0001-0002 - loyer", "Virement depuis FR76-0001-0001 - loyer");
     }
 
     @Test
@@ -157,6 +161,8 @@ class ExecuterVirementCasUsageTest {
     @Tag("FR-003-26")
     @Tag("FR-025-01")
     @Tag("FR-025-02")
+    @Tag("FR-003-29")
+    @Tag("BUG-009")
     void a_5000_euros_la_notification_est_une_alerte_et_a_4999_99_une_confirmation() {
         memoire.beneficiairesActifs.put(7L, java.util.Set.of("FR76-0001-0002"));
         memoire.comptes.put(1L, new Compte(1, 7, "FR76-0001-0001", TypeCompte.COURANT, Montant.lire("20000.00")));
@@ -167,8 +173,7 @@ class ExecuterVirementCasUsageTest {
         assertThat(memoire.decisions).extracting(d -> d.notification().type(), d -> d.notification().message())
                 .containsExactly(
                         org.assertj.core.groups.Tuple.tuple(TypeNotification.ALERTE,
-                                "Virement de 5000.00 EUR en attente de validation - transaction importante, "
-                                        + "verification en cours."),
+                                "Virement de 5000.00 EUR vers le compte FR76-0001-0002 execute - transaction importante."),
                         org.assertj.core.groups.Tuple.tuple(TypeNotification.CONFIRMATION,
                                 "Virement de 4999.99 EUR vers le compte FR76-0001-0002 confirme (motif : loyer)"));
     }

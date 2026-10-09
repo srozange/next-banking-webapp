@@ -106,7 +106,7 @@ class RevueVirementTest {
         assertThat(execution.virement().etat()).isEqualTo(EtatVirement.EXECUTE);
         assertThat(execution.debit().date()).isEqualTo(debit);
         assertThat(execution.debit().soldeApres().texte()).isEqualTo("10000.00");
-        assertThat(execution.debit().description()).isEqualTo("[EN ATTENTE] Virement vers FR76-0001-0002 - loyer");
+        assertThat(execution.debit().description()).isEqualTo("[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - loyer");
         assertThat(execution.credit().soldeApres().texte()).isEqualTo("10100.00");
         assertThat(execution.credit().date()).isEqualTo(debit);
     }

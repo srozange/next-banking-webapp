@@ -24,7 +24,7 @@ public record NotificationVirement(long clientId, TypeNotification type, String 
         String montant = virement.montant().texte();
         if (virement.montant().atteint(seuils.seuilAlerte())) {
             return new NotificationVirement(virement.clientId(), TypeNotification.ALERTE, null,
-                    TextesVirement.transactionImportante(montant));
+                    TextesVirement.transactionImportante(montant, numeroDestinataire));
         }
         return new NotificationVirement(virement.clientId(), TypeNotification.CONFIRMATION, null,
                 TextesVirement.confirmation(montant, numeroDestinataire, virement.motif().texte()));

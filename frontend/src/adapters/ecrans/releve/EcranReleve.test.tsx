@@ -134,6 +134,31 @@ describe('écran du relevé', () => {
     expect(screen.getByTestId('releve-ligne-1').className).toBe('');
   });
 
+  it('[FR-003-29] [BUG-009] un virement important exécuté porte le badge « Transaction importante », sans « en attente » ni « verification »', async () => {
+    ouvrir({
+      operations: () =>
+        Promise.resolve({
+          statut: 'operations',
+          operations: [
+            operation('[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - loyer', 'DEBIT', '5000.00', '2130.00'),
+            operation('[EN ATTENTE] Virement vers FR76-0001-0002 - ancien', 'DEBIT', '6000.00', '7130.00'),
+          ],
+        }),
+    });
+    await screen.findByTestId('releve-ligne-1');
+
+    const ligne = screen.getByTestId('releve-ligne-0');
+    expect(screen.getByTestId('releve-transaction-importante-0').textContent).toBe('Transaction importante');
+    expect(Array.from(ligne.querySelectorAll('td'))[1].textContent).toBe('Transaction importante Virement vers FR76-0001-0002 - loyer');
+    expect(ligne.className).toContain('ecran-releve__ligne--attente');
+    expect(ligne.textContent).not.toContain('[TRANSACTION IMPORTANTE]');
+    expect(ligne.textContent?.toLowerCase()).not.toMatch(/en attente|verification/);
+    expect(screen.queryByTestId('releve-en-attente-0')).toBeNull();
+    expect(screen.getByTestId('releve-en-attente-1').textContent).toBe('En attente');
+    expect(screen.queryByTestId('releve-transaction-importante-1')).toBeNull();
+    expect(screen.getByTestId('releve-ligne-1').className).toContain('ecran-releve__ligne--attente');
+  });
+
   it('[FR-005-03] au changement de compte, recharge les comptes (soldes à jour) puis les opérations du compte 2', async () => {
     const u = userEvent.setup();
     const ordre: string[] = [];

@@ -23,7 +23,7 @@ describe('chargerReleve', () => {
     expect(resultat?.comptes).toEqual(COMPTES);
     expect(resultat?.compteId).toBe(1);
     expect(resultat?.lignes).toEqual([
-      { date: OPERATION.date, libelle: 'x', enAttente: true, type: 'CREDIT', montant: '+5,00 €', soldeApres: '2 135,00 €' },
+      { date: OPERATION.date, libelle: 'x', enAttente: true, transactionImportante: false, type: 'CREDIT', montant: '+5,00 €', soldeApres: '2 135,00 €' },
     ]);
   });
 

@@ -67,6 +67,7 @@ class TraiterVirementATraiterCasUsageTest {
     @Test
     @Tag("FR-027-16")
     @Tag("FR-026-03")
+    @Tag("FR-003-29")
     void un_virement_libere_est_debite_credite_inscrit_au_releve_et_passe_a_execute_sans_notification() {
         libere("12000.00");
 
@@ -79,9 +80,9 @@ class TraiterVirementATraiterCasUsageTest {
         assertThat(memoire.operations).extracting(o -> o.type().name(), o -> o.description(), o -> o.date())
                 .containsExactly(
                         org.assertj.core.groups.Tuple.tuple("DEBIT",
-                                "[EN ATTENTE] Virement vers FR76-0001-0002 - loyer", memoire.maintenant),
+                                "[TRANSACTION IMPORTANTE] Virement vers FR76-0001-0002 - loyer", memoire.maintenant),
                         org.assertj.core.groups.Tuple.tuple("CREDIT",
-                                "[EN ATTENTE] Virement depuis FR76-0001-0001 - loyer", memoire.maintenant));
+                                "[TRANSACTION IMPORTANTE] Virement depuis FR76-0001-0001 - loyer", memoire.maintenant));
         assertThat(memoire.decisions).isEmpty();
         assertThat(memoire.outbox).isEmpty();
         assertThat(memoire.outboxAudit).singleElement().satisfies(entree -> {
