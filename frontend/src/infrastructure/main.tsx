@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { creerClientBudgetHttp } from '../adapters/http/ClientBudgetHttp';
 import { creerClientDocumentsHttp } from '../adapters/http/ClientDocumentsHttp';
 import { creerClientPlafondsHttp } from '../adapters/http/ClientPlafondsHttp';
+import { creerClientPortefeuilleHttp } from '../adapters/http/ClientPortefeuilleHttp';
 import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
 import { creerClientComptesTiersHttp } from '../adapters/http/ClientComptesTiersHttp';
 import { creerClientConnexionHttp } from '../adapters/http/ClientConnexionHttp';
@@ -67,6 +68,7 @@ const routeur = createBrowserRouter(
     clientBudget: creerClientBudgetHttp(fetchAuthentifie),
     clientPlafonds: creerClientPlafondsHttp(fetchAuthentifie),
     clientDocuments: creerClientDocumentsHttp(fetchAuthentifie),
+    clientPortefeuille: creerClientPortefeuilleHttp(fetchAuthentifie),
   }),
 );
 

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ClientProfil } from '../application/chargerProfil';
 import type { ClientBourse } from '../application/consulterBourse';
 import type { ClientProduits } from '../application/consulterProduits';
+import type { ClientPortefeuille } from '../application/consulterPortefeuille';
 import type { ClientReleve } from '../application/consulterReleve';
 import type { ClientBudget } from '../application/consulterBudget';
 import type { ClientTableauDeBord } from '../application/consulterTableauDeBord';
@@ -74,6 +75,9 @@ const NOMS_CLIENTS_AUTHENTIFIES = [
   'budget',
   'revue',
   'pipeline des prêts',
+  'portefeuille identité',
+  'portefeuille comptes',
+  'portefeuille prêts',
 ];
 
 /** Importe main, puis retrouve dans les routes les clients tels que main.tsx les a câblés. */
@@ -105,6 +109,9 @@ async function clientsDeMain() {
     ['budget', () => (ecran('/budget').client as ClientBudget).lire(null)],
     ['revue', () => revue.client.lireFile()],
     ['pipeline des prêts', () => pipelinePrets.client.lireEnAttente()],
+    ['portefeuille identité', () => (ecran('/espace-conseiller').client as ClientPortefeuille).lireIdentites()],
+    ['portefeuille comptes', () => (ecran('/espace-conseiller').client as ClientPortefeuille).lireComptes()],
+    ['portefeuille prêts', () => (ecran('/espace-conseiller').client as ClientPortefeuille).lirePrets()],
   ];
   return { connexion, session: garde.session, authentifies };
 }

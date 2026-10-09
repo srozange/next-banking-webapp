@@ -691,4 +691,43 @@ export const TEXTES = {
     /** pret.erreur.simulation */
     erreurSimulation: "Erreur simulation : le calcul n'a pas pu être effectué. Veuillez réessayer.",
   },
+  /**
+   * Espace Conseiller : FEAT-015 de docs/retro/00-global/MESSAGES.md (l. 917-976), orthographe du source sans accent ;
+   * les capitales des libellés d'indicateurs (« MES CLIENTS ») viennent du CSS, jamais du texte.
+   */
+  espaceConseiller: {
+    titre: 'Espace Conseiller',
+    separateur: ' — ',
+    /** « Bonjour {fullName}, vous gerez {N} client(s) » : le nombre de clients est rendu à part, en gras. */
+    bonjour: (nomComplet: string) => `Bonjour ${nomComplet}, vous gerez `,
+    nombreClients: (nombre: number) => `${nombre} client(s)`,
+    indicateurs: {
+      clients: 'Mes clients',
+      clientsSousLibelle: 'clients dans mon portefeuille',
+      encours: 'Encours total',
+      encoursSousLibelle: 'solde cumulé mes clients',
+      pretsEnAttente: 'Prets en attente',
+      pretsEnAttenteSousLibelle: 'a traiter',
+    },
+    vide: 'Aucun client dans votre portefeuille.',
+    videContact: 'Contactez l administrateur pour l affectation des clients.',
+    actif: 'Actif',
+    inactif: 'Inactif',
+    statistiques: {
+      soldeTotal: 'Solde total',
+      comptes: 'Comptes',
+      pretsActifs: 'Prets actifs',
+      pretsEnAttente: 'Prets en attente',
+    },
+    alertePretsEnAttente: (nombre: number) => `⚠ ${nombre} pret(s) en attente`,
+    pretsEnCours: (nombre: number) => `✓ ${nombre} pret(s) en cours`,
+    voirDetail: 'Voir detail',
+    fermer: 'Fermer',
+    comptesBancaires: 'Comptes bancaires',
+    colonnesComptes: { numero: 'Numero', type: 'Type', solde: 'Solde' },
+    prets: 'Prets',
+    colonnesPrets: { type: 'Type', montant: 'Montant', mensualite: 'Mensualite', statut: 'Statut' },
+    aucunCompte: 'Aucun compte',
+    aucunPret: 'Aucun pret',
+  },
 } as const;

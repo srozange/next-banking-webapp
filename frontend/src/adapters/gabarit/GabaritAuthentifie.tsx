@@ -8,6 +8,7 @@ import { seDeconnecter } from '../../application/seDeconnecter';
 import type { Session } from '../session/session';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { EnTete } from './EnTete';
+import { FournisseurMemoireSession } from './memoireSession';
 import { SousEnTete } from './SousEnTete';
 
 /** Gestes de l'utilisateur qui comptent comme une activité. */
@@ -93,7 +94,10 @@ export function GabaritAuthentifie({ roles, clientProfil, session }: Proprietes)
         {sousNav !== null && <SousEnTete navigation={sousNav} />}
       </header>
       <ContenuPrincipal occupe={profil === null}>
-        <Outlet context={profil} />
+        {/* Mémoire de session (portefeuille du conseiller…) : vit tant que le gabarit reste monté. */}
+        <FournisseurMemoireSession>
+          <Outlet context={profil} />
+        </FournisseurMemoireSession>
       </ContenuPrincipal>
     </>
   );

@@ -35,7 +35,8 @@ describe('routes', () => {
     expect(contenu?.includes('Suivi de mes virements')).toBe(chemin === '/tableau-de-bord');
     expect(contenu?.includes('Virements suspendus — En attente de revue')).toBe(chemin === '/administration');
     if (chemin === '/espace-conseiller') {
-      expect(contenu).toBe('');
+      // L'écran du portefeuille (FEAT-015), sans section de revue.
+      expect(screen.getByTestId('conseiller-contenu').textContent?.startsWith('Espace Conseiller')).toBe(true);
     }
   });
 

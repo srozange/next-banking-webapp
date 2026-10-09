@@ -18,6 +18,7 @@ import type { ClientTableauDeBord, ReponseTableauDeBord } from '../../applicatio
 import type { ClientNotifications, ReponseActionNotifications, ReponseNotifications } from '../../application/gererNotifications';
 import type { ClientDocuments, ReponsePageDocuments, ReponseTelechargement } from '../../application/consulterDocuments';
 import type { ClientComptesTiers } from '../../application/comptesTiers';
+import type { ClientPortefeuille } from '../../application/consulterPortefeuille';
 import type {
   ClientPrets,
   ReponseAction,
@@ -43,7 +44,7 @@ import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
  * `jetonDeTest({ sub: '1', roles })` quand la connexion est acceptée avec un rôle connu) et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
  * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), un client du budget simulé (par défaut, panne technique), un client des plafonds simulé (par défaut, panne technique), un client des documents simulé (par défaut, panne technique), un client des bénéficiaires simulé (par défaut, aucune liste, suppression en panne), un client des virements programmés simulé (par défaut, aucune liste, création en panne), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client du pipeline des prêts simulé (par défaut, listes vides, décision en panne), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
- * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) et un client des notifications simulé (par défaut, aucune notification) ; `allerVers` simule l'envoi du navigateur à Powens.
+ * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) et un client des notifications simulé (par défaut, aucune notification) et un client du portefeuille du conseiller simulé (par défaut, trois listes vides) ; `allerVers` simule l'envoi du navigateur à Powens.
  */
 export function rendreApplication(
   chemin: string,
@@ -67,6 +68,7 @@ export function rendreApplication(
   clientPlafonds: Partial<ClientPlafonds> = {},
   clientPipelinePrets: Partial<ClientPipelinePrets> = {},
   clientDocuments: Partial<ClientDocuments> = {},
+  clientPortefeuille: Partial<ClientPortefeuille> = {},
 ) {
   const deconnecter = vi.fn(clientSession.deconnecter ?? (() => Promise.resolve()));
   const renouveler = vi.fn(
@@ -127,6 +129,12 @@ export function rendreApplication(
     rafraichir: vi.fn(clientComptesTiers.rafraichir ?? technique),
     deconnecter: vi.fn(clientComptesTiers.deconnecter ?? technique),
   };
+  const vide = () => Promise.resolve({ statut: 'ok' as const, donnees: [] });
+  const portefeuille = {
+    lireIdentites: vi.fn<ClientPortefeuille['lireIdentites']>(clientPortefeuille.lireIdentites ?? vide),
+    lireComptes: vi.fn<ClientPortefeuille['lireComptes']>(clientPortefeuille.lireComptes ?? vide),
+    lirePrets: vi.fn<ClientPortefeuille['lirePrets']>(clientPortefeuille.lirePrets ?? vide),
+  };
   const allerVers = vi.fn<(adresse: string) => void>();
   const signal = creerSignalExpiration();
   const simuler = vi.fn(clientPrets.simuler ?? (() => Promise.resolve<ReponseSimulation>({ statut: 'technique' })));
@@ -175,9 +183,10 @@ export function rendreApplication(
       clientBudget: { lire: lireBudget },
       clientPlafonds: { enregistrer: enregistrerPlafond, supprimer: supprimerPlafond },
       clientDocuments: { lirePage: lirePageDocuments, telecharger: telechargerDocumentSimule },
+      clientPortefeuille: portefeuille,
     }),
     { initialEntries: [chemin] },
   );
   const rendu = render(<RouterProvider router={routeur} />);
-  return { ...rendu, routeur, lirePageDocuments, telechargerDocumentSimule, lireBudget, enregistrerPlafond, supprimerPlafond, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, lireEnAttentePrets, lireHistoriquePrets, deciderPretAdministration, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, listerVirementsProgrammes, creerVirementProgramme, suspendreVirementProgramme, reactiverVirementProgramme, supprimerVirementProgramme, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
+  return { ...rendu, routeur, portefeuille, lirePageDocuments, telechargerDocumentSimule, lireBudget, enregistrerPlafond, supprimerPlafond, connecter, lire, deconnecter, renouveler, signal, lireComptes, executer, lireSuivi, lireFile, lireHistorique, decider, lireEnAttentePrets, lireHistoriquePrets, deciderPretAdministration, bourse, produits, conversation, lireOperations, listerBeneficiaires, supprimerBeneficiaire, verifierIbanBeneficiaire, ajouterBeneficiaire, listerVirementsProgrammes, creerVirementProgramme, suspendreVirementProgramme, reactiverVirementProgramme, supprimerVirementProgramme, lireTableauDeBord, listerNotifications, toutMarquerLu, toutEffacer, tiers, allerVers, simuler, lister, deposer, echeances, payer, supprimer };
 }

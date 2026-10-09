@@ -165,6 +165,65 @@ describe('accessibilité (axe)', () => {
     expect(await reglesViolees()).toEqual([]);
   });
 
+  describe('/espace-conseiller', () => {
+    const client = (clientId: number, nomComplet: string, actif: boolean) => ({
+      clientId, nomComplet, login: `user${clientId}`, email: `user${clientId}@example.com`, telephone: null, actif,
+    });
+
+    function ouvrirEspaceConseiller(vide: boolean) {
+      localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CONSEILLER'] }));
+      const ok = <T,>(donnees: T) => Promise.resolve({ statut: 'ok' as const, donnees });
+      return rendreApplication(
+        '/espace-conseiller',
+        undefined,
+        () => Promise.resolve({ statut: 'profil', nomComplet: 'Sophie Durand' }),
+        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+        {
+          lireIdentites: () => ok(vide ? [] : [client(1, 'Jean Dupont', true), client(2, 'Marie Lebrun', false)]),
+          lireComptes: () => ok(vide ? [] : [{ clientId: 1, comptes: [{ compteId: 10, numero: 'FR76-0001-0001', type: 'COURANT', solde: '2130.00' }] }]),
+          lirePrets: () =>
+            ok(vide ? [] : [{ clientId: 1, prets: [{ pretId: 5, type: null, montant: '5000.00', mensualite: '146.51', statut: 'DEFAUT' }] }]),
+        },
+      );
+    }
+
+    async function charge() {
+      await screen.findByTestId('nav-salutation');
+      await waitFor(() => expect(screen.getByTestId('conseiller-contenu').getAttribute('aria-busy')).toBeNull());
+    }
+
+    it('[axe] /espace-conseiller chargé (indicateurs, cartes, client inactif) ne relève aucune violation', async () => {
+      ouvrirEspaceConseiller(false);
+      await charge();
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+
+    it('[axe] /espace-conseiller vide ne relève aucune violation', async () => {
+      ouvrirEspaceConseiller(true);
+      await charge();
+      await screen.findByTestId('conseiller-vide');
+
+      expect(await reglesViolees()).toEqual([]);
+    });
+
+    it('[axe] /espace-conseiller avec le panneau de détail ouvert ne relève aucune violation', async () => {
+      const { default: userEvent } = await import('@testing-library/user-event');
+      const utilisateur = userEvent.setup();
+      ouvrirEspaceConseiller(false);
+      await charge();
+
+      await utilisateur.click(screen.getByTestId('conseiller-voir-detail-1'));
+      await screen.findByTestId('conseiller-detail');
+      expect(await reglesViolees()).toEqual([]);
+
+      await utilisateur.click(screen.getByTestId('conseiller-voir-detail-2'));
+      await screen.findByText('Aucun compte');
+      expect(await reglesViolees()).toEqual([]);
+    });
+  });
+
   describe('/bourse', () => {
     const SVG = '<svg viewBox="0 0 800 300"><text x="790" y="292">1 mois (données journalières)</text></svg>';
     const valeur = (id: number, symbole: string, nom: string) => ({ id, symbole, nom, marche: 'Euronext Paris', devise: 'EUR' });

@@ -13,6 +13,8 @@ import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientBudget } from '../../application/consulterBudget';
 import type { ClientPlafonds } from '../../application/gererPlafonds';
 import type { ClientDocuments } from '../../application/consulterDocuments';
+import type { ClientPortefeuille } from '../../application/consulterPortefeuille';
+import { EcranEspaceConseiller } from '../ecrans/espaceConseiller/EcranEspaceConseiller';
 import { EcranDocuments } from '../ecrans/documents/EcranDocuments';
 import { EcranBudget } from '../ecrans/budget/EcranBudget';
 import type { ClientBeneficiaires } from '../../application/gererBeneficiaires';
@@ -63,18 +65,18 @@ export interface Dependances {
   clientBudget: ClientBudget;
   clientPlafonds: ClientPlafonds;
   clientDocuments: ClientDocuments;
+  clientPortefeuille: ClientPortefeuille;
 }
 
 /**
  * Routes protégées : déclarées ici ; le tableau de bord a son écran (comptes, opérations, puis les sections « Centre de notifications » et « Suivi de mes virements »),
- * l'administration le pipeline des prêts, l'historique des prêts puis la revue des virements suspendus, et /prets l'écran Prêts ; le reste du contenu arrive
- * avec les stories suivantes.
+ * l'Espace Conseiller son écran (portefeuille), l'administration le pipeline des prêts, l'historique des prêts puis la revue des virements suspendus,
+ * et /prets l'écran Prêts ; le reste du contenu arrive avec les stories suivantes.
  */
 export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets'] as const;
 
-/** Titre d'onglet des routes protégées sans écran (seul élément rendu en attendant le contenu, hissé dans <head>). */
-const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], '/prets' | '/tableau-de-bord'>, string>> = {
-  '/espace-conseiller': TEXTES.titresOnglet.espaceConseiller,
+/** Titre d'onglet des routes protégées sans écran propre (hissé dans <head>), suivi de leurs sections. */
+const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], '/prets' | '/tableau-de-bord' | '/espace-conseiller'>, string>> = {
   '/administration': TEXTES.titresOnglet.administration,
 };
 
@@ -99,6 +101,7 @@ export function creerRoutes({
   clientBudget,
   clientPlafonds,
   clientDocuments,
+  clientPortefeuille,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil session={session.locale} />;
   return [
@@ -130,17 +133,17 @@ export function creerRoutes({
               element:
                 path === '/prets' ? (
                   <EcranPrets client={clientPrets} session={session.locale} />
+                ) : path === '/espace-conseiller' ? (
+                  <EcranEspaceConseiller client={clientPortefeuille} session={session.locale} />
                 ) : path === '/tableau-de-bord' ? (
                   <EcranTableauDeBord client={clientTableauDeBord} clientComptesTiers={clientComptesTiers} clientNotifications={clientNotifications} clientVirement={clientVirement} />
                 ) : (
                   <>
                     <title>{TITRES_ONGLET[path]}</title>
-                    {path === '/administration' && (
-                      <>
-                        <SectionsPretsAdministration client={clientPipelinePrets} />
-                        <SectionRevueVirements client={clientRevue} />
-                      </>
-                    )}
+                    <>
+                      <SectionsPretsAdministration client={clientPipelinePrets} />
+                      <SectionRevueVirements client={clientRevue} />
+                    </>
                   </>
                 ),
             })),
