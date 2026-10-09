@@ -93,7 +93,7 @@ describe('accessibilité (axe)', () => {
     expect(await reglesViolees()).toEqual([]);
   });
 
-  it('[axe] /administration avec indicateurs, gestion des clients, détail ouvert et tous les utilisateurs ne relève aucune violation', async () => {
+  it('[axe] /administration avec indicateurs, gestion des clients, détail ouvert, tous les utilisateurs et les alertes de fraude ne relève aucune violation', async () => {
     const { default: userEvent } = await import('@testing-library/user-event');
     const utilisateur = userEvent.setup();
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
@@ -116,6 +116,12 @@ describe('accessibilité (axe)', () => {
           },
         ]),
       lireUtilisateurs: () => ok([{ utilisateurId: 10, nomComplet: 'Alice Martin', login: 'admin', email: 'alice.martin@demobank.fr', role: 'ADMIN', actif: true }]),
+      lireAlertesFraude: () =>
+        ok([
+          { alerteId: 3, clientId: 99, nomClient: null, regle: 'LARGE_AMOUNT', score: 45, statut: 'OPEN', description: 'a', creeLe: '2026-11-17T08:05:00Z', revuPar: null, nomRelecteur: null },
+          { alerteId: 2, clientId: 1, nomClient: 'Jean Dupont', regle: 'ROUND_AMOUNT', score: 20, statut: 'CONFIRMED', description: 'b', creeLe: '2026-11-16T08:00:00Z', revuPar: '10', nomRelecteur: 'Alice Martin' },
+        ]),
+      revoirAlerte: () => Promise.resolve({ statut: 'erreur' as const, message: 'Accès refusé' }),
     });
     await screen.findByTestId('admin-detail-1');
     await waitFor(() => expect(screen.getByTestId('application-racine').getAttribute('aria-busy')).toBeNull());
@@ -131,6 +137,12 @@ describe('accessibilité (axe)', () => {
 
     await utilisateur.type(screen.getByTestId('admin-recherche'), 'zzz{Enter}');
     await screen.findByText('Aucun client trouve');
+    expect(await reglesViolees()).toEqual([]);
+
+    // Alertes de fraude : badge, boutons de revue, puis message d'échec dans la section.
+    expect(screen.getByTestId('admin-alertes-badge').textContent).toBe('1 ouverte(s)');
+    await utilisateur.click(screen.getByTestId('admin-alerte-confirmer-3'));
+    await screen.findByText('Accès refusé');
     expect(await reglesViolees()).toEqual([]);
   });
 

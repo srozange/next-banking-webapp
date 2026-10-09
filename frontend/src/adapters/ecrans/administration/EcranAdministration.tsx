@@ -6,6 +6,7 @@ import type { ClientPipelinePrets } from '../../../application/pipelinePrets';
 import type { ClientRevue } from '../../../application/revue';
 import type { SessionLocale } from '../../../application/session';
 import { TEXTES } from '../../textes';
+import { SectionAlertesFraude } from './SectionAlertesFraude';
 import { SectionGestionClients } from './SectionGestionClients';
 import { SectionIndicateursAdministration } from './SectionIndicateursAdministration';
 import { SectionRevueVirements } from './SectionRevueVirements';
@@ -25,11 +26,13 @@ type EtatAdministration = Extract<ResultatAdministration, { type: 'etat' }>;
 /**
  * Écran /administration (FEAT-016), pour l'ADMIN (les autres rôles sont redirigés par la garde) : sections dans
  * l'ordre figé — indicateurs, « Pipeline Prets », « Gestion des clients », « Historique de tous les prets », « Tous
- * les utilisateurs du systeme », revue des virements suspendus. Les quatre lectures de l'administration partent
- * ensemble ; une panne n'affiche que son message dans sa section ; un 401 ramène à la connexion.
+ * les utilisateurs du systeme », revue des virements suspendus, « Alertes Fraude — Moteur de détection ». Les cinq
+ * lectures de l'administration partent ensemble ; une panne n'affiche que son message dans sa section ; un 401 ramène
+ * à la connexion.
  */
 export function EcranAdministration({ client, clientPipelinePrets, clientRevue, session }: Proprietes) {
   const naviguer = useNavigate();
+  const versConnexion = () => void naviguer(ROUTE_CONNEXION, { replace: true });
   const [etat, setEtat] = useState<EtatAdministration | null>(null);
 
   useEffect(() => {
@@ -60,12 +63,13 @@ export function EcranAdministration({ client, clientPipelinePrets, clientRevue, 
             partie={etat?.clients ?? null}
             client={client}
             session={session}
-            surDeconnexion={() => void naviguer(ROUTE_CONNEXION, { replace: true })}
+            surDeconnexion={versConnexion}
           />
         }
       />
       <SectionUtilisateurs partie={etat?.utilisateurs ?? null} />
       <SectionRevueVirements client={clientRevue} />
+      <SectionAlertesFraude partie={etat?.alertes ?? null} client={client} session={session} surDeconnexion={versConnexion} />
     </div>
   );
 }

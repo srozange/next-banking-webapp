@@ -1,6 +1,7 @@
 import { centimesDepuisChaine } from './montant';
 import { formaterEurosArrondi } from './portefeuille';
 import { formaterDateEcheance } from './pret';
+import { formaterDate, formaterHeure } from './virement';
 
 /** Indicateurs globaux lus dans identite-clients (FR-016-02). */
 export interface IndicateursIdentite {
@@ -64,4 +65,47 @@ export function montantATraiter(indicateurs: IndicateursPrets): string {
 /** « Client depuis » au format `jj/MM/aaaa`, depuis la date de création de la fiche (FR-016-10, BUG-055). */
 export function clientDepuis(client: ClientAdministre): string {
   return formaterDateEcheance(client.dateCreation);
+}
+
+/**
+ * Alerte de fraude vue par l'ADMIN (FR-016-14, BUG-056 : tous statuts). Règle et statut en codes métier tels que
+ * renvoyés ; `nomClient` et `nomRelecteur` lus dans la projection du cœur bancaire (null si absents) ; `revuPar` est
+ * l'identifiant brut de l'auteur de la revue (null tant que l'alerte est ouverte) ; `creeLe` en ISO-8601.
+ */
+export interface AlerteFraudeAdministree {
+  alerteId: number;
+  clientId: number;
+  nomClient: string | null;
+  regle: string;
+  score: number;
+  statut: string;
+  description: string | null;
+  creeLe: string;
+  revuPar: string | null;
+  nomRelecteur: string | null;
+}
+
+/** Vrai si l'alerte attend encore une revue : seules celles-ci offrent « Confirmer » et « Faux positif ». */
+export function alerteOuverte(alerte: AlerteFraudeAdministree): boolean {
+  return alerte.statut === 'OPEN';
+}
+
+/** Nombre d'alertes OPEN, affiché en badge seulement s'il est positif (MSG-016-091). */
+export function compterAlertesOuvertes(alertes: readonly AlerteFraudeAdministree[]): number {
+  return alertes.filter(alerteOuverte).length;
+}
+
+/** Score de risque au format legacy `{score}/100` (MSG-016-094). */
+export function scoreAlerte(alerte: AlerteFraudeAdministree): string {
+  return `${alerte.score}/100`;
+}
+
+/** Auteur de la revue affiché : nom complet de la projection, sinon l'identifiant enregistré, sinon rien. */
+export function relecteurAlerte(alerte: AlerteFraudeAdministree): string {
+  return alerte.nomRelecteur ?? alerte.revuPar ?? '';
+}
+
+/** Date de création `dd/MM/yyyy HH:mm` en Europe/Paris, comme la revue des virements. */
+export function dateAlerte(alerte: AlerteFraudeAdministree): string {
+  return `${formaterDate(alerte.creeLe)} ${formaterHeure(alerte.creeLe)}`;
 }

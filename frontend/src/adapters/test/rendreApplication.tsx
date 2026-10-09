@@ -150,6 +150,10 @@ export function rendreApplication(
     changerEtatClient: vi.fn<ClientAdministration['changerEtatClient']>(
       clientAdministration.changerEtatClient ?? (() => Promise.resolve({ statut: 'ok' as const, donnees: null })),
     ),
+    lireAlertesFraude: vi.fn<ClientAdministration['lireAlertesFraude']>(clientAdministration.lireAlertesFraude ?? vide),
+    revoirAlerte: vi.fn<ClientAdministration['revoirAlerte']>(
+      clientAdministration.revoirAlerte ?? (() => Promise.resolve({ statut: 'ok' as const, donnees: null })),
+    ),
   };
   const allerVers = vi.fn<(adresse: string) => void>();
   const signal = creerSignalExpiration();

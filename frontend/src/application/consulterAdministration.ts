@@ -1,15 +1,21 @@
-import type { ClientAdministre, IndicateursIdentite, IndicateursPrets, UtilisateurAdministre } from '../domain/administration';
+import type {
+  AlerteFraudeAdministree,
+  ClientAdministre,
+  IndicateursIdentite,
+  IndicateursPrets,
+  UtilisateurAdministre,
+} from '../domain/administration';
 import { sessionOuverteOuFin, type SessionLocale } from './session';
 
 /**
- * Réponse d'un des quatre points d'administration, traduite par l'adaptateur HTTP (jamais d'exception) ; `erreur`
+ * Réponse d'un des points d'administration, traduite par l'adaptateur HTTP (jamais d'exception) ; `erreur`
  * porte le message à afficher, déjà choisi par l'adaptateur.
  */
 export type ReponseAdministration<T> = { statut: 'ok'; donnees: T } | { statut: 'nonAuthentifie' } | { statut: 'erreur'; message: string };
 
 /**
- * Port sortant : données de la page d'administration (identite-clients et credits), réservées à l'ADMIN côté
- * serveur. Aucun paramètre n'est transmis.
+ * Port sortant : données de la page d'administration (identite-clients, credits et coeur-bancaire), réservées à
+ * l'ADMIN côté serveur. Aucun paramètre de requête n'est transmis.
  */
 export interface ClientAdministration {
   lireIndicateursIdentite(): Promise<ReponseAdministration<IndicateursIdentite>>;
@@ -18,7 +24,14 @@ export interface ClientAdministration {
   lireUtilisateurs(): Promise<ReponseAdministration<readonly UtilisateurAdministre[]>>;
   /** Désactive (`actif` faux) ou active (`actif` vrai) le client ; l'audit et la publication restent au serveur. */
   changerEtatClient(clientId: number, actif: boolean): Promise<ReponseAdministration<null>>;
+  /** Toutes les alertes de fraude, tous statuts (BUG-056), la plus récente d'abord. */
+  lireAlertesFraude(): Promise<ReponseAdministration<readonly AlerteFraudeAdministree[]>>;
+  /** Confirme l'alerte ou la classe en faux positif ; le serveur ne change qu'une alerte encore OPEN. */
+  revoirAlerte(alerteId: number, issue: IssueRevueAlerte): Promise<ReponseAdministration<null>>;
 }
+
+/** Issue de la revue d'une alerte de fraude, telle que nommée dans le chemin du point d'API. */
+export type IssueRevueAlerte = 'confirmation' | 'faux-positif';
 
 /** Une partie de la page : ses données si la réponse est ok (sinon null), et le message de l'échec (sinon null). */
 export interface PartieAdministration<T> {
@@ -34,6 +47,7 @@ export type ResultatAdministration =
       indicateursPrets: PartieAdministration<IndicateursPrets>;
       clients: PartieAdministration<readonly ClientAdministre[]>;
       utilisateurs: PartieAdministration<readonly UtilisateurAdministre[]>;
+      alertes: PartieAdministration<readonly AlerteFraudeAdministree[]>;
     }
   | { type: 'deconnecte' };
 
@@ -44,21 +58,22 @@ function partie<T>(reponse: ReponseAdministration<T>): PartieAdministration<T> {
 }
 
 /**
- * Cas d'usage (FR-016-02, FR-016-08, FR-016-13) : lit les indicateurs (identité et prêts), les clients et tous les
- * utilisateurs en parallèle, jamais en cascade. Un 401 de l'un des quatre termine la session ; une autre panne ne
- * prive que sa partie.
+ * Cas d'usage (FR-016-02, FR-016-08, FR-016-13, FR-016-14) : lit les indicateurs (identité et prêts), les clients,
+ * tous les utilisateurs et toutes les alertes de fraude en parallèle, jamais en cascade. Un 401 de l'un des cinq
+ * termine la session ; une autre panne ne prive que sa partie.
  */
 export async function chargerAdministration(client: ClientAdministration, session: SessionLocale): Promise<ResultatAdministration> {
   if (!sessionOuverteOuFin(session)) {
     return DECONNECTE;
   }
-  const [indicateursIdentite, indicateursPrets, clients, utilisateurs] = await Promise.all([
+  const [indicateursIdentite, indicateursPrets, clients, utilisateurs, alertes] = await Promise.all([
     client.lireIndicateursIdentite(),
     client.lireIndicateursPrets(),
     client.lireClients(),
     client.lireUtilisateurs(),
+    client.lireAlertesFraude(),
   ]);
-  if ([indicateursIdentite, indicateursPrets, clients, utilisateurs].some((reponse) => reponse.statut === 'nonAuthentifie')) {
+  if ([indicateursIdentite, indicateursPrets, clients, utilisateurs, alertes].some((reponse) => reponse.statut === 'nonAuthentifie')) {
     session.terminer();
     return DECONNECTE;
   }
@@ -68,6 +83,7 @@ export async function chargerAdministration(client: ClientAdministration, sessio
     indicateursPrets: partie(indicateursPrets),
     clients: partie(clients),
     utilisateurs: partie(utilisateurs),
+    alertes: partie(alertes),
   };
 }
 
@@ -94,4 +110,44 @@ export async function changerEtatClient(
     return { type: 'deconnecte' };
   }
   return reponse.statut === 'ok' ? { type: 'effectue' } : { type: 'erreur', message: reponse.message };
+}
+
+/**
+ * Issue d'une revue d'alerte : effectuée, avec les alertes relues (ou le message de la relecture en échec), refusée
+ * avec son message, ou fin de session.
+ */
+export type ResultatRevueAlerte =
+  | { type: 'effectue'; alertes: PartieAdministration<readonly AlerteFraudeAdministree[]> }
+  | { type: 'erreur'; message: string }
+  | { type: 'deconnecte' };
+
+/**
+ * Cas d'usage (FR-016-15, FR-016-16, FR-027-12) : confirme une alerte ou la classe en faux positif, sans aucun effet
+ * sur le virement lié (le serveur est juge du rôle et de la transition depuis OPEN), puis relit toutes les alertes
+ * pour montrer l'état réel. Sans session ouverte, aucun appel ; un 401 (revue ou relecture) termine la session ; une
+ * autre panne de la revue rend le message choisi par l'adaptateur, sans relecture.
+ */
+export async function revoirAlerteFraude(
+  client: ClientAdministration,
+  session: SessionLocale,
+  alerteId: number,
+  issue: IssueRevueAlerte,
+): Promise<ResultatRevueAlerte> {
+  if (!sessionOuverteOuFin(session)) {
+    return { type: 'deconnecte' };
+  }
+  const reponse = await client.revoirAlerte(alerteId, issue);
+  if (reponse.statut === 'nonAuthentifie') {
+    session.terminer();
+    return { type: 'deconnecte' };
+  }
+  if (reponse.statut === 'erreur') {
+    return { type: 'erreur', message: reponse.message };
+  }
+  const alertes = await client.lireAlertesFraude();
+  if (alertes.statut === 'nonAuthentifie') {
+    session.terminer();
+    return { type: 'deconnecte' };
+  }
+  return { type: 'effectue', alertes: partie(alertes) };
 }

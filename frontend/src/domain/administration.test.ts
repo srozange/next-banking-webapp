@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { clientDepuis, filtrerClients, montantATraiter, type ClientAdministre } from './administration';
+import {
+  alerteOuverte,
+  clientDepuis,
+  compterAlertesOuvertes,
+  dateAlerte,
+  filtrerClients,
+  montantATraiter,
+  relecteurAlerte,
+  scoreAlerte,
+  type AlerteFraudeAdministree,
+  type ClientAdministre,
+} from './administration';
 
 const client = (clientId: number, nomComplet: string, login: string, email: string): ClientAdministre => ({
   clientId,
@@ -57,5 +68,31 @@ describe('montantATraiter', () => {
 describe('clientDepuis', () => {
   it('[FR-016-10][BUG-055] rend la date de création de la fiche en jj/MM/aaaa', () => {
     expect(clientDepuis(JEAN)).toBe('01/02/2024');
+  });
+});
+
+const ALERTE: AlerteFraudeAdministree = {
+  alerteId: 3, clientId: 1, nomClient: 'Jean Dupont', regle: 'LARGE_AMOUNT', score: 45, statut: 'OPEN', description: 'Montant eleve',
+  creeLe: '2026-11-17T08:05:00Z', revuPar: null, nomRelecteur: null,
+};
+
+describe('alertes de fraude', () => {
+  it('[FR-016-14][BUG-056] compte les seules alertes OPEN parmi tous les statuts', () => {
+    const alertes = [ALERTE, { ...ALERTE, alerteId: 2, statut: 'CONFIRMED' }, { ...ALERTE, alerteId: 1, statut: 'FALSE_POSITIVE' }, { ...ALERTE, statut: 'REVIEWED' }];
+    expect(compterAlertesOuvertes(alertes)).toBe(1);
+    expect(compterAlertesOuvertes([])).toBe(0);
+    expect(alerteOuverte(ALERTE)).toBe(true);
+    expect(alerteOuverte(alertes[1]!)).toBe(false);
+  });
+
+  it('[FR-016-14] rend le score sur 100 et la date en Europe/Paris', () => {
+    expect(scoreAlerte(ALERTE)).toBe('45/100');
+    expect(dateAlerte(ALERTE)).toBe('17/11/2026 09:05');
+  });
+
+  it('[FR-016-16] affiche le relecteur par son nom, sinon par son identifiant, sinon rien', () => {
+    expect(relecteurAlerte({ ...ALERTE, revuPar: '10', nomRelecteur: 'Alice Martin' })).toBe('Alice Martin');
+    expect(relecteurAlerte({ ...ALERTE, revuPar: '77' })).toBe('77');
+    expect(relecteurAlerte(ALERTE)).toBe('');
   });
 });

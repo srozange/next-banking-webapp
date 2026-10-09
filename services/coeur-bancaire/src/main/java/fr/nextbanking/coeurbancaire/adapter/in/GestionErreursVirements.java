@@ -28,7 +28,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class, PointEntreeBeneficiaires.class,
-        PointEntreeVirementsProgrammes.class, PointEntreePlafonds.class, PointEntreePortefeuille.class})
+        PointEntreeVirementsProgrammes.class, PointEntreePlafonds.class, PointEntreePortefeuille.class,
+        PointEntreeAlertesFraude.class})
 public class GestionErreursVirements {
 
     static final String ISSUE_REFUS_CONTROLE = "REFUSE_ERREUR_CONTROLE";

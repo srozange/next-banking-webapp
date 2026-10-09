@@ -1,11 +1,21 @@
-import type { ClientAdministration, ReponseAdministration } from '../../application/consulterAdministration';
-import type { ClientAdministre, IndicateursIdentite, IndicateursPrets, UtilisateurAdministre } from '../../domain/administration';
+import type { ClientAdministration, IssueRevueAlerte, ReponseAdministration } from '../../application/consulterAdministration';
+import type {
+  AlerteFraudeAdministree,
+  ClientAdministre,
+  IndicateursIdentite,
+  IndicateursPrets,
+  UtilisateurAdministre,
+} from '../../domain/administration';
 import { TEXTES } from '../textes';
 
 export const CHEMIN_ADMIN_INDICATEURS_IDENTITE = '/api/identite-clients/administration/indicateurs';
 export const CHEMIN_ADMIN_INDICATEURS_PRETS = '/api/credits/administration/indicateurs';
 export const CHEMIN_ADMIN_CLIENTS = '/api/identite-clients/administration/clients';
 export const CHEMIN_ADMIN_UTILISATEURS = '/api/identite-clients/administration/utilisateurs';
+export const CHEMIN_ADMIN_ALERTES_FRAUDE = '/api/coeur-bancaire/administration/alertes-fraude';
+
+/** Revue d'une alerte de fraude par l'ADMIN : confirmation ou faux positif. */
+export const cheminRevueAlerte = (alerteId: number, issue: IssueRevueAlerte) => `${CHEMIN_ADMIN_ALERTES_FRAUDE}/${alerteId}/${issue}`;
 
 /** API ADMIN d'identite-clients (story 2.6) : désactivation si `actif` est faux, activation sinon. */
 export const cheminEtatClient = (clientId: number, actif: boolean) =>
@@ -75,6 +85,21 @@ function utilisateurDepuis(brut: unknown): UtilisateurAdministre | null {
   return { utilisateurId: c.utilisateurId, nomComplet: c.nomComplet, login: c.login, email: c.email, role: c.role, actif: c.actif };
 }
 
+function alerteDepuis(brut: unknown): AlerteFraudeAdministree | null {
+  const c = enregistrement(brut);
+  if (
+    c === null || !entier(c.alerteId) || !entier(c.clientId) || !texteOuNul(c.nomClient) || !texte(c.regle) || !entier(c.score) ||
+    !texte(c.statut) || !texteOuNul(c.description) || !texte(c.creeLe) || Number.isNaN(Date.parse(c.creeLe)) || !texteOuNul(c.revuPar) ||
+    !texteOuNul(c.nomRelecteur)
+  ) {
+    return null;
+  }
+  return {
+    alerteId: c.alerteId, clientId: c.clientId, nomClient: c.nomClient ?? null, regle: c.regle, score: c.score, statut: c.statut,
+    description: c.description ?? null, creeLe: c.creeLe, revuPar: c.revuPar ?? null, nomRelecteur: c.nomRelecteur ?? null,
+  };
+}
+
 /** Corps JSON de la réponse, ou undefined s'il est illisible. */
 async function corpsDe(reponse: Response): Promise<unknown> {
   try {
@@ -88,8 +113,8 @@ async function corpsDe(reponse: Response): Promise<unknown> {
  * Adaptateur HTTP de la page d'administration (identite-clients et credits), par `fetchAuthentifie` (tout 401
  * supprime déjà le jeton) ; aucun paramètre de requête n'est envoyé. 401 : non authentifié ; 200 au contrat : ok ;
  * tout autre statut : le `message` texte du corps, sinon l'erreur technique ; réseau coupé ou corps hors contrat :
- * l'erreur technique. Activation et désactivation : `POST` sans corps ni paramètre, tout 2xx vaut succès (corps non
- * lu).
+ * l'erreur technique. Activation, désactivation et revue d'une alerte : `POST` sans corps ni paramètre, tout 2xx vaut
+ * succès (corps non lu).
  */
 export function creerClientAdministrationHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientAdministration {
   async function lire<T>(chemin: string, convertir: (corps: unknown) => T | null): Promise<ReponseAdministration<T>> {
@@ -110,9 +135,9 @@ export function creerClientAdministrationHttp(appeler: typeof fetch = (entree, o
     }
   }
 
-  async function changerEtatClient(clientId: number, actif: boolean): Promise<ReponseAdministration<null>> {
+  async function poster(chemin: string): Promise<ReponseAdministration<null>> {
     try {
-      const reponse = await appeler(cheminEtatClient(clientId, actif), { method: 'POST', headers: { Accept: 'application/json' } });
+      const reponse = await appeler(chemin, { method: 'POST', headers: { Accept: 'application/json' } });
       if (reponse.status === 401) {
         return NON_AUTHENTIFIE;
       }
@@ -127,7 +152,9 @@ export function creerClientAdministrationHttp(appeler: typeof fetch = (entree, o
   }
 
   return {
-    changerEtatClient,
+    changerEtatClient: (clientId, actif) => poster(cheminEtatClient(clientId, actif)),
+    revoirAlerte: (alerteId, issue) => poster(cheminRevueAlerte(alerteId, issue)),
+    lireAlertesFraude: () => lire(CHEMIN_ADMIN_ALERTES_FRAUDE, (corps) => listeDepuis(corps, alerteDepuis)),
     lireIndicateursIdentite: () => lire(CHEMIN_ADMIN_INDICATEURS_IDENTITE, indicateursIdentiteDepuis),
     lireIndicateursPrets: () => lire(CHEMIN_ADMIN_INDICATEURS_PRETS, indicateursPretsDepuis),
     lireClients: () => lire(CHEMIN_ADMIN_CLIENTS, (corps) => listeDepuis(corps, clientDepuis)),

@@ -83,6 +83,8 @@ const NOMS_CLIENTS_AUTHENTIFIES = [
   'administration indicateurs prêts',
   'administration clients',
   'administration utilisateurs',
+  'administration alertes de fraude',
+  'administration revue d’une alerte',
 ];
 
 /** Importe main, puis retrouve dans les routes les clients tels que main.tsx les a câblés. */
@@ -125,6 +127,8 @@ async function clientsDeMain() {
     ['administration indicateurs prêts', () => administration.client.lireIndicateursPrets()],
     ['administration clients', () => administration.client.lireClients()],
     ['administration utilisateurs', () => administration.client.lireUtilisateurs()],
+    ['administration alertes de fraude', () => administration.client.lireAlertesFraude()],
+    ['administration revue d’une alerte', () => administration.client.revoirAlerte(3, 'confirmation')],
   ];
   return { connexion, session: garde.session, authentifies };
 }

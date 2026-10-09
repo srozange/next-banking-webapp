@@ -52,6 +52,13 @@
   font-weight: var(--font-weight-h3);
 }
 
+.ecran-administration__entete-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 .ecran-administration__filtre {
   display: flex;
   flex-wrap: wrap;

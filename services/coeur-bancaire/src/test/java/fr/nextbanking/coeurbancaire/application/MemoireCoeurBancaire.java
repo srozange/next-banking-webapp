@@ -22,6 +22,7 @@ import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
 import fr.nextbanking.coeurbancaire.application.port.out.VirementsProgrammes;
 import fr.nextbanking.coeurbancaire.domain.DemandeVirementProgramme;
 import fr.nextbanking.coeurbancaire.domain.VirementProgramme;
+import fr.nextbanking.coeurbancaire.domain.AlerteAdministree;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
 import fr.nextbanking.coeurbancaire.domain.BeneficiaireExterne;
 import fr.nextbanking.coeurbancaire.domain.ClientProjete;
@@ -87,6 +88,10 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final Set<UUID> traites = new HashSet<>();
     final List<String> journal = new ArrayList<>();
     final List<AlerteFraude> alertes = new ArrayList<>();
+    /** Alertes vues par l'administrateur, dans l'ordre rendu par {@code toutes}. */
+    final List<AlerteAdministree> alertesAdministrees = new ArrayList<>();
+    /** Revues d'alertes demandées au port, dans l'ordre. */
+    final List<RevueAlerte> revuesAlertes = new ArrayList<>();
     /** Numéros des bénéficiaires actifs, par client. */
     final Map<Long, Set<String>> beneficiairesActifs = new HashMap<>();
     /** Bénéficiaires externes actifs, par identifiant (la désactivation les retire). */
@@ -578,6 +583,31 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         }
         beneficiairesExternes.remove(beneficiaireId);
         return true;
+    }
+
+    @Override
+    public List<AlerteAdministree> toutes() {
+        journal.add("alertes");
+        return List.copyOf(alertesAdministrees);
+    }
+
+    @Override
+    public boolean revoir(long alerteId, StatutAlerte issue, String revuPar, Instant revueLe) {
+        revuesAlertes.add(new RevueAlerte(alerteId, issue, revuPar, revueLe));
+        for (int i = 0; i < alertesAdministrees.size(); i++) {
+            AlerteAdministree alerte = alertesAdministrees.get(i);
+            if (alerte.alerteId() == alerteId && alerte.statut() == StatutAlerte.OPEN) {
+                alertesAdministrees.set(i, new AlerteAdministree(alerte.alerteId(), alerte.clientId(),
+                        alerte.nomClient(), alerte.regle(), alerte.score(), issue, alerte.description(),
+                        alerte.creeLe(), revuPar, noms.get(Long.parseLong(revuPar))));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Revue d'une alerte demandée au port. */
+    record RevueAlerte(long alerteId, StatutAlerte issue, String revuPar, Instant revueLe) {
     }
 
     @Override

@@ -258,3 +258,11 @@ source_spec: `spec-9-1-exposer-le-portefeuille-du-conseiller-decide-cote-serveur
 severity: medium
 reason: Aucun script, Makefile ni compose.yaml ne charge projection-clients.sql (seuls les tests le font) ; identite-clients ne republie pas ses clients au démarrage (RelaisOutboxClients relaie seulement l'outbox). Écart préexistant pour credits ; le chargement des projections en rejeu relève d'ADV-08 et de la story « Socle du rejeu final ». Les lignes de projection antérieures à V11 gardent conseiller_id nul (accepté par la spec).
 status: open
+
+### DW-31: Le data-testid admin-panneau-statut apparaît deux fois dans le panneau de détail d'un client.
+origin: spec-deferred f1350d0004af
+location: frontend/src/adapters/ecrans/administration/SectionGestionClients.tsx:222
+source_spec: `spec-9-4-activer-et-desactiver-un-client-depuis-la-gestion-des-clients.md`
+severity: low
+reason: SectionGestionClients.tsx pose data-testid={`admin-panneau-${cle}`} sur chaque <dd> (l.242) et data-testid="admin-panneau-statut" sur l'Etiquette du statut (l.222) ; déjà présent à 58459ad (story 9.3). Les tests doivent prendre getAllByTestId(...)[0].
+status: open

@@ -209,6 +209,36 @@ export const TEXTES = {
       titre: 'Tous les utilisateurs du systeme',
       colonnes: { nom: 'Nom', login: 'Login', email: 'Email', role: 'Role', statut: 'Statut' },
     },
+    /**
+     * Alertes de fraude : FEAT-016 de docs/retro/features/FEAT-016/MESSAGES.md, MSG-016-090 à MSG-016-099b (sans
+     * « Rafraichir », MSG-016-092, non repris). Le score `{n}/100` (MSG-016-094) est formé par le domaine.
+     */
+    alertes: {
+      /** MSG-016-090 */
+      titre: 'Alertes Fraude — Moteur de détection',
+      /** MSG-016-091 */
+      ouvertes: (nombre: number) => `${nombre} ouverte(s)`,
+      /** MSG-016-093 */
+      vide: 'Aucune alerte fraude enregistrée',
+      /** MSG-016-098a à MSG-016-098h */
+      colonnes: {
+        id: 'ID',
+        client: 'Client',
+        regle: 'Règle déclenchée',
+        score: 'Score risque',
+        statut: 'Statut',
+        description: 'Description',
+        date: 'Date',
+        actions: 'Actions',
+      },
+      /** MSG-016-095 et MSG-016-096 */
+      confirmer: 'Confirmer',
+      fauxPositif: 'Faux positif',
+      /** MSG-016-097 */
+      traitePar: (nom: string) => `Traité par ${nom}`,
+      /** MSG-016-099b */
+      clientIntrouvable: (clientId: number) => `Client #${clientId} (introuvable)`,
+    },
   },
   /** Titres d'onglet des pages déclarées (FEAT-002 MSG-002-001, FEAT-015, FEAT-016 MSG-016-001). */
   titresOnglet: {

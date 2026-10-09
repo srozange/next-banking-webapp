@@ -64,6 +64,8 @@ const REFERENCE: ClientAdministration = {
   lireClients: () => ok(CLIENTS),
   lireUtilisateurs: () => ok(UTILISATEURS),
   changerEtatClient: () => ok(null),
+  lireAlertesFraude: () => ok([]),
+  revoirAlerte: () => ok(null),
 };
 
 function ouvrir(administration: Partial<ClientAdministration> = {}, role = 'ADMIN') {
@@ -126,16 +128,18 @@ describe('EcranAdministration', () => {
     expect(sousLibelle('prets-en-attente')).toBe('EUR0 a traiter');
   });
 
-  it('[FR-016-02] les quatre appels partent avant qu’aucun ne soit résolu', async () => {
+  it('[FR-016-02][FR-016-14] les cinq appels partent avant qu’aucun ne soit résolu', async () => {
     const enAttente = () => new Promise<never>(() => {});
     const { administration } = ouvrir({
       lireIndicateursIdentite: enAttente,
       lireIndicateursPrets: enAttente,
       lireClients: enAttente,
       lireUtilisateurs: enAttente,
+      lireAlertesFraude: enAttente,
     });
 
     await waitFor(() => expect(administration.lireUtilisateurs).toHaveBeenCalled());
+    expect(administration.lireAlertesFraude).toHaveBeenCalledExactlyOnceWith();
     expect(administration.lireIndicateursIdentite).toHaveBeenCalled();
     expect(administration.lireIndicateursPrets).toHaveBeenCalled();
     expect(administration.lireClients).toHaveBeenCalled();
@@ -322,11 +326,12 @@ describe('EcranAdministration', () => {
     expect(screen.getByTestId('admin-utilisateur-statut-4').textContent).toBe('Inactif');
   });
 
-  it('[FR-016-13][FR-016-08] les sections suivent l’ordre figé et les libellés clés tiennent dans les 5 000 premiers caractères', async () => {
+  it('[FR-016-13][FR-016-08][FR-016-14] les sections suivent l’ordre figé et les libellés clés tiennent dans les 5 000 premiers caractères', async () => {
     ouvrir();
 
     await screen.findByTestId('admin-utilisateurs');
     await screen.findByText('Virements suspendus — En attente de revue');
+    await screen.findByText('Aucune alerte fraude enregistrée');
     const texte = screen.getByTestId('application-racine').textContent ?? '';
     const indices = [
       'Total clients',
@@ -335,6 +340,7 @@ describe('EcranAdministration', () => {
       'Historique de tous les prets',
       'Tous les utilisateurs du systeme',
       'Virements suspendus — En attente de revue',
+      'Alertes Fraude — Moteur de détection',
     ].map((libelle) => texte.indexOf(libelle));
     expect(indices.every((indice) => indice >= 0)).toBe(true);
     expect([...indices].sort((a, b) => a - b)).toEqual(indices);
@@ -462,5 +468,6 @@ describe('EcranAdministration', () => {
     expect(administration.lireIndicateursPrets).not.toHaveBeenCalled();
     expect(administration.lireClients).not.toHaveBeenCalled();
     expect(administration.lireUtilisateurs).not.toHaveBeenCalled();
+    expect(administration.lireAlertesFraude).not.toHaveBeenCalled();
   });
 });

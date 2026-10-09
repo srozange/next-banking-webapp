@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  CHEMIN_ADMIN_ALERTES_FRAUDE,
   CHEMIN_ADMIN_CLIENTS,
   CHEMIN_ADMIN_INDICATEURS_IDENTITE,
   CHEMIN_ADMIN_INDICATEURS_PRETS,
   CHEMIN_ADMIN_UTILISATEURS,
   cheminEtatClient,
+  cheminRevueAlerte,
   creerClientAdministrationHttp,
 } from './ClientAdministrationHttp';
 
@@ -20,6 +22,10 @@ const JEAN =
   '{"clientId":1,"nomComplet":"Jean Dupont","login":"user1","email":"jean.dupont@example.com","telephone":"+33601020304",' +
   '"role":"CLIENT","actif":true,"nomConseiller":"Sophie Durand","dateCreation":"2024-02-01"}';
 const ALICE = '{"utilisateurId":10,"nomComplet":"Alice Martin","login":"admin","email":"alice.martin@demobank.fr","role":"ADMIN","actif":true}';
+
+const ALERTE =
+  '{"alerteId":3,"clientId":1,"nomClient":"Jean Dupont","regle":"LARGE_AMOUNT","score":45,"statut":"OPEN",' +
+  '"description":"Montant eleve","creeLe":"2026-11-17T08:05:00Z","revuPar":null,"nomRelecteur":null}';
 
 describe('ClientAdministrationHttp', () => {
   it('[FR-016-02] lit les indicateurs d’identité en GET, sans paramètre', async () => {
@@ -177,6 +183,71 @@ describe('ClientAdministrationHttp', () => {
 
     it('[FR-016-11] le réseau coupé rend l’erreur technique', async () => {
       expect(await creerClientAdministrationHttp(reseauCoupe()).changerEtatClient(3, false)).toEqual(TECHNIQUE);
+    });
+  });
+
+  describe('alertes de fraude', () => {
+    const POST = { method: 'POST', headers: { Accept: 'application/json' } };
+
+    it('[FR-016-14][BUG-056] lit toutes les alertes en GET sur coeur-bancaire, noms et relecteur absents possibles', async () => {
+      const traitee = '{"alerteId":2,"clientId":99,"regle":"MULTIPLE_FAILED_AUTH","score":50,"statut":"REVIEWED","description":null,' +
+        '"creeLe":"2026-11-16T08:00:00Z","revuPar":"77"}';
+      const appeler = repondre(200, `[${ALERTE},${traitee}]`);
+
+      expect(await creerClientAdministrationHttp(appeler).lireAlertesFraude()).toEqual({
+        statut: 'ok',
+        donnees: [
+          {
+            alerteId: 3, clientId: 1, nomClient: 'Jean Dupont', regle: 'LARGE_AMOUNT', score: 45, statut: 'OPEN', description: 'Montant eleve',
+            creeLe: '2026-11-17T08:05:00Z', revuPar: null, nomRelecteur: null,
+          },
+          {
+            alerteId: 2, clientId: 99, nomClient: null, regle: 'MULTIPLE_FAILED_AUTH', score: 50, statut: 'REVIEWED', description: null,
+            creeLe: '2026-11-16T08:00:00Z', revuPar: '77', nomRelecteur: null,
+          },
+        ],
+      });
+      expect(appeler).toHaveBeenCalledExactlyOnceWith('/api/coeur-bancaire/administration/alertes-fraude', OPTIONS);
+      expect(CHEMIN_ADMIN_ALERTES_FRAUDE).toBe('/api/coeur-bancaire/administration/alertes-fraude');
+    });
+
+    it('[FR-016-14] un 401 est non authentifié ; un 500 rend son message ; le réseau coupé l’erreur technique', async () => {
+      expect(await creerClientAdministrationHttp(repondre(401, '')).lireAlertesFraude()).toEqual({ statut: 'nonAuthentifie' });
+      expect(await creerClientAdministrationHttp(repondre(500, '{"message":"X"}')).lireAlertesFraude()).toEqual({ statut: 'erreur', message: 'X' });
+      expect(await creerClientAdministrationHttp(repondre(500, 'illisible')).lireAlertesFraude()).toEqual(TECHNIQUE);
+      expect(await creerClientAdministrationHttp(reseauCoupe()).lireAlertesFraude()).toEqual(TECHNIQUE);
+    });
+
+    it.each([
+      ['hors liste', '{}'],
+      ['score en texte', ALERTE.replace('"score":45', '"score":"45"')],
+      ['date illisible', ALERTE.replace('2026-11-17T08:05:00Z', 'hier')],
+      ['sans statut', ALERTE.replace('"statut":"OPEN",', '')],
+      ['relecteur numérique', ALERTE.replace('"revuPar":null', '"revuPar":10')],
+      ['alerte nulle', '[null]'],
+    ] as const)('[FR-016-14] un corps hors contrat (%s) rend l’erreur technique', async (_cas, corps) => {
+      expect(await creerClientAdministrationHttp(repondre(200, corps.startsWith('{"alerteId"') ? `[${corps}]` : corps)).lireAlertesFraude()).toEqual(
+        TECHNIQUE,
+      );
+    });
+
+    it('[FR-016-15][FR-027-12] chemins exacts de la revue ; un seul POST sans corps, 204 est un succès', async () => {
+      expect(cheminRevueAlerte(3, 'confirmation')).toBe('/api/coeur-bancaire/administration/alertes-fraude/3/confirmation');
+      expect(cheminRevueAlerte(3, 'faux-positif')).toBe('/api/coeur-bancaire/administration/alertes-fraude/3/faux-positif');
+      const appeler = vi.fn<typeof fetch>(() => Promise.resolve(new Response(null, { status: 204 })));
+
+      expect(await creerClientAdministrationHttp(appeler).revoirAlerte(3, 'faux-positif')).toEqual({ statut: 'ok', donnees: null });
+      expect(appeler).toHaveBeenCalledExactlyOnceWith('/api/coeur-bancaire/administration/alertes-fraude/3/faux-positif', POST);
+      expect(appeler.mock.calls[0]?.[1]?.body).toBeUndefined();
+    });
+
+    it('[FR-016-15] la revue : 401 non authentifié, 403 son message, réseau coupé l’erreur technique', async () => {
+      expect(await creerClientAdministrationHttp(repondre(401, '')).revoirAlerte(3, 'confirmation')).toEqual({ statut: 'nonAuthentifie' });
+      expect(await creerClientAdministrationHttp(repondre(403, '{"message":"Accès refusé"}')).revoirAlerte(3, 'confirmation')).toEqual({
+        statut: 'erreur',
+        message: 'Accès refusé',
+      });
+      expect(await creerClientAdministrationHttp(reseauCoupe()).revoirAlerte(3, 'confirmation')).toEqual(TECHNIQUE);
     });
   });
 });

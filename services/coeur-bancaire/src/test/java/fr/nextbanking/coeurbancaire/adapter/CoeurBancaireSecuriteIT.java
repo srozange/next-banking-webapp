@@ -39,7 +39,8 @@ class CoeurBancaireSecuriteIT {
             "/api/coeur-bancaire/traitements?limite=50", "/api/coeur-bancaire/tableau-de-bord",
             "/api/coeur-bancaire/beneficiaires", "/api/coeur-bancaire/virements-programmes",
             "/api/coeur-bancaire/temoin", "/api/coeur-bancaire/temoin/", "/api/coeur-bancaire/inconnu",
-            "/actuator/info", "/api/coeur-bancaire/conseiller/portefeuille");
+            "/actuator/info", "/api/coeur-bancaire/conseiller/portefeuille",
+            "/api/coeur-bancaire/administration/alertes-fraude");
 
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
@@ -203,6 +204,36 @@ class CoeurBancaireSecuriteIT {
             assertThat(reponse.body()).as(parametre).startsWith("[{\"clientId\":1,")
                     .endsWith("{\"clientId\":2,\"comptes\":[]}]").doesNotContain("\"clientId\":3", "\"clientId\":4");
         }
+    }
+
+    @Test
+    @Tag("FR-016-14")
+    @Tag("FR-016-15")
+    @Tag("FR-016-16")
+    void les_alertes_de_fraude_rendent_401_sans_jeton_et_403_a_un_conseiller_ou_un_client_sans_rien_changer()
+            throws Exception {
+        DonneesDeReference.recharger(source, jdbc);
+        long id = jdbc.sql("""
+                insert into alertes_fraude (client_id, regle, score, description, statut, cree_le)
+                values (1, 'LARGE_AMOUNT', 45, 'a', 'OPEN', timestamptz '2026-11-17 09:00:00+00')
+                returning id""").query(Long.class).single();
+        String base = "/api/coeur-bancaire/administration/alertes-fraude";
+        String[][] appels = {{"GET", base}, {"POST", base + "/" + id + "/confirmation"},
+                {"POST", base + "/" + id + "/faux-positif"}};
+
+        for (String[] appel : appels) {
+            HttpResponse<String> sansJeton = Jetons.envoyer(port, appel[0], appel[1], null, null);
+            assertThat(sansJeton.statusCode()).as(appel[1]).isEqualTo(401);
+            assertThat(sansJeton.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
+            for (String role : new String[] {"CONSEILLER", "CLIENT"}) {
+                HttpResponse<String> refuse = Jetons.envoyer(port, appel[0], appel[1], Jetons.pour(11, role), null);
+                assertThat(refuse.statusCode()).as(role + " " + appel[1]).isEqualTo(403);
+                assertThat(refuse.body()).isEqualTo("{\"message\":\"Accès refusé\"}");
+            }
+        }
+        assertThat(jdbc.sql("select statut || '/' || coalesce(revu_par, '-') || '/' || coalesce(revu_le::text, '-') "
+                + "from alertes_fraude where id = :id").param("id", id).query(String.class).single())
+                .isEqualTo("OPEN/-/-");
     }
 
     @Test
