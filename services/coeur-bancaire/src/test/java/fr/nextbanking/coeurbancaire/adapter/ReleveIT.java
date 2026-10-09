@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.infrastructure.ApplicationCoeurBancaire;
 import fr.nextbanking.coeurbancaire.infrastructure.Conteneurs;
 import java.net.http.HttpResponse;
@@ -45,6 +46,9 @@ class ReleveIT {
     @Autowired
     private DataSource source;
 
+    @Autowired
+    private Horloge horloge;
+
     private final JsonMapper json = JsonMapper.builder().build();
 
     @AfterEach
@@ -74,8 +78,8 @@ class ReleveIT {
         assertThat(client.statusCode()).isEqualTo(200);
         JsonNode comptes = json.readTree(client.body());
         assertThat(comptes).hasSize(2);
-        assertThat(comptes.get(0).get("solde").asString()).isEqualTo("2130.00");
-        assertThat(comptes.get(1).get("solde").asString()).isEqualTo("15200.00");
+        assertThat(comptes.get(0).get("solde").asString()).isEqualTo("2450.00");
+        assertThat(comptes.get(1).get("solde").asString()).isEqualTo("15000.00");
         assertThat(admin.body()).isEqualTo("[]");
     }
 
@@ -152,8 +156,10 @@ class ReleveIT {
         JsonNode vue = json.readTree(reponse.body());
         assertThat(vue.get("comptes")).hasSize(2);
         assertThat(vue.get("comptes").get(0).get("type").asString()).isEqualTo("COURANT");
-        assertThat(vue.get("soldeTotal").asString()).isEqualTo("17330.00");
+        assertThat(vue.get("soldeTotal").asString()).isEqualTo("17450.00");
         assertThat(vue.get("dernieresOperations")).isEmpty();
+        assertThat(vue.get("aujourdhui").asString()).isEqualTo(horloge.aujourdhui().toString())
+                .matches("\\d{4}-\\d{2}-\\d{2}");
     }
 
     @Test
@@ -162,7 +168,24 @@ class ReleveIT {
         HttpResponse<String> reponse = Jetons.envoyer(port, "GET", TABLEAU, Jetons.pour(10, "CONSEILLER"), null);
 
         assertThat(reponse.statusCode()).isEqualTo(200);
-        assertThat(reponse.body()).isEqualTo("{\"comptes\":[],\"soldeTotal\":\"0.00\",\"dernieresOperations\":[]}");
+        assertThat(reponse.body()).isEqualTo("{\"comptes\":[],\"soldeTotal\":\"0.00\",\"dernieresOperations\":[],"
+                + "\"aujourdhui\":\"" + horloge.aujourdhui() + "\"}");
+    }
+
+    @Test
+    @Tag("NFR-PAR-04")
+    @Tag("FR-002-06")
+    void avec_les_donnees_de_reference_entieres_le_tableau_de_bord_de_user1_est_celui_de_l_import() throws Exception {
+        DonneesDeReference.rechargerTout(source, jdbc);
+
+        JsonNode vue = json.readTree(Jetons.envoyer(port, "GET", TABLEAU, Jetons.pour(1, "CLIENT"), null).body());
+
+        assertThat(vue.get("soldeTotal").asString()).isEqualTo("17450.00");
+        JsonNode operations = vue.get("dernieresOperations");
+        assertThat(operations).hasSize(5);
+        assertThat(operations.get(0).get("description").asString()).isEqualTo("Cinema UGC - sorties loisirs");
+        assertThat(operations.get(0).get("date").asString()).isEqualTo("2025-11-27T18:00:00Z");
+        assertThat(operations.get(4).get("description").asString()).isEqualTo("Pharmacie Monge - medicaments");
     }
 
     @Test

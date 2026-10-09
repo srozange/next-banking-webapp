@@ -58,7 +58,7 @@ class PretsHttpIT {
 
         assertThat(liste).extracting(Pret::id).containsExactly(2L, 1L);
         assertThat(liste).extracting(Pret::statut).containsOnly(StatutPret.EN_COURS);
-        assertThat(liste).extracting(Pret::type).containsExactly(TypePret.AUTO, TypePret.TRAVAUX);
+        assertThat(liste).extracting(Pret::type).containsExactly(TypePret.TRAVAUX, TypePret.AUTO);
         assertThat(liste).allSatisfy(pret -> {
             assertThat(pret.clientId()).isEqualTo(1L);
             assertThat(pret.montant().scale()).isEqualTo(2);
@@ -80,9 +80,9 @@ class PretsHttpIT {
         assertThat(reponse.statusCode()).isEqualTo(200);
         assertThat(reponse.headers().firstValue("Content-Type")).hasValueSatisfying(type ->
                 assertThat(type).startsWith("application/json"));
-        assertThat(reponse.body()).startsWith("[{\"id\":2,\"type\":\"AUTO\",\"montant\":\"9000.00\","
-                + "\"tauxAnnuel\":\"3.9000\",\"dureeMois\":6,");
-        assertThat(reponse.body()).contains("\"id\":1,\"type\":\"TRAVAUX\",\"montant\":\"5000.00\"",
+        assertThat(reponse.body()).startsWith("[{\"id\":2,\"type\":\"TRAVAUX\",\"montant\":\"5000.00\","
+                + "\"tauxAnnuel\":\"4.9000\",\"dureeMois\":24,");
+        assertThat(reponse.body()).contains("\"id\":1,\"type\":\"AUTO\",\"montant\":\"12000.00\"",
                 "\"statut\":\"EN_COURS\"");
         assertThat(reponse.body().split("\"id\"", -1)).hasSize(3);
 

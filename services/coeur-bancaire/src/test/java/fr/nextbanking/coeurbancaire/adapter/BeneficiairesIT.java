@@ -91,11 +91,14 @@ class BeneficiairesIT {
 
         assertThat(reponse.statusCode()).isEqualTo(200);
         JsonNode liste = json.readTree(reponse.body());
-        assertThat(liste).hasSize(3);
+        // Les 3 bénéficiaires de user1 dans l'import, plus Alice et Zoe.
+        assertThat(liste).hasSize(5);
         assertThat(liste.get(0).get("libelle").asString()).isEqualTo("Alice");
-        assertThat(liste.get(1).get("libelle").asString()).isEqualTo("Loyer");
-        assertThat(liste.get(2).get("libelle").asString()).isEqualTo("Zoe");
-        assertThat(liste.get(2).get("id").asLong()).isEqualTo(zoe);
+        assertThat(liste.get(1).get("libelle").asString()).isEqualTo("Electricite EDF");
+        assertThat(liste.get(2).get("libelle").asString()).isEqualTo("Loyer Paris 14e");
+        assertThat(liste.get(3).get("libelle").asString()).isEqualTo("Mon compte Boursorama");
+        assertThat(liste.get(4).get("libelle").asString()).isEqualTo("Zoe");
+        assertThat(liste.get(4).get("id").asLong()).isEqualTo(zoe);
         assertThat(reponse.body()).doesNotContain("Autre client").doesNotContain("Ancien");
     }
 
@@ -113,7 +116,7 @@ class BeneficiairesIT {
         assertThat(alice.get("zoneSepa").asBoolean()).isFalse();
         assertThat(alice.get("bic").asString()).isEqualTo("ABCDUS33");
         assertThat(alice.get("banque").asString()).isEqualTo("Bank of Test");
-        JsonNode zoe = liste.get(2);
+        JsonNode zoe = liste.get(4);
         assertThat(zoe.get("iban").asString()).isEqualTo("FR35***9010");
         assertThat(zoe.get("zoneSepa").asBoolean()).isTrue();
         assertThat(zoe.get("bic").isNull()).isTrue();
@@ -144,7 +147,7 @@ class BeneficiairesIT {
         assertThat(actif(id)).isFalse();
         assertThat(jdbc.sql("select count(*) from beneficiaires_externes where id = :id").param("id", id)
                 .query(Long.class).single()).isEqualTo(1L);
-        assertThat(json.readTree(liste.body())).hasSize(1);
+        assertThat(json.readTree(liste.body())).hasSize(3);
     }
 
     @Test
@@ -232,7 +235,7 @@ class BeneficiairesIT {
 
         assertThat(verification.statusCode()).isEqualTo(401);
         assertThat(ajout.statusCode()).isEqualTo(401);
-        assertThat(compter()).isEqualTo(1L);
+        assertThat(compter()).isEqualTo(5L);
     }
 
     @Test
@@ -247,7 +250,7 @@ class BeneficiairesIT {
                 .isEqualTo("{\"statut\":\"valide\",\"codePays\":\"FR\",\"zoneSepa\":true}");
         assertThat(verifier(jeton, "{\"iban\":\"TR330006100519786457841326\"}"))
                 .isEqualTo("{\"statut\":\"valide\",\"codePays\":\"TR\",\"zoneSepa\":false}");
-        assertThat(compter()).isEqualTo(1L);
+        assertThat(compter()).isEqualTo(5L);
     }
 
     private String verifier(String jeton, String corps) throws Exception {
@@ -284,7 +287,7 @@ class BeneficiairesIT {
         assertThat(ligne.get("actif")).isEqualTo(true);
         assertThat(ligne.get("jour").toString()).isEqualTo(LocalDate.now(ZoneId.of("Europe/Paris")).toString());
         HttpResponse<String> liste = Jetons.envoyer(port, "GET", CHEMIN, jeton, null);
-        assertThat(json.readTree(liste.body())).hasSize(2);
+        assertThat(json.readTree(liste.body())).hasSize(4);
     }
 
     @Test
@@ -310,7 +313,7 @@ class BeneficiairesIT {
         refuse(jeton, corpsAjout("a", "b", IBAN, "HSBCFR", null),
                 "BIC invalide. Format attendu : 8 ou 11 caractères alphanumériques.", "bic");
         refuse(jeton, "{}", "Le libellé est obligatoire.", "libelle");
-        assertThat(compter()).isEqualTo(1L);
+        assertThat(compter()).isEqualTo(5L);
     }
 
     private void refuse(String jeton, String corps, String message, String champ) throws Exception {
@@ -336,7 +339,7 @@ class BeneficiairesIT {
         HttpResponse<String> limite = Jetons.envoyer(port, "POST", CHEMIN, jeton,
                 corpsAjout("x".repeat(100), "b", IBAN, null, "y".repeat(100)));
         assertThat(limite.statusCode()).isEqualTo(201);
-        assertThat(compter()).isEqualTo(2L);
+        assertThat(compter()).isEqualTo(6L);
     }
 
     @Test
@@ -345,7 +348,7 @@ class BeneficiairesIT {
         HttpResponse<String> reponse = Jetons.envoyer(port, "POST", CHEMIN, Jetons.pour(1, "CLIENT"), "pas du json");
 
         assertThat(reponse.statusCode()).isEqualTo(400);
-        assertThat(compter()).isEqualTo(1L);
+        assertThat(compter()).isEqualTo(5L);
     }
 
     @Test

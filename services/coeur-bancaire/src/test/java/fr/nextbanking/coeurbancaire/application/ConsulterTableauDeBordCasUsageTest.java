@@ -10,13 +10,14 @@ import fr.nextbanking.coeurbancaire.domain.TypeCompte;
 import fr.nextbanking.coeurbancaire.domain.TypeOperation;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 class ConsulterTableauDeBordCasUsageTest {
 
     private final MemoireCoeurBancaire memoire = new MemoireCoeurBancaire();
-    private final ConsulterTableauDeBordCasUsage cas = new ConsulterTableauDeBordCasUsage(memoire, memoire);
+    private final ConsulterTableauDeBordCasUsage cas = new ConsulterTableauDeBordCasUsage(memoire, memoire, memoire);
 
     private void compte(long id, long client, TypeCompte type, String solde) {
         memoire.comptes.put(id, new Compte(id, client, "FR76-000" + id, type, Montant.lire(solde)));
@@ -88,5 +89,14 @@ class ConsulterTableauDeBordCasUsageTest {
 
         assertThat(cas.tableauDeBord(7).dernieresOperations()).extracting(Operation::description)
                 .containsExactly("premiere", "seconde");
+    }
+
+    @Test
+    @Tag("NFR-PAR-05")
+    void la_date_du_jour_est_celle_de_l_horloge_dans_le_fuseau_metier() {
+        // 23h30 UTC le 17/11/2026 = 00h30 le 18/11/2026 à Paris.
+        memoire.maintenant = Instant.parse("2026-11-17T23:30:00Z");
+
+        assertThat(cas.tableauDeBord(7).aujourdhui()).isEqualTo(LocalDate.of(2026, 11, 18));
     }
 }

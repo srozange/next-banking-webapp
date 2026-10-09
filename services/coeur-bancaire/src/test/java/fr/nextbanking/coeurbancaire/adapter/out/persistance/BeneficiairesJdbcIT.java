@@ -63,7 +63,7 @@ class BeneficiairesJdbcIT {
         ajouter(8, "Autre", true);
 
         assertThat(beneficiaires.actifsDuClient(1)).extracting(BeneficiaireExterne::libelle)
-                .containsExactly("Loyer", "Zoe");
+                .containsExactly("Electricite EDF", "Loyer Paris 14e", "Mon compte Boursorama", "Zoe");
         assertThat(beneficiaires.actifsDuClient(8)).extracting(BeneficiaireExterne::libelle).containsExactly("Autre");
         assertThat(beneficiaires.actifsDuClient(99)).isEmpty();
     }
@@ -72,12 +72,12 @@ class BeneficiairesJdbcIT {
     void la_lecture_par_identifiant_ne_rend_que_les_actifs() {
         long inactif = ajouter(1, "Ancien", false);
 
-        BeneficiaireExterne loyer = beneficiaires.trouverActif(1).orElseThrow();
-        assertThat(loyer.libelle()).isEqualTo("Loyer");
-        assertThat(loyer.clientId()).isEqualTo(1);
-        assertThat(loyer.iban().enClair()).isEqualTo("FR7630006000011234567890189");
-        assertThat(loyer.bic()).isEqualTo("AGRIFRPP");
-        assertThat(loyer.banque()).isEqualTo("Banque Exemple");
+        BeneficiaireExterne boursorama = beneficiaires.trouverActif(1).orElseThrow();
+        assertThat(boursorama.libelle()).isEqualTo("Mon compte Boursorama");
+        assertThat(boursorama.clientId()).isEqualTo(1);
+        assertThat(boursorama.iban().enClair()).isEqualTo("FR7630006000011234567890189");
+        assertThat(boursorama.bic()).isEqualTo("COURCNPAXXX");
+        assertThat(boursorama.banque()).isEqualTo("Boursorama Banque");
         assertThat(beneficiaires.trouverActif(inactif)).isEmpty();
         assertThat(beneficiaires.trouverActif(999)).isEmpty();
     }

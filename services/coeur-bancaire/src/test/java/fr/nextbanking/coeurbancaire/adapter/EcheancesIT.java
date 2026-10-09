@@ -94,9 +94,9 @@ class EcheancesIT {
         assertThat(echeances.executerLesDues()).isEqualTo(1);
 
         assertThat(jdbc.sql("select solde from comptes where id = 1").query(java.math.BigDecimal.class).single())
-                .isEqualByComparingTo("2030.00");
+                .isEqualByComparingTo("2350.00");
         assertThat(jdbc.sql("select solde from comptes where id = 2").query(java.math.BigDecimal.class).single())
-                .isEqualByComparingTo("15300.00");
+                .isEqualByComparingTo("15100.00");
         assertThat(jdbc.sql("select description from operations order by id").query(String.class).list())
                 .containsExactly("Virement programme vers Livret - Epargne mensuelle",
                         "Virement programme de FR76-0001-0001 - Epargne mensuelle");
@@ -180,7 +180,7 @@ class EcheancesIT {
         assertThat(echeances.executerLesDues()).isZero();
         assertThat(evenements()).hasSize(1);
 
-        jdbc.sql("update comptes set solde = 2130.00 where id = 1").update();
+        jdbc.sql("update comptes set solde = 2450.00 where id = 1").update();
         horloge.regler(Instant.parse("2026-01-15T07:14:00Z"));
         assertThat(echeances.executerLesDues()).isEqualTo(1);
         assertThat(evenements()).hasSize(1);

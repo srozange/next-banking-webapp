@@ -22,6 +22,13 @@ public final class GenerateurReferenceData {
     static final String CONSEILLER = "RETRO_CONSEILLER_PASSWORD";
     static final String CLIENT = "RETRO_CLIENT_PASSWORD";
 
+    /**
+     * Date de création posée sur chaque utilisateur, identique à celle des projections des autres services : sans
+     * elle, la base prendrait la date du jour (défaut de la migration V3) et la donnée changerait d'un chargement à
+     * l'autre.
+     */
+    static final String DATE_CREATION = "2026-10-06";
+
     /** Ligne de {@code customers} du legacy, sans mot de passe ; conseillers et administrateur d'abord (clé étrangère). */
     private record Ligne(long id, String username, String fullName, String email, String phone, String role,
             Long advisorId, String advisorSince, String variable) {
@@ -73,10 +80,11 @@ public final class GenerateurReferenceData {
                 -- Généré par reference-data/generer-reference-data.sh : ne pas modifier à la main.
                 -- Mots de passe : empreintes {bcrypt} calculées depuis RETRO_ADMIN_PASSWORD (admin),
                 -- RETRO_CONSEILLER_PASSWORD (conseillers) et RETRO_CLIENT_PASSWORD (clients), jamais en clair.
+                -- date_creation : date fixe, celle des projections des autres services (aucune date relative).
                 """);
         for (Ligne ligne : LIGNES) {
             sql.append("insert into customers (id, username, password, full_name, email, phone, role, active,"
-                    + " advisor_id, advisor_since)\nvalues (")
+                    + " advisor_id, advisor_since, date_creation)\nvalues (")
                     .append(ligne.id()).append(", ")
                     .append(texte(ligne.username())).append(", ")
                     .append(texte(encodeur.encode(environnement.apply(ligne.variable())))).append(", ")
@@ -86,6 +94,7 @@ public final class GenerateurReferenceData {
                     .append(texte(ligne.role())).append(", true, ")
                     .append(ligne.advisorId() == null ? "null" : ligne.advisorId().toString()).append(", ")
                     .append(ligne.advisorSince() == null ? "null" : "date " + texte(ligne.advisorSince()))
+                    .append(", date ").append(texte(DATE_CREATION))
                     .append(");\n");
         }
         sql.append("select setval(pg_get_serial_sequence('customers', 'id'), (select max(id) from customers));\n");

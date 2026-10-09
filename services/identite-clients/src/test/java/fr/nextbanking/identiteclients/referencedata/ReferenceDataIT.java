@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Tag("FR-001-08")
 @Tag("BUG-002")
+@Tag("NFR-PAR-04")
 class ReferenceDataIT {
 
     private static final Path FICHIER = Path.of("reference-data/reference-data.sql");
@@ -91,6 +92,21 @@ class ReferenceDataIT {
             // Message d'assertion limité à l'identifiant : la valeur de la variable n'est jamais affichée.
             if (!encodeur.matches(System.getenv(variables.get(u.role())), u.password())) {
                 throw new AssertionError("empreinte de " + u.username() + " non conforme à " + variables.get(u.role()));
+            }
+        }
+    }
+
+    @Test
+    void la_date_de_creation_est_fixe_et_ne_depend_pas_du_jour_du_chargement() throws Exception {
+        assertThat(Files.readString(FICHIER, StandardCharsets.UTF_8)).doesNotContainIgnoringCase("current_date")
+                .doesNotContainIgnoringCase("now()");
+        String schema = schemaNeuf();
+        try (Connection connexion = connexion(schema); Statement instruction = connexion.createStatement()) {
+            instruction.execute(Files.readString(FICHIER, StandardCharsets.UTF_8));
+            try (ResultSet ligne = instruction.executeQuery(
+                    "select count(*) from customers where date_creation = date '2026-10-06'")) {
+                ligne.next();
+                assertThat(ligne.getInt(1)).isEqualTo(7);
             }
         }
     }

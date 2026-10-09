@@ -161,7 +161,7 @@ class CoeurBancaireSecuriteIT {
         assertThat(autreClient.statusCode()).isEqualTo(403);
         assertThat(autreClient.body()).isEqualTo("{\"message\":\"Accès refusé\"}");
         assertThat(jdbc.sql("select solde from comptes where id = 3").query(BigDecimal.class).single())
-                .isEqualByComparingTo("500.00");
+                .isEqualByComparingTo("3850.00");
         assertThat(jdbc.sql("select count(*) from virements").query(Long.class).single()).isZero();
     }
 
@@ -202,7 +202,8 @@ class CoeurBancaireSecuriteIT {
                     "/api/coeur-bancaire/conseiller/portefeuille" + parametre, sophie, null);
             assertThat(reponse.statusCode()).as(parametre).isEqualTo(200);
             assertThat(reponse.body()).as(parametre).startsWith("[{\"clientId\":1,")
-                    .endsWith("{\"clientId\":2,\"comptes\":[]}]").doesNotContain("\"clientId\":3", "\"clientId\":4");
+                    .contains("{\"clientId\":2,\"comptes\":[{\"compteId\":3,")
+                    .doesNotContain("\"clientId\":3", "\"clientId\":4");
         }
     }
 

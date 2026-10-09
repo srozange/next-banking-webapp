@@ -3,6 +3,7 @@ package fr.nextbanking.coeurbancaire.application.port.in;
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.Operation;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -17,8 +18,11 @@ public interface ConsulterTableauDeBord {
      * @param soldeTotal somme des soldes de tous ses comptes, 2 décimales ({@code 0.00} sans compte)
      * @param dernieresOperations au plus 5 opérations du compte COURANT, de la plus récente à la plus ancienne ;
      *        vide sans compte COURANT
+     * @param aujourdhui date du jour lue par le port Horloge, dans le fuseau métier (preuve observable de l'horloge
+     *        réglée du profil {@code rejeu})
      */
-    record TableauDeBord(List<Compte> comptes, Montant soldeTotal, List<Operation> dernieresOperations) {
+    record TableauDeBord(List<Compte> comptes, Montant soldeTotal, List<Operation> dernieresOperations,
+            LocalDate aujourdhui) {
     }
 
     TableauDeBord tableauDeBord(long clientId);

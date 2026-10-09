@@ -51,7 +51,7 @@ class TelechargementHttpIT {
     @BeforeEach
     void donnees() {
         OutilsHttp.chargerDonnees(base);
-        OutilsHttp.insererCompte(base, 3, 2, "FR76-0002-0001", "COURANT", "500.00");
+        // Le compte 3 (COURANT de user2, client 2) vient des données de référence (import.sql du legacy).
     }
 
     private HttpResponse<byte[]> telecharger(String requete, String clientId) throws Exception {
@@ -119,10 +119,10 @@ class TelechargementHttpIT {
         assertThat(texte).contains("Demo Bank — Attestation de Solde",
                 "Demo Bank SA, dont le siege social est situe 1 Place Vendome, 75001 Paris, atteste par la presente que :",
                 "M. / Mme Jean Dupont", "est titulaire du compte n° FR76-0001-0001",
-                "Le solde de ce compte, arrete au 10 Octobre 2026, est de :", "2130.00 EUR",
+                "Le solde de ce compte, arrete au 10 Octobre 2026, est de :", "2450.00 EUR",
                 "Cette attestation est delivree a la demande de l interesse(e) pour faire valoir ce que de droit.",
                 "Fait a Paris, le 10 Octobre 2026", PIED);
-        assertThat(texte).doesNotContain("15200.00", "17330.00");
+        assertThat(texte).doesNotContain("15000.00", "17450.00");
     }
 
     @Test
@@ -226,9 +226,9 @@ class TelechargementHttpIT {
 
     @Test
     void un_titulaire_absent_de_la_projection_des_clients_rend_404_client_introuvable() throws Exception {
-        OutilsHttp.insererCompte(base, 4, 99, "FR76-0099-0001", "COURANT", "10.00");
+        OutilsHttp.insererCompte(base, 40, 99, "FR76-0099-0001", "COURANT", "10.00");
 
-        HttpResponse<byte[]> reponse = telecharger("?type=RIB&compteId=4", "99");
+        HttpResponse<byte[]> reponse = telecharger("?type=RIB&compteId=40", "99");
 
         assertThat(reponse.statusCode()).isEqualTo(404);
         assertThat(texte(reponse)).isEqualTo("{\"message\":\"Client introuvable\"}");

@@ -8,13 +8,15 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
  * Adaptateur sortant : horloge système dans le fuseau métier lu dans {@code nb.fuseau}.
- * Un fuseau absent ou invalide fait échouer le démarrage.
+ * Un fuseau absent ou invalide fait échouer le démarrage. Actif hors du profil {@code rejeu}.
  */
 @Component
+@Profile("!rejeu")
 public class HorlogeSysteme implements Horloge {
 
     private final Clock horloge;

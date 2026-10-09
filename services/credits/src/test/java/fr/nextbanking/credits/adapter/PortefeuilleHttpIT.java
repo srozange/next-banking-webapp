@@ -40,10 +40,10 @@ class PortefeuilleHttpIT {
 
     private static final String CHEMIN = "/api/credits/conseiller/portefeuille";
     private static final String PORTEFEUILLE_SOPHIE = "[{\"clientId\":1,\"prets\":["
-            + "{\"pretId\":2,\"type\":\"AUTO\",\"montant\":\"9000.00\",\"mensualite\":\"1517.11\",\"statut\":\"EN_COURS\"},"
             + "{\"pretId\":50,\"type\":null,\"montant\":\"3000.00\",\"mensualite\":\"260.00\",\"statut\":\"EN_ATTENTE\"},"
-            + "{\"pretId\":1,\"type\":\"TRAVAUX\",\"montant\":\"5000.00\",\"mensualite\":\"427.81\",\"statut\":\"EN_COURS\"},"
-            + "{\"pretId\":51,\"type\":\"ETUDIANT\",\"montant\":\"8000.00\",\"mensualite\":\"700.50\",\"statut\":\"DEFAUT\"}]},"
+            + "{\"pretId\":51,\"type\":\"ETUDIANT\",\"montant\":\"8000.00\",\"mensualite\":\"700.50\",\"statut\":\"DEFAUT\"},"
+            + "{\"pretId\":2,\"type\":\"TRAVAUX\",\"montant\":\"5000.00\",\"mensualite\":\"218.63\",\"statut\":\"EN_COURS\"},"
+            + "{\"pretId\":1,\"type\":\"AUTO\",\"montant\":\"12000.00\",\"mensualite\":\"268.69\",\"statut\":\"EN_COURS\"}]},"
             + "{\"clientId\":2,\"prets\":[]}]";
 
     @DynamicPropertySource

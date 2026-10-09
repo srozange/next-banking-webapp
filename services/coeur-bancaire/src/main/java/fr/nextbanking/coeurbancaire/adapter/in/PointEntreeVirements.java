@@ -101,7 +101,8 @@ public class PointEntreeVirements {
         ConsulterTableauDeBord.TableauDeBord vue = consulterTableauDeBord.tableauDeBord(clientId(jeton));
         return new TableauDeBordClient(vue.comptes().stream().map(PointEntreeVirements::compte).toList(),
                 vue.soldeTotal().texte(),
-                vue.dernieresOperations().stream().map(PointEntreeVirements::operation).toList());
+                vue.dernieresOperations().stream().map(PointEntreeVirements::operation).toList(),
+                vue.aujourdhui().toString());
     }
 
     private static long clientId(Jwt jeton) {
@@ -143,8 +144,11 @@ public class PointEntreeVirements {
             String soldeApres) {
     }
 
-    /** Tableau de bord : comptes, solde total (chaîne décimale à point) et dernières opérations du compte COURANT. */
+    /**
+     * Tableau de bord : comptes, solde total (chaîne décimale à point), dernières opérations du compte COURANT et date
+     * du jour de l'horloge métier ({@code yyyy-MM-dd}, ignorée par le front).
+     */
     public record TableauDeBordClient(List<CompteClient> comptes, String soldeTotal,
-            List<OperationReleve> dernieresOperations) {
+            List<OperationReleve> dernieresOperations, String aujourdhui) {
     }
 }

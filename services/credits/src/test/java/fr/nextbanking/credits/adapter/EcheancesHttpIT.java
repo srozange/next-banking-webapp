@@ -83,11 +83,11 @@ class EcheancesHttpIT {
                 assertThat(type).startsWith("application/json"));
         JsonNode echeances = json.readTree(reponse.body());
         assertThat(echeances).hasSize(12);
-        assertThat(echeances.get(0).toString()).isEqualTo("{\"id\":1,\"numero\":1,\"dateEcheance\":\"2026-07-01\","
-                + "\"capital\":\"407.39\",\"interets\":\"20.42\",\"total\":\"427.81\",\"capitalRestant\":\"4592.61\","
-                + "\"paye\":true,\"datePaiement\":\"2026-07-01T08:00:00Z\"}");
-        assertThat(echeances.get(4).get("paye").asBoolean()).isFalse();
-        assertThat(echeances.get(4).get("datePaiement").isNull()).isTrue();
+        assertThat(echeances.get(0).toString()).isEqualTo("{\"id\":1,\"numero\":1,\"dateEcheance\":\"2025-02-01\","
+                + "\"capital\":\"233.69\",\"interets\":\"35.00\",\"total\":\"268.69\",\"capitalRestant\":\"11766.31\","
+                + "\"paye\":true,\"datePaiement\":\"2025-02-01T09:00:00Z\"}");
+        assertThat(echeances.get(10).get("paye").asBoolean()).isFalse();
+        assertThat(echeances.get(10).get("datePaiement").isNull()).isTrue();
         for (int i = 0; i < 12; i++) {
             assertThat(echeances.get(i).get("numero").asInt()).isEqualTo(i + 1);
         }
@@ -115,15 +115,15 @@ class EcheancesHttpIT {
     @Tag("FR-007-12")
     void le_paiement_marque_l_echeance_a_la_date_courante_sans_evenement_ni_changement_de_statut() throws Exception {
         Instant avant = Instant.now();
-        HttpResponse<String> reponse = payer(user1, 5);
+        HttpResponse<String> reponse = payer(user1, 11);
 
         assertThat(reponse.statusCode()).isEqualTo(200);
         JsonNode echeance = json.readTree(reponse.body());
-        assertThat(echeance.get("id").asLong()).isEqualTo(5);
+        assertThat(echeance.get("id").asLong()).isEqualTo(11);
         assertThat(echeance.get("paye").asBoolean()).isTrue();
         Instant paiement = Instant.parse(echeance.get("datePaiement").asString());
         assertThat(paiement).isBetween(avant.minusSeconds(5), Instant.now().plusSeconds(5));
-        assertThat(compter("select count(*) from loan_repayments where loan_id = 1 and not paye")).isEqualTo(7);
+        assertThat(compter("select count(*) from loan_repayments where loan_id = 1 and not paye")).isEqualTo(1);
         assertThat(jdbc.sql("select status from loans where id = 1").query(String.class).single())
                 .isEqualTo("EN_COURS");
         assertThat(compter("select count(*) from outbox")).isZero();
@@ -132,17 +132,17 @@ class EcheancesHttpIT {
     @Test
     @Tag("FR-007-12")
     void payer_deux_fois_ne_change_pas_la_date_et_ne_donne_aucune_erreur() throws Exception {
-        String premiere = json.readTree(payer(user1, 5).body()).get("datePaiement").asString();
+        String premiere = json.readTree(payer(user1, 11).body()).get("datePaiement").asString();
         Thread.sleep(Duration.ofMillis(50));
 
-        HttpResponse<String> seconde = payer(user1, 5);
+        HttpResponse<String> seconde = payer(user1, 11);
 
         assertThat(seconde.statusCode()).isEqualTo(200);
         assertThat(json.readTree(seconde.body()).get("datePaiement").asString()).isEqualTo(premiere);
         assertThat(payer(user1, 1).statusCode()).isEqualTo(200);
         assertThat(jdbc.sql("select date_paiement from loan_repayments where id = 1")
                 .query(java.time.OffsetDateTime.class).single().toInstant())
-                .isEqualTo(Instant.parse("2026-07-01T08:00:00Z"));
+                .isEqualTo(Instant.parse("2025-02-01T09:00:00Z"));
     }
 
     @Test
@@ -164,11 +164,11 @@ class EcheancesHttpIT {
     @Test
     @Tag("FR-007-12")
     void le_paiement_d_un_autre_client_est_refuse_avec_son_texte_et_ne_change_rien() throws Exception {
-        HttpResponse<String> reponse = payer(user2, 5);
+        HttpResponse<String> reponse = payer(user2, 11);
 
         assertThat(reponse.statusCode()).isEqualTo(403);
         assertThat(reponse.body()).isEqualTo(PAIEMENT_REFUSE);
-        assertThat(compter("select count(*) from loan_repayments where id = 5 and not paye")).isEqualTo(1);
+        assertThat(compter("select count(*) from loan_repayments where id = 11 and not paye")).isEqualTo(1);
 
         HttpResponse<String> inconnue = payer(user1, 999);
         assertThat(inconnue.statusCode()).isEqualTo(404);

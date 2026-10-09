@@ -4,7 +4,7 @@ type: architecture-companion
 companion_of: ARCHITECTURE-SPINE.md
 status: draft
 created: 2026-10-05
-updated: 2026-10-05
+updated: 2026-10-09
 sources:
   - docs/retro/golden-master-contract.md
   - docs/retro/golden-master/replay-config.json
@@ -160,8 +160,8 @@ Les références entre services (`CUSTOMER_ID`, `ACCOUNT_ID`, `ACCOUNT_NUMBER`) 
 
 - Profil Spring `rejeu` sur les 8 services (`compose.rejeu.yaml`).
 - **Port Horloge** : tout le temps métier passe par lui (aucun appel direct à l'horloge système dans le domaine). En profil `rejeu`, l'horloge est **réglée au démarrage puis avance normalement** : `make rejeu-up` lit la date de référence (`HORLOGE_DEPART`, valeur par défaut ci-dessous), calcule **un seul** décalage (`HORLOGE_DECALAGE` = date de référence − heure réelle) et le passe à tous les services, qui partagent donc la même heure métier. Une horloge figée est exclue (RAPID_SUCCESSION levé à tort).
-- **Date de référence** : `2026-11-17T10:00:00` Europe/Paris (mardi, jour ouvré ; entre 06:00 et 23:00 ; antérieure au `2027-01-01` saisi comme première exécution par SC-004-02). Point ouvert de la story « Socle du rejeu final du golden master » (dernier epic) : vérifier qu'elle est postérieure à toutes les dates d'`import.sql` et que le compte de `user1` a 8 opérations au plus ce jour-là, avant la première exécution de SC-003-04. `TZ=Europe/Paris` dans chaque conteneur.
-- **Navigateur du rejeu** : Playwright avec `timezoneId: 'Europe/Paris'` et `locale: 'fr-FR'` (AD-11, AD-23). Le `playwright.config.ts` généré ne les porte pas encore : option de l'outil d'export, sinon `TZ=Europe/Paris` et `LANG=fr_FR.UTF-8` posés par `scripts/rejeu-golden-master.sh` (à régler par la story socle).
+- **Date de référence** : `2026-11-17T10:00:00` Europe/Paris (mardi, jour ouvré ; entre 06:00 et 23:00 ; antérieure au `2027-01-01` saisi comme première exécution par SC-004-02). **Réglé** (story 10.2) : `scripts/golden-master/verifier-date-reference.sh` vérifie, sur les données chargées, que toutes les dates sont antérieures à `HORLOGE_DEPART` (hors dates planifiées : `loans.date_fin`, `loan_repayments.date_echeance`, `virements_programmes.prochaine_execution`, `virements.heure_butoir`) et que `user1` a 8 opérations au plus ce jour-là (0 avec l'import). `TZ=Europe/Paris` dans chaque conteneur.
+- **Navigateur du rejeu** : Playwright avec `timezoneId: 'Europe/Paris'` et `locale: 'fr-FR'` (AD-11, AD-23). **Réglé** (story 10.2) : le `playwright.config.ts` généré ne les porte pas et n'est pas modifié ; `scripts/rejeu-golden-master.sh` exporte `TZ=Europe/Paris` et `LANG=fr_FR.UTF-8` avant chaque lancement du runner.
 - **Traitements planifiés** métier (virements programmés, fraude nocturne, intérêts, relevés, soldes faibles, rejet automatique des virements suspendus) : **désactivés** en profil `rejeu`, pour qu'aucune exécution ne modifie les soldes pendant le rejeu. Le relais de l'outbox, traitement technique, reste actif (AD-18).
 - **Fournisseurs externes** : adaptateurs simulés (§6).
 - **Remise à zéro** : avant le rejeu complet et avant chaque scénario qui écrit (§7.3). Elle ne touche pas l'horloge, qui continue d'avancer depuis la date de référence (un rejeu complet reste bien en deçà de 23:00).
@@ -231,7 +231,7 @@ Les tests générés ne contiennent pas de remise à zéro et ne doivent pas êt
 
 ## 8. Points tranchés en G2 et points encore ouverts
 
-Statut au 2026-10-05 : les points 1 à 8 sont **réglés** (G2 du 2026-10-05 et AD-17 de la spine) ; ils restent listés pour mémoire. Les points 9 et 10 sont ouverts et repris comme critères de la story « Socle du rejeu final du golden master », avec la configuration `timezoneId`/`locale` du §6 ; le point 11 est décidé (Q1 (a)).
+Statut au 2026-10-09 : les points 1 à 8 sont **réglés** (G2 du 2026-10-05 et AD-17 de la spine) ; ils restent listés pour mémoire. Les points 9 et 10, ainsi que la configuration `timezoneId`/`locale` du §5.3, sont **réglés** par la story « Socle du rejeu final du golden master » (10.2) ; le point 11 est décidé (Q1 (a)).
 
 Décisions globales (en tête de `replay-mapping.json`) — réglées :
 
@@ -254,6 +254,6 @@ Décisions par scénario — réglées (SC-001-02 et SC-017-01 adaptés en 401, 
 Points hors mapping :
 
 8. Enveloppe d'erreur des API (champ `message`), dont dépend le `json_subset` de SC-001-03 : **réglé**, format unique `{"message"}` (+ `reference`) de AD-17, décidé le 2026-10-05.
-9. **Ouvert, story « Socle du rejeu final du golden master » (dernier epic)** : vérifier que la date de référence du profil de rejeu est postérieure aux dates d'`import.sql` et que `user1` y a 8 opérations au plus.
-10. Remise à zéro avant chaque scénario qui écrit : le script du §7.3 s'en charge à défaut d'un point d'accroche dans les tests générés ; une option de l'outil d'export (commande de remise à zéro avant les scénarios `writes: true`) simplifierait le rejeu en un seul lancement.
+9. **Réglé (story 10.2)** : la date de référence du profil de rejeu est postérieure aux dates d'`import.sql` (hors dates planifiées) et `user1` y a 8 opérations au plus ; contrôle rejouable par `scripts/golden-master/verifier-date-reference.sh` (code non nul en nommant base, table, colonne et date).
+10. **Réglé (story 10.2)** : remise à zéro avant chaque scénario qui écrit par `scripts/rejeu-golden-master.sh` (§7.3), qui lit la liste `writes: true` dans les `scenario.json` dérivés, lance `make reset-data` (`scripts/reset-reference-data.sh`) avant les lectures puis avant chaque scénario qui écrit, et fusionne les rapports blob ; les tests générés restent intouchés. Une option de l'outil d'export permettrait encore un seul lancement, sans être nécessaire.
 11. FR-001-10 (invalidation à la déconnexion) avec un JWT sans état : **décidé** (Q1 (a) du 2026-10-05, AD-16) — un jeton reste valable jusqu'à son expiration, sans révocation immédiate ; à la déconnexion, le jeton est supprimé côté front, sa durée de vie est courte, sans liste de révocation. Repris comme critère de la story de FR-001-10. Le rejeu tient grâce au §7.3.

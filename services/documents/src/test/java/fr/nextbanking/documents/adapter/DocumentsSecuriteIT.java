@@ -59,7 +59,7 @@ class DocumentsSecuriteIT {
     @BeforeEach
     void donnees() {
         OutilsHttp.chargerDonnees(base);
-        OutilsHttp.insererCompte(base, 3, 2, "FR76-0002-0001", "COURANT", "500.00");
+        // Le compte 3 (COURANT de user2, client 2) vient des données de référence (import.sql du legacy).
         OutilsHttp.insererCompte(base, 10, 10, "FR76-0010-0001", "COURANT", "100.00");
         OutilsHttp.insererCompte(base, 11, 11, "FR76-0011-0001", "COURANT", "110.00");
     }

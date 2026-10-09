@@ -107,7 +107,7 @@ class VirementTransitionConcurrenteTest {
 
             assertThat(issues).allMatch(i -> i instanceof ExecuterVirement.Resultat);
         }
-        assertThat(solde(1).add(solde(2))).isEqualByComparingTo("17330.00");
+        assertThat(solde(1).add(solde(2))).isEqualByComparingTo("17450.00");
     }
 
     @Test
@@ -117,7 +117,7 @@ class VirementTransitionConcurrenteTest {
         assertThat(issues).allMatch(i -> i instanceof ExecuterVirement.Resultat);
         assertThat(issues.stream().map(i -> ((ExecuterVirement.Resultat) i).virementId()).distinct()).hasSize(1);
         assertThat(count("virements")).isEqualTo(1);
-        assertThat(solde(1)).isEqualByComparingTo("2030.00");
+        assertThat(solde(1)).isEqualByComparingTo("2350.00");
     }
 
     private static Commande commande(String cle) {

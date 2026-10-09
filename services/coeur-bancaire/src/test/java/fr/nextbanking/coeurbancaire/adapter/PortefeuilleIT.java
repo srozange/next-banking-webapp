@@ -41,9 +41,11 @@ class PortefeuilleIT {
     private static final String CHEMIN = "/api/coeur-bancaire/conseiller/portefeuille";
     private static final String PORTEFEUILLE_SOPHIE = """
             [{"clientId":1,"comptes":[\
-            {"compteId":1,"numero":"FR76-0001-0001","type":"COURANT","solde":"2130.00"},\
-            {"compteId":2,"numero":"FR76-0001-0002","type":"EPARGNE","solde":"15200.00"}]},\
-            {"clientId":2,"comptes":[]}]""";
+            {"compteId":1,"numero":"FR76-0001-0001","type":"COURANT","solde":"2450.00"},\
+            {"compteId":2,"numero":"FR76-0001-0002","type":"EPARGNE","solde":"15000.00"}]},\
+            {"clientId":2,"comptes":[\
+            {"compteId":3,"numero":"FR76-0002-0001","type":"COURANT","solde":"3850.00"},\
+            {"compteId":4,"numero":"FR76-0002-0002","type":"EPARGNE","solde":"22000.00"}]}]""";
 
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
@@ -78,12 +80,21 @@ class PortefeuilleIT {
     }
 
     @Test
-    void sophie_recoit_ses_deux_clients_avec_leurs_comptes_et_un_client_sans_compte_a_une_liste_vide()
-            throws Exception {
+    void sophie_recoit_ses_deux_clients_avec_leurs_comptes() throws Exception {
         HttpResponse<String> reponse = Jetons.envoyer(port, "GET", CHEMIN, Jetons.pour(11, "CONSEILLER"), null);
 
         assertThat(reponse.statusCode()).isEqualTo(200);
         assertThat(reponse.body()).isEqualTo(PORTEFEUILLE_SOPHIE);
+    }
+
+    @Test
+    void un_client_sans_compte_a_une_liste_vide() throws Exception {
+        jdbc.sql("delete from comptes where client_id = 2").update();
+
+        HttpResponse<String> reponse = Jetons.envoyer(port, "GET", CHEMIN, Jetons.pour(11, "CONSEILLER"), null);
+
+        assertThat(reponse.statusCode()).isEqualTo(200);
+        assertThat(reponse.body()).endsWith("{\"clientId\":2,\"comptes\":[]}]");
     }
 
     @Test
@@ -102,8 +113,11 @@ class PortefeuilleIT {
         HttpResponse<String> reponse = Jetons.envoyer(port, "GET", CHEMIN, Jetons.pour(12, "CONSEILLER"), null);
 
         assertThat(reponse.statusCode()).isEqualTo(200);
-        assertThat(json.readTree(reponse.body())).isEqualTo(json.readTree(
-                "[{\"clientId\":3,\"comptes\":[]},{\"clientId\":4,\"comptes\":[]}]"));
+        assertThat(json.readTree(reponse.body())).isEqualTo(json.readTree("""
+                [{"clientId":3,"comptes":[{"compteId":5,"numero":"FR76-0003-0001","type":"COURANT","solde":"1200.00"}]},
+                 {"clientId":4,"comptes":[{"compteId":6,"numero":"FR76-0004-0001","type":"COURANT","solde":"5600.00"},
+                                          {"compteId":7,"numero":"FR76-0004-0002","type":"EPARGNE","solde":"48000.00"}]}]
+                """));
     }
 
     @Test
@@ -127,7 +141,7 @@ class PortefeuilleIT {
     @Test
     void la_lecture_par_lot_des_comptes_d_aucun_client_est_vide() {
         assertThat(comptes.desClients(List.of())).isEmpty();
-        assertThat(comptes.desClients(List.of(8L, 1L))).extracting(compte -> compte.id())
-                .containsExactly(1L, 2L, 3L);
+        assertThat(comptes.desClients(List.of(2L, 1L))).extracting(compte -> compte.id())
+                .containsExactly(1L, 2L, 3L, 4L);
     }
 }

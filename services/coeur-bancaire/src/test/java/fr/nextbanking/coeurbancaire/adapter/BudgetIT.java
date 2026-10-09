@@ -153,15 +153,16 @@ class BudgetIT {
         operation(1, "DEBIT", "10.00", "loyer", "2026-03-01T08:00:00Z");
         operation(3, "DEBIT", "999.00", "loyer", "2026-03-01T08:00:00Z");
         operation(3, "CREDIT", "500.00", "salaire", "2026-03-01T08:00:00Z");
-        plafond(8, "LOGEMENT", "2026-03");
+        plafond(2, "LOGEMENT", "2026-03");
 
-        JsonNode budget = lire(1, "?periode=2026-03&clientId=8&compteId=3");
+        JsonNode budget = lire(1, "?periode=2026-03&clientId=2&compteId=3");
 
         assertThat(budget.get("totalDepenses").asString()).isEqualTo("10.00");
         assertThat(budget.get("totalRevenus").asString()).isEqualTo("0.00");
         assertThat(budget.get("plafondsDefinis").asInt()).isZero();
         assertThat(budget.get("repartition")).hasSize(1);
-        assertThat(lire(8, "?periode=2026-03").get("totalDepenses").asString()).isEqualTo("999.00");
+        // Le compte 3 appartient à user2 (client 2) dans l'import.
+        assertThat(lire(2, "?periode=2026-03").get("totalDepenses").asString()).isEqualTo("999.00");
     }
 
     private HttpResponse<String> definir(Long clientId, String corps) throws Exception {

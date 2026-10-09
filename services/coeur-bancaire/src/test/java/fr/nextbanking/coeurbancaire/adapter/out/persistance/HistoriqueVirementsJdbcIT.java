@@ -102,7 +102,8 @@ class HistoriqueVirementsJdbcIT {
         operation(3, "DEBIT", MAINTENANT);
 
         assertThat(historique.operationsDepuis(1, debut)).isEqualTo(2);
-        assertThat(historique.operationsDepuis(8, debut)).isEqualTo(1);
+        // Le compte 3 appartient à user2 (client 2) dans l'import.
+        assertThat(historique.operationsDepuis(2, debut)).isEqualTo(1);
         assertThat(historique.operationsDepuis(99, debut)).isZero();
     }
 

@@ -80,7 +80,7 @@ class EcheanceTransitionConcurrenteTest {
             jdbc.sql("delete from virements_programmes").update();
             jdbc.sql("delete from operations").update();
             jdbc.sql("delete from virements").update();
-            jdbc.sql("update comptes set solde = 2130.00 where id = 1").update();
+            jdbc.sql("update comptes set solde = 2450.00 where id = 1").update();
             jdbc.sql("""
                     insert into virements_programmes (id, client_id, compte_source_id, numero_beneficiaire,
                         libelle_beneficiaire, montant, frequence, motif, prochaine_execution, actif, nb_executions,
@@ -94,7 +94,7 @@ class EcheanceTransitionConcurrenteTest {
             assertThat(jdbc.sql("select count(*) from virements").query(Long.class).single()).isEqualTo(1);
             assertThat(jdbc.sql("select count(*) from operations").query(Long.class).single()).isEqualTo(2);
             assertThat(jdbc.sql("select solde from comptes where id = 1").query(BigDecimal.class).single())
-                    .isEqualByComparingTo("2030.00");
+                    .isEqualByComparingTo("2350.00");
             assertThat(jdbc.sql("select nb_executions from virements_programmes").query(Integer.class).single())
                     .isEqualTo(1);
         }

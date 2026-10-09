@@ -18,10 +18,11 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Données de référence : le fichier committé se charge dans une base migrée par Flyway (5 lignes DOCUMENTS du legacy,
- * projections des sept clients, des deux comptes de user1 et des opérations éventuelles de coeur-bancaire en version 1), et {@code
+ * projections des sept clients, des sept comptes et des 45 opérations de coeur-bancaire en version 1), et {@code
  * scripts/generer-projections-reference.sh} régénère le bloc des projections à l'identique depuis les
  * {@code reference-data.sql} d'identite-clients et de coeur-bancaire. Chaque test travaille dans un schéma neuf.
  */
+@Tag("NFR-PAR-04")
 class ReferenceDataIT {
 
     private static final Path FICHIER = Path.of("reference-data/reference-data.sql");
@@ -57,12 +58,12 @@ class ReferenceDataIT {
                     .isEqualTo(7);
             assertThat(entier(instruction, "select count(*) from clients where client_id = 1 and login = 'user1'"
                     + " and nom_complet = 'Jean Dupont' and role = 'CLIENT'")).isEqualTo(1);
-            assertThat(entier(instruction, "select count(*) from comptes where version_agregat = 1")).isEqualTo(2);
+            assertThat(entier(instruction, "select count(*) from comptes where version_agregat = 1")).isEqualTo(7);
             assertThat(entier(instruction, "select count(*) from comptes where compte_id = 1 and client_id = 1"
                     + " and numero = 'FR76-0001-0001' and type = 'COURANT' and iban = numero and bic = 'DEMOFR21XXX'"
-                    + " and solde = 2130.00")).isEqualTo(1);
+                    + " and solde = 2450.00")).isEqualTo(1);
             assertThat(entier(instruction, "select count(*) from comptes where compte_id = 2 and type = 'EPARGNE'"
-                    + " and solde = 15200.00")).isEqualTo(1);
+                    + " and solde = 15000.00")).isEqualTo(1);
         }
     }
 

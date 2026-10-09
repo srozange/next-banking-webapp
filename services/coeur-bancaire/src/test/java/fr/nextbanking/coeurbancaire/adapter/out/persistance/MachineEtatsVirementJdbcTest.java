@@ -82,7 +82,7 @@ class MachineEtatsVirementJdbcTest {
             }
         }
         assertThat(jdbc.sql("select solde from comptes where id = 1").query(String.class).single())
-                .isEqualTo("2130.00");
+                .isEqualTo("2450.00");
     }
 
     @Test

@@ -67,7 +67,7 @@ class ReceptionVirementATraiterIT {
                                        statut, soumis_le)
                 values (12, 1, 1, 2, 100.00, 'loyer', 'EXECUTE', 'SUCCESS', timestamptz '2026-11-17 09:00:00+00')""")
                 .update();
-        jdbc.sql("update comptes set solde = 2030.00 where id = 1").update();
+        jdbc.sql("update comptes set solde = 2350.00 where id = 1").update();
         UUID idEvenement = UUID.randomUUID();
         UUID idFin = UUID.randomUUID();
 
@@ -78,9 +78,9 @@ class ReceptionVirementATraiterIT {
         assertThat(traite(idEvenement)).isTrue();
         assertThat(jdbc.sql("select count(*) from evenements_traites").query(Long.class).single()).isEqualTo(2L);
         assertThat(jdbc.sql("select solde from comptes where id = 1").query(BigDecimal.class).single())
-                .isEqualByComparingTo("2030.00");
+                .isEqualByComparingTo("2350.00");
         assertThat(jdbc.sql("select solde from comptes where id = 2").query(BigDecimal.class).single())
-                .isEqualByComparingTo("15200.00");
+                .isEqualByComparingTo("15000.00");
         assertThat(jdbc.sql("select count(*) from outbox").query(Long.class).single()).isZero();
         assertThat(jdbc.sql("select count(*) from outbox_audit").query(Long.class).single()).isZero();
         assertThat(jdbc.sql("select count(*) from operations").query(Long.class).single()).isZero();

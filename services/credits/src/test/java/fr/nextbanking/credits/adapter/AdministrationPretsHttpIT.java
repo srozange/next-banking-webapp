@@ -186,8 +186,8 @@ class AdministrationPretsHttpIT {
         assertThat(lignes).hasSize(3);
         assertThat(lignes.get(0).get("id").asLong()).isEqualTo(enAttente);
         assertThat(lignes.get(1).get("statut").asString()).isEqualTo("EN_COURS");
-        assertThat(lignes.get(1).get("dateDebut").asString()).isEqualTo("2026-08-01");
-        assertThat(lignes.get(2).get("dateDebut").asString()).isEqualTo("2026-06-01");
+        assertThat(lignes.get(1).get("dateDebut").asString()).isEqualTo("2025-06-01");
+        assertThat(lignes.get(2).get("dateDebut").asString()).isEqualTo("2025-01-01");
         assertThat(lignes.get(1).get("nomClient").asString()).isEqualTo("Jean Dupont");
     }
 

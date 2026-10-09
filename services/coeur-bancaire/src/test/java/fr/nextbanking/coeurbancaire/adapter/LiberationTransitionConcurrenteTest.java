@@ -138,7 +138,7 @@ class LiberationTransitionConcurrenteTest {
             assertThat(jdbc.sql("select etat from virements where id = 12").query(String.class).single())
                     .isEqualTo("REJETE");
             assertThat(jdbc.sql("select solde from comptes where id = 1").query(String.class).single())
-                    .isEqualTo("2130.00");
+                    .isEqualTo("2450.00");
             assertThat(jdbc.sql("select count(*) from operations").query(Long.class).single()).isZero();
             assertThat(jdbc.sql("select count(*) from outbox").query(Long.class).single()).isZero();
             assertThat(jdbc.sql("select count(*) from outbox_audit where charge like '%ADMIN_TRANSFER_RELEASE%' "

@@ -104,8 +104,8 @@ class VirementIT {
         assertThat(corps.get("compteDestinataireId").asLong()).isEqualTo(2);
         assertThat(corps.get("montant").asString()).isEqualTo("100.00");
         assertThat(corps.get("motif").asString()).isEqualTo("loyer");
-        assertThat(solde(1)).isEqualByComparingTo("2030.00");
-        assertThat(solde(2)).isEqualByComparingTo("15300.00");
+        assertThat(solde(1)).isEqualByComparingTo("2350.00");
+        assertThat(solde(2)).isEqualByComparingTo("15100.00");
         List<Map<String, Object>> operations = jdbc.sql("""
                 select compte_id, type, montant, solde_apres, description from operations order by id""")
                 .query().listOfRows();
@@ -113,8 +113,8 @@ class VirementIT {
                 .containsExactly(
                         org.assertj.core.groups.Tuple.tuple(1L, "DEBIT", "Virement vers FR76-0001-0002 - loyer"),
                         org.assertj.core.groups.Tuple.tuple(2L, "CREDIT", "Virement depuis FR76-0001-0001 - loyer"));
-        assertThat((BigDecimal) operations.get(0).get("solde_apres")).isEqualByComparingTo("2030.00");
-        assertThat((BigDecimal) operations.get(1).get("solde_apres")).isEqualByComparingTo("15300.00");
+        assertThat((BigDecimal) operations.get(0).get("solde_apres")).isEqualByComparingTo("2350.00");
+        assertThat((BigDecimal) operations.get(1).get("solde_apres")).isEqualByComparingTo("15100.00");
         assertThat(jdbc.sql("select etat || '/' || statut from virements where id = :id").param("id", virementId)
                 .query(String.class).single()).isEqualTo("EXECUTE/SUCCESS");
         Map<String, Object> remise = jdbc.sql("""
@@ -132,7 +132,7 @@ class VirementIT {
         await().atMost(Duration.ofSeconds(30)).untilAsserted(() -> assertThat(jdbc.sql(
                 "select count(*) from evenements_traites where id_evenement = :id").param("id", remise.get("id_evenement"))
                 .query(Long.class).single()).isEqualTo(1L));
-        assertThat(solde(1)).isEqualByComparingTo("2030.00");
+        assertThat(solde(1)).isEqualByComparingTo("2350.00");
         // La remise, la décision, un événement par compte modifié et un par opération : une ligne chacun, la
         // notification n'étant écrite qu'à la décision.
         assertThat(count("outbox")).isEqualTo(6);
@@ -145,10 +145,10 @@ class VirementIT {
         JsonNode source = json.readTree(comptesModifies.get(0)).get("donnees");
         JsonNode destinataire = json.readTree(comptesModifies.get(1)).get("donnees");
         assertThat(source.get("compteId").asLong()).isEqualTo(1);
-        assertThat(source.get("solde").asString()).isEqualTo("2030.00");
+        assertThat(source.get("solde").asString()).isEqualTo("2350.00");
         assertThat(source.get("versionAgregat").asLong()).isEqualTo(2);
         assertThat(destinataire.get("compteId").asLong()).isEqualTo(2);
-        assertThat(destinataire.get("solde").asString()).isEqualTo("15300.00");
+        assertThat(destinataire.get("solde").asString()).isEqualTo("15100.00");
         assertThat(destinataire.get("versionAgregat").asLong()).isEqualTo(2);
         assertThat(jdbc.sql("select cle from outbox where topic = 'coeur-bancaire.compte-modifie.v1' order by id")
                 .query(String.class).list()).containsExactly("1", "2");
@@ -162,11 +162,11 @@ class VirementIT {
         assertThat(debit.get("compteId").asLong()).isEqualTo(1);
         assertThat(debit.get("type").asString()).isEqualTo("DEBIT");
         assertThat(debit.get("montant").asString()).isEqualTo("100.00");
-        assertThat(debit.get("soldeApres").asString()).isEqualTo("2030.00");
+        assertThat(debit.get("soldeApres").asString()).isEqualTo("2350.00");
         assertThat(debit.get("versionAgregat").asLong()).isEqualTo(source.get("versionAgregat").asLong());
         assertThat(credit.get("compteId").asLong()).isEqualTo(2);
         assertThat(credit.get("type").asString()).isEqualTo("CREDIT");
-        assertThat(credit.get("soldeApres").asString()).isEqualTo("15300.00");
+        assertThat(credit.get("soldeApres").asString()).isEqualTo("15100.00");
         assertThat(debit.get("operationId").asLong()).isNotEqualTo(credit.get("operationId").asLong());
         assertThat(jdbc.sql("select cle from outbox where topic = 'coeur-bancaire.operation-enregistree.v1' order by id")
                 .query(String.class).list()).containsExactly("1", "2");
@@ -183,7 +183,7 @@ class VirementIT {
         assertThat(reponse.statusCode()).isEqualTo(201);
         assertThat(json.readTree(reponse.body()).get("etat").asString()).isEqualTo("EXECUTE");
         assertThat(count("alertes_fraude")).isZero();
-        assertThat(solde(1)).isEqualByComparingTo("2030.00");
+        assertThat(solde(1)).isEqualByComparingTo("2350.00");
     }
 
     @Test
@@ -374,7 +374,7 @@ class VirementIT {
         assertThat(seconde.statusCode()).isEqualTo(201);
         assertThat(seconde.body()).isEqualTo(premiere.body());
         assertThat(count("virements")).isEqualTo(1);
-        assertThat(solde(1)).isEqualByComparingTo("2030.00");
+        assertThat(solde(1)).isEqualByComparingTo("2350.00");
         assertThat(count("operations")).isEqualTo(2);
         assertThat(count("outbox_audit")).isEqualTo(2);
     }
@@ -427,8 +427,8 @@ class VirementIT {
 
         assertThat(client.statusCode()).isEqualTo(200);
         assertThat(json.readTree(client.body())).isEqualTo(json.readTree("""
-                [{"id":1,"type":"COURANT","numero":"FR76-0001-0001","solde":"2130.00"},
-                {"id":2,"type":"EPARGNE","numero":"FR76-0001-0002","solde":"15200.00"}]"""));
+                [{"id":1,"type":"COURANT","numero":"FR76-0001-0001","solde":"2450.00"},
+                {"id":2,"type":"EPARGNE","numero":"FR76-0001-0002","solde":"15000.00"}]"""));
         assertThat(admin.body()).isEqualTo("[]");
         assertThat(conseiller.body()).isEqualTo("[]");
         assertThat(anonyme.statusCode()).isEqualTo(401);
@@ -451,8 +451,8 @@ class VirementIT {
     }
 
     private void aucuneEcriture() {
-        assertThat(solde(1)).isEqualByComparingTo("2130.00");
-        assertThat(solde(2)).isEqualByComparingTo("15200.00");
+        assertThat(solde(1)).isEqualByComparingTo("2450.00");
+        assertThat(solde(2)).isEqualByComparingTo("15000.00");
         assertThat(count("operations")).isZero();
         assertThat(count("virements")).isZero();
         assertThat(count("outbox")).isZero();

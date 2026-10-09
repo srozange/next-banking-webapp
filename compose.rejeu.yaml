@@ -1,9 +1,44 @@
-# Surcouche du rejeu du golden master : `docker compose -f compose.yaml -f compose.rejeu.yaml ...`.
-# Active le profil Spring `rejeu` des services qui en ont un ; complétée par la story « Socle du rejeu final ».
+# Surcouche du rejeu du golden master : `docker compose -f compose.yaml -f compose.rejeu.yaml ...` (make rejeu-up).
+# Profil Spring `rejeu` sur les 8 services (golden-master-architecture.md §5.3) :
+# - HORLOGE_DECALAGE (durée ISO-8601, PT<n>S) règle l'horloge métier de chaque service doté du port Horloge : un seul
+#   décalage, calculé par `make rejeu-up` depuis HORLOGE_DEPART, partagé par tous ; vide ou illisible, le service
+#   refuse de démarrer. L'audit n'a pas d'horloge métier et l'ignore.
+# - traitements planifiés métier désactivés (seul le relais de l'outbox reste actif), jeton de 60 minutes ;
+# - fournisseurs externes (AlphaVantage, Azure OpenAI, Powens) forcés sur leur adaptateur simulé, sans appel réseau.
+# TZ=Europe/Paris est posé sur chaque conteneur par compose.yaml.
 services:
+  identite-clients:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
+  coeur-bancaire:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
+  notifications:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
+  audit:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
+  credits:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
   bourse:
     environment:
       SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
+      NB_FOURNISSEURS_ALPHAVANTAGE_MODE: simule
   open-banking-conseiller:
     environment:
       SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}
+      NB_FOURNISSEURS_AZUREOPENAI_MODE: simule
+      NB_FOURNISSEURS_POWENS_MODE: simule
+  documents:
+    environment:
+      SPRING_PROFILES_ACTIVE: rejeu
+      HORLOGE_DECALAGE: ${HORLOGE_DECALAGE:-}

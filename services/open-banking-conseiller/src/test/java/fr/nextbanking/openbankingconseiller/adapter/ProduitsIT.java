@@ -102,7 +102,7 @@ class ProduitsIT {
         assertThat(etf.get("secteur").asString()).isEqualTo("Actions mondiales");
         assertThat(etf.get("niveauRisque").asInt()).isEqualTo(3);
         assertThat(etf.get("rendementAttendu").asString()).isEqualTo("0.0720");
-        assertThat(etf.get("id").asLong()).isEqualTo(9L);
+        assertThat(etf.get("id").asLong()).isEqualTo(10L);
         assertThat(etf.get("description").asString()).startsWith("Fonds indiciel mondial");
     }
 
@@ -142,7 +142,7 @@ class ProduitsIT {
     @Test
     @Tag("FR-011-02")
     void un_produit_desactive_n_apparait_dans_aucun_groupe() throws Exception {
-        jdbc.update("update bank_products set active = false where id in (2, 6, 9)");
+        jdbc.update("update bank_products set active = false where id in (1, 5, 10)");
 
         JsonNode corps = json.readTree(appeler(CHEMIN, "CLIENT").body());
 

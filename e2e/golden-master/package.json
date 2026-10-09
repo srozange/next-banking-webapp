@@ -1,0 +1,8 @@
+{
+  "name": "next-banking-golden-master",
+  "private": true,
+  "description": "Runner du golden master du legacy (tests générés par export-golden-master-tests.py) : Playwright Test.",
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

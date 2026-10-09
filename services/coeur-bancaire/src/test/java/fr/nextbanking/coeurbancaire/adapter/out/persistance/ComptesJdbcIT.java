@@ -59,9 +59,9 @@ class ComptesJdbcIT {
     @Test
     void le_debit_conditionnel_refuse_un_montant_superieur_au_solde_et_laisse_le_solde_intact() {
         assertThat(comptes.debiter(new CompteId(1), Montant.lire("9999.00"))).isFalse();
-        assertThat(solde(1)).isEqualByComparingTo("2130.00");
+        assertThat(solde(1)).isEqualByComparingTo("2450.00");
 
-        assertThat(comptes.debiter(new CompteId(1), Montant.lire("2130.00"))).isTrue();
+        assertThat(comptes.debiter(new CompteId(1), Montant.lire("2450.00"))).isTrue();
         assertThat(solde(1)).isEqualByComparingTo("0.00");
         assertThat(comptes.debiter(new CompteId(1), Montant.lire("0.01"))).isFalse();
         assertThat(solde(1)).isEqualByComparingTo("0.00");
@@ -77,7 +77,7 @@ class ComptesJdbcIT {
         assertThat(comptes.debiter(new CompteId(1), Montant.lire("10.00"))).isTrue();
         comptes.crediter(new CompteId(1), Montant.lire("5.00"));
         assertThat(comptes.etat(new CompteId(1)).versionAgregat()).isEqualTo(3L);
-        assertThat(comptes.etat(new CompteId(1)).compte().solde().texte()).isEqualTo("2125.00");
+        assertThat(comptes.etat(new CompteId(1)).compte().solde().texte()).isEqualTo("2445.00");
         assertThat(comptes.etat(new CompteId(2)).versionAgregat()).isEqualTo(1L);
     }
 
@@ -85,7 +85,7 @@ class ComptesJdbcIT {
     void le_credit_ajoute_au_solde() {
         comptes.crediter(new CompteId(2), Montant.lire("0.50"));
 
-        assertThat(solde(2)).isEqualByComparingTo("15200.50");
+        assertThat(solde(2)).isEqualByComparingTo("15000.50");
     }
 
     @Test
@@ -102,7 +102,7 @@ class ComptesJdbcIT {
         assertThat(comptes.trouver(1)).hasValueSatisfying(compte -> {
             assertThat(compte.numero()).isEqualTo("FR76-0001-0001");
             assertThat(compte.clientId()).isEqualTo(1L);
-            assertThat(compte.solde().texte()).isEqualTo("2130.00");
+            assertThat(compte.solde().texte()).isEqualTo("2450.00");
         });
         assertThat(comptes.trouver(999)).isEmpty();
     }

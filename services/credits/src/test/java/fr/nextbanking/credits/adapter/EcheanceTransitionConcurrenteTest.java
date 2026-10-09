@@ -73,12 +73,13 @@ class EcheanceTransitionConcurrenteTest {
     @Test
     @Tag("FR-007-12")
     void deux_paiements_concurrents_de_la_meme_echeance_n_ont_qu_un_effet() throws Exception {
-        var resultats = enParallele(() -> payerEcheance.payer(1L, 5L), () -> payerEcheance.payer(1L, 5L));
+        // Échéance 11 du prêt 1 : première échéance non payée de l'import (les 10 premières sont payées).
+        var resultats = enParallele(() -> payerEcheance.payer(1L, 11L), () -> payerEcheance.payer(1L, 11L));
 
         assertThat(resultats).allSatisfy(echeance -> assertThat(echeance.paye()).isTrue());
         assertThat(resultats.get(0).datePaiement()).isEqualTo(resultats.get(1).datePaiement());
         assertThat(jdbc.sql("select count(*) from loan_repayments where loan_id = 1 and not paye")
-                .query(Long.class).single()).isEqualTo(7L);
+                .query(Long.class).single()).isEqualTo(1L);
         assertThat(jdbc.sql("select status from loans where id = 1").query(String.class).single())
                 .isEqualTo("EN_COURS");
     }
@@ -87,8 +88,8 @@ class EcheanceTransitionConcurrenteTest {
     @Tag("FR-007-12")
     @Tag("FR-007-13")
     void deux_paiements_concurrents_des_deux_dernieres_echeances_laissent_le_pret_rembourse() throws Exception {
-        payerEcheance.payer(1L, 15L);
-        payerEcheance.payer(1L, 16L);
+        // Dans l'import, seule l'échéance 18 du prêt 2 reste due : l'échéance 17 redevient due pour le test.
+        jdbc.sql("update loan_repayments set paye = false, date_paiement = null where id = 17").update();
 
         enParallele(() -> payerEcheance.payer(1L, 17L), () -> payerEcheance.payer(1L, 18L));
 

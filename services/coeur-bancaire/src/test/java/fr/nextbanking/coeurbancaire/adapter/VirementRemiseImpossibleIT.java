@@ -79,9 +79,9 @@ class VirementRemiseImpossibleIT {
         assertThat(reponse.body()).isEqualTo(
                 "{\"message\":\"Le virement n'a pas pu etre pris en compte, veuillez reessayer plus tard\"}");
         assertThat(jdbc.sql("select solde from comptes where id = 1").query(java.math.BigDecimal.class).single())
-                .isEqualByComparingTo("2130.00");
+                .isEqualByComparingTo("2450.00");
         assertThat(jdbc.sql("select solde from comptes where id = 2").query(java.math.BigDecimal.class).single())
-                .isEqualByComparingTo("15200.00");
+                .isEqualByComparingTo("15000.00");
         assertThat(jdbc.sql("select count(*) from virements").query(Long.class).single()).isZero();
         assertThat(jdbc.sql("select count(*) from operations").query(Long.class).single()).isZero();
         List<Map<String, Object>> audit = jdbc.sql("select cle, charge from outbox_audit order by id")

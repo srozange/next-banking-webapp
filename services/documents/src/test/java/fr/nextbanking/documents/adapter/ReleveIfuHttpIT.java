@@ -48,33 +48,33 @@ class ReleveIfuHttpIT {
     @BeforeEach
     void donnees() {
         OutilsHttp.chargerDonnees(base);
-        OutilsHttp.insererCompte(base, 3, 2, "FR76-0002-0001", "COURANT", "500.00");
+        // Le compte 3 (COURANT de user2, client 2) vient des données de référence (import.sql du legacy).
         // Mars 2026 (heure de Paris, UTC+1 jusqu'au 29 mars puis UTC+2), avec les bords de mois.
-        OutilsHttp.insererOperation(base, 10, 1, "2026-03-15T10:00:00Z", "Loyer mars", "DEBIT", "100.00", "2030.00");
-        OutilsHttp.insererOperation(base, 11, 1, "2026-03-01T09:00:00Z", "Salaire mars", "CREDIT", "50.00", "2180.00");
-        OutilsHttp.insererOperation(base, 12, 1, "2026-03-31T21:59:59Z", "Dernier instant de mars", "DEBIT", "1.00",
+        OutilsHttp.insererOperation(base, 1010, 1, "2026-03-15T10:00:00Z", "Loyer mars", "DEBIT", "100.00", "2030.00");
+        OutilsHttp.insererOperation(base, 1011, 1, "2026-03-01T09:00:00Z", "Salaire mars", "CREDIT", "50.00", "2180.00");
+        OutilsHttp.insererOperation(base, 1012, 1, "2026-03-31T21:59:59Z", "Dernier instant de mars", "DEBIT", "1.00",
                 "2029.00");
-        OutilsHttp.insererOperation(base, 13, 1, "2026-03-31T22:30:00Z", "Bord de mois avril", "DEBIT", "2.00",
+        OutilsHttp.insererOperation(base, 1013, 1, "2026-03-31T22:30:00Z", "Bord de mois avril", "DEBIT", "2.00",
                 "2027.00");
-        OutilsHttp.insererOperation(base, 14, 1, "2026-04-10T10:00:00Z", "Operation avril", "CREDIT", "3.00",
+        OutilsHttp.insererOperation(base, 1014, 1, "2026-04-10T10:00:00Z", "Operation avril", "CREDIT", "3.00",
                 "2030.00");
-        OutilsHttp.insererOperation(base, 15, 1, "2026-02-28T22:59:59Z", "Dernier instant de fevrier", "CREDIT",
+        OutilsHttp.insererOperation(base, 1015, 1, "2026-02-28T22:59:59Z", "Dernier instant de fevrier", "CREDIT",
                 "4.00", "2000.00");
-        OutilsHttp.insererOperation(base, 16, 3, "2026-03-10T10:00:00Z", "Operation d autrui", "CREDIT", "9.00",
+        OutilsHttp.insererOperation(base, 1016, 3, "2026-03-10T10:00:00Z", "Operation d autrui", "CREDIT", "9.00",
                 "509.00");
         // IFU 2025 de user1 (comptes 1 et 2) : intérêts en 2025 uniquement, crédits seulement.
-        OutilsHttp.insererOperation(base, 20, 1, "2025-06-30T10:00:00Z", "Versement interet T2", "CREDIT", "10.00",
+        OutilsHttp.insererOperation(base, 1020, 1, "2025-06-30T10:00:00Z", "Versement interet T2", "CREDIT", "10.00",
                 "10.00");
-        OutilsHttp.insererOperation(base, 21, 2, "2025-12-31T22:30:00Z", "Versement interet annuel", "CREDIT", "2.35",
+        OutilsHttp.insererOperation(base, 1021, 2, "2025-12-31T22:30:00Z", "Versement interet annuel", "CREDIT", "2.35",
                 "12.35");
-        OutilsHttp.insererOperation(base, 22, 1, "2025-07-01T10:00:00Z", "Frais interet de dossier", "DEBIT", "50.00",
+        OutilsHttp.insererOperation(base, 1022, 1, "2025-07-01T10:00:00Z", "Frais interet de dossier", "DEBIT", "50.00",
                 "0.00");
-        OutilsHttp.insererOperation(base, 23, 1, "2025-08-01T10:00:00Z", "Salaire", "CREDIT", "1000.00", "1000.00");
-        OutilsHttp.insererOperation(base, 24, 1, "2024-12-31T22:59:59Z", "Versement interet 2024", "CREDIT", "7.00",
+        OutilsHttp.insererOperation(base, 1023, 1, "2025-08-01T10:00:00Z", "Salaire", "CREDIT", "1000.00", "1000.00");
+        OutilsHttp.insererOperation(base, 1024, 1, "2024-12-31T22:59:59Z", "Versement interet 2024", "CREDIT", "7.00",
                 "7.00");
-        OutilsHttp.insererOperation(base, 25, 1, "2026-01-01T00:00:00Z", "Versement interet 2026", "CREDIT", "8.00",
+        OutilsHttp.insererOperation(base, 1025, 1, "2026-01-01T00:00:00Z", "Versement interet 2026", "CREDIT", "8.00",
                 "8.00");
-        OutilsHttp.insererOperation(base, 26, 3, "2025-06-30T10:00:00Z", "Versement interet d autrui", "CREDIT",
+        OutilsHttp.insererOperation(base, 1026, 3, "2025-06-30T10:00:00Z", "Versement interet d autrui", "CREDIT",
                 "100.00", "100.00");
     }
 
@@ -111,7 +111,7 @@ class ReleveIfuHttpIT {
         assertThat(reponse.headers().firstValue("Cache-Control")).contains("no-cache, no-store, must-revalidate");
         String pdf = PdfTexte.extraire(reponse.body());
         assertThat(pdf).contains("Demo Bank — Releve de compte", "Compte FR76-0001-0001 (COURANT)",
-                "Titulaire Jean Dupont", "Periode Mars 2026", "Solde actuel 2130.00 EUR",
+                "Titulaire Jean Dupont", "Periode Mars 2026", "Solde actuel 2450.00 EUR",
                 "Date Description Type Montant Solde apres",
                 "01/03/2026 Salaire mars CREDIT +50.00 EUR 2180.00 EUR",
                 "15/03/2026 Loyer mars DEBIT -100.00 EUR 2030.00 EUR",

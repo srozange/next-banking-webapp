@@ -35,15 +35,15 @@ class WatchlistIT {
 
     private static final String CHEMIN = "/api/bourse/watchlist";
     private static final List<String> REFERENCE = List.of(
-            valeur(1, "AI.PA", "Air Liquide", "Euronext Paris", "EUR"),
-            valeur(2, "BNP.PA", "BNP Paribas", "Euronext Paris", "EUR"),
-            valeur(3, "MC.PA", "LVMH", "Euronext Paris", "EUR"),
+            valeur(5, "AI.PA", "Air Liquide", "Euronext Paris", "EUR"),
+            valeur(3, "BNP.PA", "BNP Paribas", "Euronext Paris", "EUR"),
+            valeur(2, "MC.PA", "LVMH", "Euronext Paris", "EUR"),
             valeur(4, "OR.PA", "L Oreal", "Euronext Paris", "EUR"),
-            valeur(5, "SAN.PA", "Sanofi", "Euronext Paris", "EUR"),
-            valeur(6, "TTE.PA", "TotalEnergies", "Euronext Paris", "EUR"),
+            valeur(6, "SAN.PA", "Sanofi", "Euronext Paris", "EUR"),
+            valeur(1, "TTE.PA", "TotalEnergies", "Euronext Paris", "EUR"),
             valeur(7, "AAPL", "Apple", "NASDAQ", "USD"),
-            valeur(8, "GOOGL", "Alphabet", "NASDAQ", "USD"),
-            valeur(9, "MSFT", "Microsoft", "NASDAQ", "USD"));
+            valeur(9, "GOOGL", "Alphabet", "NASDAQ", "USD"),
+            valeur(8, "MSFT", "Microsoft", "NASDAQ", "USD"));
     private static final String REQUETE_INVALIDE = "{\"message\":\"Requête invalide\"}";
 
     @DynamicPropertySource
@@ -177,7 +177,8 @@ class WatchlistIT {
     @Test
     @Tag("FR-009-13")
     void retire_une_valeur_sans_confirmation() throws Exception {
-        HttpResponse<String> reponse = Jetons.envoyer(port, "DELETE", CHEMIN + "/1", jeton, null);
+        // AI.PA, première de la liste triée, porte l'identifiant 5 de l'import du legacy.
+        HttpResponse<String> reponse = Jetons.envoyer(port, "DELETE", CHEMIN + "/5", jeton, null);
 
         assertThat(reponse.statusCode()).isEqualTo(204);
         assertThat(reponse.body()).isEmpty();

@@ -46,3 +46,30 @@ secrets:
 	echo "NB_JETON_CLE_PUBLIQUE=$$public" >> .env.tmp && \
 	mv .env.tmp .env && \
 	echo "NB_JETON_CLE_PRIVEE et NB_JETON_CLE_PUBLIQUE réécrites dans .env depuis .secrets/"
+
+# Remise à zéro des données de référence des 8 services (scripts/reset-reference-data.sh) : arrêt des conteneurs de
+# services, vidage des tables, topics Kafka recréés, chargement des reference-data.sql, séquences replacées, relance des
+# mêmes conteneurs (sans recréation : HORLOGE_DECALAGE est conservé). Idempotente.
+# Pile du rejeu du golden master (compose.yaml + compose.rejeu.yaml, profil rejeu sur les 8 services) : l'horloge métier
+# démarre à HORLOGE_DEPART (heure de Paris, 2026-11-17T10:00:00 par défaut) puis avance ; un seul décalage
+# HORLOGE_DECALAGE = HORLOGE_DEPART - maintenant, en secondes (PT<n>S, n peut être négatif), passé à tous les services.
+# Puis remise à zéro des données.
+# Rejeu complet ordonné du golden master (scripts/rejeu-golden-master.sh) ; RETRO_*_PASSWORD dans l'environnement.
+.PHONY: reset-data rejeu-up rejeu-golden-master
+
+HORLOGE_DEPART ?= 2026-11-17T10:00:00
+
+reset-data:
+	@scripts/reset-reference-data.sh
+
+rejeu-up:
+	@depart=$$(TZ=Europe/Paris date -d "$(HORLOGE_DEPART)" +%s) \
+	  || { echo "HORLOGE_DEPART illisible : $(HORLOGE_DEPART)" >&2; exit 1; }; \
+	maintenant=$$(date +%s); \
+	export HORLOGE_DECALAGE="PT$$((depart - maintenant))S"; \
+	echo "Horloge métier : départ $(HORLOGE_DEPART) (Europe/Paris), HORLOGE_DECALAGE=$$HORLOGE_DECALAGE"; \
+	docker compose -f compose.yaml -f compose.rejeu.yaml up -d --build --wait
+	@$(MAKE) --no-print-directory reset-data
+
+rejeu-golden-master:
+	@scripts/rejeu-golden-master.sh

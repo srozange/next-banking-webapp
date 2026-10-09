@@ -74,8 +74,8 @@ public class AssemblageVirement {
     }
 
     @Bean
-    ConsulterTableauDeBord consulterTableauDeBord(Comptes comptes, Operations operations) {
-        return new ConsulterTableauDeBordCasUsage(comptes, operations);
+    ConsulterTableauDeBord consulterTableauDeBord(Comptes comptes, Operations operations, Horloge horloge) {
+        return new ConsulterTableauDeBordCasUsage(comptes, operations, horloge);
     }
 
     @Bean

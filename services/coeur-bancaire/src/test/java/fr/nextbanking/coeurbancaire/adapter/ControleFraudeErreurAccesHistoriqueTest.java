@@ -104,7 +104,7 @@ class ControleFraudeErreurAccesHistoriqueTest {
         assertThat(jdbc.sql("select solde from comptes where id = 1").query(String.class).single())
                 .isEqualTo("100000.00");
         assertThat(jdbc.sql("select solde from comptes where id = 2").query(String.class).single())
-                .isEqualTo("15200.00");
+                .isEqualTo("15000.00");
         assertThat(count("operations")).isZero();
         assertThat(count("outbox")).isZero();
         assertThat(count("alertes_fraude")).isZero();

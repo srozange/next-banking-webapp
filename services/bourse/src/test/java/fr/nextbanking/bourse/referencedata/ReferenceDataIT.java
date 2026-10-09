@@ -20,10 +20,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
- * Données de référence : le fichier committé se charge dans une base migrée par Flyway (les 9 valeurs du legacy,
- * identifiants 1 à 9), et la séquence reprend après. Chaque test travaille dans un schéma neuf.
+ * Données de référence : le fichier committé se charge dans une base migrée par Flyway (les 9 valeurs de l'import.sql
+ * du legacy, avec ses identifiants : TTE.PA = 1 ... GOOGL = 9), et la séquence reprend après. Chaque test travaille dans un schéma neuf.
  */
 @Tag("FR-009-10")
+@Tag("NFR-PAR-04")
 class ReferenceDataIT {
 
     private static final Path FICHIER = Path.of("reference-data/reference-data.sql");
@@ -47,15 +48,15 @@ class ReferenceDataIT {
 
         assertThat(lignes).extracting(Ligne::id, Ligne::symbol, Ligne::name, Ligne::market, Ligne::currency)
                 .containsExactly(
-                        tuple(1L, "AI.PA", "Air Liquide", "Euronext Paris", "EUR"),
-                        tuple(2L, "BNP.PA", "BNP Paribas", "Euronext Paris", "EUR"),
-                        tuple(3L, "MC.PA", "LVMH", "Euronext Paris", "EUR"),
+                        tuple(1L, "TTE.PA", "TotalEnergies", "Euronext Paris", "EUR"),
+                        tuple(2L, "MC.PA", "LVMH", "Euronext Paris", "EUR"),
+                        tuple(3L, "BNP.PA", "BNP Paribas", "Euronext Paris", "EUR"),
                         tuple(4L, "OR.PA", "L Oreal", "Euronext Paris", "EUR"),
-                        tuple(5L, "SAN.PA", "Sanofi", "Euronext Paris", "EUR"),
-                        tuple(6L, "TTE.PA", "TotalEnergies", "Euronext Paris", "EUR"),
+                        tuple(5L, "AI.PA", "Air Liquide", "Euronext Paris", "EUR"),
+                        tuple(6L, "SAN.PA", "Sanofi", "Euronext Paris", "EUR"),
                         tuple(7L, "AAPL", "Apple", "NASDAQ", "USD"),
-                        tuple(8L, "GOOGL", "Alphabet", "NASDAQ", "USD"),
-                        tuple(9L, "MSFT", "Microsoft", "NASDAQ", "USD"));
+                        tuple(8L, "MSFT", "Microsoft", "NASDAQ", "USD"),
+                        tuple(9L, "GOOGL", "Alphabet", "NASDAQ", "USD"));
     }
 
     @Test

@@ -1,0 +1,3 @@
+-- Données de référence du service audit.
+-- AUDIT_LOGS : 0 ligne dans l'import.
+-- Hors migrations : chargé dans une base déjà migrée par Flyway (make reset-data), jamais en production.
