@@ -1,0 +1,1987 @@
+{
+  "meta": {
+    "snapshot_label": "after",
+    "commit": "cb1d144",
+    "date": "2026-10-10",
+    "model": "claude-opus-5-5",
+    "run_id": 1,
+    "project": {
+      "name": "next-banking-webapp",
+      "description": "Réécriture de l'application bancaire legacy : espace client, conseiller et administration (comptes, virements et virements programmés, fraude, bénéficiaires, budget, prêts, documents PDF, bourse, open banking Powens, assistant IA), en 8 microservices Java/Spring Boot hexagonaux reliés par Kafka (outbox) et un front React/TypeScript.",
+      "languages": [
+        "Java (64%)",
+        "TypeScript/React (36%)"
+      ],
+      "loc": 29699,
+      "files": 738,
+      "paradigm": "objet (back) / fonctionnel par composants et hooks (front)",
+      "frameworks": [
+        "Spring Boot 4",
+        "Spring Kafka",
+        "JDBC",
+        "Resilience4j",
+        "OpenPDF",
+        "React",
+        "Vite",
+        "Vitest"
+      ],
+      "deployment": "Conteneurs Docker (compose.yaml) : 8 services + front nginx + Kafka + PostgreSQL par service"
+    },
+    "n_runs": 3,
+    "sonar": {
+      "project_key": "next-banking-webapp",
+      "depth": "coverage",
+      "version": "26.7.0.124771",
+      "computed_criteria": [
+        "3.2",
+        "6.5",
+        "7.4"
+      ],
+      "stack": "mixed",
+      "tools": [
+        "sonarqube",
+        "dependency-check",
+        "trivy"
+      ],
+      "measures": {
+        "complexity": 4860.0,
+        "cognitive_complexity": 1929.0,
+        "functions": 2664.0,
+        "classes": 774.0,
+        "ncloc": 29699.0,
+        "code_smells": 371.0,
+        "bugs": 18.0,
+        "vulnerabilities": 1.0,
+        "sqale_index": 2491.0,
+        "duplicated_lines": 151.0,
+        "lines_to_cover": 9780.0,
+        "uncovered_lines": 77.0,
+        "duplicated_lines_density": 0.51,
+        "coverage": 99.2
+      },
+      "modules": [
+        {
+          "name": "coeur-bancaire",
+          "stack": "java-maven",
+          "ncloc": 6123,
+          "tools": [
+            "sonarqube",
+            "dependency-check"
+          ]
+        },
+        {
+          "name": "notifications",
+          "stack": "java-maven",
+          "ncloc": 1015,
+          "tools": [
+            "sonarqube"
+          ]
+        },
+        {
+          "name": "identite-clients",
+          "stack": "java-maven",
+          "ncloc": 1716,
+          "tools": [
+            "sonarqube"
+          ]
+        },
+        {
+          "name": "audit",
+          "stack": "java-maven",
+          "ncloc": 375,
+          "tools": [
+            "sonarqube"
+          ]
+        },
+        {
+          "name": "credits",
+          "stack": "java-maven",
+          "ncloc": 2517,
+          "tools": [
+            "sonarqube"
+          ]
+        },
+        {
+          "name": "bourse",
+          "stack": "java-maven",
+          "ncloc": 1162,
+          "tools": [
+            "sonarqube"
+          ]
+        },
+        {
+          "name": "open-banking-conseiller",
+          "stack": "java-maven",
+          "ncloc": 2156,
+          "tools": [
+            "sonarqube"
+          ]
+        },
+        {
+          "name": "documents",
+          "stack": "java-maven",
+          "ncloc": 1580,
+          "tools": [
+            "sonarqube"
+          ]
+        },
+        {
+          "name": "frontend",
+          "stack": "js-node",
+          "ncloc": 13055,
+          "tools": [
+            "sonarqube",
+            "trivy"
+          ]
+        }
+      ]
+    },
+    "deviations": {
+      "skill": "arch-eval ~/workspace/acn-fs/arch-eval @664546b (grille de 29 critères), exécuté depuis une copie avec 2 correctifs locaux : vitest --reporter=dot ; SONAR_SOURCES/SONAR_TESTS en chemins depuis la racine du dépôt",
+      "perimetre": "9 modules au lieu de 8 : service documents créé le 2026-10-09 (story 6.1)",
+      "dependency_check": "--disableCentral ; scan unique du classpath runtime des 8 services (120 jars), dépendances de test exclues ; Trivy sur le lockfile du front, base locale non mise à jour",
+      "vitest": "--reporter=dot au lieu de basic (reporter supprimé dans Vitest 4)",
+      "duplication": "3.2 = densité Sonar consolidée module par module (0,51 %) ; jscpd sur le code de production (min 10 lignes / 100 tokens) : 7,09 %, dont 11,8 % en Java, 80 clones sur 86 entre services (même configuration sur v0-demo : 6,17 %)",
+      "sast": "7.4 passe de 5 à 4 par une vulnérabilité mineure docker:S6471 (nginx en root dans frontend/Dockerfile) : fichier inchangé depuis le 2026-10-05 mais non analysé le 2026-10-06 — artefact de mesure, pas une régression",
+      "docker_socket": "DOCKER_SOCKET=1 (tests Testcontainers), autorisation de l'utilisateur reconduite"
+    }
+  },
+  "dimensions": [
+    {
+      "id": "1.1",
+      "source": "llm",
+      "source_book": "A Philosophy of Software Design (Ousterhout)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/port/in/",
+          "description": "Un port d'entrée par cas d'usage, souvent à une seule méthode, double chaque classe d'application sans abstraction supplémentaire.",
+          "severity": "low",
+          "suggested_refactoring": "Regrouper les ports d'entrée par agrégat (Virements, Revue) ou exposer directement les cas d'usage aux adaptateurs entrants."
+        },
+        {
+          "file": "frontend/src/application/virement.ts",
+          "description": "Cas d'usage front superficiels qui re-mappent un type quasi identique",
+          "severity": "low",
+          "suggested_refactoring": "Faire rendre directement le type métier par l'adaptateur ou fusionner ReponseVirement et ResultatVirement."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/port/in/",
+          "description": "Ports d'entrée 1:1 avec un seul implémenteur, cérémonie sans abstraction",
+          "severity": "low",
+          "suggested_refactoring": "Accepter l'idiome hexagonal mais regrouper les ports de consultation par agrégat."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/port/in/",
+          "description": "Ports d'entrée à implémentation unique, souvent très fins (classitis).",
+          "severity": "low",
+          "suggested_refactoring": "Réserver un port d'entrée aux cas où plusieurs adaptateurs entrants ou un découplage de test le justifient."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/ControleFraude.java",
+          "symbol": "ControleFraude.evaluer",
+          "observation": "Une fonction statique cache l'évaluation des huit signaux, le score cumulé et la décision ; interface minimale."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Montant.java",
+          "symbol": "Montant.lire",
+          "observation": "Objet-valeur profond : parse, échelle, précision et signe derrière lire/ajouter/soustraire."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/evenements/RelaisOutbox.java",
+          "symbol": "RelaisOutbox.relayer",
+          "observation": "Module superficiel : boucle de délégation vers EvenementsSortantsKafka."
+        },
+        {
+          "file": "frontend/src/adapters/session/fetchAuthentifie.ts",
+          "symbol": "creerFetchAuthentifie",
+          "observation": "Front : rend un `typeof fetch` (interface standard) qui cache jeton, en-têtes et règle du 401 ; module profond idiomatique."
+        }
+      ],
+      "rationale": "Noté 4 : back et front cachent des implémentations riches derrière des interfaces courtes (Virement, ControleFraude, Montant ; creerFetchAuthentifie, clients HTTP fabriqués par fonction). Pas 5 car le style hexagonal produit des modules passe-plat (un port d'entrée à une méthode par cas d'usage, RelaisOutbox qui ne fait que déléguer, Assemblage*) ; pas 3 car ces wrappers sont minoritaires face aux modules profonds.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "1.2",
+      "source": "llm",
+      "source_book": "A Philosophy of Software Design (Ousterhout)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/documents/src/main/java/fr/nextbanking/documents/adapter/out/pdf/GenerateurPdfOpenPdf.java",
+          "description": "BIC codé en dur alors que la projection CompteProjete le porte : la décision vit dans deux services.",
+          "severity": "low",
+          "suggested_refactoring": "Utiliser le BIC de la projection reçue par l'événement compte-modifie."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/evenements/RecepteurVirementATraiter.java",
+          "description": "Noms de topics recopiés en chaînes dans chaque producteur/consommateur au lieu d'une source unique.",
+          "severity": "low",
+          "suggested_refactoring": "Générer les constantes de topics depuis contrats/evenements ou les centraliser par service."
+        },
+        {
+          "file": "services/*/adapter/in/**/ConfigurationSecurite.java",
+          "description": "Configuration JWT et refus JSON dupliqués dans 8 services : un changement de politique touche 8 fichiers",
+          "severity": "medium",
+          "suggested_refactoring": "Extraire un module partagé (starter Spring interne) pour la chaîne de sécurité et la lecture des rôles."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/TextesVirement.java",
+          "description": "Libellés d'affichage mêlés aux règles du domaine",
+          "severity": "low",
+          "suggested_refactoring": "Déplacer les textes non métier dans un adaptateur de présentation."
+        },
+        {
+          "file": "services/*/ConfigurationSecurite.java",
+          "description": "Décision de vérification du jeton dupliquée dans 8 services.",
+          "severity": "medium",
+          "suggested_refactoring": "Extraire un module Maven partagé (starter de sécurité) ou générer la configuration depuis un gabarit unique."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/infrastructure/ConfigurationEvenements.java",
+          "symbol": "TOPIC_VIREMENT_A_TRAITER",
+          "observation": "Le nom du topic est une chaîne recopiée aussi dans RecepteurVirementATraiter.TOPIC."
+        },
+        {
+          "file": "services/documents/src/main/java/fr/nextbanking/documents/adapter/out/pdf/GenerateurPdfOpenPdf.java",
+          "symbol": "BIC",
+          "observation": "Constante \"DEMOFR21XXX\" dupliquée de coeur-bancaire EnveloppeCompteModifie.BIC alors que la projection reçoit déjà le BIC."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Iban.java",
+          "symbol": "Iban.toString",
+          "observation": "Le masquage est une décision confinée à l'objet-valeur."
+        },
+        {
+          "file": "frontend/src/adapters/http/ClientVirementHttp.ts",
+          "symbol": "CHEMIN_VIREMENTS / estCompte",
+          "observation": "Front : URL et forme JSON confinées à l'adaptateur HTTP ; l'application ne voit que des unions discriminées."
+        }
+      ],
+      "rationale": "Noté 4 : les décisions lourdes sont confinées (Kafka dans adapter.out.evenements, JDBC dans persistance, fournisseurs derrière ports, format JSON des montants dans Montant.texte ; chemins d'API seulement dans adapters/http côté front). Pas 5 car quelques connaissances sont dupliquées : noms de topics en chaînes dans producteur et consommateurs, BIC codé en dur dans deux services ; pas 3 car ces fuites restent ponctuelles.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "1.3",
+      "source": "llm",
+      "source_book": "A Philosophy of Software Design (Ousterhout)",
+      "applicable": true,
+      "score": 3,
+      "runs": [
+        3,
+        3,
+        3
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/*/adapter/in/http",
+          "description": "Configuration de sécurité, gestion d'erreurs, relais d'outbox et horloges dupliqués par service : amplification du changement transverse.",
+          "severity": "medium",
+          "suggested_refactoring": "Extraire une bibliothèque commune interne (starter Spring) pour sécurité, erreurs et outbox."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/port/out/EvenementsSortants.java",
+          "description": "Amplification du changement à l'ajout d'un événement",
+          "severity": "medium",
+          "suggested_refactoring": "Port générique consigner(EvenementSortant) avec sérialiseurs enregistrés par type."
+        },
+        {
+          "file": "frontend/src/adapters/routes/routes.tsx",
+          "description": "Liste Dependances de 22 clients à recopier à chaque écran",
+          "severity": "low",
+          "suggested_refactoring": "Regrouper les clients par contexte (objet par service)."
+        },
+        {
+          "file": "services/*",
+          "description": "Changements transverses recopiés service par service (sécurité, horloge, audit, IP).",
+          "severity": "medium",
+          "suggested_refactoring": "Mutualiser l'infrastructure transverse dans une bibliothèque interne versionnée."
+        },
+        {
+          "file": "frontend/src/adapters/textes.ts",
+          "description": "Fichier unique de textes, aimant à changements (Divergent Change).",
+          "severity": "low",
+          "suggested_refactoring": "Découper TEXTES par écran (un module de textes par dossier d'écran)."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/infrastructure/AssemblageVirement.java",
+          "symbol": "Assemblage*",
+          "observation": "Câblage manuel par cas d'usage : chaque nouveau cas d'usage demande un fichier d'assemblage en plus."
+        },
+        {
+          "file": "services/*/src/main/java/.../adapter/in/http/ConfigurationSecurite.java",
+          "symbol": "ConfigurationSecurite",
+          "observation": "Recopiée dans les 8 services : changer la politique de sécurité = 8 fichiers (jscpd : 80 clones sur 86 entre services)."
+        },
+        {
+          "file": "frontend/src/infrastructure/main.tsx",
+          "symbol": "creerRoutes({...})",
+          "observation": "Front : chaque nouveau client HTTP s'ajoute à la composition racine, aux routes et à l'écran."
+        },
+        {
+          "file": "frontend/src/adapters/textes.ts",
+          "symbol": "TEXTES",
+          "observation": "822 lignes de textes : tout nouvel écran y ajoute sa section."
+        }
+      ],
+      "rationale": "Noté 3 : le code se comprend localement (Javadoc d'intention, nommage métier), mais un changement courant est amplifié par la cérémonie hexagonale et multi-stack : un nouveau point d'API touche port in, cas d'usage, Assemblage, PointEntree, client HTTP front, application front, écran et textes.ts. Les réglages transverses (sécurité, gestion d'erreurs, outbox) sont recopiés dans 8 services. Pas 1 : les fichiers à toucher sont prévisibles et contrôlés par ArchUnit/dependency-cruiser.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "2.1",
+      "source": "llm",
+      "source_book": "Domain-Driven Design (Evans)",
+      "applicable": true,
+      "score": 5,
+      "runs": [
+        5,
+        5,
+        5
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/credits/src/main/java/fr/nextbanking/credits/application/port/out/PretRepository.java",
+          "description": "Terme technique « Repository » en rupture avec la convention Depot*/pluriel métier.",
+          "severity": "low",
+          "suggested_refactoring": "Renommer en Prets ou DepotPrets."
+        },
+        {
+          "file": "services/credits/src/main/java/fr/nextbanking/credits/application/port/out/PretRepository.java",
+          "description": "Nom technique anglais incohérent avec les autres ports",
+          "severity": "low",
+          "suggested_refactoring": "Renommer en Prets."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Virement.java",
+          "symbol": "Virement.suspendre / executerApresLiberation / heureButoirAtteinte",
+          "observation": "Méthodes nommées dans la langue du métier."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/ControleFraude.java",
+          "symbol": "TypeSignal.LARGE_AMOUNT…",
+          "observation": "Signaux en anglais repris du legacy (textes figés)."
+        },
+        {
+          "file": "frontend/src/domain/virementsProgrammes.ts",
+          "symbol": "FREQUENCES / RefusSaisie",
+          "observation": "Front : règles exprimées en termes métier."
+        },
+        {
+          "file": "services/credits/src/main/java/fr/nextbanking/credits/application/port/out/PretRepository.java",
+          "symbol": "PretRepository",
+          "observation": "Seul port nommé avec un terme technique anglais (ailleurs : Depot*)."
+        }
+      ],
+      "rationale": "Noté 5 : le vocabulaire métier français irrigue les deux couches (Virement, Echeance, Beneficiaire, Releve, Pret, Plafond ; executerVirement, chargerSuivi côté front) et un expert bancaire reconnaît les concepts. Les quelques termes techniques (Enveloppe, Assemblage, PretRepository) restent en périphérie ; les noms anglais des signaux viennent du legacy et sont figés volontairement.",
+      "confidence": "high",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "2.2",
+      "source": "llm",
+      "source_book": "Domain-Driven Design (Evans)",
+      "applicable": true,
+      "score": 5,
+      "runs": [
+        5,
+        5,
+        4
+      ],
+      "spread": 1,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/TextesVirement.java",
+          "description": "Textes d'affichage (libellés, motifs, descriptions d'alerte) dans le domaine : préoccupation de présentation mêlée au métier.",
+          "severity": "low",
+          "suggested_refactoring": "Isoler les gabarits de texte dans un adaptateur de rendu, le domaine ne produisant que des faits."
+        },
+        {
+          "file": "services/bourse/.../domain/GraphiqueCours.java",
+          "description": "Rendu graphique (présentation) dans le domaine.",
+          "severity": "low",
+          "suggested_refactoring": "Déplacer le rendu SVG dans un adaptateur sortant ; garder au domaine le calcul des points."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/TextesVirement.java",
+          "description": "Textes d'interface et de journal dans le domaine.",
+          "severity": "low",
+          "suggested_refactoring": "Garder au domaine les faits (motifs, causes) et formuler les textes dans les adaptateurs."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/test/java/fr/nextbanking/coeurbancaire/HexagonalArchitectureTest.java",
+          "symbol": "aucun_framework_dans_le_domaine_et_l_application",
+          "observation": "Règle ArchUnit : domaine et application limités à java.* et au code du service."
+        },
+        {
+          "file": "frontend/.dependency-cruiser.cjs",
+          "symbol": "domain-ne-depend-de-rien / hexagone-sans-paquet-npm",
+          "observation": "Front : domaine et application en TypeScript pur, vérifiés au build."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Virement.java",
+          "symbol": "record Virement",
+          "observation": "Agrégat Java pur, sans annotation ORM ni Spring."
+        },
+        {
+          "file": "frontend/src/domain/montant.ts",
+          "symbol": "centimesDepuisSaisie",
+          "observation": "Règle pure en centimes entiers, sans dépendance."
+        }
+      ],
+      "rationale": "Noté 5 : le domaine et l'application des 8 services n'importent que java.* (règle ArchUnit aucun_framework_dans_le_domaine_et_l_application), et côté front dependency-cruiser interdit tout paquet npm dans domain/application. La persistance JDBC, Kafka et Spring restent dans les adaptateurs. Écart mineur : des textes d'affichage (TextesVirement) logent dans le domaine, ce qui reste du métier et pas de l'infrastructure.",
+      "confidence": "high",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "2.3",
+      "source": "llm",
+      "source_book": "Domain-Driven Design (Evans)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        5
+      ],
+      "spread": 1,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/",
+          "description": "Le service coeur-bancaire (200 fichiers) mélange plusieurs sous-domaines (fraude, budget, bénéficiaires, portefeuille).",
+          "severity": "low",
+          "suggested_refactoring": "Délimiter des sous-modules internes (paquets par sous-domaine) avant d'envisager un découpage."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/",
+          "description": "coeur-bancaire porte plusieurs sous-domaines (budget, fraude, bénéficiaires)",
+          "severity": "low",
+          "suggested_refactoring": "Sous-paquets par sous-domaine dans domain/ et application/."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "contrats/evenements/",
+          "symbol": "*.v1.schema.json",
+          "observation": "Contrats publiés et versionnés entre contextes."
+        },
+        {
+          "file": "services/documents/src/main/java/fr/nextbanking/documents/domain/CompteProjete.java",
+          "symbol": "CompteProjete",
+          "observation": "Projection locale propre au contexte documents : modèle distinct, alimenté par événement."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/",
+          "symbol": "ConsulterBudgetCasUsage, ConsulterPortefeuilleCasUsage, GererPlafondsCasUsage",
+          "observation": "coeur-bancaire porte aussi budget, plafonds et portefeuille conseiller : contexte large."
+        },
+        {
+          "file": "frontend/src/domain/",
+          "symbol": "virement.ts, bourse.ts, pret.ts",
+          "observation": "Front : modules par fonctionnalité, sans modèle fourre-tout."
+        }
+      ],
+      "rationale": "Noté 4 : les 8 services ont chacun leur base, leurs projections locales alimentées par Kafka (ClientProjete, CompteProjete), des contrats d'événements versionnés et des enveloppes qui traduisent entre contextes. Pas 5 car coeur-bancaire agrège des sous-domaines distincts (virements, fraude, bénéficiaires, budget, plafonds, portefeuille conseiller, revue) dans un même modèle ; le front a un domaine unique par fonctionnalité, adapté à un SPA. Pas 3 : aucun modèle partagé entre services.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "3.1",
+      "source": "llm",
+      "source_book": "Refactoring (Fowler)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterEcheancesCasUsage.java",
+          "description": "12 collaborateurs injectés : la classe porte exécution, refus, audit, journal de batch et notification.",
+          "severity": "medium",
+          "suggested_refactoring": "Extraire l'écriture d'une échéance et la journalisation du batch dans des collaborateurs dédiés."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/bourse/EcranBourse.tsx",
+          "description": "Composant monolithique (watchlist, historique, formulaire d'ajout, focus).",
+          "severity": "medium",
+          "suggested_refactoring": "Extraire des hooks (useWatchlist, useHistorique) et des sous-composants."
+        },
+        {
+          "file": "services/*/adapter/in/**/ResolveurAdresseIp.java",
+          "description": "Copies divergentes d'une logique de sécurité",
+          "severity": "medium",
+          "suggested_refactoring": "Bibliothèque interne partagée ou contrat de test commun."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/bourse/EcranBourse.tsx",
+          "description": "Large Class version composant",
+          "severity": "medium",
+          "suggested_refactoring": "Extraire des hooks (useWatchlist, useHistorique, useFormulaireValeur)."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterEcheancesCasUsage.java",
+          "description": "Constructeurs à 9-11 dépendances dans les cas d'usage du virement.",
+          "severity": "medium",
+          "suggested_refactoring": "Regrouper les ports liés (audit+transaction, comptes+opérations) en collaborateurs cohésifs."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/bourse/EcranBourse.tsx",
+          "description": "Composant écran trop large.",
+          "severity": "medium",
+          "suggested_refactoring": "Extraire hooks (useHistorique, useFormulaireValeur) et sous-composants."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "(projet)",
+          "symbol": "Sonar complexity / sqale_index",
+          "observation": "Complexité cyclomatique moyenne 1,4 à 2,4 ; SQALE coeur-bancaire 462 min, front 966 min ; 32 smells CRITICAL dans coeur-bancaire."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterEcheancesCasUsage.java",
+          "symbol": "constructeur (12 dépendances)",
+          "observation": "Large Class / Long Parameter List au cœur des échéances."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterVirementCasUsage.java",
+          "symbol": "ExecuterVirementCasUsage(…9 paramètres)",
+          "observation": "Orchestration riche : idempotence, contrôle, outbox, audit."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/bourse/EcranBourse.tsx",
+          "symbol": "EcranBourse",
+          "observation": "452 lignes, 10 useState et 6 useRef : Large Class côté front."
+        }
+      ],
+      "rationale": "Noté 4 : Sonar mesure une complexité faible (cognitive 0,4 à 1,0 par fonction, dette 8 h sur coeur-bancaire, 16 h front ; 32 CRITICAL dans coeur-bancaire). Sémantiquement, les smells sont présents mais localisés : Large Class/Long Parameter List sur les gros cas d'usage (ExecuterEcheancesCasUsage, 12 collaborateurs), Shotgun Surgery transverse entre services, gros composants React (EcranBourse). Pas 5 car ces smells touchent le cœur des virements ; pas 3 car ils ne sont pas généralisés.",
+      "confidence": "medium",
+      "sources": [
+        "sonar",
+        "llm"
+      ]
+    },
+    {
+      "id": "3.2_duplication",
+      "source": "sonar",
+      "source_book": "Refactoring (Fowler)",
+      "applicable": true,
+      "score": 5,
+      "runs": [],
+      "spread": null,
+      "violations": [],
+      "evidence": [
+        {
+          "file": "(projet)",
+          "symbol": "duplicated_lines_density",
+          "observation": "0.3% de lignes dupliquées (Sonar)."
+        }
+      ],
+      "measure": {
+        "duplicated_lines_density": 0.51
+      },
+      "rationale": "Score calculé par seuils depuis la mesure Sonar/SCA (duplicated_lines_density=0.51). Voir references/criteres.md, § seuils.",
+      "confidence": "high",
+      "sources": [
+        "sonar"
+      ]
+    },
+    {
+      "id": "3.3",
+      "source": "llm",
+      "source_book": "Refactoring (Fowler)",
+      "applicable": true,
+      "score": 5,
+      "runs": [
+        5,
+        5,
+        5
+      ],
+      "spread": 0,
+      "violations": [],
+      "evidence": [
+        {
+          "file": "(projet)",
+          "symbol": "coverage",
+          "observation": "Couverture Sonar 99,2 % consolidée ; front 98,1 %."
+        },
+        {
+          "file": "services/coeur-bancaire/src/test/java/fr/nextbanking/coeurbancaire/domain/ControleFraudeScoreTest.java",
+          "symbol": "a_80_une_alerte_open_par_signal_leve_avec_son_score_et_sa_description",
+          "observation": "Assertions précises sur score, règles, statut et descriptions."
+        },
+        {
+          "file": "frontend/src/application/virement.test.ts",
+          "symbol": "executerVirement",
+          "observation": "Front : cas d'usage testés avec ports simulés, vérifie aussi l'absence d'appel."
+        },
+        {
+          "file": "scripts/gates/build.sh",
+          "symbol": "mvn verify / vitest --coverage",
+          "observation": "Filet exécuté par un script unique."
+        }
+      ],
+      "rationale": "Noté 5 : couverture mesurée 99,2 % (services 98,7 à 99,8 %, front 98,1 %), tests unitaires de domaine rapides et assertifs (AssertJ sur valeurs exactes), tests d'intégration Testcontainers, tests d'architecture des deux côtés. Aucun mutation score n'est fourni, d'où une confiance moyenne ; les assertions lues ciblent des comportements, pas la seule exécution.",
+      "confidence": "medium",
+      "sources": [
+        "sonar",
+        "llm"
+      ]
+    },
+    {
+      "id": "4.1",
+      "source": "llm",
+      "source_book": "Clean Code (Martin)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        5
+      ],
+      "spread": 1,
+      "violations": [
+        {
+          "file": "services/credits/src/main/java/fr/nextbanking/credits/application/port/out/PretRepository.java",
+          "description": "Convention de nommage des ports divergente.",
+          "severity": "low",
+          "suggested_refactoring": "Aligner sur Depot*/pluriel métier."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/",
+          "description": "Alias d'une lettre (T, C)",
+          "severity": "low",
+          "suggested_refactoring": "Nommer textes, colonnes."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Virement.java",
+          "symbol": "verifierEcheance / executerApresLiberation",
+          "observation": "Noms d'intention."
+        },
+        {
+          "file": "services/bourse/src/main/java/fr/nextbanking/bourse/adapter/out/persistance/DepotWatchlistJdbc.java",
+          "symbol": "DepotWatchlistJdbc",
+          "observation": "Mélange français/anglais."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/bourse/EcranBourse.tsx",
+          "symbol": "const T = TEXTES.bourse",
+          "observation": "Alias d'une lettre répété dans les écrans."
+        },
+        {
+          "file": "frontend/src/domain/montant.ts",
+          "symbol": "chaineDepuisCentimes",
+          "observation": "Nommage explicite côté front."
+        }
+      ],
+      "rationale": "Noté 4 : noms révélant l'intention dans les deux stacks (verifierComptes, heureButoirAtteinte, chargerSuivi, centimesDepuisSaisie). Pas 5 car les conventions ne sont pas parfaitement cohérentes : PretRepository face aux Depot*, mélange de termes anglais (Watchlist, StatePowens), alias cryptique `T` dans les écrans, variables `c` dans les tests ; pas 3 car ces zones sont marginales.",
+      "confidence": "high",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "4.2",
+      "source": "llm",
+      "source_book": "Clean Code (Martin)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterVirementCasUsage.java",
+          "description": "executer gère idempotence, transaction, trois types d'échec et publication.",
+          "severity": "low",
+          "suggested_refactoring": "Extraire la gestion des échecs de soumission dans une méthode ou une classe dédiée."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterVirementCasUsage.java",
+          "description": "ecrire mélange suspension et exécution",
+          "severity": "low",
+          "suggested_refactoring": "Extraire ecrireSuspension et ecrireExecution."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterVirementCasUsage.java",
+          "description": "Méthode ecrire à plusieurs niveaux d'abstraction.",
+          "severity": "low",
+          "suggested_refactoring": "Extraire suspendre(...) et executerEtConsigner(...)."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "(projet)",
+          "symbol": "cognitive_complexity",
+          "observation": "Moyenne 0,4 à 1,0 par fonction ; 5 fonctions signalées dans coeur-bancaire, 1 dans le front."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterVirementCasUsage.java",
+          "symbol": "executer / ecrire",
+          "observation": "Deux fonctions longues mêlant verrouillage, contrôle, persistance et outbox."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/bourse/EcranBourse.tsx",
+          "symbol": "EcranBourse",
+          "observation": "Fonction composant longue avec plusieurs effets et handlers internes."
+        },
+        {
+          "file": "frontend/src/application/virement.ts",
+          "symbol": "executerVirement",
+          "observation": "Fonction courte, un seul niveau d'abstraction."
+        }
+      ],
+      "rationale": "Noté 4 : la mesure Sonar est très bonne (complexité cognitive moyenne 0,4 à 1,0, 7 fonctions signalées sur ~2 700) et la plupart des fonctions sont courtes. Pas 5 car quelques fonctions orchestrent plusieurs niveaux d'abstraction (ExecuterVirementCasUsage.executer et ecrire, ~45 lignes avec quatre branches catch) et certains composants React concentrent état, effets et handlers ; pas 3 car ces cas sont identifiés et rares.",
+      "confidence": "medium",
+      "sources": [
+        "sonar",
+        "llm"
+      ]
+    },
+    {
+      "id": "4.3",
+      "source": "llm",
+      "source_book": "Clean Code (Martin)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        3,
+        4
+      ],
+      "spread": 1,
+      "violations": [
+        {
+          "file": "frontend/src/adapters/http/",
+          "description": "catch {} sans liaison répétés (82) : diagnostics perdus, double conversion adaptateur/application.",
+          "severity": "medium",
+          "suggested_refactoring": "Journaliser la cause côté adaptateur (ou la remonter typée) et retirer le second catch de l'application."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterVirementCasUsage.java",
+          "description": "java.util.logging dans l'application vs SLF4J dans les adaptateurs.",
+          "severity": "low",
+          "suggested_refactoring": "Uniformiser la façade de journalisation."
+        },
+        {
+          "file": "frontend/src/adapters/http/",
+          "description": "82 catch sans liaison, cause perdue, double capture adaptateur + application",
+          "severity": "medium",
+          "suggested_refactoring": "Capturer une seule fois à l'adaptateur, typer la cause et l'envoyer à un journal client."
+        },
+        {
+          "file": "frontend/src/application/",
+          "description": "Retours null signifiant une indisponibilité",
+          "severity": "low",
+          "suggested_refactoring": "Rendre une union discriminée explicite."
+        },
+        {
+          "file": "frontend/src/adapters/http/*",
+          "description": "catch sans liaison : la cause d'une panne n'est jamais conservée ni remontée.",
+          "severity": "medium",
+          "suggested_refactoring": "Lier l'erreur et la transmettre à un port de télémétrie ou la porter dans l'état 'technique'."
+        },
+        {
+          "file": "frontend/src/application/*.ts",
+          "description": "Retours null pour signaler l'indisponibilité.",
+          "severity": "low",
+          "suggested_refactoring": "Remplacer par une union discriminée explicite ({type:'indisponible'})."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/GestionErreurs.java",
+          "symbol": "GestionErreurs.autreErreur",
+          "observation": "Point central, 5xx journalisées, corps sans détail interne."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/ErreurVirement.java",
+          "symbol": "Cause",
+          "observation": "Codes d'erreur métier typés, pas de codes magiques."
+        },
+        {
+          "file": "frontend/src/adapters/http/ClientVirementHttp.ts",
+          "symbol": "lireComptes catch {}",
+          "observation": "Conversion en { statut: 'technique' } sans conserver la cause ; la couche application recatche."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/evenements/RecepteurVirementATraiter.java",
+          "symbol": "recevoir",
+          "observation": "json.readValue sans gestion d'un message illisible (repose sur le gestionnaire par défaut)."
+        }
+      ],
+      "rationale": "Noté 4 : côté Java la stratégie est cohérente (exceptions métier typées ErreurVirement.Cause, @RestControllerAdvice unique au format {message}, sans pile exposée) ; côté front les erreurs deviennent des unions discriminées ('technique', 'erreur'). Pas 5 : 82 `catch {}` sans liaison au front perdent la cause et sont doublés adaptateur + application ; JUL contre SLF4J ; JSON Kafka illisible sans traitement dédié. Pas 3 : aucun catch réellement silencieux.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "4.4",
+      "source": "llm",
+      "source_book": "The Pragmatic Programmer (Hunt & Thomas)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/evenements/EnveloppeCompteModifie.java",
+          "description": "BIC constant (« valeur du legacy ») qui marche par coïncidence d'une banque unique.",
+          "severity": "low",
+          "suggested_refactoring": "Porter le BIC dans le compte ou la configuration."
+        },
+        {
+          "file": "frontend/src/adapters/routes/routes.tsx",
+          "description": "Ternaire imbriqué sur le chemin",
+          "severity": "medium",
+          "suggested_refactoring": "Déclarer chaque route explicitement comme les autres."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/",
+          "description": "Comportements de focus et de chargement fondés sur des drapeaux et dépendances d'effet incomplètes.",
+          "severity": "low",
+          "suggested_refactoring": "Encapsuler dans des hooks dédiés à dépendances explicites."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/horloge/HorlogeReglee.java",
+          "symbol": "HorlogeReglee / HorlogeSysteme",
+          "observation": "Temps derrière un port, profil rejeu réversible."
+        },
+        {
+          "file": "services/bourse/src/main/java/fr/nextbanking/bourse/adapter/out/fournisseur/ConfigurationAlphaVantage.java",
+          "symbol": "cotations",
+          "observation": "Fournisseur réel ou simulé choisi par configuration."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/evenements/RelaisOutbox.java",
+          "symbol": "@Scheduled(fixedDelay = 1000)",
+          "observation": "Relais par instance, ordre garanti par l'arrêt à la première ligne en échec."
+        },
+        {
+          "file": "frontend/src/adapters/http/ClientVirementHttp.ts",
+          "symbol": "let cle",
+          "observation": "Front : état d'idempotence implicite dans la fermeture de l'adaptateur."
+        }
+      ],
+      "rationale": "Noté 4 : les décisions coûteuses sont derrière des ports réversibles (Horloge, Transaction, EvenementsSortants, Cotations/Powens réel ou simulé par propriété), et les choix non évidents sont expliqués. Pas 5 car quelques hypothèses implicites subsistent : BIC codé en dur valable seulement parce que la banque n'en a qu'un, relais d'outbox par instance sans coordination, clé d'idempotence cachée dans la fermeture du client HTTP front. Pas 3 : aucun ordre d'exécution fragile.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "4.5",
+      "source": "llm",
+      "source_book": "The Pragmatic Programmer (Hunt & Thomas)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "frontend/package.json",
+          "description": "Aucun linter dans le front (règles React hooks, imports) ; fenêtres cassées non détectées.",
+          "severity": "low",
+          "suggested_refactoring": "Ajouter ESLint (typescript-eslint, react-hooks) au script de build."
+        },
+        {
+          "file": "(projet)",
+          "description": "18 bugs Sonar tolérés.",
+          "severity": "low",
+          "suggested_refactoring": "Traiter les bugs Reliability ou les justifier."
+        },
+        {
+          "file": "(projet)",
+          "description": "18 bugs Sonar tolérés",
+          "severity": "medium",
+          "suggested_refactoring": "Traiter la rubrique Reliability avant la livraison."
+        },
+        {
+          "file": "(projet)",
+          "description": "18 bugs Sonar ouverts.",
+          "severity": "medium",
+          "suggested_refactoring": "Corriger les bugs et ajouter la quality gate Sonar à build.sh."
+        },
+        {
+          "file": "frontend/package.json",
+          "description": "Pas de linter dans la chaîne automatisée.",
+          "severity": "low",
+          "suggested_refactoring": "Ajouter ESLint (et Checkstyle/Spotless côté Java) à scripts/gates/build.sh."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "scripts/gates/build.sh",
+          "symbol": "build.sh",
+          "observation": "mvn verify + ArchitectureTest + depcruise + tsc + vitest --coverage."
+        },
+        {
+          "file": "(projet)",
+          "symbol": "bugs / dead_code",
+          "observation": "18 bugs Sonar non corrigés (dont 7 sur un module), 3 occurrences de code mort."
+        },
+        {
+          "file": "frontend/package.json",
+          "symbol": "scripts",
+          "observation": "Pas de script lint ni d'ESLint."
+        },
+        {
+          "file": "services/coeur-bancaire/Dockerfile",
+          "symbol": "MAVEN_SHA512",
+          "observation": "Construction reproductible et vérifiée."
+        }
+      ],
+      "rationale": "Noté 4 : build, tests, tests d'architecture, dependency-cruiser, couverture, mutation et CVE sont scriptés (scripts/gates/*), Dockerfiles reproductibles (versions figées, empreinte SHA de Maven), aucun TODO/FIXME et quasi pas de code mort (Sonar : 3 occurrences). Pas 5 : 18 bugs Sonar restent ouverts, aucun linter ESLint dans le front et aucun pipeline de CI versionné dans le dépôt ; pas 3 car l'automatisation couvre build, tests et déploiement compose.",
+      "confidence": "medium",
+      "sources": [
+        "sonar",
+        "llm"
+      ]
+    },
+    {
+      "id": "4.6",
+      "source": "llm",
+      "source_book": "The Software Craftsman (Mancuso)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/credits/src/test/java/fr/nextbanking/credits/adapter/DecisionPretKafkaIT.java",
+          "description": "Attentes par Thread.sleep dans des tests d'intégration.",
+          "severity": "low",
+          "suggested_refactoring": "Remplacer par Awaitility avec condition."
+        },
+        {
+          "file": "services/coeur-bancaire/src/test/java/fr/nextbanking/coeurbancaire/application/MemoireCoeurBancaire.java",
+          "description": "God fake partagé par tous les tests",
+          "severity": "low",
+          "suggested_refactoring": "Un faux par port ou par agrégat."
+        },
+        {
+          "file": "services/coeur-bancaire/src/test/.../MemoireCoeurBancaire.java",
+          "description": "Double « dieu » qui implémente tous les ports.",
+          "severity": "low",
+          "suggested_refactoring": "Découper en doubles par port et utiliser des builders nommés pour l'assemblage."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/test/java/fr/nextbanking/coeurbancaire/domain/ControleFraudeScoreTest.java",
+          "symbol": "exactement_80_declenche_les_alertes",
+          "observation": "Nommage par comportement, commentaires de calcul, tags d'exigence."
+        },
+        {
+          "file": "services/credits/src/test/java/fr/nextbanking/credits/adapter/DecisionPretKafkaIT.java",
+          "symbol": "Thread.sleep(1000)",
+          "observation": "Attente temporelle fragile."
+        },
+        {
+          "file": "frontend/src/application/virement.test.ts",
+          "symbol": "chargerComptes",
+          "observation": "Trois scénarios dans un même it, lignes longues."
+        },
+        {
+          "file": "frontend/src/adapters/test/rendreApplication.tsx",
+          "symbol": "rendreApplication",
+          "observation": "Front : harnais commun de rendu, évite les setups dupliqués."
+        }
+      ],
+      "rationale": "Noté 4 : les tests se lisent comme une spécification (noms de comportement, @Tag des exigences, aides ControleFraudeOutils et rendreApplication), des deux côtés, unitaires, Testcontainers et architecture. Pas 5 : quelques tests fragiles (Thread.sleep dans DecisionPretKafkaIT et HistoriqueVirementsJdbcIT) et des tests front qui empilent plusieurs cas dans un seul `it` sur des lignes très longues ; pas 3 car ni skip ni duplication massive constatés.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "4.7",
+      "source": "llm",
+      "source_book": "Clean Code (Martin)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Montant.java",
+          "description": "Commentaires qui répètent le nom de la méthode.",
+          "severity": "low",
+          "suggested_refactoring": "Supprimer les Javadoc purement paraphrastiques."
+        },
+        {
+          "file": "frontend/src/adapters/routes/routes.tsx",
+          "description": "Commentaire périmé",
+          "severity": "low",
+          "suggested_refactoring": "Mettre à jour ou supprimer."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/ExecuterVirementCasUsage.java",
+          "symbol": "Javadoc de classe",
+          "observation": "Explique transactions, outbox, audit indépendant et bug legacy corrigé."
+        },
+        {
+          "file": "services/bourse/src/main/java/fr/nextbanking/bourse/adapter/out/fournisseur/AlphaVantageCotations.java",
+          "symbol": "catch (Exception erreur)",
+          "observation": "Commentaire de piège : le message peut porter la clé."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Montant.java",
+          "symbol": "ajouter",
+          "observation": "Commentaire paraphrase."
+        },
+        {
+          "file": "frontend/src/adapters/session/fetchAuthentifie.ts",
+          "symbol": "creerFetchAuthentifie",
+          "observation": "Front : commentaire de contrat (règle unique du 401)."
+        }
+      ],
+      "rationale": "Noté 4 : la Javadoc et les commentaires TS expliquent surtout le pourquoi (ordre des contrôles FR-003-07, BUG-073, compromis d'outbox, décision B5, pourquoi la clé n'est pas journalisée). Pas 5 car les commentaires ne sont pas « rares » : presque chaque méthode porte un commentaire, dont des paraphrases (« Somme de deux montants. », « Vrai si ce montant atteint ou dépasse le seuil. ») ; pas 3 car aucun commentaire périmé ou mensonger n'a été relevé.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "5.1",
+      "source": "llm",
+      "source_book": "Clean Architecture / SOLID (Martin)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/TextesVirement.java",
+          "description": "Rédaction des textes et règles métier dans le même module.",
+          "severity": "low",
+          "suggested_refactoring": "Séparer les gabarits de texte des règles."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/",
+          "description": "Écrans multi-responsabilités",
+          "severity": "low",
+          "suggested_refactoring": "Hooks dédiés par section."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/PointEntreeVirements.java",
+          "description": "Contrôleur à responsabilités multiples.",
+          "severity": "low",
+          "suggested_refactoring": "Séparer en PointEntreeComptes et PointEntreeTableauDeBord."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/TextesVirement.java",
+          "symbol": "TextesVirement",
+          "observation": "283 lignes de libellés et motifs dans le domaine : deux raisons de changer (règles, rédaction)."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/",
+          "symbol": "*CasUsage",
+          "observation": "Un cas d'usage par intention."
+        },
+        {
+          "file": "frontend/src/adapters/ecrans/virementsProgrammes/EcranVirementsProgrammes.tsx",
+          "symbol": "EcranVirementsProgrammes",
+          "observation": "337 lignes : état, orchestration et rendu."
+        },
+        {
+          "file": "frontend/src/adapters/ui/",
+          "symbol": "BoutonPrimaire, Tableau, Modale",
+          "observation": "Composants de présentation à responsabilité unique."
+        }
+      ],
+      "rationale": "Noté 4 : un cas d'usage par intention métier dans les deux stacks, adaptateurs fins, composants UI génériques séparés des écrans. Pas 5 car quelques modules servent plusieurs acteurs : TextesVirement (métier + rédaction des messages), écrans React qui portent état, orchestration et rendu, ExecuterEcheancesCasUsage qui mêle exécution, journal de batch et notification ; pas 3 car aucun God object.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "5.2",
+      "source": "llm",
+      "source_book": "Clean Architecture / SOLID (Martin)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/port/out/EvenementsSortants.java",
+          "description": "Port modifié à chaque nouvel événement",
+          "severity": "medium",
+          "suggested_refactoring": "Interface scellée EvenementSortant et sérialiseur par type."
+        },
+        {
+          "file": "services/documents/.../TelechargerDocumentCasUsage.java",
+          "description": "Switch répété sur TypeDocument.",
+          "severity": "low",
+          "suggested_refactoring": "Porter les données et paramètres de chaque document dans une stratégie par TypeDocument."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/documents/src/main/java/fr/nextbanking/documents/application/TelechargerDocumentCasUsage.java",
+          "symbol": "telecharger / parametres",
+          "observation": "Deux switch sur TypeDocument à modifier pour un nouveau type."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/horloge/HorlogeReglee.java",
+          "symbol": "@Profile(\"rejeu\")",
+          "observation": "Variation par nouvelle implémentation de port."
+        },
+        {
+          "file": "frontend/src/application/virement.ts",
+          "symbol": "switch (reponse.statut)",
+          "observation": "Front : switch exhaustif sur union discriminée, idiome TS."
+        }
+      ],
+      "rationale": "Noté 4 : les variations passent par des implémentations de ports (Horloge système/réglée, fournisseurs réels/simulés choisis par configuration) sans modifier l'existant ; aucune hiérarchie d'héritage fragile. Pas 5 car l'ajout d'un type de document ou d'un signal impose de modifier des switch (TelechargerDocumentCasUsage : deux switch sur TypeDocument) et, côté front, des switch sur les unions ; ces switch sont exhaustifs (sécurisés par le compilateur), donc pas 3.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "5.3",
+      "source": "llm",
+      "source_book": "Clean Architecture / SOLID (Martin)",
+      "applicable": false,
+      "not_applicable_reason": "exclu -- couvert par outillage deterministe",
+      "score": null,
+      "runs": [],
+      "spread": null,
+      "violations": [],
+      "evidence": [],
+      "rationale": "",
+      "confidence": "high",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "5.4",
+      "source": "llm",
+      "source_book": "Clean Architecture / SOLID (Martin)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        5
+      ],
+      "spread": 1,
+      "violations": [
+        {
+          "file": "services/*/adapter/in",
+          "description": "Sous-paquets d'adaptateurs et emplacement des exceptions non uniformes entre services.",
+          "severity": "low",
+          "suggested_refactoring": "Aligner tous les services sur adapter.in.http / adapter.in.evenements et une règle unique pour les exceptions."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/",
+          "description": "Organisation des adaptateurs entrants divergente entre services",
+          "severity": "low",
+          "suggested_refactoring": "Aligner sur adapter/in/http et adapter/in/evenements."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/test/java/fr/nextbanking/coeurbancaire/HexagonalArchitectureTest.java",
+          "symbol": "onionArchitecture()",
+          "observation": "Style vérifié automatiquement."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/PointEntreeVirements.java",
+          "symbol": "paquet adapter.in",
+          "observation": "À plat, alors que credits/documents utilisent adapter.in.http."
+        },
+        {
+          "file": "services/notifications/src/main/java/fr/nextbanking/notifications/adapter/in/RecepteurVirementDecide.java",
+          "symbol": "paquet adapter.in",
+          "observation": "Récepteur Kafka hors de adapter.in.evenements."
+        },
+        {
+          "file": "frontend/.dependency-cruiser.cjs",
+          "symbol": "application-ne-depend-pas-des-adaptateurs",
+          "observation": "Front : même style hexagonal, enforcé."
+        }
+      ],
+      "rationale": "Noté 4 : l'hexagone se lit dans l'arborescence des deux stacks (domain/application/adapter/infrastructure, ports in/out ; domain/application/adapters/infrastructure côté front), enforcé par ArchUnit et dependency-cruiser. Pas 5 car l'organisation interne varie d'un service à l'autre : adapter/in à plat dans coeur-bancaire contre adapter/in/http ailleurs, récepteurs Kafka à la racine d'adapter/in (notifications), exceptions tantôt domain tantôt application. Pas 3 : aucune couche court-circuitée.",
+      "confidence": "high",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "6.1",
+      "source": "llm",
+      "source_book": "The Twelve-Factor App",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/*/src/main/resources/application.properties",
+          "description": "Endpoints d'infrastructure codés dans le fichier de configuration embarqué.",
+          "severity": "low",
+          "suggested_refactoring": "Les fournir par variables d'environnement dans compose et ne garder que des défauts locaux."
+        },
+        {
+          "file": "services/*/src/main/resources/application.properties",
+          "description": "Hôtes d'infrastructure fixés dans le fichier",
+          "severity": "low",
+          "suggested_refactoring": "Lire des variables d'environnement avec valeur par défaut documentée."
+        },
+        {
+          "file": "services/*/src/main/resources/application.properties",
+          "description": "Endpoints d'infrastructure par défaut dans le code.",
+          "severity": "low",
+          "suggested_refactoring": "Ne garder que des placeholders ${...} sans défaut et fournir les valeurs par compose/.env."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/ConfigurationSecurite.java",
+          "symbol": "lireClePublique",
+          "observation": "Clé publique obligatoire via NB_JETON_CLE_PUBLIQUE, sinon échec au démarrage."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/resources/application.properties",
+          "symbol": "spring.datasource.url",
+          "observation": "URL JDBC et bootstrap Kafka écrits en dur (surchargeables par l'environnement)."
+        },
+        {
+          "file": "compose.yaml",
+          "symbol": "POSTGRES_PASSWORD: ${...:-}",
+          "observation": "Mots de passe injectés, sans valeur par défaut."
+        },
+        {
+          "file": "frontend/src/adapters/http/ClientVirementHttp.ts",
+          "symbol": "CHEMIN_VIREMENTS",
+          "observation": "Front : chemins relatifs, aucune URL ni clé dans le bundle."
+        }
+      ],
+      "rationale": "Noté 4 : secrets et clés uniquement par variables d'environnement (refus de démarrer sans clé publique ni mot de passe), fournisseurs réel/simulé par propriété, compose identique en dev et en rejeu ; front sans clé ni URL absolue (chemins relatifs proxifiés par nginx). Pas 5 car des URL d'infrastructure (jdbc postgres-coeur-bancaire, kafka:9092, collecteur OTLP) sont commitées dans application.properties comme valeurs par défaut ; pas 3 : aucun secret en dur ni branche par environnement.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "6.2",
+      "source": "llm",
+      "source_book": "The Twelve-Factor App",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/planification/PlanificationEcheances.java",
+          "description": "Batch planifié sans verrou inter-instances : la mise à l'échelle horizontale repose sur les mises à jour conditionnelles.",
+          "severity": "low",
+          "suggested_refactoring": "Ajouter un verrou de planification (ShedLock ou verrou consultatif PostgreSQL)."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/evenements/RelaisOutbox.java",
+          "description": "Relais concurrents à plusieurs instances",
+          "severity": "low",
+          "suggested_refactoring": "Verrou (SELECT ... FOR UPDATE SKIP LOCKED) ou ShedLock."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/evenements/RelaisOutbox.java",
+          "description": "Relais d'outbox concurrents en multi-instance.",
+          "severity": "low",
+          "suggested_refactoring": "Verrou applicatif (SELECT … FOR UPDATE SKIP LOCKED) ou ShedLock."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/ConfigurationSecurite.java",
+          "symbol": "sessionCreationPolicy(STATELESS)",
+          "observation": "Aucune session serveur."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/planification/PlanificationEcheances.java",
+          "symbol": "@Scheduled(cron)",
+          "observation": "Lot exécuté sur chaque instance, sans verrou de planification."
+        },
+        {
+          "file": "frontend/src/adapters/stockage/StockageJetonLocal.ts",
+          "symbol": "creerStockageJetonLocal",
+          "observation": "Jeton persisté en localStorage, supprimé au 401 (fetchAuthentifie)."
+        },
+        {
+          "file": "services/bourse/src/main/java/fr/nextbanking/bourse/adapter/out/fournisseur/AlphaVantageCotations.java",
+          "symbol": "cache Caffeine",
+          "observation": "Cache local non critique."
+        }
+      ],
+      "rationale": "Noté 4 : les services sont sans état (SessionCreationPolicy.STATELESS, jeton porteur), l'idempotence et l'outbox sont en base, consommateurs idempotents. Front (JWT en localStorage, exception activée) : état borné par l'expiration, purgé au 401, l'appli repart sans lui. Pas 5 : planificateurs @Scheduled par instance (échéances, relais d'outbox) sans coordination explicite, cache Caffeine local (non critique) ; pas 3 car rien de critique n'est perdu à la mort d'une instance.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "6.3",
+      "source": "llm",
+      "source_book": "Release It! (Nygard)",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "frontend/src/adapters/session/fetchAuthentifie.ts",
+          "description": "Appels réseau du navigateur sans délai d'attente.",
+          "severity": "medium",
+          "suggested_refactoring": "Ajouter AbortSignal.timeout() dans fetchAuthentifie, point unique de tous les appels."
+        },
+        {
+          "file": "frontend/src/adapters/session/fetchAuthentifie.ts",
+          "description": "Appels navigateur sans timeout",
+          "severity": "medium",
+          "suggested_refactoring": "AbortSignal.timeout() centralisé dans fetchAuthentifie."
+        },
+        {
+          "file": "frontend/src/adapters/session/fetchAuthentifie.ts",
+          "description": "Appels navigateur sans timeout.",
+          "severity": "medium",
+          "suggested_refactoring": "Ajouter AbortSignal.timeout(...) dans fetchAuthentifie et le client de connexion."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/bourse/src/main/java/fr/nextbanking/bourse/adapter/out/fournisseur/AlphaVantageCotations.java",
+          "symbol": "coupeCircuit.executeCallable",
+          "observation": "Coupe-circuit + cache + liste vide en dégradation."
+        },
+        {
+          "file": "services/bourse/src/main/java/fr/nextbanking/bourse/adapter/out/fournisseur/ConfigurationAlphaVantage.java",
+          "symbol": "connectTimeout / setReadTimeout",
+          "observation": "Délais sur connexion et lecture."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/out/evenements/EvenementsSortantsKafka.java",
+          "symbol": "get(DELAI_ENVOI_SECONDES)",
+          "observation": "Envoi Kafka borné."
+        },
+        {
+          "file": "frontend/src/adapters/session/fetchAuthentifie.ts",
+          "symbol": "creerFetchAuthentifie",
+          "observation": "Front : aucun timeout ni AbortSignal sur les appels."
+        }
+      ],
+      "rationale": "Noté 4 : côté back, les fournisseurs externes ont timeout de connexion et de lecture, coupe-circuit Resilience4j et cache avec dégradation en liste vide ; l'envoi Kafka est borné (get 5 s, max.block.ms) et l'outbox découple les services. Pas 5 : côté front, aucun appel fetch n'a de délai (aucun AbortSignal), une API lente laisse l'écran en attente indéfinie ; pas 3 car les dépendances critiques back sont protégées contre la cascade.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "6.4",
+      "source": "llm",
+      "source_book": "The Twelve-Factor App",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/*/src/main/resources/application.properties",
+          "description": "Logs non structurés.",
+          "severity": "low",
+          "suggested_refactoring": "Activer logging.structured.format.console=ecs (Spring Boot)."
+        },
+        {
+          "file": "services/*/src/main/resources/application.properties",
+          "description": "Logs texte non structurés",
+          "severity": "low",
+          "suggested_refactoring": "logging.structured.format.console=ecs."
+        },
+        {
+          "file": "services/*",
+          "description": "Journaux texte non structurés.",
+          "severity": "low",
+          "suggested_refactoring": "Activer la journalisation structurée JSON de Spring Boot (logging.structured.format.console)."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/resources/application.properties",
+          "symbol": "logging.pattern.correlation",
+          "observation": "traceId/spanId dans le motif texte."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/resources/application.properties",
+          "symbol": "management.opentelemetry.tracing.export.otlp.endpoint",
+          "observation": "Export des traces vers le collecteur."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/EnrichissementTrace.java",
+          "symbol": "EnrichissementTrace.issue",
+          "observation": "Issue métier ajoutée à la trace."
+        },
+        {
+          "file": "frontend/src/application/virement.ts",
+          "symbol": "{ type: 'refuse'; reference }",
+          "observation": "Front : référence de trace remontée à l'utilisateur."
+        }
+      ],
+      "rationale": "Noté 4 : santé exposée (/actuator/health, healthchecks compose), traces OpenTelemetry exportées en OTLP avec observation Kafka, traceId/spanId injectés dans chaque ligne de log, journaux sur stdout. Pas 5 car les logs restent du texte non structuré (motif de corrélation, pas de JSON) ; pas 3 car la corrélation existe. Front : pas de télémétrie, critère évalué côté services (le front n'a qu'une référence de trace affichée au refus de contrôle).",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "6.5_supply_chain_security",
+      "source": "dependency-check",
+      "source_book": "OWASP / supply chain security",
+      "applicable": true,
+      "score": 4,
+      "runs": [],
+      "spread": null,
+      "violations": [],
+      "evidence": [
+        {
+          "file": "(dépendances)",
+          "symbol": "OWASP dependency-check",
+          "observation": "CVE par sévérité — critique: 0, haute: 0, moyenne: 16, basse: 0."
+        },
+        {
+          "file": "(dépendances)",
+          "symbol": "kafka-clients-4.2.1.jar",
+          "observation": "MEDIUM — CVE-2026-41115"
+        },
+        {
+          "file": "(dépendances)",
+          "symbol": "opentelemetry-api-1.62.0.jar",
+          "observation": "MEDIUM — CVE-2026-54285"
+        },
+        {
+          "file": "(dépendances)",
+          "symbol": "opentelemetry-common-1.62.0.jar",
+          "observation": "MEDIUM — CVE-2026-54285"
+        }
+      ],
+      "measure": {
+        "cve_critical": 0,
+        "cve_high": 0,
+        "cve_medium": 16,
+        "cve_low": 0,
+        "top_deps": [
+          {
+            "dep": "kafka-clients-4.2.1.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-41115"
+          },
+          {
+            "dep": "opentelemetry-api-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          }
+        ],
+        "all_deps": [
+          {
+            "dep": "kafka-clients-4.2.1.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-41115"
+          },
+          {
+            "dep": "opentelemetry-api-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-context-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-otlp-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-otlp-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-exporter-sender-okhttp-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-extension-trace-propagators-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-proto-1.10.0-alpha.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-common-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-extension-autoconfigure-spi-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-logs-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-metrics-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          },
+          {
+            "dep": "opentelemetry-sdk-trace-1.62.0.jar",
+            "severity": "MEDIUM",
+            "cve": "CVE-2026-54285"
+          }
+        ],
+        "by_module": [
+          {
+            "module": "coeur-bancaire",
+            "stack": "java-maven",
+            "tool": "dependency-check",
+            "cve_critical": 0,
+            "cve_high": 0,
+            "cve_medium": 16,
+            "cve_low": 0,
+            "top_deps": [
+              {
+                "dep": "kafka-clients-4.2.1.jar",
+                "severity": "MEDIUM",
+                "cve": "CVE-2026-41115"
+              },
+              {
+                "dep": "opentelemetry-api-1.62.0.jar",
+                "severity": "MEDIUM",
+                "cve": "CVE-2026-54285"
+              },
+              {
+                "dep": "opentelemetry-common-1.62.0.jar",
+                "severity": "MEDIUM",
+                "cve": "CVE-2026-54285"
+              }
+            ]
+          },
+          {
+            "module": "frontend",
+            "stack": "js-node",
+            "tool": "trivy",
+            "cve_critical": 0,
+            "cve_high": 0,
+            "cve_medium": 0,
+            "cve_low": 0
+          }
+        ]
+      },
+      "rationale": "0 CVE critique(s), 0 haute(s), 16 moyenne(s). Dépendances les plus critiques : kafka-clients-4.2.1.jar (MEDIUM — CVE-2026-41115) ; opentelemetry-api-1.62.0.jar (MEDIUM — CVE-2026-54285) ; opentelemetry-common-1.62.0.jar (MEDIUM — CVE-2026-54285).",
+      "confidence": "high",
+      "sources": [
+        "dependency-check",
+        "trivy"
+      ]
+    },
+    {
+      "id": "7.1",
+      "source": "llm",
+      "source_book": "Secure by Design / OWASP ASVS",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/documents/src/main/java/fr/nextbanking/documents/application/TelechargerDocumentCasUsage.java",
+          "description": "Paramètres de requête validés par parsing manuel dans l'application.",
+          "severity": "low",
+          "suggested_refactoring": "Introduire des primitives (Periode, CompteId) construites à la frontière."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/evenements/",
+          "description": "Messages Kafka entrants non validés contre contrats/evenements.",
+          "severity": "low",
+          "suggested_refactoring": "Valider l'enveloppe contre le schéma JSON versionné à la réception."
+        },
+        {
+          "file": "services/credits/src/main/java/fr/nextbanking/credits/domain/Pret.java",
+          "description": "Montants sans primitive de domaine",
+          "severity": "medium",
+          "suggested_refactoring": "Introduire un Montant dans credits."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/evenements/RecepteurVirementATraiter.java",
+          "description": "Messages Kafka non validés contre leur schéma",
+          "severity": "low",
+          "suggested_refactoring": "Valider l'enveloppe contre contrats/evenements."
+        },
+        {
+          "file": "services/documents/.../TelechargerDocumentCasUsage.java",
+          "description": "Paramètres de requête validés par if dans l'application.",
+          "severity": "low",
+          "suggested_refactoring": "Introduire des primitives Periode/CompteId construites dans l'adaptateur HTTP."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Montant.java",
+          "symbol": "Montant / Montant.lire",
+          "observation": "Montant invalide non représentable."
+        },
+        {
+          "file": "services/documents/src/main/java/fr/nextbanking/documents/application/TelechargerDocumentCasUsage.java",
+          "symbol": "lireEntier / lireCompteId",
+          "observation": "Validation par if dans le cas d'usage, chaînes brutes depuis HTTP."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/evenements/RecepteurVirementATraiter.java",
+          "symbol": "recevoir",
+          "observation": "Contrôle de type/version, pas de validation de schéma."
+        },
+        {
+          "file": "frontend/src/adapters/http/ClientVirementHttp.ts",
+          "symbol": "estCompte / estVirementSuivi",
+          "observation": "Front : gardes de type sur les réponses avant de les confier à l'application."
+        }
+      ],
+      "rationale": "Revue de conception. Noté 4 : invariants encodés dans des domain primitives (Montant, Iban, CompteId, Motif, Identifiants, DemandeVirement.lire) et le front valide chaque réponse par gardes de type à la frontière HTTP. Pas 5 : les corps HTTP arrivent en chaînes brutes jusqu'à l'application, documents parse à la main dans le cas d'usage (lireEntier), Kafka ne valide que type et version. Pas 3 : pas de validation dupliquée dans chaque couche.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "7.2",
+      "source": "llm",
+      "source_book": "Secure by Design / OWASP ASVS",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/DecisionAdministrateur.java",
+          "description": "Autorisation par rôle opt-in, au bon vouloir de chaque cas d'usage.",
+          "severity": "medium",
+          "suggested_refactoring": "Ajouter une règle par chemin (/api/*/administration/** → ADMIN) dans la chaîne de sécurité en plus du contrôle applicatif."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/ConfigurationSecurite.java",
+          "description": "Point d'entrée de témoin ouvert sans authentification",
+          "severity": "medium",
+          "suggested_refactoring": "Le restreindre à un profil de test ou l'authentifier."
+        },
+        {
+          "file": "services/*/application/",
+          "description": "Appartenance et rôle vérifiés au cas par cas",
+          "severity": "low",
+          "suggested_refactoring": "Test d'architecture imposant le contrôle à chaque cas d'usage exposé."
+        },
+        {
+          "file": "services/*/application/",
+          "description": "Autorisation par rôle opt-in, par cas d'usage.",
+          "severity": "medium",
+          "suggested_refactoring": "Poser le rôle requis dans la chaîne de sécurité (requestMatchers par préfixe admin) en plus de l'appel applicatif."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/ConfigurationSecurite.java",
+          "symbol": "chaineDeSecurite",
+          "observation": "anyRequest().authenticated(), exceptions explicites (témoin, santé)."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/application/DecisionAdministrateur.java",
+          "symbol": "DecisionAdministrateur",
+          "observation": "Point unique du contrôle de rôle, appelé par les cas d'usage."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Virement.java",
+          "symbol": "verifierComptes",
+          "observation": "Contrôle d'appartenance des deux comptes au client du jeton."
+        },
+        {
+          "file": "frontend/src/adapters/routes/RouteProtegee.tsx",
+          "symbol": "routeAutorisee",
+          "observation": "Front : redirection selon les rôles, le serveur reste l'autorité."
+        }
+      ],
+      "rationale": "Revue de conception. Noté 4 : authN centralisée et deny-by-default (anyRequest().authenticated(), JWT RSA), identité tirée du jeton, appartenance de la ressource contrôlée (verifierComptes, controlerCompte). Pas 5 : le rôle est vérifié par un appel manuel du cas d'usage (DecisionAdministrateur, DroitsRoles), un nouveau point admin qui l'oublierait serait ouvert ; config recopiée ×8 ; gardes front cosmétiques. Pas 3 : pas d'IDOR par conception.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "7.3",
+      "source": "llm",
+      "source_book": "Secure by Design / OWASP ASVS",
+      "applicable": true,
+      "score": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ],
+      "spread": 0,
+      "violations": [
+        {
+          "file": "frontend/src/adapters/stockage/StockageJetonLocal.ts",
+          "description": "Jeton de session exposé à tout script de la page (localStorage).",
+          "severity": "medium",
+          "suggested_refactoring": "Passer à un cookie HttpOnly SameSite via le proxy nginx, ou réduire la durée du jeton avec CSP stricte."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Compte.java",
+          "description": "Numéro de compte en String brut, non typé comme donnée sensible.",
+          "severity": "low",
+          "suggested_refactoring": "Réutiliser un type masqué (Iban ou NumeroCompte) pour le numéro de compte."
+        },
+        {
+          "file": "frontend/src/adapters/stockage/StockageJetonLocal.ts",
+          "description": "Jeton porteur accessible au JavaScript",
+          "severity": "medium",
+          "suggested_refactoring": "Cookie HttpOnly SameSite=Strict via le proxy, ou CSP stricte."
+        },
+        {
+          "file": "frontend/src/adapters/stockage/StockageJetonLocal.ts",
+          "description": "Jeton porteur exposé au JavaScript de la page.",
+          "severity": "medium",
+          "suggested_refactoring": "Cookie HttpOnly SameSite=Strict posé par le service d'identité, ou jeton en mémoire avec renouvellement."
+        },
+        {
+          "file": "services/documents/.../RecepteurCompteModifie.java",
+          "description": "IBAN en String brute dans les projections.",
+          "severity": "low",
+          "suggested_refactoring": "Réutiliser une primitive Iban masquée par défaut dans tous les services."
+        }
+      ],
+      "evidence": [
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/domain/Iban.java",
+          "symbol": "toString / enClair",
+          "observation": "Masquage par défaut ; accès en clair explicite et documenté."
+        },
+        {
+          "file": "services/identite-clients/src/main/java/fr/nextbanking/identiteclients/domain/Identifiants.java",
+          "symbol": "toString",
+          "observation": "Mot de passe masqué."
+        },
+        {
+          "file": "frontend/src/adapters/stockage/StockageJetonLocal.ts",
+          "symbol": "CLE_JETON",
+          "observation": "Jeton porteur dans localStorage."
+        },
+        {
+          "file": "services/coeur-bancaire/src/main/java/fr/nextbanking/coeurbancaire/adapter/in/GestionErreurs.java",
+          "symbol": "reponse",
+          "observation": "Corps d'erreur sans détail interne."
+        }
+      ],
+      "rationale": "Revue de conception. Noté 4 : l'IBAN est un type dont toString masque (BUG-086), Identifiants masque le mot de passe, les erreurs ne sortent ni pile ni classe, la clé AlphaVantage n'est jamais journalisée. Pas 5 : côté front, le jeton est en localStorage, lisible par tout script injecté ; le numéro de compte circule souvent en String brut (Compte.numero) et Iban.enClair est stocké dans le texte des alertes ; pas 3 car les flux principaux sont protégés.",
+      "confidence": "medium",
+      "sources": [
+        "llm"
+      ]
+    },
+    {
+      "id": "7.4_vulnerabilites_code_sast",
+      "source": "sonar",
+      "source_book": "OWASP ASVS / SAST",
+      "applicable": true,
+      "score": 4,
+      "runs": [],
+      "spread": null,
+      "violations": [],
+      "evidence": [
+        {
+          "file": "(projet)",
+          "symbol": "sonar_vulnerabilities",
+          "observation": "Vulnérabilités SAST par sévérité — blocker: 0, critical: 0, major: 0, minor: 0, info: 0."
+        },
+        {
+          "file": "(projet)",
+          "symbol": "security_hotspots",
+          "observation": "0 security hotspot(s) non revu(s), dont 0 à probabilité haute."
+        }
+      ],
+      "measure": {
+        "vuln_blocker": 0,
+        "vuln_critical": 0,
+        "vuln_major": 0,
+        "vuln_minor": 1,
+        "vuln_info": 0,
+        "hotspots_to_review": 0,
+        "hotspots_high": 0
+      },
+      "rationale": "Score calculé par seuils depuis la mesure Sonar/SCA (vuln_blocker=0, vuln_critical=0, vuln_major=0, vuln_minor=1, vuln_info=0, hotspots_to_review=0, hotspots_high=0). Voir references/criteres.md, § seuils.",
+      "confidence": "high",
+      "sources": [
+        "sonar"
+      ]
+    }
+  ],
+  "global": {
+    "weighted_score": 4.14,
+    "top_3_priorities": [
+      "Factoriser la plomberie transverse dupliquée dans les 8 services (sécurité, gestion d'erreurs, relais d'outbox, horloge) pour réduire l'amplification du changement (1.3).",
+      "Rendre l'autorisation par rôle non contournable : règle par chemin dans la chaîne de sécurité en plus du contrôle applicatif, et sortir le jeton du localStorage côté front (7.2, 7.3).",
+      "Ajouter un délai d'attente unique dans fetchAuthentifie et découper les gros écrans React (EcranBourse) et cas d'usage à 10+ collaborateurs (6.3, 3.1)."
+    ],
+    "unstable_criteria": [],
+    "summary": {
+      "executive": "Score global 4,14/5 sur la grille de 29 critères (3 juges Opus 5.5 concordants, aucun critère instable ; 3.2, 6.5 et 7.4 calculés par SonarQube et dependency-check), contre 4,02 à la version de démo et 2,16 pour le legacy. Le périmètre a presque doublé (29 700 lignes, 8 services + front) sans dégrader l'architecture : domaine isolé et vérifié, couverture 99,2 %, aucune CVE critique ou haute, aucune violation grave. La correction de l'epic 0 se voit : le jeton est confiné dans fetchAuthentifie (1.2 passe de 3 à 4). La dette restante est transverse et assumée par la spine (AD-17) : socle technique recopié dans 8 services (7,1 % de duplication inter-services selon jscpd, en hausse) ; décision recommandée : surveiller la divergence de ces copies plutôt que les fusionner.",
+      "strengths": [
+        "Domaine isolé et vérifié (2.2 = 5) : paquets domain sans Spring ni JDBC dans les 8 services, règles contrôlées par ArchUnit et dependency-cruiser, temps uniquement via le port Horloge.",
+        "Langage omniprésent (2.1 = 5) : Virement, ControleFraude, ExecuterEcheancesCasUsage, DecisionAdministrateur, types Montant et CompteId : le vocabulaire bancaire structure le code des deux couches.",
+        "Filet de tests (3.3 = 5) : 99,2 % de couverture Sonar (front 98,1 %, services 98,7 à 99,8 %), 1 986 tests front verts, tests Testcontainers d'intégration et tests d'architecture des deux côtés.",
+        "Information confinée (1.2 = 4, +1) : le jeton n'est plus porté que par fetchAuthentifie, les montants par le type Montant, Kafka et JDBC par leurs adaptateurs.",
+        "Supply chain et SAST : 0 CVE critique ou haute sur 120 jars livrés, 1 seule vulnérabilité Sonar, mineure (nginx en root dans frontend/Dockerfile)."
+      ],
+      "weaknesses": [
+        "Changement transverse amplifié (1.3 = 3) : sécurité JWT, gestion d'erreurs, relais d'outbox, horloge et résolution d'IP recopiés dans 8 services ; un changement de politique touche 8 fichiers. Les copies restent identiques à ce jour (ResolveurAdresseIp : 3 copies au contenu égal), mais rien ne garantit qu'elles le restent.",
+        "Erreurs avalées (4.3 = 4) : 82 catch sans liaison côté front perdent la cause, avec une double conversion adaptateur puis application.",
+        "Classes larges localisées (3.1 = 4) : ExecuterEcheancesCasUsage reçoit 9 à 12 collaborateurs ; EcranBourse.tsx (452 lignes) mêle liste, historique et formulaire ; textes.ts atteint 822 lignes.",
+        "Contrôle des rôles manuel (7.2 = 4) : chaque cas d'usage admin appelle lui-même la vérification du rôle ; un nouveau point qui l'oublierait serait ouvert.",
+        "Planificateurs non coordonnés (6.2 = 4) : @Scheduled par instance, assumé par AD-21 tant que le déploiement reste mono-instance."
+      ]
+    }
+  }
+}

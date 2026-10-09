@@ -1,0 +1,37 @@
+Critère                                   Avant  Après  Delta  Verdict
+------------------------------------------------------------------------------
+1.1                                           4      4   +0.0  stable (bruit)
+1.2                                           3      4   +1.0  AMÉLIORÉ ✓
+1.3                                           3      3   +0.0  stable (bruit)
+2.1                                           5      5   +0.0  stable (bruit)
+2.2                                           5      5   +0.0  stable (bruit)
+2.3                                           4      4   +0.0  stable (bruit)
+3.1                                           4      4   +0.0  stable (bruit)
+3.2_duplication                               5      5   +0.0  stable (bruit)
+3.3                                           4      5   +1.0  AMÉLIORÉ ✓
+4.1                                           4      4   +0.0  stable (bruit)
+4.2                                           4      4   +0.0  stable (bruit)
+4.3                                           4      4   +0.0  stable (bruit)
+4.4                                           4      4   +0.0  stable (bruit)
+4.5                                           4      4   +0.0  stable (bruit)
+4.6                                           4      4   +0.0  stable (bruit)
+4.7                                           4      4   +0.0  stable (bruit)
+5.1                                           4      4   +0.0  stable (bruit)
+5.2                                           4      4   +0.0  stable (bruit)
+5.4                                           4      4   +0.0  stable (bruit)
+6.1                                           4      4   +0.0  stable (bruit)
+6.2                                           4      4   +0.0  stable (bruit)
+6.3                                           4      4   +0.0  stable (bruit)
+6.4                                           4      4   +0.0  stable (bruit)
+6.5_supply_chain_security                     4      4   +0.0  stable (bruit)
+7.1                                           4      4   +0.0  stable (bruit)
+7.2                                           4      4   +0.0  stable (bruit)
+7.3                                           4      4   +0.0  stable (bruit)
+7.4_vulnerabilites_code_sast                  5      4   -1.0  DÉGRADÉ ✗
+------------------------------------------------------------------------------
+SCORE GLOBAL                               4.02   4.14  +0.12
+
+Violations 'high' de l'ancien snapshot : 0
+  Résolues     : 0
+  Persistantes : 0
+  Nouvelles 'high' apparues : 0

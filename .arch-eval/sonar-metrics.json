@@ -11,20 +11,20 @@
   ],
   "depth": "coverage",
   "raw_measures": {
-    "complexity": 2981.0,
-    "cognitive_complexity": 1204.0,
-    "functions": 1635.0,
-    "classes": 511.0,
-    "ncloc": 18708.0,
-    "code_smells": 222.0,
-    "bugs": 13.0,
-    "vulnerabilities": 0.0,
-    "sqale_index": 1582.0,
-    "duplicated_lines": 61.0,
-    "lines_to_cover": 6142.0,
-    "uncovered_lines": 29.0,
-    "duplicated_lines_density": 0.33,
-    "coverage": 99.5
+    "complexity": 4860.0,
+    "cognitive_complexity": 1929.0,
+    "functions": 2664.0,
+    "classes": 774.0,
+    "ncloc": 29699.0,
+    "code_smells": 371.0,
+    "bugs": 18.0,
+    "vulnerabilities": 1.0,
+    "sqale_index": 2491.0,
+    "duplicated_lines": 151.0,
+    "lines_to_cover": 9780.0,
+    "uncovered_lines": 77.0,
+    "duplicated_lines_density": 0.51,
+    "coverage": 99.2
   },
   "computed": {
     "3.2": {
@@ -33,13 +33,13 @@
       "source": "sonar",
       "score": 5,
       "measure": {
-        "duplicated_lines_density": 0.33
+        "duplicated_lines_density": 0.51
       },
       "evidence": [
         {
           "file": "(projet)",
           "symbol": "duplicated_lines_density",
-          "observation": "0.5% de lignes dupliquées (Sonar)."
+          "observation": "0.3% de lignes dupliquées (Sonar)."
         }
       ],
       "violations": []
@@ -224,12 +224,12 @@
       "id": "7.4_vulnerabilites_code_sast",
       "source_book": "OWASP ASVS / SAST",
       "source": "sonar",
-      "score": 5,
+      "score": 4,
       "measure": {
         "vuln_blocker": 0,
         "vuln_critical": 0,
         "vuln_major": 0,
-        "vuln_minor": 0,
+        "vuln_minor": 1,
         "vuln_info": 0,
         "hotspots_to_review": 0,
         "hotspots_high": 0
@@ -254,52 +254,57 @@
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique totale : 573 (Sonar)."
+        "observation": "Complexité cyclomatique totale : 942 (Sonar)."
       },
       {
         "file": "(projet)",
         "symbol": "classes/functions",
-        "observation": "174 classes, 369 fonctions."
+        "observation": "274 classes, 626 fonctions."
       },
       {
         "file": "(projet)",
         "symbol": "issues_severity",
-        "observation": "Sévérité des code smells Sonar : 9 CRITICAL, 8 MAJOR (sur 27 au total)."
+        "observation": "Sévérité des code smells Sonar : 32 CRITICAL, 15 MAJOR (sur 71 au total)."
       },
       {
         "file": "(projet)",
         "symbol": "sqale_index",
-        "observation": "Dette technique estimée (SQALE) : 185 min (~3 h de remédiation)."
+        "observation": "Dette technique estimée (SQALE) : 462 min (~8 h de remédiation)."
       },
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique totale : 64 (Sonar)."
+        "observation": "Complexité cyclomatique totale : 152 (Sonar)."
       },
       {
         "file": "(projet)",
         "symbol": "classes/functions",
-        "observation": "29 classes, 47 fonctions."
+        "observation": "57 classes, 110 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues_severity",
+        "observation": "Sévérité des code smells Sonar : 1 CRITICAL, 1 MAJOR (sur 9 au total)."
       },
       {
         "file": "(projet)",
         "symbol": "sqale_index",
-        "observation": "Dette technique estimée (SQALE) : 9 min (~0 h de remédiation)."
+        "observation": "Dette technique estimée (SQALE) : 46 min (~1 h de remédiation)."
       },
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique totale : 218 (Sonar)."
+        "observation": "Complexité cyclomatique totale : 261 (Sonar)."
       },
       {
         "file": "(projet)",
         "symbol": "classes/functions",
-        "observation": "62 classes, 145 fonctions."
+        "observation": "82 classes, 184 fonctions."
       },
       {
         "file": "(projet)",
         "symbol": "sqale_index",
-        "observation": "Dette technique estimée (SQALE) : 5 min (~0 h de remédiation)."
+        "observation": "Dette technique estimée (SQALE) : 40 min (~1 h de remédiation)."
       },
       {
         "file": "(projet)",
@@ -319,104 +324,124 @@
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique totale : 252 (Sonar)."
+        "observation": "Complexité cyclomatique totale : 396 (Sonar)."
       },
       {
         "file": "(projet)",
         "symbol": "classes/functions",
-        "observation": "90 classes, 179 fonctions."
+        "observation": "130 classes, 274 fonctions."
       },
       {
         "file": "(projet)",
         "symbol": "issues_severity",
-        "observation": "Sévérité des code smells Sonar : 3 MAJOR (sur 27 au total)."
+        "observation": "Sévérité des code smells Sonar : 3 MAJOR (sur 45 au total)."
       },
       {
         "file": "(projet)",
         "symbol": "sqale_index",
-        "observation": "Dette technique estimée (SQALE) : 180 min (~3 h de remédiation)."
+        "observation": "Dette technique estimée (SQALE) : 270 min (~4 h de remédiation)."
       },
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique totale : 199 (Sonar)."
+        "observation": "Complexité cyclomatique totale : 207 (Sonar)."
       },
       {
         "file": "(projet)",
         "symbol": "classes/functions",
-        "observation": "47 classes, 119 fonctions."
+        "observation": "48 classes, 125 fonctions."
       },
       {
         "file": "(projet)",
         "symbol": "issues_severity",
-        "observation": "Sévérité des code smells Sonar : 4 MAJOR (sur 43 au total)."
+        "observation": "Sévérité des code smells Sonar : 4 MAJOR (sur 47 au total)."
       },
       {
         "file": "(projet)",
         "symbol": "sqale_index",
-        "observation": "Dette technique estimée (SQALE) : 260 min (~4 h de remédiation)."
+        "observation": "Dette technique estimée (SQALE) : 280 min (~5 h de remédiation)."
       },
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique totale : 355 (Sonar)."
+        "observation": "Complexité cyclomatique totale : 363 (Sonar)."
       },
       {
         "file": "(projet)",
         "symbol": "classes/functions",
-        "observation": "89 classes, 228 fonctions."
+        "observation": "90 classes, 234 fonctions."
       },
       {
         "file": "(projet)",
         "symbol": "issues_severity",
-        "observation": "Sévérité des code smells Sonar : 8 CRITICAL, 6 MAJOR (sur 27 au total)."
+        "observation": "Sévérité des code smells Sonar : 8 CRITICAL, 6 MAJOR (sur 31 au total)."
       },
       {
         "file": "(projet)",
         "symbol": "sqale_index",
-        "observation": "Dette technique estimée (SQALE) : 253 min (~4 h de remédiation)."
+        "observation": "Dette technique estimée (SQALE) : 273 min (~5 h de remédiation)."
       },
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique totale : 1261 (Sonar)."
+        "observation": "Complexité cyclomatique totale : 242 (Sonar)."
       },
       {
         "file": "(projet)",
         "symbol": "classes/functions",
-        "observation": "0 classes, 518 fonctions."
+        "observation": "73 classes, 148 fonctions."
       },
       {
         "file": "(projet)",
         "symbol": "issues_severity",
-        "observation": "Sévérité des code smells Sonar : 21 MAJOR (sur 94 au total)."
+        "observation": "Sévérité des code smells Sonar : 3 CRITICAL (sur 29 au total)."
       },
       {
         "file": "(projet)",
         "symbol": "sqale_index",
-        "observation": "Dette technique estimée (SQALE) : 690 min (~12 h de remédiation)."
+        "observation": "Dette technique estimée (SQALE) : 154 min (~3 h de remédiation)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique totale : 2238 (Sonar)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "classes/functions",
+        "observation": "0 classes, 933 fonctions."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "issues_severity",
+        "observation": "Sévérité des code smells Sonar : 30 MAJOR (sur 131 au total)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "sqale_index",
+        "observation": "Dette technique estimée (SQALE) : 966 min (~16 h de remédiation)."
       }
     ],
     "4.2": [
       {
         "file": "(projet)",
         "symbol": "cognitive_complexity",
-        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 214 / 369 fn)."
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 359 / 626 fn)."
       },
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique moyenne par fonction : 1.6."
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.5."
       },
       {
         "file": "(projet)",
         "symbol": "issues",
-        "observation": "1 fonction(s) signalée(s) trop longues/complexes/trop d'arguments."
+        "observation": "5 fonction(s) signalée(s) trop longues/complexes/trop d'arguments."
       },
       {
         "file": "(projet)",
         "symbol": "cognitive_complexity",
-        "observation": "Complexité cognitive moyenne par fonction : 0.5 (total 24 / 47 fn)."
+        "observation": "Complexité cognitive moyenne par fonction : 0.4 (total 48 / 110 fn)."
       },
       {
         "file": "(projet)",
@@ -426,12 +451,12 @@
       {
         "file": "(projet)",
         "symbol": "cognitive_complexity",
-        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 86 / 145 fn)."
+        "observation": "Complexité cognitive moyenne par fonction : 0.5 (total 93 / 184 fn)."
       },
       {
         "file": "(projet)",
         "symbol": "complexity",
-        "observation": "Complexité cyclomatique moyenne par fonction : 1.5."
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.4."
       },
       {
         "file": "(projet)",
@@ -446,7 +471,7 @@
       {
         "file": "(projet)",
         "symbol": "cognitive_complexity",
-        "observation": "Complexité cognitive moyenne par fonction : 0.5 (total 89 / 179 fn)."
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 154 / 274 fn)."
       },
       {
         "file": "(projet)",
@@ -456,7 +481,7 @@
       {
         "file": "(projet)",
         "symbol": "cognitive_complexity",
-        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 72 / 119 fn)."
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 75 / 125 fn)."
       },
       {
         "file": "(projet)",
@@ -466,7 +491,7 @@
       {
         "file": "(projet)",
         "symbol": "cognitive_complexity",
-        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 145 / 228 fn)."
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 148 / 234 fn)."
       },
       {
         "file": "(projet)",
@@ -481,7 +506,17 @@
       {
         "file": "(projet)",
         "symbol": "cognitive_complexity",
-        "observation": "Complexité cognitive moyenne par fonction : 1.1 (total 555 / 518 fn)."
+        "observation": "Complexité cognitive moyenne par fonction : 0.6 (total 85 / 148 fn)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "complexity",
+        "observation": "Complexité cyclomatique moyenne par fonction : 1.6."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "cognitive_complexity",
+        "observation": "Complexité cognitive moyenne par fonction : 1.0 (total 948 / 933 fn)."
       },
       {
         "file": "(projet)",
@@ -495,6 +530,16 @@
       }
     ],
     "4.5": [
+      {
+        "file": "(projet)",
+        "symbol": "dead_code",
+        "observation": "1 occurrence(s) de code mort / inutilisé / commenté signalées par Sonar."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "bugs",
+        "observation": "1 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
+      },
       {
         "file": "(projet)",
         "symbol": "dead_code",
@@ -528,6 +573,11 @@
       {
         "file": "(projet)",
         "symbol": "bugs",
+        "observation": "4 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "bugs",
         "observation": "1 bug(s) détecté(s) par Sonar (Reliability) et non corrigé(s)."
       }
     ],
@@ -535,17 +585,17 @@
       {
         "file": "(projet)",
         "symbol": "coverage",
-        "observation": "Couverture de tests mesurée : 99.7% (Sonar, import JaCoCo/LCOV)."
+        "observation": "Couverture de tests mesurée : 99.8% (Sonar, import JaCoCo/LCOV)."
       },
       {
         "file": "(projet)",
         "symbol": "coverage",
-        "observation": "Couverture de tests mesurée : 100% (Sonar, import JaCoCo/LCOV)."
+        "observation": "Couverture de tests mesurée : 98.7% (Sonar, import JaCoCo/LCOV)."
       },
       {
         "file": "(projet)",
         "symbol": "coverage",
-        "observation": "Couverture de tests mesurée : 98.8% (Sonar, import JaCoCo/LCOV)."
+        "observation": "Couverture de tests mesurée : 99% (Sonar, import JaCoCo/LCOV)."
       },
       {
         "file": "(projet)",
@@ -555,7 +605,7 @@
       {
         "file": "(projet)",
         "symbol": "coverage",
-        "observation": "Couverture de tests mesurée : 99.2% (Sonar, import JaCoCo/LCOV)."
+        "observation": "Couverture de tests mesurée : 99.5% (Sonar, import JaCoCo/LCOV)."
       },
       {
         "file": "(projet)",
@@ -570,7 +620,12 @@
       {
         "file": "(projet)",
         "symbol": "coverage",
-        "observation": "Couverture de tests mesurée : 98.6% (Sonar, import JaCoCo/LCOV)."
+        "observation": "Couverture de tests mesurée : 98.9% (Sonar, import JaCoCo/LCOV)."
+      },
+      {
+        "file": "(projet)",
+        "symbol": "coverage",
+        "observation": "Couverture de tests mesurée : 98.1% (Sonar, import JaCoCo/LCOV)."
       }
     ]
   },
@@ -578,7 +633,7 @@
     {
       "name": "coeur-bancaire",
       "stack": "java-maven",
-      "ncloc": 3719,
+      "ncloc": 6123,
       "tools": [
         "sonarqube",
         "dependency-check"
@@ -587,7 +642,7 @@
     {
       "name": "notifications",
       "stack": "java-maven",
-      "ncloc": 441,
+      "ncloc": 1015,
       "tools": [
         "sonarqube"
       ]
@@ -595,7 +650,7 @@
     {
       "name": "identite-clients",
       "stack": "java-maven",
-      "ncloc": 1398,
+      "ncloc": 1716,
       "tools": [
         "sonarqube"
       ]
@@ -611,7 +666,7 @@
     {
       "name": "credits",
       "stack": "java-maven",
-      "ncloc": 1649,
+      "ncloc": 2517,
       "tools": [
         "sonarqube"
       ]
@@ -619,7 +674,7 @@
     {
       "name": "bourse",
       "stack": "java-maven",
-      "ncloc": 1112,
+      "ncloc": 1162,
       "tools": [
         "sonarqube"
       ]
@@ -627,7 +682,15 @@
     {
       "name": "open-banking-conseiller",
       "stack": "java-maven",
-      "ncloc": 2106,
+      "ncloc": 2156,
+      "tools": [
+        "sonarqube"
+      ]
+    },
+    {
+      "name": "documents",
+      "stack": "java-maven",
+      "ncloc": 1580,
       "tools": [
         "sonarqube"
       ]
@@ -635,7 +698,7 @@
     {
       "name": "frontend",
       "stack": "js-node",
-      "ncloc": 7908,
+      "ncloc": 13055,
       "tools": [
         "sonarqube",
         "trivy"

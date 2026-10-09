@@ -26,3 +26,5 @@ _bmad/render/
 .arch-eval/modules/
 .arch-eval/sca-runtime/
 .arch-eval/ancienne-grille-22-criteres/
+.arch-eval/modules-v0-demo/
+.arch-eval/sca-runtime-v0-demo/
