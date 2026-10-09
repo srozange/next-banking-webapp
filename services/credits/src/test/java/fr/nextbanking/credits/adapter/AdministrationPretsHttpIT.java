@@ -35,6 +35,7 @@ class AdministrationPretsHttpIT {
 
     private static final String PIPELINE = "/api/credits/administration/prets/en-attente";
     private static final String HISTORIQUE = "/api/credits/administration/prets";
+    private static final String INDICATEURS = "/api/credits/administration/indicateurs";
 
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
@@ -149,6 +150,30 @@ class AdministrationPretsHttpIT {
 
         assertThat(reponse.statusCode()).isEqualTo(200);
         assertThat(reponse.body()).isEqualTo("[]");
+    }
+
+    @Test
+    @Tag("FR-016-02")
+    void l_indicateur_compte_et_cumule_les_seuls_prets_en_attente_et_ignore_les_parametres() throws Exception {
+        long petit = pretEnAttente(1L, "2026-10-01");
+        jdbc.sql("update loans set montant = 5000 where id = :id").param("id", petit).update();
+        pretEnAttente(2L, "2026-09-01");
+        long refuse = pretEnAttente(1L, "2026-08-01");
+        jdbc.sql("update loans set status = 'REFUSE' where id = :id").param("id", refuse).update();
+
+        HttpResponse<String> reponse = avecJeton(port, "GET", INDICATEURS + "?statut=EN_COURS", admin);
+
+        assertThat(reponse.statusCode()).isEqualTo(200);
+        assertThat(reponse.body()).isEqualTo("{\"pretsEnAttente\":2,\"montantEnAttente\":\"15000.00\"}");
+    }
+
+    @Test
+    @Tag("FR-016-02")
+    void sans_pret_en_attente_l_indicateur_vaut_zero() throws Exception {
+        HttpResponse<String> reponse = avecJeton(port, "GET", INDICATEURS, admin);
+
+        assertThat(reponse.statusCode()).isEqualTo(200);
+        assertThat(reponse.body()).isEqualTo("{\"pretsEnAttente\":0,\"montantEnAttente\":\"0.00\"}");
     }
 
     @Test

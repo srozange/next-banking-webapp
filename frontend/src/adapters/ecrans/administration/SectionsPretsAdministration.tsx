@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   chargerPipelinePrets,
   deciderPret,
@@ -30,6 +30,8 @@ const COLONNES_HISTORIQUE = [H.id, H.client, H.type, H.montant, H.statut, H.dure
 
 interface Proprietes {
   client: ClientPipelinePrets;
+  /** Contenu rendu entre le pipeline et l'historique (« Gestion des clients », ordre figé de la page). */
+  entrePipelineEtHistorique?: ReactNode;
 }
 
 /** Message affiché après une décision ; `numero` change à chaque décision pour reprendre le focus. */
@@ -45,9 +47,10 @@ const typeDe = (pret: PretAdministration) => (pret.type === null ? '' : libelleT
  * Sections « Pipeline Prets — En attente d approbation » et « Historique de tous les prets » de l'écran Administration
  * (FR-016-03, FR-016-04, FR-016-05, FR-016-07, FR-016-12). « Approuver » et « Refuser » agissent sans confirmation ; le
  * pipeline et l'historique sont relus après chaque décision. Les boutons ne sont jamais masqués côté client : le
- * serveur décide (rôle, état du prêt). L'historique est en lecture seule.
+ * serveur décide (rôle, état du prêt). L'historique est en lecture seule. `entrePipelineEtHistorique` se place entre
+ * les deux sections.
  */
-export function SectionsPretsAdministration({ client }: Proprietes) {
+export function SectionsPretsAdministration({ client, entrePipelineEtHistorique }: Proprietes) {
   const [contenu, setContenu] = useState<ContenuPipelinePrets | null>(null);
   const [message, setMessage] = useState<Message | null>(null);
   const [enCours, setEnCours] = useState(false);
@@ -139,6 +142,7 @@ export function SectionsPretsAdministration({ client }: Proprietes) {
           </Tableau>
         )}
       </section>
+      {entrePipelineEtHistorique}
       <section className="section-prets-admin" aria-labelledby="admin-historique-titre" data-testid="admin-historique-section">
         <h2 id="admin-historique-titre" className="section-prets-admin__titre">
           {T.historique.titre}

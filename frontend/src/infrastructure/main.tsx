@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import { creerClientAdministrationHttp } from '../adapters/http/ClientAdministrationHttp';
 import { creerClientBudgetHttp } from '../adapters/http/ClientBudgetHttp';
 import { creerClientDocumentsHttp } from '../adapters/http/ClientDocumentsHttp';
 import { creerClientPlafondsHttp } from '../adapters/http/ClientPlafondsHttp';
@@ -69,6 +70,7 @@ const routeur = createBrowserRouter(
     clientPlafonds: creerClientPlafondsHttp(fetchAuthentifie),
     clientDocuments: creerClientDocumentsHttp(fetchAuthentifie),
     clientPortefeuille: creerClientPortefeuilleHttp(fetchAuthentifie),
+    clientAdministration: creerClientAdministrationHttp(fetchAuthentifie),
   }),
 );
 

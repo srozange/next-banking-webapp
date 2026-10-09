@@ -153,6 +153,57 @@ export const TEXTES = {
     /** pret.erreur.traitement (B-13), quel que soit l'échec. */
     erreurTraitement: 'Erreur lors du traitement du prêt. Veuillez réessayer.',
   },
+  /**
+   * Indicateurs, gestion des clients et tous les utilisateurs de l'écran Administration : FEAT-016 de
+   * docs/retro/00-global/MESSAGES.md (l. 977-1080), orthographe du source sans accent ; les capitales des libellés
+   * d'indicateurs (« TOTAL CLIENTS ») viennent du CSS, jamais du texte. Les rôles s'affichent par leur code.
+   */
+  administration: {
+    indicateurs: {
+      totalClients: 'Total clients',
+      clientsActifs: (nombre: number) => `${nombre} actifs`,
+      conseillers: 'Conseillers',
+      conseillersSousLibelle: 'actifs',
+      pretsEnAttente: 'Prets en attente',
+      aTraiter: (montant: string) => `${montant} a traiter`,
+      totalUtilisateurs: 'Total utilisateurs',
+      totalUtilisateursSousLibelle: 'tous roles confondus',
+    },
+    gestionClients: {
+      titre: 'Gestion des clients',
+      recherche: 'Rechercher par nom, login, email...',
+      filtrer: 'Filtrer',
+      vide: 'Aucun client trouve',
+      colonnes: {
+        nom: 'Nom',
+        login: 'Login',
+        email: 'Email',
+        role: 'Role',
+        statut: 'Statut',
+        conseiller: 'Conseiller',
+        actions: 'Actions',
+      },
+      actif: 'Actif',
+      inactif: 'Inactif',
+      detail: 'Detail',
+    },
+    detail: {
+      titre: (nomComplet: string) => `Detail : ${nomComplet}`,
+      fermer: 'Fermer',
+      nomComplet: 'Nom complet',
+      identifiant: 'Identifiant',
+      email: 'Email',
+      telephone: 'Telephone',
+      role: 'Role',
+      statut: 'Statut',
+      conseiller: 'Conseiller assigne',
+      clientDepuis: 'Client depuis',
+    },
+    utilisateurs: {
+      titre: 'Tous les utilisateurs du systeme',
+      colonnes: { nom: 'Nom', login: 'Login', email: 'Email', role: 'Role', statut: 'Statut' },
+    },
+  },
   /** Titres d'onglet des pages déclarées (FEAT-002 MSG-002-001, FEAT-015, FEAT-016 MSG-016-001). */
   titresOnglet: {
     tableauDeBord: 'BankApp Demo - Tableau de bord',

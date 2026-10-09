@@ -116,6 +116,23 @@ class CreditsSecuriteIT {
     }
 
     @Test
+    @Tag("FR-016-01")
+    @Tag("FR-016-02")
+    @Tag("FR-030-07")
+    void l_indicateur_d_administration_rend_401_sans_jeton_et_403_a_un_client_ou_un_conseiller() throws Exception {
+        String chemin = "/api/credits/administration/indicateurs";
+        assertRefus(envoyer(port, "GET", chemin, null, Map.of()));
+
+        for (String role : new String[] {"CLIENT", "CONSEILLER"}) {
+            HttpResponse<String> reponse = avecJeton(port, "GET", chemin, OutilsHttp.jetonValide("11", role));
+            assertThat(reponse.statusCode()).as(role).isEqualTo(403);
+            assertThat(reponse.body()).isEqualTo(ACCES_REFUSE);
+            assertThat(reponse.headers().firstValue("Set-Cookie")).isEmpty();
+        }
+        assertThat(avecJeton(port, "GET", chemin, OutilsHttp.jetonValide("10", "ADMIN")).statusCode()).isEqualTo(200);
+    }
+
+    @Test
     void la_sante_est_publique() throws Exception {
         HttpResponse<String> reponse = envoyer(port, "GET", "/actuator/health", null, Map.of());
 

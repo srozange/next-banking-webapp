@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import fr.nextbanking.credits.application.port.out.PretRepository;
 import fr.nextbanking.credits.application.port.out.ProjectionClients;
+import fr.nextbanking.credits.domain.IndicateursPrets;
 import fr.nextbanking.credits.domain.Pret;
 import fr.nextbanking.credits.domain.PretAvecClient;
 import fr.nextbanking.credits.domain.Role;
@@ -74,6 +75,45 @@ class ConsulterPipelinePretsCasUsageTest {
         when(prets.tous()).thenReturn(List.of());
 
         assertThat(casUsage.historique(ADMIN)).isEmpty();
+    }
+
+    @Test
+    @Tag("FR-016-02")
+    void l_indicateur_compte_les_prets_en_attente_et_cumule_leurs_montants_sans_lire_la_projection() {
+        Pret petit = new Pret(1L, 5L, TypePret.AUTO, new BigDecimal("5000.00"), new BigDecimal("3.9000"), 6,
+                new BigDecimal("1517.11"), new BigDecimal("9102.66"), new BigDecimal("102.66"), "Voiture",
+                StatutPret.EN_ATTENTE, LocalDate.of(2026, 10, 1), LocalDate.of(2027, 4, 1));
+        Pret grand = pret(2L, 6L, StatutPret.EN_ATTENTE);
+        when(prets.enAttente()).thenReturn(List.of(petit, grand, grand));
+
+        IndicateursPrets indicateurs = casUsage.indicateurs(ADMIN);
+
+        assertThat(indicateurs.nombre()).isEqualTo(3L);
+        assertThat(indicateurs.montant().toPlainString()).isEqualTo("23000.00");
+        verify(clients, never()).nomsComplets(any());
+    }
+
+    @Test
+    @Tag("FR-016-02")
+    void sans_pret_en_attente_l_indicateur_vaut_zero() {
+        when(prets.enAttente()).thenReturn(List.of());
+
+        IndicateursPrets indicateurs = casUsage.indicateurs(ADMIN);
+
+        assertThat(indicateurs.nombre()).isZero();
+        assertThat(indicateurs.montant().toPlainString()).isEqualTo("0.00");
+    }
+
+    @Test
+    @Tag("FR-030-07")
+    @Tag("FR-016-01")
+    @Tag("FR-016-02")
+    void l_indicateur_est_refuse_a_un_role_autre_qu_admin_sans_lecture() {
+        for (Set<Role> roles : List.of(Set.of(Role.CLIENT), Set.of(Role.CONSEILLER))) {
+            assertThatThrownBy(() -> casUsage.indicateurs(roles)).isInstanceOf(AccesAdministrationRefuse.class);
+        }
+
+        verify(prets, never()).enAttente();
     }
 
     @Test

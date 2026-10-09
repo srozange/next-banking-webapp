@@ -93,6 +93,43 @@ describe('accessibilité (axe)', () => {
     expect(await reglesViolees()).toEqual([]);
   });
 
+  it('[axe] /administration avec indicateurs, gestion des clients, détail ouvert et tous les utilisateurs ne relève aucune violation', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const utilisateur = userEvent.setup();
+    localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['ADMIN'] }));
+    const ok = <T,>(donnees: T) => Promise.resolve({ statut: 'ok' as const, donnees });
+    rendreApplication('/administration', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+      lireIndicateursIdentite: () => ok({ totalClients: 4, clientsActifs: 3, conseillers: 2, totalUtilisateurs: 7 }),
+      lireIndicateursPrets: () => Promise.resolve({ statut: 'erreur' as const, message: 'Service crédits indisponible' }),
+      lireClients: () =>
+        ok([
+          {
+            clientId: 1,
+            nomComplet: 'Jean Dupont',
+            login: 'user1',
+            email: 'jean.dupont@example.com',
+            telephone: null,
+            role: 'CLIENT',
+            actif: false,
+            nomConseiller: 'Sophie Durand',
+            dateCreation: '2024-02-01',
+          },
+        ]),
+      lireUtilisateurs: () => ok([{ utilisateurId: 10, nomComplet: 'Alice Martin', login: 'admin', email: 'alice.martin@demobank.fr', role: 'ADMIN', actif: true }]),
+    });
+    await screen.findByTestId('admin-detail-1');
+    await waitFor(() => expect(screen.getByTestId('application-racine').getAttribute('aria-busy')).toBeNull());
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.click(screen.getByTestId('admin-detail-1'));
+    await screen.findByTestId('admin-panneau-detail');
+    expect(await reglesViolees()).toEqual([]);
+
+    await utilisateur.type(screen.getByTestId('admin-recherche'), 'zzz{Enter}');
+    await screen.findByText('Aucun client trouve');
+    expect(await reglesViolees()).toEqual([]);
+  });
+
   it('[axe] /tableau-de-bord avec des notifications lues et non lues (badge, pastille, boutons) ne relève aucune violation', async () => {
     localStorage.setItem('nb.jeton', jetonDeTest({ roles: ['CLIENT'] }));
     rendreApplication('/tableau-de-bord', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {

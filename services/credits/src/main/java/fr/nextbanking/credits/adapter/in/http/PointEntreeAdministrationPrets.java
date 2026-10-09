@@ -2,6 +2,7 @@ package fr.nextbanking.credits.adapter.in.http;
 
 import fr.nextbanking.credits.application.port.in.ConsulterPipelinePrets;
 import fr.nextbanking.credits.application.port.in.DecisionAdministrateurPret;
+import fr.nextbanking.credits.domain.IndicateursPrets;
 import fr.nextbanking.credits.domain.Pret;
 import fr.nextbanking.credits.domain.PretAvecClient;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +17,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Adaptateur entrant HTTP : administration des prêts (pipeline EN_ATTENTE, historique, approbation et refus). Le rôle
- * ADMIN est exigé par les cas d'usage, d'après la revendication {@code roles} du jeton ; l'adresse IP d'origine est
- * résolue ici, une seule fois. Un sujet qui n'est pas un identifiant numérique donne 401.
+ * Adaptateur entrant HTTP : administration des prêts (indicateur, pipeline EN_ATTENTE, historique, approbation et
+ * refus). Le rôle ADMIN est exigé par les cas d'usage, d'après la revendication {@code roles} du jeton ; l'adresse
+ * IP d'origine est résolue ici, une seule fois. Un sujet qui n'est pas un identifiant numérique donne 401.
  */
 @RestController
 public class PointEntreeAdministrationPrets {
@@ -44,6 +45,12 @@ public class PointEntreeAdministrationPrets {
         return pipeline.historique(JetonRoles.depuis(jeton)).stream().map(PretAdministrationJson::de).toList();
     }
 
+    @GetMapping("/api/credits/administration/indicateurs")
+    public IndicateursJson indicateurs(@AuthenticationPrincipal Jwt jeton) {
+        IndicateursPrets indicateurs = pipeline.indicateurs(JetonRoles.depuis(jeton));
+        return new IndicateursJson(indicateurs.nombre(), indicateurs.montant().toPlainString());
+    }
+
     @PostMapping("/api/credits/administration/prets/{pretId}/approbation")
     @ResponseStatus(HttpStatus.OK)
     public void approuver(@AuthenticationPrincipal Jwt jeton, @PathVariable long pretId,
@@ -63,6 +70,10 @@ public class PointEntreeAdministrationPrets {
         } catch (NumberFormatException e) {
             throw new AuthentificationRequise();
         }
+    }
+
+    /** Prêts EN_ATTENTE : nombre et cumul des montants en chaîne à 2 décimales. */
+    public record IndicateursJson(long pretsEnAttente, String montantEnAttente) {
     }
 
     /**

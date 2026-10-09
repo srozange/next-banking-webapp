@@ -3,6 +3,7 @@ package fr.nextbanking.credits.application;
 import fr.nextbanking.credits.application.port.in.ConsulterPipelinePrets;
 import fr.nextbanking.credits.application.port.out.PretRepository;
 import fr.nextbanking.credits.application.port.out.ProjectionClients;
+import fr.nextbanking.credits.domain.IndicateursPrets;
 import fr.nextbanking.credits.domain.Pret;
 import fr.nextbanking.credits.domain.PretAvecClient;
 import fr.nextbanking.credits.domain.Role;
@@ -11,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Cas d'usage : pipeline des prêts EN_ATTENTE et historique de tous les prêts pour l'administrateur, avec le nom
- * complet du client lu dans la projection locale.
+ * Cas d'usage : pipeline des prêts EN_ATTENTE, indicateur des prêts en attente et historique de tous les prêts pour
+ * l'administrateur, avec le nom complet du client lu dans la projection locale.
  */
 public class ConsulterPipelinePretsCasUsage implements ConsulterPipelinePrets {
 
@@ -34,6 +35,12 @@ public class ConsulterPipelinePretsCasUsage implements ConsulterPipelinePrets {
     public List<PretAvecClient> historique(Set<Role> roles) {
         DroitsAdministrateur.exigerAdmin(roles);
         return avecClients(prets.tous());
+    }
+
+    @Override
+    public IndicateursPrets indicateurs(Set<Role> roles) {
+        DroitsAdministrateur.exigerAdmin(roles);
+        return IndicateursPrets.de(prets.enAttente());
     }
 
     private List<PretAvecClient> avecClients(List<Pret> liste) {

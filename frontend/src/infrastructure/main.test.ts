@@ -4,6 +4,7 @@ import type { ClientProfil } from '../application/chargerProfil';
 import type { ClientBourse } from '../application/consulterBourse';
 import type { ClientProduits } from '../application/consulterProduits';
 import type { ClientPortefeuille } from '../application/consulterPortefeuille';
+import type { ClientAdministration } from '../application/consulterAdministration';
 import type { ClientReleve } from '../application/consulterReleve';
 import type { ClientBudget } from '../application/consulterBudget';
 import type { ClientTableauDeBord } from '../application/consulterTableauDeBord';
@@ -78,6 +79,10 @@ const NOMS_CLIENTS_AUTHENTIFIES = [
   'portefeuille identité',
   'portefeuille comptes',
   'portefeuille prêts',
+  'administration indicateurs identité',
+  'administration indicateurs prêts',
+  'administration clients',
+  'administration utilisateurs',
 ];
 
 /** Importe main, puis retrouve dans les routes les clients tels que main.tsx les a câblés. */
@@ -91,9 +96,13 @@ async function clientsDeMain() {
   const protegee = enfants.find((route) => route.path === undefined) as Route;
   const garde = propsDe(protegee) as { clientProfil: ClientProfil; session: Session };
   const ecran = (chemin: string) => propsDe(protegee.children?.find((route) => route.path === chemin));
-  const sectionsAdministration = ((ecran('/administration').children as ReactElement<{ children: ReactElement[] }>[])[1]?.props.children ?? []) as ReactElement[];
-  const pipelinePrets = sectionsAdministration[0]?.props as { client: ClientPipelinePrets };
-  const revue = sectionsAdministration[1]?.props as { client: ClientRevue };
+  const administration = ecran('/administration') as {
+    client: ClientAdministration;
+    clientPipelinePrets: ClientPipelinePrets;
+    clientRevue: ClientRevue;
+  };
+  const pipelinePrets = { client: administration.clientPipelinePrets };
+  const revue = { client: administration.clientRevue };
   const authentifies: ReadonlyArray<readonly [string, () => Promise<unknown>]> = [
     ['profil', () => garde.clientProfil.lire()],
     ['session', () => (garde.session.client as ClientSession).deconnecter()],
@@ -112,6 +121,10 @@ async function clientsDeMain() {
     ['portefeuille identité', () => (ecran('/espace-conseiller').client as ClientPortefeuille).lireIdentites()],
     ['portefeuille comptes', () => (ecran('/espace-conseiller').client as ClientPortefeuille).lireComptes()],
     ['portefeuille prêts', () => (ecran('/espace-conseiller').client as ClientPortefeuille).lirePrets()],
+    ['administration indicateurs identité', () => administration.client.lireIndicateursIdentite()],
+    ['administration indicateurs prêts', () => administration.client.lireIndicateursPrets()],
+    ['administration clients', () => administration.client.lireClients()],
+    ['administration utilisateurs', () => administration.client.lireUtilisateurs()],
   ];
   return { connexion, session: garde.session, authentifies };
 }

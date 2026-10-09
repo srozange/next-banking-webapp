@@ -14,6 +14,7 @@ import type { ClientBudget } from '../../application/consulterBudget';
 import type { ClientPlafonds } from '../../application/gererPlafonds';
 import type { ClientDocuments } from '../../application/consulterDocuments';
 import type { ClientPortefeuille } from '../../application/consulterPortefeuille';
+import type { ClientAdministration } from '../../application/consulterAdministration';
 import { EcranEspaceConseiller } from '../ecrans/espaceConseiller/EcranEspaceConseiller';
 import { EcranDocuments } from '../ecrans/documents/EcranDocuments';
 import { EcranBudget } from '../ecrans/budget/EcranBudget';
@@ -27,8 +28,7 @@ import { EcranComptesTiers } from '../ecrans/comptesTiers/EcranComptesTiers';
 import { EcranBourse } from '../ecrans/bourse/EcranBourse';
 import { EcranConseiller } from '../ecrans/conseiller/EcranConseiller';
 import { EcranConnexion } from '../ecrans/connexion/EcranConnexion';
-import { SectionRevueVirements } from '../ecrans/administration/SectionRevueVirements';
-import { SectionsPretsAdministration } from '../ecrans/administration/SectionsPretsAdministration';
+import { EcranAdministration } from '../ecrans/administration/EcranAdministration';
 import { EcranProduits } from '../ecrans/produits/EcranProduits';
 import type { ClientVirementsProgrammes } from '../../application/gererVirementsProgrammes';
 import { EcranBeneficiaires } from '../ecrans/beneficiaires/EcranBeneficiaires';
@@ -36,7 +36,6 @@ import { EcranReleve } from '../ecrans/releve/EcranReleve';
 import { EcranVirement } from '../ecrans/virement/EcranVirement';
 import { EcranTableauDeBord } from '../ecrans/tableauDeBord/EcranTableauDeBord';
 import { EcranPrets } from '../ecrans/prets/EcranPrets';
-import { TEXTES } from '../textes';
 import { EcranVirementsProgrammes } from '../ecrans/virementsProgrammes/EcranVirementsProgrammes';
 import { ContenuPrincipal } from '../ui/ContenuPrincipal';
 import { RedirectionAccueil } from './RedirectionAccueil';
@@ -66,19 +65,16 @@ export interface Dependances {
   clientPlafonds: ClientPlafonds;
   clientDocuments: ClientDocuments;
   clientPortefeuille: ClientPortefeuille;
+  clientAdministration: ClientAdministration;
 }
 
 /**
  * Routes protégées : déclarées ici ; le tableau de bord a son écran (comptes, opérations, puis les sections « Centre de notifications » et « Suivi de mes virements »),
- * l'Espace Conseiller son écran (portefeuille), l'administration le pipeline des prêts, l'historique des prêts puis la revue des virements suspendus,
+ * l'Espace Conseiller son écran (portefeuille), l'administration son écran (indicateurs, pipeline des prêts, gestion des clients, historique des prêts,
+ * tous les utilisateurs puis la revue des virements suspendus),
  * et /prets l'écran Prêts ; le reste du contenu arrive avec les stories suivantes.
  */
 export const ROUTES_PROTEGEES = ['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets'] as const;
-
-/** Titre d'onglet des routes protégées sans écran propre (hissé dans <head>), suivi de leurs sections. */
-const TITRES_ONGLET: Readonly<Record<Exclude<(typeof ROUTES_PROTEGEES)[number], '/prets' | '/tableau-de-bord' | '/espace-conseiller'>, string>> = {
-  '/administration': TEXTES.titresOnglet.administration,
-};
 
 export function creerRoutes({
   clientConnexion,
@@ -102,6 +98,7 @@ export function creerRoutes({
   clientPlafonds,
   clientDocuments,
   clientPortefeuille,
+  clientAdministration,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil session={session.locale} />;
   return [
@@ -138,13 +135,12 @@ export function creerRoutes({
                 ) : path === '/tableau-de-bord' ? (
                   <EcranTableauDeBord client={clientTableauDeBord} clientComptesTiers={clientComptesTiers} clientNotifications={clientNotifications} clientVirement={clientVirement} />
                 ) : (
-                  <>
-                    <title>{TITRES_ONGLET[path]}</title>
-                    <>
-                      <SectionsPretsAdministration client={clientPipelinePrets} />
-                      <SectionRevueVirements client={clientRevue} />
-                    </>
-                  </>
+                  <EcranAdministration
+                    client={clientAdministration}
+                    clientPipelinePrets={clientPipelinePrets}
+                    clientRevue={clientRevue}
+                    session={session.locale}
+                  />
                 ),
             })),
             { path: '/virement', element: <EcranVirement client={clientVirement} /> },

@@ -156,6 +156,24 @@ class IdentiteClientsSecuriteIT {
         }
     }
 
+    @Test
+    @Tag("FR-016-01")
+    @Tag("FR-030-07")
+    void les_points_d_administration_rendent_403_a_un_client_ou_un_conseiller_et_401_sans_jeton() throws Exception {
+        for (String partie : new String[] {"indicateurs", "clients", "utilisateurs"}) {
+            String chemin = "/api/identite-clients/administration/" + partie;
+            assertRefus(envoyer(port, "GET", chemin, null, Map.of()));
+            for (String role : new String[] {"CLIENT", "CONSEILLER"}) {
+                HttpResponse<String> reponse = avecJeton(port, "GET", chemin, OutilsHttp.jetonValide("11", role));
+                assertThat(reponse.statusCode()).as(role + " " + partie).isEqualTo(403);
+                assertThat(reponse.body()).isEqualTo("{\"message\":\"Accès refusé\"}");
+                assertThat(reponse.headers().firstValue("Set-Cookie")).isEmpty();
+            }
+            assertThat(avecJeton(port, "GET", chemin, OutilsHttp.jetonValide("10", "ADMIN")).statusCode())
+                    .as("ADMIN " + partie).isEqualTo(200);
+        }
+    }
+
     private static void assertRefus(HttpResponse<String> reponse) {
         assertThat(reponse.statusCode()).as(reponse.uri().toString()).isEqualTo(401);
         assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);

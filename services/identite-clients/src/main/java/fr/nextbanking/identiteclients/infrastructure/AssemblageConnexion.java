@@ -1,17 +1,20 @@
 package fr.nextbanking.identiteclients.infrastructure;
 
 import fr.nextbanking.identiteclients.application.ChangerEtatClientCasUsage;
+import fr.nextbanking.identiteclients.application.ConsulterAdministrationCasUsage;
 import fr.nextbanking.identiteclients.application.ConsulterPortefeuilleCasUsage;
 import fr.nextbanking.identiteclients.application.ConsulterProfilCasUsage;
 import fr.nextbanking.identiteclients.application.RenouvelerSessionCasUsage;
 import fr.nextbanking.identiteclients.application.SeConnecterCasUsage;
 import fr.nextbanking.identiteclients.application.SeDeconnecterCasUsage;
 import fr.nextbanking.identiteclients.application.port.in.ChangerEtatClient;
+import fr.nextbanking.identiteclients.application.port.in.ConsulterAdministration;
 import fr.nextbanking.identiteclients.application.port.in.ConsulterPortefeuille;
 import fr.nextbanking.identiteclients.application.port.in.ConsulterProfil;
 import fr.nextbanking.identiteclients.application.port.in.RenouvelerSession;
 import fr.nextbanking.identiteclients.application.port.in.SeConnecter;
 import fr.nextbanking.identiteclients.application.port.in.SeDeconnecter;
+import fr.nextbanking.identiteclients.application.port.out.AnnuaireUtilisateurs;
 import fr.nextbanking.identiteclients.application.port.out.DepotClients;
 import fr.nextbanking.identiteclients.application.port.out.EmetteurJeton;
 import fr.nextbanking.identiteclients.application.port.out.Horloge;
@@ -24,7 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Assemble les cas d'usage de connexion, de profil, de déconnexion, de renouvellement, de changement d'état d'un client et du portefeuille d'un conseiller, écrits en Java pur.
+ * Assemble les cas d'usage de connexion, de profil, de déconnexion, de renouvellement, de changement d'état d'un client, du portefeuille d'un conseiller et de l'administration, écrits en Java pur.
  */
 @Configuration
 public class AssemblageConnexion {
@@ -55,6 +58,11 @@ public class AssemblageConnexion {
     @Bean
     ConsulterPortefeuille consulterPortefeuille(PortefeuilleClients portefeuilleClients) {
         return new ConsulterPortefeuilleCasUsage(portefeuilleClients);
+    }
+
+    @Bean
+    ConsulterAdministration consulterAdministration(AnnuaireUtilisateurs annuaireUtilisateurs) {
+        return new ConsulterAdministrationCasUsage(annuaireUtilisateurs);
     }
 
     @Bean
