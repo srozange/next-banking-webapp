@@ -7,6 +7,10 @@ export const CHEMIN_ADMIN_INDICATEURS_PRETS = '/api/credits/administration/indic
 export const CHEMIN_ADMIN_CLIENTS = '/api/identite-clients/administration/clients';
 export const CHEMIN_ADMIN_UTILISATEURS = '/api/identite-clients/administration/utilisateurs';
 
+/** API ADMIN d'identite-clients (story 2.6) : désactivation si `actif` est faux, activation sinon. */
+export const cheminEtatClient = (clientId: number, actif: boolean) =>
+  `/api/identite-clients/clients/${clientId}/${actif ? 'activation' : 'desactivation'}`;
+
 const NON_AUTHENTIFIE = { statut: 'nonAuthentifie' } as const;
 const TECHNIQUE = { statut: 'erreur', message: TEXTES.erreurTechnique } as const;
 const MONTANT = /^\d+\.\d{2}$/;
@@ -84,7 +88,8 @@ async function corpsDe(reponse: Response): Promise<unknown> {
  * Adaptateur HTTP de la page d'administration (identite-clients et credits), par `fetchAuthentifie` (tout 401
  * supprime déjà le jeton) ; aucun paramètre de requête n'est envoyé. 401 : non authentifié ; 200 au contrat : ok ;
  * tout autre statut : le `message` texte du corps, sinon l'erreur technique ; réseau coupé ou corps hors contrat :
- * l'erreur technique.
+ * l'erreur technique. Activation et désactivation : `POST` sans corps ni paramètre, tout 2xx vaut succès (corps non
+ * lu).
  */
 export function creerClientAdministrationHttp(appeler: typeof fetch = (entree, options) => fetch(entree, options)): ClientAdministration {
   async function lire<T>(chemin: string, convertir: (corps: unknown) => T | null): Promise<ReponseAdministration<T>> {
@@ -105,7 +110,24 @@ export function creerClientAdministrationHttp(appeler: typeof fetch = (entree, o
     }
   }
 
+  async function changerEtatClient(clientId: number, actif: boolean): Promise<ReponseAdministration<null>> {
+    try {
+      const reponse = await appeler(cheminEtatClient(clientId, actif), { method: 'POST', headers: { Accept: 'application/json' } });
+      if (reponse.status === 401) {
+        return NON_AUTHENTIFIE;
+      }
+      if (reponse.ok) {
+        return { statut: 'ok', donnees: null };
+      }
+      const message = enregistrement(await corpsDe(reponse))?.message;
+      return texte(message) ? { statut: 'erreur', message } : TECHNIQUE;
+    } catch {
+      return TECHNIQUE;
+    }
+  }
+
   return {
+    changerEtatClient,
     lireIndicateursIdentite: () => lire(CHEMIN_ADMIN_INDICATEURS_IDENTITE, indicateursIdentiteDepuis),
     lireIndicateursPrets: () => lire(CHEMIN_ADMIN_INDICATEURS_PRETS, indicateursPretsDepuis),
     lireClients: () => lire(CHEMIN_ADMIN_CLIENTS, (corps) => listeDepuis(corps, clientDepuis)),

@@ -186,6 +186,12 @@ export const TEXTES = {
       actif: 'Actif',
       inactif: 'Inactif',
       detail: 'Detail',
+      /** Boutons d'action, docs/retro/00-global/MESSAGES.md l. 1023. */
+      desactiver: 'Desactiver',
+      activer: 'Activer',
+      /** MSG-016-130 et MSG-016-131, docs/retro/00-global/MESSAGES.md l. 1090-1091. */
+      succesDesactive: 'Client désactivé',
+      succesActive: 'Client activé',
     },
     detail: {
       titre: (nomComplet: string) => `Detail : ${nomComplet}`,

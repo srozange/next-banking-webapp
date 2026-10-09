@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react';
-import type { PartieAdministration } from '../../../application/consulterAdministration';
+import { changerEtatClient, type ClientAdministration, type PartieAdministration } from '../../../application/consulterAdministration';
+import type { SessionLocale } from '../../../application/session';
 import { clientDepuis, filtrerClients, type ClientAdministre } from '../../../domain/administration';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
+import { AlerteSucces } from '../../ui/AlerteSucces';
+import { BoutonFantome } from '../../ui/BoutonFantome';
 import { BoutonSecondaire } from '../../ui/BoutonSecondaire';
 import { Carte } from '../../ui/Carte';
 import { Etiquette } from '../../ui/Etiquette';
@@ -15,15 +18,34 @@ const COLONNES = [G.colonnes.nom, G.colonnes.login, G.colonnes.email, G.colonnes
 interface Proprietes {
   /** Clients (rôle CLIENT seulement, décidé par le serveur) ; null pendant le chargement. */
   partie: PartieAdministration<readonly ClientAdministre[]> | null;
+  client: ClientAdministration;
+  session: SessionLocale;
+  /** Appelé quand la session est terminée (401 ou session fermée) : retour à la connexion. */
+  surDeconnexion: () => void;
+}
+
+/** Message de la dernière activation ou désactivation ; chaque nouvelle action remplace le précédent. */
+interface Message {
+  type: 'succes' | 'erreur';
+  texte: string;
 }
 
 /**
  * Section « Gestion des clients » de l'écran Administration (FR-016-08 à FR-016-10) : filtre appliqué au clic sur
  * « Filtrer » (ou Entrée), tableau des clients, puis panneau de détail inline sous le tableau (focus au titre ;
  * « Fermer » ou Échap le referme et rend le focus au bouton « Detail » déclencheur). Un nouveau filtrage ferme le
- * panneau. « Client depuis » est la date de création de la fiche (BUG-055 corrigé).
+ * panneau. « Client depuis » est la date de création de la fiche (BUG-055 corrigé). « Desactiver » / « Activer »
+ * (FR-016-11) agissent sans confirmation : le bouton est `aria-disabled` pendant la requête, et le statut (ligne et
+ * panneau) ne bascule, avec « Client désactivé » / « Client activé », qu'après la réponse 2xx de l'API ; en échec, le
+ * message reçu s'affiche et rien ne change.
  */
-export function SectionGestionClients({ partie }: Proprietes) {
+export function SectionGestionClients({ partie, client, session, surDeconnexion }: Proprietes) {
+  const [source, setSource] = useState(partie);
+  const [clients, setClients] = useState<readonly ClientAdministre[] | null>(partie?.donnees ?? null);
+  const [enCours, setEnCours] = useState<ReadonlySet<number>>(new Set());
+  const [message, setMessage] = useState<Message | null>(null);
+  /** Clients dont la requête est partie : garde synchrone contre un second clic avant le rendu suivant. */
+  const demandes = useRef(new Set<number>());
   const [saisie, setSaisie] = useState('');
   const [terme, setTerme] = useState('');
   const [selection, setSelection] = useState<number | null>(null);
@@ -56,7 +78,39 @@ export function SectionGestionClients({ partie }: Proprietes) {
     setSelection(null);
   }
 
-  const clients = partie?.donnees ?? null;
+  if (partie !== source) {
+    setSource(partie);
+    setClients(partie?.donnees ?? null);
+  }
+
+  async function basculer(cible: ClientAdministre) {
+    const { clientId } = cible;
+    if (demandes.current.has(clientId)) {
+      return;
+    }
+    demandes.current.add(clientId);
+    setEnCours((courants) => new Set(courants).add(clientId));
+    setMessage(null);
+    const actif = !cible.actif;
+    const issue = await changerEtatClient(client, session, clientId, actif);
+    demandes.current.delete(clientId);
+    setEnCours((courants) => {
+      const restants = new Set(courants);
+      restants.delete(clientId);
+      return restants;
+    });
+    if (issue.type === 'deconnecte') {
+      surDeconnexion();
+      return;
+    }
+    if (issue.type === 'erreur') {
+      setMessage({ type: 'erreur', texte: issue.message });
+      return;
+    }
+    setClients((courants) => courants?.map((existant) => (existant.clientId === clientId ? { ...existant, actif } : existant)) ?? null);
+    setMessage({ type: 'succes', texte: actif ? G.succesActive : G.succesDesactive });
+  }
+
   const affiches = clients === null ? [] : filtrerClients(clients, terme);
   const selectionne = clients?.find((client) => client.clientId === selection) ?? null;
   return (
@@ -69,6 +123,16 @@ export function SectionGestionClients({ partie }: Proprietes) {
           <p>{partie.message}</p>
         </AlerteErreur>
       )}
+      {message !== null &&
+        (message.type === 'succes' ? (
+          <AlerteSucces testId="admin-message-succes">
+            <p>{message.texte}</p>
+          </AlerteSucces>
+        ) : (
+          <AlerteErreur testId="admin-message-erreur">
+            <p>{message.texte}</p>
+          </AlerteErreur>
+        ))}
       {clients !== null && (
         <>
           <form className="ecran-administration__filtre" onSubmit={filtrer}>
@@ -105,19 +169,28 @@ export function SectionGestionClients({ partie }: Proprietes) {
                   </td>
                   <td>{client.nomConseiller ?? ''}</td>
                   <td>
-                    <BoutonSecondaire
-                      ref={(bouton) => {
-                        if (bouton === null) {
-                          declencheurs.current.delete(client.clientId);
-                        } else {
-                          declencheurs.current.set(client.clientId, bouton);
-                        }
-                      }}
-                      data-testid={`admin-detail-${client.clientId}`}
-                      onClick={() => setSelection(client.clientId)}
-                    >
-                      {G.detail}
-                    </BoutonSecondaire>
+                    <div className="ecran-administration__actions">
+                      <BoutonSecondaire
+                        ref={(bouton) => {
+                          if (bouton === null) {
+                            declencheurs.current.delete(client.clientId);
+                          } else {
+                            declencheurs.current.set(client.clientId, bouton);
+                          }
+                        }}
+                        data-testid={`admin-detail-${client.clientId}`}
+                        onClick={() => setSelection(client.clientId)}
+                      >
+                        {G.detail}
+                      </BoutonSecondaire>
+                      <BoutonFantome
+                        data-testid={`admin-${client.actif ? 'desactiver' : 'activer'}-${client.clientId}`}
+                        occupe={enCours.has(client.clientId)}
+                        onClick={() => void basculer(client)}
+                      >
+                        {client.actif ? G.desactiver : G.activer}
+                      </BoutonFantome>
+                    </div>
                   </td>
                 </tr>
               ))

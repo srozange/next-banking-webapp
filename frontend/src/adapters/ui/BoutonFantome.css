@@ -16,3 +16,13 @@
 .bouton-fantome:hover {
   background-color: var(--color-surface-alt);
 }
+
+.bouton-fantome[aria-disabled='true'] {
+  border-color: var(--color-disabled-text);
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+.bouton-fantome[aria-disabled='true']:hover {
+  background-color: transparent;
+}

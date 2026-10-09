@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { ClientAdministre, IndicateursIdentite, IndicateursPrets, UtilisateurAdministre } from '../domain/administration';
-import { chargerAdministration, type ClientAdministration, type ReponseAdministration } from './consulterAdministration';
+import { changerEtatClient, chargerAdministration, type ClientAdministration, type ReponseAdministration } from './consulterAdministration';
 import type { SessionLocale } from './session';
 
 function sessionEnMemoire(ouverte = true) {
@@ -46,6 +46,7 @@ function client() {
     lireIndicateursPrets: vi.fn<ClientAdministration['lireIndicateursPrets']>(() => Promise.resolve(ok(PRETS))),
     lireClients: vi.fn<ClientAdministration['lireClients']>(() => Promise.resolve(ok([JEAN]))),
     lireUtilisateurs: vi.fn<ClientAdministration['lireUtilisateurs']>(() => Promise.resolve(ok([ALICE]))),
+    changerEtatClient: vi.fn<ClientAdministration['changerEtatClient']>(() => Promise.resolve(ok(null))),
   };
 }
 
@@ -113,5 +114,41 @@ describe('chargerAdministration', () => {
     expect(await chargerAdministration(service, session)).toEqual({ type: 'deconnecte' });
     expect(service.lireIndicateursIdentite).not.toHaveBeenCalled();
     expect(service.lireUtilisateurs).not.toHaveBeenCalled();
+  });
+});
+
+describe('changerEtatClient', () => {
+  it.each([false, true])('[FR-016-11] une réponse ok (actif demandé : %s) est effectuée, avec l’identifiant et l’état transmis', async (actif) => {
+    const service = client();
+    const session = sessionEnMemoire();
+
+    expect(await changerEtatClient(service, session, 3, actif)).toEqual({ type: 'effectue' });
+    expect(service.changerEtatClient).toHaveBeenCalledExactlyOnceWith(3, actif);
+    expect(session.terminer).not.toHaveBeenCalled();
+  });
+
+  it('[FR-016-11] une erreur rend le message de l’adaptateur tel quel', async () => {
+    const service = client();
+    service.changerEtatClient.mockResolvedValue({ statut: 'erreur', message: 'Accès refusé' });
+    const session = sessionEnMemoire();
+
+    expect(await changerEtatClient(service, session, 3, false)).toEqual({ type: 'erreur', message: 'Accès refusé' });
+    expect(session.terminer).not.toHaveBeenCalled();
+  });
+
+  it('[FR-016-11] un 401 termine la session', async () => {
+    const service = client();
+    service.changerEtatClient.mockResolvedValue(NON_AUTHENTIFIE);
+    const session = sessionEnMemoire();
+
+    expect(await changerEtatClient(service, session, 3, false)).toEqual({ type: 'deconnecte' });
+    expect(session.terminer).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-016-11] sans session ouverte, aucun appel', async () => {
+    const service = client();
+
+    expect(await changerEtatClient(service, sessionEnMemoire(false), 3, false)).toEqual({ type: 'deconnecte' });
+    expect(service.changerEtatClient).not.toHaveBeenCalled();
   });
 });

@@ -45,7 +45,7 @@ import { creerStockageJetonLocal } from '../stockage/StockageJetonLocal';
  * `jetonDeTest({ sub: '1', roles })` quand la connexion est acceptée avec un rôle connu) et un client de profil simulé
  * (par défaut, le profil « Jean Dupont »), un client de session simulé (déconnexion sans effet, renouvellement
  * technique), un client bourse et un client produits et un client de conversation simulés (par défaut, panne technique), un client de relevé simulé (par défaut, aucune opération), un client du budget simulé (par défaut, panne technique), un client des plafonds simulé (par défaut, panne technique), un client des documents simulé (par défaut, panne technique), un client des bénéficiaires simulé (par défaut, aucune liste, suppression en panne), un client des virements programmés simulé (par défaut, aucune liste, création en panne), une horloge réelle ou simulée, un client de revue simulé (par défaut, files vides), un client du pipeline des prêts simulé (par défaut, listes vides, décision en panne), un client des prêts simulé (par défaut : aucun prêt, simulation et dépôt
- * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) et un client des notifications simulé (par défaut, aucune notification) et un client du portefeuille du conseiller simulé (par défaut, trois listes vides) et un client de l'administration simulé (par défaut, indicateurs à zéro et listes vides) ; `allerVers` simule l'envoi du navigateur à Powens.
+ * en panne) et un client Comptes Tiers simulé (par défaut, panne technique), un client du tableau de bord simulé (par défaut, aucun compte) et un client des notifications simulé (par défaut, aucune notification) et un client du portefeuille du conseiller simulé (par défaut, trois listes vides) et un client de l'administration simulé (par défaut, indicateurs à zéro, listes vides et activation/désactivation acceptée) ; `allerVers` simule l'envoi du navigateur à Powens.
  */
 export function rendreApplication(
   chemin: string,
@@ -147,6 +147,9 @@ export function rendreApplication(
     ),
     lireClients: vi.fn<ClientAdministration['lireClients']>(clientAdministration.lireClients ?? vide),
     lireUtilisateurs: vi.fn<ClientAdministration['lireUtilisateurs']>(clientAdministration.lireUtilisateurs ?? vide),
+    changerEtatClient: vi.fn<ClientAdministration['changerEtatClient']>(
+      clientAdministration.changerEtatClient ?? (() => Promise.resolve({ statut: 'ok' as const, donnees: null })),
+    ),
   };
   const allerVers = vi.fn<(adresse: string) => void>();
   const signal = creerSignalExpiration();

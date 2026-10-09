@@ -125,6 +125,10 @@ describe('accessibilité (axe)', () => {
     await screen.findByTestId('admin-panneau-detail');
     expect(await reglesViolees()).toEqual([]);
 
+    await utilisateur.click(screen.getByTestId('admin-activer-1'));
+    await screen.findByTestId('admin-message-succes');
+    expect(await reglesViolees()).toEqual([]);
+
     await utilisateur.type(screen.getByTestId('admin-recherche'), 'zzz{Enter}');
     await screen.findByText('Aucun client trouve');
     expect(await reglesViolees()).toEqual([]);

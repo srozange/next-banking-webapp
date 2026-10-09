@@ -16,6 +16,8 @@ export interface ClientAdministration {
   lireIndicateursPrets(): Promise<ReponseAdministration<IndicateursPrets>>;
   lireClients(): Promise<ReponseAdministration<readonly ClientAdministre[]>>;
   lireUtilisateurs(): Promise<ReponseAdministration<readonly UtilisateurAdministre[]>>;
+  /** Désactive (`actif` faux) ou active (`actif` vrai) le client ; l'audit et la publication restent au serveur. */
+  changerEtatClient(clientId: number, actif: boolean): Promise<ReponseAdministration<null>>;
 }
 
 /** Une partie de la page : ses données si la réponse est ok (sinon null), et le message de l'échec (sinon null). */
@@ -67,4 +69,29 @@ export async function chargerAdministration(client: ClientAdministration, sessio
     clients: partie(clients),
     utilisateurs: partie(utilisateurs),
   };
+}
+
+/** Issue d'une activation ou d'une désactivation : effectuée, refusée avec son message, ou fin de session. */
+export type ResultatChangementEtat = { type: 'effectue' } | { type: 'erreur'; message: string } | { type: 'deconnecte' };
+
+/**
+ * Cas d'usage (FR-016-11) : active (`actif` vrai) ou désactive (`actif` faux) un client par l'API d'administration ;
+ * le serveur reste juge (rôle, existence) et produit l'audit. Sans session ouverte, aucun appel ; un 401 termine la
+ * session ; une autre panne rend le message choisi par l'adaptateur.
+ */
+export async function changerEtatClient(
+  client: ClientAdministration,
+  session: SessionLocale,
+  clientId: number,
+  actif: boolean,
+): Promise<ResultatChangementEtat> {
+  if (!sessionOuverteOuFin(session)) {
+    return { type: 'deconnecte' };
+  }
+  const reponse = await client.changerEtatClient(clientId, actif);
+  if (reponse.statut === 'nonAuthentifie') {
+    session.terminer();
+    return { type: 'deconnecte' };
+  }
+  return reponse.statut === 'ok' ? { type: 'effectue' } : { type: 'erreur', message: reponse.message };
 }

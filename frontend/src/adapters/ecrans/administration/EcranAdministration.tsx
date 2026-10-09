@@ -55,7 +55,14 @@ export function EcranAdministration({ client, clientPipelinePrets, clientRevue, 
       <SectionIndicateursAdministration identite={etat?.indicateursIdentite ?? null} prets={etat?.indicateursPrets ?? null} />
       <SectionsPretsAdministration
         client={clientPipelinePrets}
-        entrePipelineEtHistorique={<SectionGestionClients partie={etat?.clients ?? null} />}
+        entrePipelineEtHistorique={
+          <SectionGestionClients
+            partie={etat?.clients ?? null}
+            client={client}
+            session={session}
+            surDeconnexion={() => void naviguer(ROUTE_CONNEXION, { replace: true })}
+          />
+        }
       />
       <SectionUtilisateurs partie={etat?.utilisateurs ?? null} />
       <SectionRevueVirements client={clientRevue} />

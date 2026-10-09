@@ -63,6 +63,7 @@ const REFERENCE: ClientAdministration = {
   lireIndicateursPrets: () => ok({ pretsEnAttente: 2, montantEnAttente: '15000.00' }),
   lireClients: () => ok(CLIENTS),
   lireUtilisateurs: () => ok(UTILISATEURS),
+  changerEtatClient: () => ok(null),
 };
 
 function ouvrir(administration: Partial<ClientAdministration> = {}, role = 'ADMIN') {
@@ -196,11 +197,12 @@ describe('EcranAdministration', () => {
       'Pierre Bernard',
     ]);
     const jean = within(screen.getByTestId('admin-client-1')).getAllByRole('cell').map((cellule) => cellule.textContent);
-    expect(jean).toEqual(['Jean Dupont', 'user1', 'jean.dupont@example.com', 'CLIENT', 'Actif', 'Sophie Durand', 'Detail']);
+    expect(jean).toEqual(['Jean Dupont', 'user1', 'jean.dupont@example.com', 'CLIENT', 'Actif', 'Sophie Durand', 'DetailDesactiver']);
     expect(screen.getByTestId('admin-role-1').textContent).toBe('CLIENT');
     expect(screen.getByTestId('admin-statut-4').textContent).toBe('Inactif');
     expect(within(screen.getByTestId('admin-client-3')).getAllByRole('cell')[5]?.textContent).toBe('');
-    expect(within(screen.getByTestId('admin-client-1')).getAllByRole('button').map((bouton) => bouton.textContent)).toEqual(['Detail']);
+    expect(within(screen.getByTestId('admin-client-1')).getAllByRole('button').map((bouton) => bouton.textContent)).toEqual(['Detail', 'Desactiver']);
+    expect(within(screen.getByTestId('admin-client-4')).getAllByRole('button').map((bouton) => bouton.textContent)).toEqual(['Detail', 'Activer']);
     expect(screen.queryByText('Administrateur')).toBeNull();
   });
 
@@ -340,6 +342,109 @@ describe('EcranAdministration', () => {
     for (const libelle of ['Gestion des clients', 'Jean Dupont', 'user1']) {
       expect(debut, libelle).toContain(libelle);
     }
+  });
+
+  it('[FR-016-11] Desactiver user3 : un seul POST, bouton aria-disabled jusqu’à la réponse, puis « Client désactivé », Inactif et Activer', async () => {
+    const utilisateur = userEvent.setup();
+    let repondre: (reponse: ReponseAdministration<null>) => void = () => {};
+    const { administration } = ouvrir({
+      changerEtatClient: () =>
+        new Promise((resoudre) => {
+          repondre = resoudre;
+        }),
+    });
+    const bouton = await screen.findByTestId('admin-desactiver-3');
+    expect(bouton.textContent).toBe('Desactiver');
+    expect(bouton.getAttribute('aria-disabled')).toBeNull();
+
+    await utilisateur.click(bouton);
+
+    expect(bouton.getAttribute('aria-disabled')).toBe('true');
+    expect(screen.getByTestId('admin-statut-3').textContent).toBe('Actif');
+    expect(screen.queryByTestId('admin-message-succes')).toBeNull();
+    await utilisateur.click(bouton);
+    expect(administration.changerEtatClient).toHaveBeenCalledExactlyOnceWith(3, false);
+
+    repondre({ statut: 'ok', donnees: null });
+
+    const succes = await within(screen.getByTestId('admin-clients-section')).findByTestId('admin-message-succes');
+    expect(succes.textContent).toBe('Client désactivé');
+    expect(succes.getAttribute('role')).toBe('status');
+    expect(screen.getByTestId('admin-statut-3').textContent).toBe('Inactif');
+    const activer = screen.getByTestId('admin-activer-3');
+    expect(activer).toBe(bouton);
+    expect(activer.textContent).toBe('Activer');
+    expect(activer.getAttribute('aria-disabled')).toBeNull();
+    expect(document.activeElement).toBe(activer);
+    expect(screen.queryByTestId('admin-desactiver-3')).toBeNull();
+    expect(administration.changerEtatClient).toHaveBeenCalledOnce();
+  });
+
+  it('[FR-016-11] Activer un client inactif : « Client activé », badge Actif et bouton Desactiver', async () => {
+    const utilisateur = userEvent.setup();
+    const { administration } = ouvrir({ lireClients: () => ok([JEAN, LUCIE, MARIE, { ...PIERRE, actif: false }]) });
+
+    await utilisateur.click(await screen.findByTestId('admin-activer-3'));
+
+    expect((await screen.findByTestId('admin-message-succes')).textContent).toBe('Client activé');
+    expect(administration.changerEtatClient).toHaveBeenCalledExactlyOnceWith(3, true);
+    expect(screen.getByTestId('admin-statut-3').textContent).toBe('Actif');
+    expect(screen.getByTestId('admin-desactiver-3').textContent).toBe('Desactiver');
+    expect(screen.queryByTestId('admin-activer-3')).toBeNull();
+  });
+
+  it.each([
+    [403, 'Accès refusé'],
+    [500, 'Une erreur technique est survenue'],
+  ])('[FR-016-11] API en erreur (%s) → message dans la section, badge inchangé, pas de message de succès', async (_statut, message) => {
+    const utilisateur = userEvent.setup();
+    ouvrir({ changerEtatClient: () => Promise.resolve({ statut: 'erreur', message }) });
+
+    await utilisateur.click(await screen.findByTestId('admin-desactiver-3'));
+
+    const section = screen.getByTestId('admin-clients-section');
+    expect((await within(section).findByTestId('admin-message-erreur')).textContent).toBe(message);
+    expect(screen.getByTestId('admin-statut-3').textContent).toBe('Actif');
+    expect(screen.getByTestId('admin-desactiver-3').getAttribute('aria-disabled')).toBeNull();
+    expect(screen.queryByTestId('admin-activer-3')).toBeNull();
+    expect(screen.queryByTestId('admin-message-succes')).toBeNull();
+    expect(screen.queryByText('Client désactivé')).toBeNull();
+  });
+
+  it('[FR-016-11] une nouvelle action remplace le message précédent', async () => {
+    const utilisateur = userEvent.setup();
+    const reponses: ReponseAdministration<null>[] = [{ statut: 'erreur', message: 'Accès refusé' }, { statut: 'ok', donnees: null }];
+    ouvrir({ changerEtatClient: () => Promise.resolve(reponses.shift() ?? { statut: 'ok', donnees: null }) });
+
+    await utilisateur.click(await screen.findByTestId('admin-desactiver-3'));
+    await screen.findByTestId('admin-message-erreur');
+    await utilisateur.click(screen.getByTestId('admin-desactiver-3'));
+
+    expect((await screen.findByTestId('admin-message-succes')).textContent).toBe('Client désactivé');
+    expect(within(screen.getByTestId('admin-clients-section')).queryByTestId('admin-message-erreur')).toBeNull();
+  });
+
+  it('[FR-016-11] un 401 à la désactivation termine la session et ramène à la connexion', async () => {
+    const utilisateur = userEvent.setup();
+    const { routeur } = ouvrir({ changerEtatClient: () => Promise.resolve({ statut: 'nonAuthentifie' }) });
+
+    await utilisateur.click(await screen.findByTestId('admin-desactiver-3'));
+
+    await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
+    expect(localStorage.getItem('nb.jeton')).toBeNull();
+  });
+
+  it('[FR-016-11] le panneau de détail ouvert suit la désactivation réussie', async () => {
+    const utilisateur = userEvent.setup();
+    ouvrir();
+
+    await utilisateur.click(await screen.findByTestId('admin-detail-3'));
+    expect(screen.getAllByTestId('admin-panneau-statut')[0]?.textContent).toBe('Actif');
+    await utilisateur.click(screen.getByTestId('admin-desactiver-3'));
+
+    await screen.findByTestId('admin-message-succes');
+    expect(screen.getAllByTestId('admin-panneau-statut')[0]?.textContent).toBe('Inactif');
+    expect(screen.getByTestId('admin-statut-3').textContent).toBe('Inactif');
   });
 
   it('[FR-016-08] un 401 termine la session et ramène à la connexion', async () => {

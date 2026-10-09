@@ -4,6 +4,7 @@ import {
   CHEMIN_ADMIN_INDICATEURS_IDENTITE,
   CHEMIN_ADMIN_INDICATEURS_PRETS,
   CHEMIN_ADMIN_UTILISATEURS,
+  cheminEtatClient,
   creerClientAdministrationHttp,
 } from './ClientAdministrationHttp';
 
@@ -129,5 +130,53 @@ describe('ClientAdministrationHttp', () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+
+  describe('changerEtatClient', () => {
+    const POST = { method: 'POST', headers: { Accept: 'application/json' } };
+
+    it('[FR-016-11] chemins exacts de l’API ADMIN d’identite-clients', () => {
+      expect(cheminEtatClient(3, false)).toBe('/api/identite-clients/clients/3/desactivation');
+      expect(cheminEtatClient(3, true)).toBe('/api/identite-clients/clients/3/activation');
+    });
+
+    it('[FR-016-11] [FR-001-07] un seul appel part, en POST vers identite-clients, sans corps ni paramètre ; 204 est un succès', async () => {
+      const appeler = vi.fn<typeof fetch>(() => Promise.resolve(new Response(null, { status: 204 })));
+
+      expect(await creerClientAdministrationHttp(appeler).changerEtatClient(3, false)).toEqual({ statut: 'ok', donnees: null });
+      expect(appeler).toHaveBeenCalledExactlyOnceWith('/api/identite-clients/clients/3/desactivation', POST);
+      const options = appeler.mock.calls[0]?.[1];
+      expect(options?.body).toBeUndefined();
+    });
+
+    it('[FR-016-11] l’activation appelle /activation ; un 2xx avec corps illisible reste un succès', async () => {
+      const appeler = repondre(200, 'illisible');
+
+      expect(await creerClientAdministrationHttp(appeler).changerEtatClient(3, true)).toEqual({ statut: 'ok', donnees: null });
+      expect(appeler).toHaveBeenCalledExactlyOnceWith('/api/identite-clients/clients/3/activation', POST);
+    });
+
+    it('[FR-016-11] un 401 est non authentifié', async () => {
+      expect(await creerClientAdministrationHttp(repondre(401, '{"message":"Authentification requise"}')).changerEtatClient(3, false)).toEqual({
+        statut: 'nonAuthentifie',
+      });
+    });
+
+    it('[FR-016-11] 403 et 500 rendent le message du corps ; sinon l’erreur technique', async () => {
+      expect(await creerClientAdministrationHttp(repondre(403, '{"message":"Accès refusé"}')).changerEtatClient(3, false)).toEqual({
+        statut: 'erreur',
+        message: 'Accès refusé',
+      });
+      expect(
+        await creerClientAdministrationHttp(repondre(500, '{"message":"Une erreur technique est survenue"}')).changerEtatClient(3, true),
+      ).toEqual({ statut: 'erreur', message: 'Une erreur technique est survenue' });
+      expect(await creerClientAdministrationHttp(repondre(404, 'illisible')).changerEtatClient(3, false)).toEqual(TECHNIQUE);
+      expect(await creerClientAdministrationHttp(repondre(500, '{"message":3}')).changerEtatClient(3, false)).toEqual(TECHNIQUE);
+      expect(await creerClientAdministrationHttp(repondre(500, '[]')).changerEtatClient(3, false)).toEqual(TECHNIQUE);
+    });
+
+    it('[FR-016-11] le réseau coupé rend l’erreur technique', async () => {
+      expect(await creerClientAdministrationHttp(reseauCoupe()).changerEtatClient(3, false)).toEqual(TECHNIQUE);
+    });
   });
 });

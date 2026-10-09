@@ -58,6 +58,12 @@
   gap: var(--spacing-md);
 }
 
+.ecran-administration__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
 .ecran-administration__recherche {
   box-sizing: border-box;
   flex: 1;
