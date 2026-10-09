@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { ReponseTableauDeBord } from '../../../application/consulterTableauDeBord';
 import type { ReponseProfil } from '../../../application/chargerProfil';
+import type { ClientComptesTiers, ReponseTiers } from '../../../application/comptesTiers';
+import type { EtatComptesTiers } from '../../../domain/comptesTiers';
 import type { OperationBrute } from '../../../domain/releve';
 import { jetonDeTest } from '../../jeton/jetonDeTest';
 import { rendreApplication } from '../../test/rendreApplication';
@@ -32,10 +34,18 @@ function ouvrir(
   reponse: () => Promise<ReponseTableauDeBord> = () => Promise.resolve({ statut: 'tableau', comptes: COMPTES, dernieresOperations: OPERATIONS }),
   roles = ['CLIENT'],
   lireProfil?: () => Promise<ReponseProfil>,
+  lireEtat?: ClientComptesTiers['lireEtat'],
 ) {
   localStorage.setItem('nb.jeton', jetonDeTest({ roles }));
-  return rendreApplication('/tableau-de-bord', undefined, lireProfil, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, { lire: reponse });
+  return rendreApplication('/tableau-de-bord', undefined, lireProfil, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, lireEtat === undefined ? {} : { lireEtat }, { lire: reponse });
 }
+
+const ETAT: EtatComptesTiers = { connecte: true, comptes: [], compteSelectionne: null, transactions: [], message: '', patrimoineTotal: '120.50' };
+const COMPTE_EXTERNE = { id: 1, nom: 'Compte', type: null, solde: '40.00', soldeAbsent: false, iban: null };
+const etatOk = (surcharge: Partial<EtatComptesTiers> = {}) => (): Promise<ReponseTiers<EtatComptesTiers>> =>
+  Promise.resolve({ statut: 'ok', donnees: { ...ETAT, ...surcharge } });
+const COMPTES_DEMO_BANK = [{ id: 1, type: 'COURANT', numero: 'FR76-0001-0001', solde: '1000.00' }];
+const tableauMille = () => Promise.resolve<ReponseTableauDeBord>({ statut: 'tableau', comptes: COMPTES_DEMO_BANK, dernieresOperations: [] });
 
 describe('écran du tableau de bord', () => {
   it('[FR-002-01] relit /moi et appelle le cœur bancaire dès le premier rendu, sans attendre l’identité (parallèle)', async () => {
@@ -170,5 +180,85 @@ describe('écran du tableau de bord', () => {
     await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
     expect(localStorage.getItem('nb.jeton')).toBeNull();
     expect(document.body.textContent).not.toContain('erreur technique');
+  });
+
+  it('[FR-002-12] Powens connecté : section, patrimoine total, nombre de comptes et bouton vers /comptes-tiers', async () => {
+    const { routeur } = ouvrir(tableauMille, ['CLIENT'], undefined, etatOk({ comptes: [COMPTE_EXTERNE, COMPTE_EXTERNE, COMPTE_EXTERNE] }));
+
+    expect((await screen.findByTestId('dashboard-externe-titre')).textContent).toBe('Mes comptes externes (Open Banking)');
+    expect(screen.getByTestId('dashboard-patrimoine-titre').textContent).toBe('Patrimoine total');
+    expect(screen.getByTestId('dashboard-patrimoine-total').textContent).toBe('EUR1,120.50');
+    expect(screen.getByText('Demo Bank + comptes externes')).toBeTruthy();
+    expect(screen.getByTestId('dashboard-externe-resume').textContent).toBe('Comptes externes via Powens Open Banking (3 comptes)');
+    expect(screen.queryByTestId('dashboard-openbanking-titre')).toBeNull();
+    // La section se place après le contenu comparé (« Voir le releve complet ») et avant le centre de notifications.
+    const texte = screen.getByTestId('dashboard-ecran').textContent ?? '';
+    expect(texte.indexOf('Mes comptes externes')).toBeGreaterThan(texte.indexOf('Voir le releve complet'));
+    expect(texte.indexOf('Mes comptes externes')).toBeLessThan(texte.indexOf('Centre de notifications'));
+    expect(screen.getByTestId('dashboard-externe-detail').textContent).toBe('Voir le detail et les transactions');
+    await userEvent.click(screen.getByTestId('dashboard-externe-detail'));
+    expect(routeur.state.location.pathname).toBe('/comptes-tiers');
+  });
+
+  it('[FR-002-12] connecté sans compte : le patrimoine est le total Demo Bank', async () => {
+    ouvrir(tableauMille, ['CLIENT'], undefined, etatOk({ patrimoineTotal: '0.00' }));
+
+    expect((await screen.findByTestId('dashboard-patrimoine-total')).textContent).toBe('EUR1,000.00');
+    expect(screen.getByTestId('dashboard-externe-resume').textContent).toBe('Comptes externes via Powens Open Banking (0 comptes)');
+  });
+
+  it('[FR-002-12] Powens non connecté : invitation et bouton vers /comptes-tiers', async () => {
+    const { routeur } = ouvrir(tableauMille, ['CLIENT'], undefined, etatOk({ connecte: false, patrimoineTotal: '0.00' }));
+
+    expect((await screen.findByTestId('dashboard-openbanking-titre')).textContent).toBe('Open Banking');
+    expect(screen.getByTestId('dashboard-openbanking-invitation').textContent).toBe(
+      'Agregez vos comptes d autres banques pour une vue complete de votre patrimoine',
+    );
+    expect(screen.queryByTestId('dashboard-patrimoine-total')).toBeNull();
+    expect(screen.getByTestId('dashboard-openbanking-connecter').textContent).toBe('Connecter mes autres banques via Powens');
+    await userEvent.click(screen.getByTestId('dashboard-openbanking-connecter'));
+    expect(routeur.state.location.pathname).toBe('/comptes-tiers');
+  });
+
+  it.each([
+    ['503', () => Promise.resolve<ReponseTiers<EtatComptesTiers>>({ statut: 'indisponible' })],
+    ['injoignable', () => Promise.reject<ReponseTiers<EtatComptesTiers>>(new Error('réseau'))],
+    ['illisible', () => Promise.resolve<ReponseTiers<EtatComptesTiers>>({ statut: 'technique' })],
+  ])('[FR-002-12] Powens en échec (%s) : tableau de bord normal, ni section ni somme', async (_nom, lireEtat) => {
+    ouvrir(tableauMille, ['CLIENT'], undefined, lireEtat);
+
+    expect((await screen.findByTestId('dashboard-solde-total')).textContent).toBe('EUR1,000.00');
+    await waitFor(() => expect(screen.getByTestId('dashboard-ecran').getAttribute('aria-busy')).toBeNull());
+    expect(screen.queryByTestId('dashboard-patrimoine-total')).toBeNull();
+    expect(screen.queryByTestId('dashboard-externe-titre')).toBeNull();
+    expect(screen.queryByTestId('dashboard-openbanking-titre')).toBeNull();
+    expect(screen.queryByTestId('dashboard-message-erreur')).toBeNull();
+  });
+
+  it('[FR-002-12] cœur bancaire en échec, Powens ok : message technique, pas de patrimoine', async () => {
+    ouvrir(() => Promise.resolve({ statut: 'technique' }), ['CLIENT'], undefined, etatOk());
+
+    expect((await screen.findByTestId('dashboard-message-erreur')).textContent).toBe('Une erreur technique est survenue');
+    expect(screen.queryByTestId('dashboard-patrimoine-total')).toBeNull();
+    expect(screen.queryByTestId('dashboard-externe-titre')).toBeNull();
+  });
+
+  it('[FR-002-12] l’état Powens est demandé au rendu, avant toute résolution', async () => {
+    let rendre: (reponse: ReponseTiers<EtatComptesTiers>) => void = () => undefined;
+    const attente = new Promise<ReponseTiers<EtatComptesTiers>>((resolu) => (rendre = resolu));
+    const { lire, tiers } = ouvrir(tableauMille, ['CLIENT'], undefined, () => attente);
+
+    expect(lire).toHaveBeenCalledTimes(1);
+    expect(tiers.lireEtat).toHaveBeenCalledTimes(1);
+    expect(await screen.findByTestId('dashboard-solde-total')).toBeTruthy();
+    expect(screen.queryByTestId('dashboard-patrimoine-total')).toBeNull();
+    rendre({ statut: 'ok', donnees: ETAT });
+    expect((await screen.findByTestId('dashboard-patrimoine-total')).textContent).toBe('EUR1,120.50');
+  });
+
+  it('[FR-002-12] sans jeton, /tableau-de-bord renvoie vers /login', async () => {
+    const { routeur } = rendreApplication('/tableau-de-bord');
+
+    await waitFor(() => expect(routeur.state.location.pathname).toBe('/login'));
   });
 });

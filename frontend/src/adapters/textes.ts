@@ -195,6 +195,16 @@ export const TEXTES = {
       soldeApres: 'Solde apres',
     },
     voirReleve: 'Voir le releve complet',
+    /** MSG-002-070 à 074 : Powens connecté. */
+    comptesExternes: 'Mes comptes externes (Open Banking)',
+    patrimoineTotal: 'Patrimoine total',
+    patrimoineSousTitre: 'Demo Bank + comptes externes',
+    comptesExternesVia: (nombre: number) => `Comptes externes via Powens Open Banking (${nombre} comptes)`,
+    voirDetail: 'Voir le detail et les transactions',
+    /** MSG-002-075 à 077 : Powens non connecté. */
+    openBanking: 'Open Banking',
+    invitationOpenBanking: 'Agregez vos comptes d autres banques pour une vue complete de votre patrimoine',
+    connecterBanques: 'Connecter mes autres banques via Powens',
   },
   /**
    * Centre de notifications du tableau de bord : FEAT-002 MESSAGES.md (MSG-002-031, 033 à 037), casse comprise.

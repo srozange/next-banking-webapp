@@ -30,6 +30,14 @@ export function soldeTotalCentimes(comptes: readonly CompteTableauBrut[]): numbe
   return comptes.reduce((somme, compte) => somme + centimesDepuisChaine(compte.solde), 0);
 }
 
+/**
+ * Patrimoine total en centimes entiers : total Demo Bank + patrimoine des comptes externes (chaîne `"120.50"`,
+ * soldes absents déjà exclus par le service) (FR-002-12).
+ */
+export function patrimoineTotalCentimes(soldeDemoBankCentimes: number, patrimoineExterne: string): number {
+  return soldeDemoBankCentimes + centimesDepuisChaine(patrimoineExterne);
+}
+
 /** Les 5 premières opérations, déjà de la plus récente à la plus ancienne selon le service. */
 export function dernieresOperations(operations: readonly OperationBrute[]): readonly OperationBrute[] {
   return operations.slice(0, NOMBRE_OPERATIONS_AFFICHEES);

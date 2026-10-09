@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { OperationBrute } from './releve';
-import { compteTableau, dernieresOperations, formaterMontantTableau, ligneTableau, soldeTotalCentimes } from './tableauDeBord';
+import { compteTableau, dernieresOperations, formaterMontantTableau, ligneTableau, patrimoineTotalCentimes, soldeTotalCentimes } from './tableauDeBord';
 
 const operation = (n: number): OperationBrute => ({ date: '2026-11-03T08:00:00Z', description: `op ${n}`, type: 'CREDIT', montant: '1.00', soldeApres: '2.00' });
 
@@ -50,5 +50,13 @@ describe('tableau de bord, règles pures', () => {
 
     expect(ligneTableau({ ...base, type: 'CREDIT' })).toEqual({ date: base.date, description: 'x', type: 'CREDIT', montant: '+EUR1,200.50', soldeApres: 'EUR8,130.00' });
     expect(ligneTableau({ ...base, type: 'DEBIT' }).montant).toBe('-EUR1,200.50');
+  });
+});
+
+describe('patrimoine total', () => {
+  it('[FR-002-12] additionne le total Demo Bank et les comptes externes en centimes entiers', () => {
+    expect(patrimoineTotalCentimes(100000, '120.50')).toBe(112050);
+    expect(patrimoineTotalCentimes(100000, '0.00')).toBe(100000);
+    expect(patrimoineTotalCentimes(0, '0.10') + patrimoineTotalCentimes(0, '0.20')).toBe(30);
   });
 });

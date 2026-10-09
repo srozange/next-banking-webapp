@@ -131,7 +131,7 @@ export function creerRoutes({
                 path === '/prets' ? (
                   <EcranPrets client={clientPrets} session={session.locale} />
                 ) : path === '/tableau-de-bord' ? (
-                  <EcranTableauDeBord client={clientTableauDeBord} clientNotifications={clientNotifications} clientVirement={clientVirement} />
+                  <EcranTableauDeBord client={clientTableauDeBord} clientComptesTiers={clientComptesTiers} clientNotifications={clientNotifications} clientVirement={clientVirement} />
                 ) : (
                   <>
                     <title>{TITRES_ONGLET[path]}</title>

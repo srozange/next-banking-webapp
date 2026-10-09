@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { chargerTableauDeBord, type ClientTableauDeBord, type TableauDeBord } from '../../../application/consulterTableauDeBord';
+import {
+  chargerPatrimoineExterne,
+  chargerTableauDeBord,
+  type ClientTableauDeBord,
+  type PatrimoineExterne,
+  type TableauDeBord,
+} from '../../../application/consulterTableauDeBord';
 import type { ClientNotifications } from '../../../application/gererNotifications';
+import type { ClientComptesTiers } from '../../../application/comptesTiers';
+import { formaterMontantTableau, patrimoineTotalCentimes } from '../../../domain/tableauDeBord';
 import type { ClientVirement } from '../../../application/virement';
 import { TEXTES } from '../../textes';
 import { AlerteErreur } from '../../ui/AlerteErreur';
@@ -18,6 +26,8 @@ const COLONNES = [T.colonnes.date, T.colonnes.description, T.colonnes.type, T.co
 
 interface Proprietes {
   client: ClientTableauDeBord;
+  /** Client Powens (lecture de l'état seulement) : section des comptes externes et patrimoine total (FR-002-12). */
+  clientComptesTiers: ClientComptesTiers;
   /** Client de la section « Centre de notifications », placée après le contenu comparé et avant « Suivi de mes virements ». */
   clientNotifications: ClientNotifications;
   /** Client de la section « Suivi de mes virements », toujours la dernière de la page (UX-DR153). */
@@ -29,9 +39,23 @@ interface Proprietes {
  * puis « Centre de notifications » et « Suivi de mes virements » (UX-DR153). Le chargement part au rendu, sans attendre l'identité (appels en parallèle) ;
  * aria-busy tant qu'il dure, ni squelette ni texte. Erreur du service : texte technique, rien d'autre.
  */
-export function EcranTableauDeBord({ client, clientNotifications, clientVirement }: Proprietes) {
+export function EcranTableauDeBord({ client, clientComptesTiers, clientNotifications, clientVirement }: Proprietes) {
   const navigate = useNavigate();
   const [tableau, setTableau] = useState<TableauDeBord | null | undefined>(undefined);
+
+  const [externe, setExterne] = useState<PatrimoineExterne | null>(null);
+
+  useEffect(() => {
+    let actif = true;
+    void chargerPatrimoineExterne(clientComptesTiers).then((lu) => {
+      if (actif) {
+        setExterne(lu);
+      }
+    });
+    return () => {
+      actif = false;
+    };
+  }, [clientComptesTiers]);
 
   useEffect(() => {
     let actif = true;
@@ -123,6 +147,45 @@ export function EcranTableauDeBord({ client, clientNotifications, clientVirement
               </BoutonSecondaire>
             </div>
           </section>
+          {externe !== null && externe.connecte && (
+            <section className="ecran-tableau-de-bord__section" aria-labelledby="dashboard-externe-titre">
+              <h2 id="dashboard-externe-titre" className="ecran-tableau-de-bord__separateur" data-testid="dashboard-externe-titre">
+                {T.comptesExternes}
+              </h2>
+              <Carte attenuee>
+                <p className="ecran-tableau-de-bord__eyebrow" data-testid="dashboard-patrimoine-titre">
+                  {T.patrimoineTotal}
+                </p>
+                <p className="ecran-tableau-de-bord__montant" data-testid="dashboard-patrimoine-total">
+                  {formaterMontantTableau(patrimoineTotalCentimes(tableau.soldeTotalCentimes, externe.patrimoineTotal))}
+                </p>
+                <p className="ecran-tableau-de-bord__sous-titre">{T.patrimoineSousTitre}</p>
+              </Carte>
+              <p className="ecran-tableau-de-bord__titre" data-testid="dashboard-externe-resume">
+                {T.comptesExternesVia(externe.nombreComptes)}
+              </p>
+              <div>
+                <BoutonSecondaire data-testid="dashboard-externe-detail" onClick={() => void navigate('/comptes-tiers')}>
+                  {T.voirDetail}
+                </BoutonSecondaire>
+              </div>
+            </section>
+          )}
+          {externe !== null && !externe.connecte && (
+            <section className="ecran-tableau-de-bord__section" aria-labelledby="dashboard-openbanking-titre">
+              <h2 id="dashboard-openbanking-titre" className="ecran-tableau-de-bord__separateur" data-testid="dashboard-openbanking-titre">
+                {T.openBanking}
+              </h2>
+              <p className="ecran-tableau-de-bord__sous-titre" data-testid="dashboard-openbanking-invitation">
+                {T.invitationOpenBanking}
+              </p>
+              <div>
+                <BoutonSecondaire data-testid="dashboard-openbanking-connecter" onClick={() => void navigate('/comptes-tiers')}>
+                  {T.connecterBanques}
+                </BoutonSecondaire>
+              </div>
+            </section>
+          )}
         </>
       )}
       <SectionCentreNotifications client={clientNotifications} />
