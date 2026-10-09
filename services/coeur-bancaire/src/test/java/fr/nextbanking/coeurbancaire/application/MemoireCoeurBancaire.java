@@ -24,6 +24,7 @@ import fr.nextbanking.coeurbancaire.domain.DemandeVirementProgramme;
 import fr.nextbanking.coeurbancaire.domain.VirementProgramme;
 import fr.nextbanking.coeurbancaire.domain.AlerteFraude;
 import fr.nextbanking.coeurbancaire.domain.BeneficiaireExterne;
+import fr.nextbanking.coeurbancaire.domain.ClientProjete;
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.DecisionRevue;
 import fr.nextbanking.coeurbancaire.domain.LigneRevue;
@@ -105,6 +106,11 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     /** Nom complet des clients, projection locale. */
     final Map<Long, String> noms = new HashMap<>();
     final Map<Long, Long> versionsClients = new HashMap<>();
+    /** Conseiller affecté (nul possible) et clients supprimés, projection locale. */
+    final Map<Long, Long> conseillers = new HashMap<>();
+    final Set<Long> supprimes = new HashSet<>();
+    /** Lectures par lot des comptes, pour vérifier qu'elles sont uniques. */
+    final List<java.util.Collection<Long>> lecturesParLot = new ArrayList<>();
     final List<String> lignesBatch = new ArrayList<>();
     /** Transitions refusées d'avance (un autre traitement a gagné la course). */
     final Set<Long> transitionsPerdues = new HashSet<>();
@@ -124,6 +130,13 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     public List<Compte> duClient(long clientId) {
         return comptes.values().stream().filter(c -> c.clientId() == clientId)
                 .sorted(java.util.Comparator.comparingLong(Compte::id)).toList();
+    }
+
+    @Override
+    public List<Compte> desClients(java.util.Collection<Long> clientIds) {
+        lecturesParLot.add(List.copyOf(clientIds));
+        return comptes.values().stream().filter(c -> clientIds.contains(c.clientId()))
+                .sorted(java.util.Comparator.comparingLong(Compte::id).reversed()).toList();
     }
 
     @Override
@@ -461,14 +474,27 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
-    public boolean enregistrerSiPlusRecent(long clientId, String nomComplet, long versionAgregat) {
-        Long connue = versionsClients.get(clientId);
-        if (connue != null && connue >= versionAgregat) {
+    public boolean enregistrerSiPlusRecent(ClientProjete client) {
+        Long connue = versionsClients.get(client.clientId());
+        if (connue != null && connue >= client.versionAgregat()) {
             return false;
         }
-        versionsClients.put(clientId, versionAgregat);
-        noms.put(clientId, nomComplet);
+        versionsClients.put(client.clientId(), client.versionAgregat());
+        noms.put(client.clientId(), client.nomComplet());
+        conseillers.put(client.clientId(), client.conseillerId());
+        if (client.supprime()) {
+            supprimes.add(client.clientId());
+        } else {
+            supprimes.remove(client.clientId());
+        }
         return true;
+    }
+
+    @Override
+    public List<Long> clientsDuConseiller(long conseillerId) {
+        return conseillers.entrySet().stream()
+                .filter(e -> e.getValue() != null && e.getValue() == conseillerId && !supprimes.contains(e.getKey()))
+                .map(Map.Entry::getKey).sorted().toList();
     }
 
     @Override

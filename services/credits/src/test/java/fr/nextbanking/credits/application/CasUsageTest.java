@@ -26,6 +26,11 @@ class CasUsageTest {
 
     private final PretRepository prets = new PretRepository() {
         @Override
+        public List<Pret> desClients(java.util.Collection<Long> clientIds) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public List<Pret> parClient(long clientId) {
             return List.of(DE_USER1, D_AUTRUI).stream().filter(pret -> pret.clientId() == clientId).toList();
         }

@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = {PointEntreeVirements.class, PointEntreeRevue.class, PointEntreeBeneficiaires.class,
-        PointEntreeVirementsProgrammes.class, PointEntreePlafonds.class})
+        PointEntreeVirementsProgrammes.class, PointEntreePlafonds.class, PointEntreePortefeuille.class})
 public class GestionErreursVirements {
 
     static final String ISSUE_REFUS_CONTROLE = "REFUSE_ERREUR_CONTROLE";
@@ -111,6 +111,12 @@ public class GestionErreursVirements {
             case MOIS_INVALIDE -> reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
             default -> reponse(HttpStatus.BAD_REQUEST, refus.getMessage());
         };
+    }
+
+    /** Sujet du jeton non numérique : 401 « Authentification requise ». */
+    @ExceptionHandler(SujetIllisible.class)
+    public ResponseEntity<Object> sujetIllisible() {
+        return reponse(HttpStatus.UNAUTHORIZED, Textes.AUTHENTIFICATION_REQUISE);
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, TypeMismatchException.class})

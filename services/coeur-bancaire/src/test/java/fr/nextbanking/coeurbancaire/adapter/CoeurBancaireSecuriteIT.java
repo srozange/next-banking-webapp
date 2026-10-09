@@ -39,7 +39,7 @@ class CoeurBancaireSecuriteIT {
             "/api/coeur-bancaire/traitements?limite=50", "/api/coeur-bancaire/tableau-de-bord",
             "/api/coeur-bancaire/beneficiaires", "/api/coeur-bancaire/virements-programmes",
             "/api/coeur-bancaire/temoin", "/api/coeur-bancaire/temoin/", "/api/coeur-bancaire/inconnu",
-            "/actuator/info");
+            "/actuator/info", "/api/coeur-bancaire/conseiller/portefeuille");
 
     @DynamicPropertySource
     static void proprietes(DynamicPropertyRegistry registre) {
@@ -162,6 +162,47 @@ class CoeurBancaireSecuriteIT {
         assertThat(jdbc.sql("select solde from comptes where id = 3").query(BigDecimal.class).single())
                 .isEqualByComparingTo("500.00");
         assertThat(jdbc.sql("select count(*) from virements").query(Long.class).single()).isZero();
+    }
+
+    @Test
+    @Tag("FR-030-07")
+    @Tag("FR-015-01")
+    void le_portefeuille_rend_401_a_un_sujet_illisible_et_403_a_un_client_meme_avec_un_parametre_force()
+            throws Exception {
+        Instant maintenant = Instant.now();
+        String sujetIllisible = Jetons.signer(Conteneurs.CLES, "abc", "CONSEILLER", maintenant,
+                maintenant.plusSeconds(1800));
+
+        HttpResponse<String> illisible = Jetons.envoyer(port, "GET", "/api/coeur-bancaire/conseiller/portefeuille",
+                sujetIllisible, null);
+        HttpResponse<String> client = Jetons.envoyer(port, "GET",
+                "/api/coeur-bancaire/conseiller/portefeuille?conseillerId=11", Jetons.pour(1, "CLIENT"), null);
+
+        assertThat(illisible.statusCode()).isEqualTo(401);
+        assertThat(illisible.body()).isEqualTo(AUTHENTIFICATION_REQUISE);
+        assertThat(client.statusCode()).isEqualTo(403);
+        assertThat(client.body()).isEqualTo("{\"message\":\"Accès refusé\"}");
+        assertThat(client.headers().firstValue("Set-Cookie")).isEmpty();
+    }
+
+    @Test
+    @Tag("FR-015-02")
+    @Tag("FR-030-07")
+    void le_conseiller_ne_voit_que_son_portefeuille_meme_avec_un_parametre_force() throws Exception {
+        DonneesDeReference.recharger(source, jdbc);
+        try (java.sql.Connection connexion = source.getConnection()) {
+            org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript(connexion,
+                    new org.springframework.core.io.FileSystemResource("reference-data/projection-clients.sql"));
+        }
+        String sophie = Jetons.pour(11, "CONSEILLER");
+
+        for (String parametre : new String[] {"?conseillerId=12", "?clientId=3"}) {
+            HttpResponse<String> reponse = Jetons.envoyer(port, "GET",
+                    "/api/coeur-bancaire/conseiller/portefeuille" + parametre, sophie, null);
+            assertThat(reponse.statusCode()).as(parametre).isEqualTo(200);
+            assertThat(reponse.body()).as(parametre).startsWith("[{\"clientId\":1,")
+                    .endsWith("{\"clientId\":2,\"comptes\":[]}]").doesNotContain("\"clientId\":3", "\"clientId\":4");
+        }
     }
 
     @Test

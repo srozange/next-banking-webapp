@@ -75,6 +75,11 @@ class DepotEcheancesEnMemoire implements PretRepository {
     };
 
     @Override
+    public List<Pret> desClients(java.util.Collection<Long> clientIds) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public List<Pret> parClient(long clientId) {
         throw new UnsupportedOperationException();
     }

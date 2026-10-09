@@ -8,6 +8,7 @@ import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -31,6 +32,18 @@ public class ComptesJdbc implements Comptes {
     public List<Compte> duClient(long clientId) {
         return jdbc.sql("select id, client_id, numero, type, solde from comptes where client_id = :clientId order by id")
                 .param("clientId", clientId)
+                .query(ComptesJdbc::compte)
+                .list();
+    }
+
+    @Override
+    public List<Compte> desClients(Collection<Long> clientIds) {
+        if (clientIds.isEmpty()) {
+            return List.of();
+        }
+        return jdbc.sql("select id, client_id, numero, type, solde from comptes where client_id in (:clientIds)"
+                        + " order by client_id, id")
+                .param("clientIds", clientIds)
                 .query(ComptesJdbc::compte)
                 .list();
     }

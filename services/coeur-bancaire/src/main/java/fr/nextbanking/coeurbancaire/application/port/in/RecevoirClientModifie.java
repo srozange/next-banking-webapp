@@ -1,5 +1,6 @@
 package fr.nextbanking.coeurbancaire.application.port.in;
 
+import fr.nextbanking.coeurbancaire.domain.ClientProjete;
 import java.util.UUID;
 
 /** Port entrant : état d'un client reçu sur {@code identite-clients.client-modifie.v1}. */
@@ -16,5 +17,5 @@ public interface RecevoirClientModifie {
     }
 
     /** Met à jour la projection des clients, une seule fois par identifiant d'événement. */
-    Issue recevoir(UUID idEvenement, long clientId, String nomComplet, long versionAgregat);
+    Issue recevoir(UUID idEvenement, ClientProjete client);
 }

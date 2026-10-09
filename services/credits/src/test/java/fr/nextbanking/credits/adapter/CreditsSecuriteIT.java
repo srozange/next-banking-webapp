@@ -84,6 +84,38 @@ class CreditsSecuriteIT {
     }
 
     @Test
+    @Tag("FR-030-07")
+    @Tag("FR-015-01")
+    void le_portefeuille_rend_401_sans_jeton_ou_a_un_sujet_illisible_et_403_a_un_client() throws Exception {
+        String chemin = "/api/credits/conseiller/portefeuille";
+        assertRefus(envoyer(port, "GET", chemin, null, Map.of()));
+        assertRefus(avecJeton(port, "GET", chemin, OutilsHttp.jetonValide("abc", "CONSEILLER")));
+
+        HttpResponse<String> client = avecJeton(port, "GET", chemin + "?conseillerId=11",
+                OutilsHttp.jetonValide("1", "CLIENT"));
+        assertThat(client.statusCode()).isEqualTo(403);
+        assertThat(client.body()).isEqualTo(ACCES_REFUSE);
+        assertThat(client.headers().firstValue("Set-Cookie")).isEmpty();
+    }
+
+    @Test
+    @Tag("FR-015-02")
+    @Tag("FR-030-07")
+    void le_conseiller_ne_voit_que_son_portefeuille_meme_avec_un_parametre_force() throws Exception {
+        OutilsHttp.executer(base, java.nio.file.Files.readString(
+                java.nio.file.Path.of("reference-data/projection-clients.sql")));
+        String sophie = OutilsHttp.jetonValide("11", "CONSEILLER");
+
+        for (String parametre : new String[] {"?conseillerId=12", "?clientId=3"}) {
+            HttpResponse<String> reponse = avecJeton(port, "GET", "/api/credits/conseiller/portefeuille" + parametre,
+                    sophie);
+            assertThat(reponse.statusCode()).as(parametre).isEqualTo(200);
+            assertThat(reponse.body()).as(parametre).startsWith("[{\"clientId\":1,")
+                    .endsWith("{\"clientId\":2,\"prets\":[]}]").doesNotContain("\"clientId\":3", "\"clientId\":4");
+        }
+    }
+
+    @Test
     void la_sante_est_publique() throws Exception {
         HttpResponse<String> reponse = envoyer(port, "GET", "/actuator/health", null, Map.of());
 

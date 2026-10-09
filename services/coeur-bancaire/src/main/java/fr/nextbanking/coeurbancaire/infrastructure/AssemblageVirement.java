@@ -3,6 +3,7 @@ package fr.nextbanking.coeurbancaire.infrastructure;
 import fr.nextbanking.coeurbancaire.application.ConsulterComptesCasUsage;
 import fr.nextbanking.coeurbancaire.application.ConsulterReleveCasUsage;
 import fr.nextbanking.coeurbancaire.application.ConsulterTableauDeBordCasUsage;
+import fr.nextbanking.coeurbancaire.application.ConsulterPortefeuilleCasUsage;
 import fr.nextbanking.coeurbancaire.application.ConsulterRevueCasUsage;
 import fr.nextbanking.coeurbancaire.application.ConsulterSuiviVirementsCasUsage;
 import fr.nextbanking.coeurbancaire.application.EcheanceRevueCasUsage;
@@ -12,6 +13,7 @@ import fr.nextbanking.coeurbancaire.application.RejetVirementCasUsage;
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterRevue;
 import fr.nextbanking.coeurbancaire.application.port.in.ConsulterSuiviVirements;
 import fr.nextbanking.coeurbancaire.application.port.in.LibererVirement;
+import fr.nextbanking.coeurbancaire.application.port.in.ConsulterPortefeuille;
 import fr.nextbanking.coeurbancaire.application.port.in.RecevoirClientModifie;
 import fr.nextbanking.coeurbancaire.application.port.in.RejeterEcheances;
 import fr.nextbanking.coeurbancaire.application.port.in.RejeterVirement;
@@ -112,6 +114,11 @@ public class AssemblageVirement {
     @Bean
     ConsulterSuiviVirements consulterSuiviVirements(DepotVirements depotVirements) {
         return new ConsulterSuiviVirementsCasUsage(depotVirements);
+    }
+
+    @Bean
+    ConsulterPortefeuille consulterPortefeuille(ProjectionClients projection, Comptes comptes) {
+        return new ConsulterPortefeuilleCasUsage(projection, comptes);
     }
 
     @Bean

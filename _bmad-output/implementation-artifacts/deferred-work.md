@@ -250,3 +250,11 @@ source_spec: `spec-4-6-executer-automatiquement-les-echeances-dues-des-virements
 severity: medium
 reason: Choix assumé de la story 4.6 (voir Design Notes) ; les tests de 4.6 assertent « reste due ». Les stories 4.7 et 4.8 devront remplacer ce comportement (notification ALERTE, désactivation après compte introuvable, suspension et avance de la date) et mettre ces tests à jour. Le cas « destinataire introuvable » journalise pour l'instant le texte legacy « Echec execution virement programme id={id} » sans compter d'échec.
 status: open
+
+### DW-30: Dans une application lancée (compose), aucune étape ne charge reference-data/projection-clients.sql du cœur bancaire ni de credits : le portefeuille de ces deux services reste vide tant qu'aucun
+origin: spec-deferred ba8646140d0b
+location: services/coeur-bancaire/reference-data/projection-clients.sql
+source_spec: `spec-9-1-exposer-le-portefeuille-du-conseiller-decide-cote-serveur.md`
+severity: medium
+reason: Aucun script, Makefile ni compose.yaml ne charge projection-clients.sql (seuls les tests le font) ; identite-clients ne republie pas ses clients au démarrage (RelaisOutboxClients relaie seulement l'outbox). Écart préexistant pour credits ; le chargement des projections en rejeu relève d'ADV-08 et de la story « Socle du rejeu final ». Les lignes de projection antérieures à V11 gardent conseiller_id nul (accepté par la spec).
+status: open

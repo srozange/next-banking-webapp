@@ -1,6 +1,7 @@
 package fr.nextbanking.coeurbancaire.adapter.in.evenements;
 
 import fr.nextbanking.coeurbancaire.application.port.in.RecevoirClientModifie;
+import fr.nextbanking.coeurbancaire.domain.ClientProjete;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,7 @@ import tools.jackson.databind.json.JsonMapper;
 /**
  * Adaptateur entrant : écouteur unitaire de {@code identite-clients.client-modifie.v1} (schéma
  * {@code contrats/evenements/identite-clients.client-modifie.v1.schema.json}). Lit l'enveloppe JSON (chaîne, sans
- * en-tête de type), ignore un type ou une version inattendus, et confie le nom complet au cas d'usage idempotent qui
+ * en-tête de type), ignore un type ou une version inattendus, et confie le nom complet, le conseiller affecté et la suppression au cas d'usage idempotent qui
  * alimente la projection locale des clients. Les champs non utilisés sont ignorés.
  */
 @Component
@@ -39,8 +40,8 @@ public class RecepteurClientModifie {
             return;
         }
         Donnees donnees = enveloppe.donnees();
-        switch (recevoirClientModifie.recevoir(enveloppe.idEvenement(), donnees.clientId(), donnees.nomComplet(),
-                donnees.versionAgregat())) {
+        switch (recevoirClientModifie.recevoir(enveloppe.idEvenement(), new ClientProjete(donnees.clientId(),
+                donnees.nomComplet(), donnees.conseillerId(), donnees.supprime(), donnees.versionAgregat()))) {
             case DEJA_TRAITE -> JOURNAL.info("Événement {} déjà traité : ignoré", enveloppe.idEvenement());
             case IGNORE_ANCIEN -> JOURNAL.info("Événement {} : version {} du client {} ancienne, ignorée",
                     enveloppe.idEvenement(), donnees.versionAgregat(), donnees.clientId());
@@ -53,7 +54,7 @@ public class RecepteurClientModifie {
     record Enveloppe(UUID idEvenement, String type, int version, Donnees donnees) {
     }
 
-    /** Données utilisées : identifiant, nom complet et version de l'agrégat. */
-    record Donnees(long clientId, String nomComplet, long versionAgregat) {
+    /** Données utilisées : identifiant, nom complet, conseiller affecté (nul possible), suppression et version. */
+    record Donnees(long clientId, String nomComplet, Long conseillerId, boolean supprime, long versionAgregat) {
     }
 }

@@ -4,6 +4,7 @@ import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.CompteId;
 import fr.nextbanking.coeurbancaire.domain.EtatCompte;
 import fr.nextbanking.coeurbancaire.domain.Montant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,9 @@ public interface Comptes {
 
     /** Comptes du client, par identifiant. */
     List<Compte> duClient(long clientId);
+
+    /** Comptes des clients demandés, en une lecture, triés par client puis par identifiant de compte. */
+    List<Compte> desClients(Collection<Long> clientIds);
 
     /** Compte d'identifiant donné, s'il existe. */
     Optional<Compte> trouver(long compteId);

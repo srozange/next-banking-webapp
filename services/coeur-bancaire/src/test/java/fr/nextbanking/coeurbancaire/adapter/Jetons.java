@@ -55,7 +55,8 @@ public final class Jetons {
         }
     }
 
-    private static String signer(KeyPair cles, String sujet, String role, Instant emission, Instant expiration) {
+    /** Jeton signé par la paire donnée, pour le sujet (éventuellement non numérique), le rôle et les dates donnés. */
+    static String signer(KeyPair cles, String sujet, String role, Instant emission, Instant expiration) {
         RSAKey cle = new RSAKey.Builder((RSAPublicKey) cles.getPublic()).privateKey((RSAPrivateKey) cles.getPrivate())
                 .build();
         JwtClaimsSet revendications = JwtClaimsSet.builder().subject(sujet).claim("roles", List.of(role))

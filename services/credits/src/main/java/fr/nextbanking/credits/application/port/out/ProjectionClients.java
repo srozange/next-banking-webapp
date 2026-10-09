@@ -2,6 +2,7 @@ package fr.nextbanking.credits.application.port.out;
 
 import fr.nextbanking.credits.domain.ClientProjete;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,4 +19,7 @@ public interface ProjectionClients {
 
     /** Nom complet des clients connus parmi ceux demandés, par identifiant. */
     Map<Long, String> nomsComplets(Collection<Long> clientIds);
+
+    /** Identifiants des clients non supprimés affectés au conseiller, triés par ordre croissant. */
+    List<Long> clientsDuConseiller(long conseillerId);
 }

@@ -6,7 +6,6 @@ import fr.nextbanking.identiteclients.application.port.out.Horloge;
 import fr.nextbanking.identiteclients.application.port.out.JournalAudit;
 import fr.nextbanking.identiteclients.application.port.out.PublicationEtatClient;
 import fr.nextbanking.identiteclients.application.port.out.Transaction;
-import fr.nextbanking.identiteclients.domain.AccesRefuse;
 import fr.nextbanking.identiteclients.domain.ClientIntrouvable;
 import fr.nextbanking.identiteclients.domain.EntreeAudit;
 import fr.nextbanking.identiteclients.domain.Role;
@@ -14,7 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Cas d'usage : exige le rôle ADMIN (refus sans audit), vérifie que le client existe (sans audit), puis, dans une
+ * Cas d'usage : exige le rôle ADMIN par {@link DroitsRoles} (refus sans audit), vérifie que le client existe (sans audit), puis, dans une
  * transaction, consigne l'entrée d'audit ADMIN_DEACTIVATE ou ADMIN_ACTIVATE dans une transaction indépendante,
  * conservée même si l'écriture de {@code active} échoue, avant de modifier l'état. L'entrée est publiée après
  * validation. L'état complet du client est consigné dans l'outbox des clients, dans la transaction de l'écriture
@@ -51,9 +50,7 @@ public class ChangerEtatClientCasUsage implements ChangerEtatClient {
 
     private void changer(Set<Role> rolesActeur, long clientId, boolean actif,
             java.util.function.Supplier<EntreeAudit> entree) {
-        if (rolesActeur == null || !rolesActeur.contains(Role.ADMIN)) {
-            throw new AccesRefuse();
-        }
+        DroitsRoles.exigerAdmin(rolesActeur);
         long[] lignes = transaction.executer(() -> {
             depot.parId(clientId).orElseThrow(ClientIntrouvable::new);
             EntreeAudit aConsigner = entree.get();

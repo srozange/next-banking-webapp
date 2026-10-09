@@ -1,11 +1,7 @@
 package fr.nextbanking.identiteclients.adapter.in.http;
 
 import fr.nextbanking.identiteclients.application.port.in.ChangerEtatClient;
-import fr.nextbanking.identiteclients.domain.Role;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,8 +34,8 @@ public class PointEntreeClients {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desactiver(@AuthenticationPrincipal Jwt jeton, @PathVariable long clientId,
             HttpServletRequest requete) {
-        long acteurId = acteurId(jeton);
-        changerEtatClient.desactiver(acteurId, roles(jeton), clientId, resolveurAdresseIp.resoudre(requete));
+        long acteurId = JetonActeur.acteurId(jeton);
+        changerEtatClient.desactiver(acteurId, JetonActeur.roles(jeton), clientId, resolveurAdresseIp.resoudre(requete));
         JOURNAL.info("Client {} désactivé par l'administrateur {}", clientId, acteurId);
     }
 
@@ -47,32 +43,8 @@ public class PointEntreeClients {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void activer(@AuthenticationPrincipal Jwt jeton, @PathVariable long clientId,
             HttpServletRequest requete) {
-        long acteurId = acteurId(jeton);
-        changerEtatClient.activer(acteurId, roles(jeton), clientId, resolveurAdresseIp.resoudre(requete));
+        long acteurId = JetonActeur.acteurId(jeton);
+        changerEtatClient.activer(acteurId, JetonActeur.roles(jeton), clientId, resolveurAdresseIp.resoudre(requete));
         JOURNAL.info("Client {} activé par l'administrateur {}", clientId, acteurId);
-    }
-
-    private static long acteurId(Jwt jeton) {
-        try {
-            return Long.parseLong(jeton.getSubject());
-        } catch (NumberFormatException e) {
-            throw new AuthentificationRequise();
-        }
-    }
-
-    /** Rôles connus portés par la revendication {@code roles} ; les autres valeurs sont ignorées. */
-    private static Set<Role> roles(Jwt jeton) {
-        Set<Role> roles = EnumSet.noneOf(Role.class);
-        List<String> valeurs = jeton.getClaimAsStringList("roles");
-        if (valeurs != null) {
-            for (String valeur : valeurs) {
-                for (Role role : Role.values()) {
-                    if (role.name().equals(valeur)) {
-                        roles.add(role);
-                    }
-                }
-            }
-        }
-        return roles;
     }
 }

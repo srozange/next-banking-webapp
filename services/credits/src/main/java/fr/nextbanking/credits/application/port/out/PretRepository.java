@@ -6,6 +6,7 @@ import fr.nextbanking.credits.domain.NouveauPret;
 import fr.nextbanking.credits.domain.Pret;
 import fr.nextbanking.credits.domain.StatutPret;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,9 @@ public interface PretRepository {
 
     /** Prêts du client, date de début décroissante. */
     List<Pret> parClient(long clientId);
+
+    /** Prêts des clients demandés, en une lecture, date de début décroissante puis identifiant décroissant. */
+    List<Pret> desClients(Collection<Long> clientIds);
 
     /** Prêts EN_ATTENTE de tous les clients, date de début décroissante. */
     List<Pret> enAttente();

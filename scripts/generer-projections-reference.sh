@@ -3,6 +3,8 @@
 # - la projection des clients de credits (services/credits/reference-data/projection-clients.sql) est dérivée des
 #   utilisateurs de services/identite-clients/reference-data/reference-data.sql (identifiant, login, nom complet, rôle,
 #   actif, conseiller) ;
+# - la projection des clients de coeur-bancaire (services/coeur-bancaire/reference-data/projection-clients.sql) est
+#   dérivée du même fichier (identifiant, nom complet, conseiller) : le portefeuille du conseiller (story 9.1) ;
 # - les projections des clients et des comptes de documents (bloc « PROJECTIONS GENEREES » de
 #   services/documents/reference-data/reference-data.sql) sont dérivées de ce même fichier d'identite-clients et des
 #   comptes de services/coeur-bancaire/reference-data/reference-data.sql (identifiant, client, numéro, type, solde ;
@@ -19,12 +21,13 @@ source_sql="$racine/services/identite-clients/reference-data/reference-data.sql"
 sortie="$racine/services/credits/reference-data/projection-clients.sql"
 source_comptes="$racine/services/coeur-bancaire/reference-data/reference-data.sql"
 sortie_documents="$racine/services/documents/reference-data/reference-data.sql"
+sortie_coeur="$racine/services/coeur-bancaire/reference-data/projection-clients.sql"
 
-python3 -I - "$source_sql" "$sortie" "$source_comptes" "$sortie_documents" <<'PYTHON'
+python3 -I - "$source_sql" "$sortie" "$source_comptes" "$sortie_documents" "$sortie_coeur" <<'PYTHON'
 import re
 import sys
 
-source, sortie, source_comptes, sortie_documents = sys.argv[1:5]
+source, sortie, source_comptes, sortie_documents, sortie_coeur = sys.argv[1:6]
 DATE_CREATION = "2026-10-06"
 JETON = re.compile(r"'(?:[^']|'')*'|(?:date|timestamptz|timestamp)\s+'[^']*'|[^,\s()]+")
 INSERT = re.compile(
@@ -60,6 +63,20 @@ corps = "".join(
     for id_, login, nom, role, actif, conseiller in lignes)
 with open(sortie, "w", encoding="utf-8") as fichier:
     fichier.write(entete + corps)
+
+# Projection des clients de coeur-bancaire : identifiant, nom complet, conseiller, non supprimé, version 1.
+entete_coeur = (
+    "-- Projection de référence des clients du service coeur-bancaire : un client par utilisateur du legacy, en"
+    " version 1.\n"
+    "-- Hors migrations : chargé dans une base déjà migrée par Flyway.\n"
+    "-- Généré par scripts/generer-projections-reference.sh depuis services/identite-clients/reference-data/"
+    "reference-data.sql : ne pas modifier à la main.\n")
+corps_coeur = "".join(
+    "insert into clients (client_id, nom_complet, conseiller_id, supprime, version_agregat)\n"
+    f"values ({id_}, {nom}, {conseiller}, false, 1);\n"
+    for id_, login, nom, role, actif, conseiller in lignes)
+with open(sortie_coeur, "w", encoding="utf-8") as fichier:
+    fichier.write(entete_coeur + corps_coeur)
 
 # Projections de documents : clients (mêmes valeurs que pour credits) et comptes de coeur-bancaire.
 COMPTE = re.compile(
@@ -117,4 +134,5 @@ with open(sortie_documents, "w", encoding="utf-8") as fichier:
     fichier.write(avant + bloc + apres)
 PYTHON
 echo "Projection des clients de credits générée : $sortie"
+echo "Projection des clients de coeur-bancaire générée : $sortie_coeur"
 echo "Projections des clients, des comptes et des opérations de documents générées : $sortie_documents"

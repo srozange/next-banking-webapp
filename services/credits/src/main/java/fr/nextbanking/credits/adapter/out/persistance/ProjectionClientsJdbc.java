@@ -4,6 +4,7 @@ import fr.nextbanking.credits.application.port.out.ProjectionClients;
 import fr.nextbanking.credits.domain.ClientProjete;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
@@ -53,5 +54,14 @@ public class ProjectionClientsJdbc implements ProjectionClients {
                 .query((ligne, numero) -> noms.put(ligne.getLong("client_id"), ligne.getString("nom_complet")))
                 .list();
         return noms;
+    }
+
+    @Override
+    public List<Long> clientsDuConseiller(long conseillerId) {
+        return jdbc.sql("select client_id from clients where conseiller_id = :conseiller and not supprime"
+                        + " order by client_id")
+                .param("conseiller", conseillerId)
+                .query(Long.class)
+                .list();
     }
 }

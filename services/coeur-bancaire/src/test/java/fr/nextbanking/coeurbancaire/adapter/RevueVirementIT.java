@@ -5,6 +5,7 @@ import fr.nextbanking.coeurbancaire.domain.Montant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fr.nextbanking.coeurbancaire.application.port.in.RecevoirClientModifie;
+import fr.nextbanking.coeurbancaire.domain.ClientProjete;
 import fr.nextbanking.coeurbancaire.infrastructure.ApplicationCoeurBancaire;
 import fr.nextbanking.coeurbancaire.infrastructure.Conteneurs;
 import java.net.URI;
@@ -122,7 +123,7 @@ class RevueVirementIT {
 
     @Test
     void la_file_est_reservee_a_l_administrateur_triee_par_heure_butoir_avec_le_nom_du_client() throws Exception {
-        recevoirClientModifie.recevoir(UUID.randomUUID(), 1, "Jean Dupont", 1);
+        recevoirClientModifie.recevoir(UUID.randomUUID(), new ClientProjete(1, "Jean Dupont", 11L, false, 1));
         horloge.regler(HorlogeFixe.DIX_HEURES_PARIS.minusSeconds(3600));
         long second = suspendre("11000.00").get("virementId").asLong();
         horloge.regler(HorlogeFixe.DIX_HEURES_PARIS);

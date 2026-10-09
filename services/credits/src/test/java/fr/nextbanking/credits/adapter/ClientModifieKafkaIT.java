@@ -3,6 +3,7 @@ package fr.nextbanking.credits.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
+import fr.nextbanking.credits.application.port.out.ProjectionClients;
 import fr.nextbanking.credits.infrastructure.ApplicationCredits;
 import fr.nextbanking.credits.infrastructure.Conteneurs;
 import java.time.Duration;
@@ -63,6 +64,9 @@ class ClientModifieKafkaIT {
     @Autowired
     private JdbcClient jdbc;
 
+    @Autowired
+    private ProjectionClients projection;
+
     @BeforeEach
     void donnees() {
         OutilsHttp.chargerDonnees(base);
@@ -99,6 +103,27 @@ class ClientModifieKafkaIT {
                 .query(String.class).single()).isEqualTo("CLIENT");
         assertThat(jdbc.sql("select conseiller_id from clients where client_id = :id").param("id", clientId)
                 .query(Long.class).single()).isEqualTo(11L);
+    }
+
+    @Test
+    @Tag("FR-015-02")
+    void une_version_superieure_reaffecte_le_client_d_un_portefeuille_a_l_autre() throws Exception {
+        long clientId = 8000L + (System.nanoTime() % 1000);
+        UUID affectation = UUID.randomUUID();
+        UUID reaffectation = UUID.randomUUID();
+        UUID ancienne = UUID.randomUUID();
+
+        envoyer(Long.toString(clientId), message(affectation, clientId, "Client", 1));
+        await().atMost(Duration.ofSeconds(30)).until(() -> traite(affectation));
+        assertThat(projection.clientsDuConseiller(11L)).contains(clientId);
+
+        envoyer(Long.toString(clientId),
+                message(reaffectation, clientId, "Client", 2).replace("\"conseillerId\":11", "\"conseillerId\":12"),
+                message(ancienne, clientId, "Client", 1));
+        await().atMost(Duration.ofSeconds(30)).until(() -> traite(ancienne));
+
+        assertThat(projection.clientsDuConseiller(11L)).doesNotContain(clientId);
+        assertThat(projection.clientsDuConseiller(12L)).contains(clientId);
     }
 
     private boolean traite(UUID idEvenement) {

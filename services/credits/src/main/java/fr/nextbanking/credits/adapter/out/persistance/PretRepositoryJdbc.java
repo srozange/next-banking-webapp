@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,6 +42,17 @@ public class PretRepositoryJdbc implements PretRepository {
     public List<Pret> parClient(long clientId) {
         return jdbc.sql(COLONNES + " where customer_id = :clientId order by date_debut desc, id desc")
                 .param("clientId", clientId)
+                .query(PretRepositoryJdbc::pret)
+                .list();
+    }
+
+    @Override
+    public List<Pret> desClients(Collection<Long> clientIds) {
+        if (clientIds.isEmpty()) {
+            return List.of();
+        }
+        return jdbc.sql(COLONNES + " where customer_id in (:clientIds) order by date_debut desc, id desc")
+                .param("clientIds", clientIds)
                 .query(PretRepositoryJdbc::pret)
                 .list();
     }

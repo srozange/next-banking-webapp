@@ -126,6 +126,36 @@ class IdentiteClientsSecuriteIT {
         assertRefus(envoyer(port, "POST", "/api/identite-clients/clients/1/activation", null, Map.of()));
     }
 
+    @Test
+    @Tag("FR-030-07")
+    @Tag("FR-015-01")
+    void le_portefeuille_rend_401_sans_jeton_ou_avec_un_sujet_illisible_et_403_a_un_client() throws Exception {
+        String chemin = "/api/identite-clients/conseiller/portefeuille";
+        assertRefus(envoyer(port, "GET", chemin, null, Map.of()));
+        assertRefus(avecJeton(port, "GET", chemin, OutilsHttp.jetonValide("abc", "CONSEILLER")));
+
+        HttpResponse<String> client = avecJeton(port, "GET", chemin + "?conseillerId=11",
+                OutilsHttp.jetonValide("1", "CLIENT"));
+        assertThat(client.statusCode()).isEqualTo(403);
+        assertThat(client.body()).isEqualTo("{\"message\":\"Accès refusé\"}");
+        assertThat(client.headers().firstValue("Set-Cookie")).isEmpty();
+    }
+
+    @Test
+    @Tag("FR-015-02")
+    @Tag("FR-030-07")
+    void le_conseiller_ne_voit_que_son_portefeuille_meme_avec_un_parametre_force() throws Exception {
+        String sophie = OutilsHttp.jetonValide("11", "CONSEILLER");
+
+        for (String parametre : new String[] {"?conseillerId=12", "?clientId=3"}) {
+            HttpResponse<String> reponse = avecJeton(port, "GET",
+                    "/api/identite-clients/conseiller/portefeuille" + parametre, sophie);
+            assertThat(reponse.statusCode()).as(parametre).isEqualTo(200);
+            assertThat(reponse.body()).as(parametre).startsWith("[{\"clientId\":1,")
+                    .contains("{\"clientId\":2,").doesNotContain("\"clientId\":3", "\"clientId\":4");
+        }
+    }
+
     private static void assertRefus(HttpResponse<String> reponse) {
         assertThat(reponse.statusCode()).as(reponse.uri().toString()).isEqualTo(401);
         assertThat(reponse.body()).isEqualTo(AUTHENTIFICATION_REQUISE);

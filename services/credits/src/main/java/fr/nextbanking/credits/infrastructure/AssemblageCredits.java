@@ -2,6 +2,7 @@ package fr.nextbanking.credits.infrastructure;
 
 import fr.nextbanking.credits.application.ConsulterEcheancesCasUsage;
 import fr.nextbanking.credits.application.ConsulterPipelinePretsCasUsage;
+import fr.nextbanking.credits.application.ConsulterPortefeuilleCasUsage;
 import fr.nextbanking.credits.application.ConsulterPretCasUsage;
 import fr.nextbanking.credits.application.DecisionAdministrateurPretCasUsage;
 import fr.nextbanking.credits.application.DecisionPretCasUsage;
@@ -13,6 +14,7 @@ import fr.nextbanking.credits.application.SimulerEmpruntCasUsage;
 import fr.nextbanking.credits.application.SupprimerPretCasUsage;
 import fr.nextbanking.credits.application.port.in.ConsulterEcheances;
 import fr.nextbanking.credits.application.port.in.ConsulterPipelinePrets;
+import fr.nextbanking.credits.application.port.in.ConsulterPortefeuille;
 import fr.nextbanking.credits.application.port.in.ConsulterPret;
 import fr.nextbanking.credits.application.port.in.DecisionAdministrateurPret;
 import fr.nextbanking.credits.application.port.in.DecisionPret;
@@ -90,6 +92,11 @@ public class AssemblageCredits {
     DecisionAdministrateurPret decisionAdministrateurPret(PretRepository prets, JournalAudit audit,
             Transaction transaction, Horloge horloge) {
         return new DecisionAdministrateurPretCasUsage(prets, audit, transaction, horloge);
+    }
+
+    @Bean
+    ConsulterPortefeuille consulterPortefeuille(ProjectionClients clients, PretRepository prets) {
+        return new ConsulterPortefeuilleCasUsage(clients, prets);
     }
 
     @Bean

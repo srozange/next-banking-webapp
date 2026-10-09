@@ -6,7 +6,10 @@ import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.Role;
 import java.util.Set;
 
-/** Contrôles communs aux décisions de l'administrateur : rôle ADMIN d'abord, puis motif obligatoire (D6). */
+/**
+ * Point unique du contrôle de rôle (seule classe qui lit {@code Role.ADMIN}) : décisions de l'administrateur (rôle
+ * ADMIN d'abord, puis motif obligatoire, D6) et portefeuille du conseiller (CONSEILLER ou ADMIN).
+ */
 final class DecisionAdministrateur {
 
     private DecisionAdministrateur() {
@@ -15,6 +18,13 @@ final class DecisionAdministrateur {
     /** Refuse tout rôle autre qu'ADMIN. */
     static void exigerAdmin(Set<Role> roles) {
         if (!roles.contains(Role.ADMIN)) {
+            throw new ErreurVirement(Cause.ROLE_INSUFFISANT);
+        }
+    }
+
+    /** Refuse tout rôle autre que CONSEILLER ou ADMIN (portefeuille du conseiller). */
+    static void exigerConseillerOuAdmin(Set<Role> roles) {
+        if (!roles.contains(Role.CONSEILLER) && !roles.contains(Role.ADMIN)) {
             throw new ErreurVirement(Cause.ROLE_INSUFFISANT);
         }
     }

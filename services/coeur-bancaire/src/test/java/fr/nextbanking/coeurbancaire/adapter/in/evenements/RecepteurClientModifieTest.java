@@ -16,7 +16,8 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Contrat consommateur de {@code identite-clients.client-modifie.v1} (test {@code *ContratEvenement*} du consommateur) :
- * l'exemple du schéma du producteur se lit, son nom complet et sa {@code versionAgregat} sont confiés au cas d'usage ;
+ * l'exemple du schéma du producteur se lit, son nom complet, son conseiller (nul accepté), sa suppression et sa
+ * {@code versionAgregat} sont confiés au cas d'usage ;
  * un type ou une version inattendus sont ignorés.
  */
 @ExtendWith(OutputCaptureExtension.class)
@@ -31,8 +32,9 @@ class RecepteurClientModifieTest {
     private final List<String> recus = new ArrayList<>();
     private Issue issue = Issue.ENREGISTRE;
     private final RecepteurClientModifie recepteur = new RecepteurClientModifie(
-            (idEvenement, clientId, nomComplet, versionAgregat) -> {
-                recus.add(idEvenement + "|" + clientId + "|" + nomComplet + "|" + versionAgregat);
+            (idEvenement, client) -> {
+                recus.add(idEvenement + "|" + client.clientId() + "|" + client.nomComplet() + "|"
+                        + client.conseillerId() + "|" + client.supprime() + "|" + client.versionAgregat());
                 return issue;
             }, json);
 
@@ -43,7 +45,21 @@ class RecepteurClientModifieTest {
         recepteur.recevoir(json.writeValueAsString(exemple));
 
         assertThat(recus).containsExactly(exemple.get("idEvenement").asString() + "|" + donnees.get("clientId").asLong()
-                + "|" + donnees.get("nomComplet").asString() + "|" + donnees.get("versionAgregat").asLong());
+                + "|" + donnees.get("nomComplet").asString() + "|" + donnees.get("conseillerId").asLong() + "|"
+                + donnees.get("supprime").asBoolean() + "|" + donnees.get("versionAgregat").asLong());
+    }
+
+    @Test
+    @Tag("FR-015-02")
+    void le_conseiller_et_la_suppression_sont_lus_et_un_conseiller_nul_est_accepte() {
+        recepteur.recevoir(json.writeValueAsString(exemple)
+                .replace("\"conseillerId\":11", "\"conseillerId\":null")
+                .replace("\"supprime\":false", "\"supprime\":true"));
+        recepteur.recevoir(json.writeValueAsString(exemple).replace("\"conseillerId\":11", "\"conseillerId\":12"));
+
+        assertThat(recus).hasSize(2);
+        assertThat(recus.get(0)).endsWith("|Jean Dupont|null|true|2");
+        assertThat(recus.get(1)).endsWith("|Jean Dupont|12|false|2");
     }
 
     @Test

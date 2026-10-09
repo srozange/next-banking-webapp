@@ -5,11 +5,12 @@ import fr.nextbanking.coeurbancaire.application.port.out.EvenementsTraites;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.application.port.out.ProjectionClients;
 import fr.nextbanking.coeurbancaire.application.port.out.Transaction;
+import fr.nextbanking.coeurbancaire.domain.ClientProjete;
 import java.util.UUID;
 
 /**
- * Cas d'usage idempotent : dans une même transaction, l'événement est marqué traité puis le nom complet du client est
- * enregistré dans la projection locale, sauf si {@code versionAgregat} n'est pas plus récente que celle déjà reçue.
+ * Cas d'usage idempotent : dans une même transaction, l'événement est marqué traité puis l'état du client (nom complet,
+ * conseiller affecté, suppression) est enregistré dans la projection locale, sauf si {@code versionAgregat} n'est pas plus récente que celle déjà reçue.
  */
 public class RecevoirClientModifieCasUsage implements RecevoirClientModifie {
 
@@ -27,7 +28,7 @@ public class RecevoirClientModifieCasUsage implements RecevoirClientModifie {
     }
 
     @Override
-    public Issue recevoir(UUID idEvenement, long clientId, String nomComplet, long versionAgregat) {
+    public Issue recevoir(UUID idEvenement, ClientProjete client) {
         if (idEvenement == null) {
             throw new IllegalArgumentException("L'identifiant de l'événement est obligatoire.");
         }
@@ -35,7 +36,7 @@ public class RecevoirClientModifieCasUsage implements RecevoirClientModifie {
             if (!evenementsTraites.marquerTraite(idEvenement, horloge.instant())) {
                 return Issue.DEJA_TRAITE;
             }
-            return projection.enregistrerSiPlusRecent(clientId, nomComplet, versionAgregat)
+            return projection.enregistrerSiPlusRecent(client)
                     ? Issue.ENREGISTRE : Issue.IGNORE_ANCIEN;
         });
     }

@@ -123,7 +123,7 @@ development_status:
   epic-8-retrospective: optional
 
   epic-9: backlog
-  9-1-exposer-le-portefeuille-du-conseiller-décidé-côté-serveur: backlog
+  9-1-exposer-le-portefeuille-du-conseiller-décidé-côté-serveur: done
   9-2-afficher-l-espace-conseiller-portefeuille-cartes-et-détail-d: backlog
   9-3-afficher-les-indicateurs-la-gestion-des-clients-et-tous-les: backlog
   9-4-activer-et-désactiver-un-client-depuis-la-gestion-des-client: backlog
