@@ -1,0 +1,77 @@
+.ecran-documents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  box-sizing: border-box;
+  max-width: calc(var(--spacing-4xl) * 8);
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.ecran-documents__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Capitales par le CSS : le texte source garde sa casse (le golden master compare innerText). */
+.ecran-documents__eyebrow,
+.ecran-documents .etiquette {
+  margin: 0;
+  font-family: var(--font-eyebrow);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--font-weight-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.ecran-documents__titre,
+.ecran-documents__titre-carte {
+  margin: 0;
+  font-family: var(--font-h3);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-h3);
+}
+
+.ecran-documents__sous-titre {
+  margin: var(--spacing-xs) 0 var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-body-sm);
+}
+
+.ecran-documents__cartes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--spacing-4xl) * 3), 1fr));
+  gap: var(--spacing-md);
+}
+
+.ecran-documents__releves {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--spacing-4xl) * 2), 1fr));
+  gap: var(--spacing-sm) var(--spacing-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ecran-documents__lien {
+  color: var(--color-primary-hover);
+  font-family: var(--font-label);
+  font-size: var(--text-label);
+  font-weight: var(--font-weight-label);
+}
+
+/* Texte réservé aux lecteurs d'écran, lu avec le nom du lien. */
+.ecran-documents__lecteur-ecran {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}

@@ -100,7 +100,7 @@ development_status:
   epic-6: backlog
   6-1-télécharger-son-rib-et-son-attestation-de-solde-depuis-le-se: done
   6-2-télécharger-ses-relevés-mensuels-et-ses-ifu: done
-  6-3-consulter-la-page-documents-et-ouvrir-ses-pdf: backlog
+  6-3-consulter-la-page-documents-et-ouvrir-ses-pdf: done
   epic-6-retrospective: optional
 
   epic-7: backlog

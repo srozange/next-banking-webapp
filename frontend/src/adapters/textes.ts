@@ -7,6 +7,10 @@ export const TEXTES = {
   lienEvitement: 'Aller au contenu principal',
   /** api.erreur.technique */
   erreurTechnique: 'Une erreur technique est survenue',
+  /** a11y.nouvel.onglet : texte réservé aux lecteurs d'écran, ajouté au nom d'un lien qui s'ouvre dans un nouvel onglet. */
+  a11y: {
+    nouvelOnglet: '(nouvel onglet)',
+  },
   connexion: {
     titreOnglet: 'BankApp Demo - Connexion',
     logo: 'DB',
@@ -169,6 +173,8 @@ export const TEXTES = {
     beneficiaires: 'BankApp Demo - Beneficiaires',
     /** FEAT-004 MESSAGES.md, titre de navigateur. */
     virementsProgrammes: 'BankApp Demo - Virements programmes',
+    /** MSG-008-001 */
+    documents: 'BankApp Demo - Documents',
   },
   /**
    * Tableau de bord : FEAT-002 MESSAGES.md (MSG-002-050 à 067), orthographe du source sans accent ; les capitales
@@ -343,6 +349,26 @@ export const TEXTES = {
     plafondsDuMois: (periode: string) => `Plafonds du mois ${periode}`,
     colonnes: { categorie: 'Categorie', plafond: 'Plafond', depense: 'Depense', ecart: 'Ecart', action: 'Action' },
     supprimer: 'Supprimer',
+  },
+  /**
+   * Écran Documents : FEAT-008 MESSAGES.md (MSG-008-040 à 060), orthographe du legacy sans accent, mois avec accents (domain/documents.ts) ;
+   * les séparateurs et les étiquettes sont mis en capitales par CSS, le texte garde sa casse.
+   */
+  documents: {
+    documentsFiscaux: 'Documents fiscaux',
+    titreIfu: 'Imprime Fiscal Unique (IFU)',
+    etiquetteFiscal: 'Fiscal',
+    ifu: (annee: number) => `IFU ${annee}`,
+    sousTitreIfu: 'Revenus de capitaux mobiliers',
+    telecharger: 'Telecharger PDF',
+    compte: (type: string, numero: string) => `Compte ${type} - ${numero}`,
+    etiquetteRib: 'Bancaire',
+    titreRib: 'RIB',
+    sousTitreRib: 'Releve d Identite Bancaire',
+    etiquetteAttestation: 'Attestation',
+    titreAttestation: 'Attestation de solde',
+    sousTitreAttestation: 'Solde au jour de la demande',
+    releves: (numero: string) => `Releves mensuels — ${numero}`,
   },
   /** Écran Relevé de compte : FEAT-005 MESSAGES.md (casse comprise) ; bandeau « @NamedQuery » supprimé (B-22). */
   releve: {

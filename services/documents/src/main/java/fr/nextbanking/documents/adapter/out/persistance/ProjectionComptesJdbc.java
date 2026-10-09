@@ -3,6 +3,7 @@ package fr.nextbanking.documents.adapter.out.persistance;
 import fr.nextbanking.documents.application.port.out.ProjectionComptes;
 import fr.nextbanking.documents.domain.CompteProjete;
 import fr.nextbanking.documents.domain.TypeCompte;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
@@ -51,5 +52,18 @@ public class ProjectionComptesJdbc implements ProjectionComptes {
                         ligne.getString("iban"), ligne.getString("bic"), ligne.getBigDecimal("solde"),
                         ligne.getLong("version_agregat")))
                 .optional();
+    }
+
+    @Override
+    public List<CompteProjete> parClient(long clientId) {
+        return jdbc.sql("""
+                select compte_id, client_id, numero, type, iban, bic, solde, version_agregat
+                from comptes where client_id = :id order by compte_id""")
+                .param("id", clientId)
+                .query((ligne, numero) -> new CompteProjete(ligne.getLong("compte_id"), ligne.getLong("client_id"),
+                        ligne.getString("numero"), TypeCompte.valueOf(ligne.getString("type")),
+                        ligne.getString("iban"), ligne.getString("bic"), ligne.getBigDecimal("solde"),
+                        ligne.getLong("version_agregat")))
+                .list();
     }
 }

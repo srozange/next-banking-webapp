@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { creerClientBudgetHttp } from '../adapters/http/ClientBudgetHttp';
+import { creerClientDocumentsHttp } from '../adapters/http/ClientDocumentsHttp';
 import { creerClientPlafondsHttp } from '../adapters/http/ClientPlafondsHttp';
 import { creerClientBourseHttp } from '../adapters/http/ClientBourseHttp';
 import { creerClientComptesTiersHttp } from '../adapters/http/ClientComptesTiersHttp';
@@ -65,6 +66,7 @@ const routeur = createBrowserRouter(
     clientPrets: creerClientPretsHttp(fetchAuthentifie),
     clientBudget: creerClientBudgetHttp(fetchAuthentifie),
     clientPlafonds: creerClientPlafondsHttp(fetchAuthentifie),
+    clientDocuments: creerClientDocumentsHttp(fetchAuthentifie),
   }),
 );
 

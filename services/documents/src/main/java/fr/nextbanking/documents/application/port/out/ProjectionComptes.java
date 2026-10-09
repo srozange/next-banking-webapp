@@ -1,6 +1,7 @@
 package fr.nextbanking.documents.application.port.out;
 
 import fr.nextbanking.documents.domain.CompteProjete;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,4 +18,7 @@ public interface ProjectionComptes {
 
     /** Compte d'identifiant donné, s'il est connu de la projection. */
     Optional<CompteProjete> trouver(long compteId);
+
+    /** Comptes du client donné, triés par identifiant de compte ; vide si le client n'en a aucun. */
+    List<CompteProjete> parClient(long clientId);
 }

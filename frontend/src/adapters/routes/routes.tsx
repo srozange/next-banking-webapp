@@ -12,6 +12,8 @@ import type { ClientNotifications } from '../../application/gererNotifications';
 import type { ClientReleve } from '../../application/consulterReleve';
 import type { ClientBudget } from '../../application/consulterBudget';
 import type { ClientPlafonds } from '../../application/gererPlafonds';
+import type { ClientDocuments } from '../../application/consulterDocuments';
+import { EcranDocuments } from '../ecrans/documents/EcranDocuments';
 import { EcranBudget } from '../ecrans/budget/EcranBudget';
 import type { ClientBeneficiaires } from '../../application/gererBeneficiaires';
 import type { ClientVirement } from '../../application/virement';
@@ -60,6 +62,7 @@ export interface Dependances {
   clientPrets: ClientPrets;
   clientBudget: ClientBudget;
   clientPlafonds: ClientPlafonds;
+  clientDocuments: ClientDocuments;
 }
 
 /**
@@ -95,6 +98,7 @@ export function creerRoutes({
   clientPrets,
   clientBudget,
   clientPlafonds,
+  clientDocuments,
 }: Dependances): RouteObject[] {
   const accueil = <RedirectionAccueil session={session.locale} />;
   return [
@@ -141,6 +145,8 @@ export function creerRoutes({
                 ),
             })),
             { path: '/virement', element: <EcranVirement client={clientVirement} /> },
+            // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-008-01) : seuls les comptes du jeton sont proposés.
+            { path: '/documents', element: <EcranDocuments client={clientDocuments} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-005-01) : seuls les comptes du jeton sont proposés.
             { path: '/releve', element: <EcranReleve comptes={clientVirement} releve={clientReleve} /> },
             // Même écran pour CLIENT, CONSEILLER et ADMIN (FR-006-01) : seul le budget du client du jeton est rendu.

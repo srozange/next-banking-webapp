@@ -1,9 +1,11 @@
 package fr.nextbanking.documents.infrastructure;
 
+import fr.nextbanking.documents.application.ConsulterPageDocumentsCasUsage;
 import fr.nextbanking.documents.application.RecevoirClientModifieCasUsage;
 import fr.nextbanking.documents.application.RecevoirCompteModifieCasUsage;
 import fr.nextbanking.documents.application.RecevoirOperationEnregistreeCasUsage;
 import fr.nextbanking.documents.application.TelechargerDocumentCasUsage;
+import fr.nextbanking.documents.application.port.in.ConsulterPageDocuments;
 import fr.nextbanking.documents.application.port.in.RecevoirClientModifie;
 import fr.nextbanking.documents.application.port.in.RecevoirCompteModifie;
 import fr.nextbanking.documents.application.port.in.RecevoirOperationEnregistree;
@@ -30,6 +32,11 @@ public class AssemblageDocuments {
     TelechargerDocument telechargerDocument(ProjectionComptes comptes, ProjectionClients clients,
             ProjectionOperations operations, GenerateurPdf generateur, Documents documents, Horloge horloge) {
         return new TelechargerDocumentCasUsage(comptes, clients, operations, generateur, documents, horloge);
+    }
+
+    @Bean
+    ConsulterPageDocuments consulterPageDocuments(ProjectionComptes comptes, Horloge horloge) {
+        return new ConsulterPageDocumentsCasUsage(comptes, horloge);
     }
 
     @Bean

@@ -15,7 +15,7 @@ describe('routes', () => {
     expect(ROUTES_PROTEGEES).toEqual(['/tableau-de-bord', '/espace-conseiller', '/administration', '/prets']);
   });
 
-  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/prets', '/bourse', '/produits', '/comptes-tiers', '/route-inconnue'])(
+  it.each(['/', '/tableau-de-bord', '/espace-conseiller', '/administration', '/prets', '/bourse', '/produits', '/comptes-tiers', '/documents', '/mon-conseiller', '/route-inconnue'])(
     '[FR-001-02][FR-030-01] sans jeton, %s mène à /login par remplacement',
     async (chemin) => {
       const { routeur } = rendreApplication(chemin);
