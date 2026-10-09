@@ -75,6 +75,17 @@ Recommandation : A, à porter par la story 1.4 (conteneurs).
 
 Recommandation : A.
 
+## Après le rejeu final (story 10.3)
+
+### D12. Les 29 exigences du PRD sans test
+
+Le rejeu final du 2026-10-09 atteint le critère de bascule (31 réussis, 0 échec, 2 non rejoués avec raison), mais 29 exigences du PRD n'ont ni code ni test. Elles relèvent toutes des 9 stories passées en `optional` pour la démo : 3.5 (cumul glissant), 3.6 (reprise après refus), 3.10 (alerte après échecs de connexion), 4.5 (journal des traitements), 4.9 (intérêts mensuels), 4.10 (décompte nocturne), 4.11 (solde faible), 5.4 (décision de prêt notifiée), 9.6 (journal et catalogue dans l'administration). La story 10.3 reste en `awaiting-operator` tant que ce n'est pas tranché.
+
+- **A. Livrer les 9 stories** avec la boucle (une dizaine d'heures ; le blocage de la 5.4, l'absence de centre de notifications, est levé depuis la 3.9).
+- **B. Acter l'écart dans le PRD** : les 29 exigences sortent du périmètre.
+
+Statut : laissée de côté pour l'instant (décision du propriétaire, 2026-10-09). Reste aussi à faire avant `bmad-loop confirm 10-3-…` : la revue humaine de la story 9.4.
+
 ## Tranchées
 
 - **D2 (2026-10-05)** : poste préparé pour la story 1.6 (bloquer les dépendances vulnérables). Trivy 0.75.0 installé (archive officielle, empreinte SHA-256 vérifiée), bases Trivy (vulnérabilités et Java) et Dependency-Check à jour le 2026-10-05. La base Trivy principale est à rafraîchir après le 2026-10-06 01:10 UTC si la story 1.6 démarre plus tard.
