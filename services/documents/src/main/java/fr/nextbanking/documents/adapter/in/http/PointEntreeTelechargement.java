@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Adaptateur entrant HTTP : {@code GET /api/documents/telechargement?type=&compteId=}, pour le client désigné par le
+ * Adaptateur entrant HTTP : {@code GET /api/documents/telechargement?type=&compteId=&annee=&mois=}, pour le client désigné par le
  * sujet du jeton, tout rôle confondu. Les paramètres sont reçus en chaînes : leur validation, et les refus
  * (400, 404, 403), sont ceux du cas d'usage. Un sujet qui n'est pas un identifiant numérique donne 401.
  */
@@ -32,8 +32,11 @@ public class PointEntreeTelechargement {
     @GetMapping("/api/documents/telechargement")
     public ResponseEntity<byte[]> telecharger(@AuthenticationPrincipal Jwt jeton,
             @RequestParam(name = "type", required = false) String type,
-            @RequestParam(name = "compteId", required = false) String compteId) {
-        DocumentPdf document = telechargerDocument.telecharger(new Commande(clientId(jeton), type, compteId));
+            @RequestParam(name = "compteId", required = false) String compteId,
+            @RequestParam(name = "annee", required = false) String annee,
+            @RequestParam(name = "mois", required = false) String mois) {
+        DocumentPdf document = telechargerDocument
+                .telecharger(new Commande(clientId(jeton), type, compteId, annee, mois));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.nomFichier() + "\"")

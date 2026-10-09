@@ -26,8 +26,8 @@ class GestionErreursTest {
 
     private static DemandeDocumentInvalide demande(String type, String compteId) {
         return (DemandeDocumentInvalide) org.assertj.core.api.Assertions.catchThrowable(() -> new fr.nextbanking
-                .documents.application.TelechargerDocumentCasUsage(null, null, null, null, null)
-                .telecharger(new Commande(1L, type, compteId)));
+                .documents.application.TelechargerDocumentCasUsage(null, null, null, null, null, null)
+                .telecharger(new Commande(1L, type, compteId, null, null)));
     }
 
     @Test
@@ -40,10 +40,20 @@ class GestionErreursTest {
         assertReponse(gestion.demandeInvalide(demandeCompte()), 400, "accountId manquant");
     }
 
+    @Test
+    @Tag("FR-017-07")
+    void une_annee_ou_un_mois_invalide_rend_400_avec_le_texte_generique_de_requete_invalide() {
+        DemandeDocumentInvalide refus = (DemandeDocumentInvalide) org.assertj.core.api.Assertions.catchThrowable(
+                () -> new fr.nextbanking.documents.application.TelechargerDocumentCasUsage(null, null, null, null,
+                        null, null).telecharger(new Commande(1L, "IFU", null, "abc", null)));
+
+        assertReponse(gestion.demandeInvalide(refus), 400, "Requête invalide");
+    }
+
     private static DemandeDocumentInvalide demandeCompte() {
         return (DemandeDocumentInvalide) org.assertj.core.api.Assertions.catchThrowable(() -> new fr.nextbanking
-                .documents.application.TelechargerDocumentCasUsage(null, null, null, null, null)
-                .telecharger(new Commande(1L, "RIB", "abc")));
+                .documents.application.TelechargerDocumentCasUsage(null, null, null, null, null, null)
+                .telecharger(new Commande(1L, "RIB", "abc", null, null)));
     }
 
     @Test
@@ -129,13 +139,13 @@ class GestionErreursTest {
     @Test
     void le_point_d_entree_rend_le_document_avec_ses_en_tetes() {
         PointEntreeTelechargement point = new PointEntreeTelechargement(commande -> {
-            assertThat(commande).isEqualTo(new Commande(1L, "RIB", "1"));
+            assertThat(commande).isEqualTo(new Commande(1L, "RIB", "1", "2026", "3"));
             return new DocumentPdf("rib_1.pdf", new byte[] {1, 2});
         });
         org.springframework.security.oauth2.jwt.Jwt jeton = org.springframework.security.oauth2.jwt.Jwt
                 .withTokenValue("t").header("alg", "none").subject("1").build();
 
-        ResponseEntity<byte[]> reponse = point.telecharger(jeton, "RIB", "1");
+        ResponseEntity<byte[]> reponse = point.telecharger(jeton, "RIB", "1", "2026", "3");
 
         assertThat(reponse.getStatusCode().value()).isEqualTo(200);
         assertThat(reponse.getHeaders().getFirst("Content-Type")).isEqualTo("application/pdf");
@@ -151,7 +161,7 @@ class GestionErreursTest {
         org.springframework.security.oauth2.jwt.Jwt jeton = org.springframework.security.oauth2.jwt.Jwt
                 .withTokenValue("t").header("alg", "none").subject("user1").build();
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> point.telecharger(jeton, "RIB", "1"))
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> point.telecharger(jeton, "RIB", "1", null, null))
                 .isInstanceOf(AuthentificationRequise.class);
     }
 

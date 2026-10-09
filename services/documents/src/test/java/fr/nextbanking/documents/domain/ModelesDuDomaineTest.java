@@ -36,6 +36,60 @@ class ModelesDuDomaineTest {
     }
 
     @Test
+    @Tag("FR-017-07")
+    void seuls_le_releve_et_l_ifu_exigent_une_annee_et_seul_le_releve_un_mois() {
+        assertThat(TypeDocument.RIB.exigeAnnee()).isFalse();
+        assertThat(TypeDocument.ATTESTATION.exigeAnnee()).isFalse();
+        assertThat(TypeDocument.RELEVE.exigeAnnee()).isTrue();
+        assertThat(TypeDocument.IFU.exigeAnnee()).isTrue();
+        assertThat(TypeDocument.RIB.exigeMois()).isFalse();
+        assertThat(TypeDocument.IFU.exigeMois()).isFalse();
+        assertThat(TypeDocument.RELEVE.exigeMois()).isTrue();
+    }
+
+    @Test
+    @Tag("FR-017-04")
+    @Tag("FR-008-10")
+    void le_pfu_est_trente_pour_cent_du_total_arrondi_au_demi_superieur() {
+        assertThat(Ifu.de(2025, new BigDecimal("12.35")).pfu()).isEqualByComparingTo("3.71");
+        assertThat(Ifu.de(2025, new BigDecimal("12.35")).totalInterets().toPlainString()).isEqualTo("12.35");
+        assertThat(Ifu.de(2025, new BigDecimal("0.01")).pfu()).isEqualByComparingTo("0.00");
+        assertThat(Ifu.de(2025, new BigDecimal("0.02")).pfu()).isEqualByComparingTo("0.01");
+        assertThat(Ifu.de(2025, BigDecimal.ZERO)).isEqualTo(new Ifu(2025, new BigDecimal("0.00"),
+                new BigDecimal("0.00")));
+        assertThat(Ifu.de(2025, new BigDecimal("100")).pfu().toPlainString()).isEqualTo("30.00");
+    }
+
+    @Test
+    void une_operation_projetee_exige_ses_champs() {
+        java.time.Instant instant = java.time.Instant.parse("2026-03-01T09:00:00Z");
+        BigDecimal un = BigDecimal.ONE;
+
+        assertThat(new OperationProjetee(1L, 1L, instant, "x", TypeOperation.CREDIT, un, un, 1L).libelle())
+                .isEqualTo("x");
+        assertThatThrownBy(() -> new OperationProjetee(1L, 1L, null, "x", TypeOperation.CREDIT, un, un, 1L))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new OperationProjetee(1L, 1L, instant, null, TypeOperation.CREDIT, un, un, 1L))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new OperationProjetee(1L, 1L, instant, "x", null, un, un, 1L))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new OperationProjetee(1L, 1L, instant, "x", TypeOperation.CREDIT, null, un, 1L))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new OperationProjetee(1L, 1L, instant, "x", TypeOperation.CREDIT, un, null, 1L))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void un_releve_garde_une_copie_immuable_de_ses_lignes() {
+        java.util.List<LigneReleve> lignes = new java.util.ArrayList<>();
+        Releve releve = new Releve(TypeCompte.COURANT, 2026, 3, lignes);
+        lignes.add(new LigneReleve(LocalDate.of(2026, 3, 1), "x", TypeOperation.DEBIT, BigDecimal.ONE, BigDecimal.TEN));
+
+        assertThat(releve.lignes()).isEmpty();
+        assertThatThrownBy(() -> releve.lignes().add(null)).isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
     void les_mois_ont_leur_libelle_francais_avec_accents() {
         assertThat(java.util.stream.IntStream.rangeClosed(1, 12).mapToObj(LibellesMois::libelle)).containsExactly(
                 "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre",

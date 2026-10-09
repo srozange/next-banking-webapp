@@ -27,10 +27,11 @@ public class OperationsJdbc implements Operations {
     }
 
     @Override
-    public void enregistrer(Operation operation) {
-        jdbc.sql("""
+    public long enregistrer(Operation operation) {
+        return jdbc.sql("""
                 insert into operations (compte_id, type, montant, solde_apres, description, date_operation, virement_id)
-                values (:compteId, :type, :montant, :soldeApres, :description, :date, :virementId)""")
+                values (:compteId, :type, :montant, :soldeApres, :description, :date, :virementId)
+                returning id""")
                 .param("compteId", operation.compteId())
                 .param("type", operation.type().name())
                 .param("montant", operation.montant().valeur())
@@ -38,7 +39,8 @@ public class OperationsJdbc implements Operations {
                 .param("description", operation.description())
                 .param("date", Timestamp.from(operation.date()))
                 .param("virementId", operation.virementId())
-                .update();
+                .query(Long.class)
+                .single();
     }
 
     @Override

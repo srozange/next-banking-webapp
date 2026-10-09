@@ -214,25 +214,8 @@ class TelechargementHttpIT {
     }
 
     @Test
-    @Tag("FR-017-10")
-    @Tag("BUG-059")
-    void le_releve_et_l_ifu_dont_la_generation_est_livree_plus_tard_rendent_500_sans_detail_ni_compteur()
-            throws Exception {
-        long avant = totalDesCompteurs();
-
-        for (String requete : new String[] {"?type=RELEVE&compteId=1", "?type=IFU", "?type=ifu&compteId=1"}) {
-            HttpResponse<byte[]> reponse = telecharger(requete, "1");
-
-            assertThat(reponse.statusCode()).as(requete).isEqualTo(500);
-            assertThat(texte(reponse)).as(requete)
-                    .isEqualTo("{\"message\":\"Erreur lors de la generation du document\"}");
-        }
-        assertThat(totalDesCompteurs()).isEqualTo(avant);
-    }
-
-    @Test
     void le_releve_du_compte_d_un_autre_client_rend_403_et_les_routes_voisines_les_textes_communs() throws Exception {
-        assertThat(telecharger("?type=RELEVE&compteId=3", "1").statusCode()).isEqualTo(403);
+        assertThat(telecharger("?type=RELEVE&compteId=3&annee=2026&mois=3", "1").statusCode()).isEqualTo(403);
         HttpResponse<String> inconnue = avecJeton(port, "GET", "/api/documents/inconnu", jetonValide("1"));
         assertThat(inconnue.statusCode()).isEqualTo(404);
         assertThat(inconnue.body()).isEqualTo("{\"message\":\"Ressource introuvable\"}");

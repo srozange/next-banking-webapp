@@ -34,6 +34,7 @@ import fr.nextbanking.coeurbancaire.domain.EntreeAudit;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement;
 import fr.nextbanking.coeurbancaire.domain.ErreurVirement.Cause;
 import fr.nextbanking.coeurbancaire.domain.Operation;
+import fr.nextbanking.coeurbancaire.domain.OperationEnregistree;
 import fr.nextbanking.coeurbancaire.domain.EcheanceNonExecutee;
 import fr.nextbanking.coeurbancaire.domain.EtatVirement;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
@@ -74,6 +75,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final List<Long> echeancesPubliees = new ArrayList<>();
     /** Événements compte-modifie consignés (lignes 500 et suivantes), et lignes publiées. */
     final List<CompteModifie> comptesModifies = new ArrayList<>();
+    final List<OperationEnregistree> operationsEnregistrees = new ArrayList<>();
+    final List<Long> operationsPubliees = new ArrayList<>();
     final List<Long> comptesPublies = new ArrayList<>();
     /** Version d'agrégat des comptes écrits (1 tant qu'aucun débit ni crédit). */
     final Map<Long, Long> versionsComptes = new HashMap<>();
@@ -283,8 +286,9 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
-    public void enregistrer(Operation operation) {
+    public long enregistrer(Operation operation) {
         operations.add(operation);
+        return operations.size();
     }
 
     /** Opérations du compte dans l'ordre où elles ont été inscrites : le cas d'usage décide du tri. */
@@ -589,8 +593,19 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
+    public long consigner(OperationEnregistree evenement) {
+        if (outboxRefusee) {
+            throw new IllegalStateException("outbox refusée");
+        }
+        operationsEnregistrees.add(evenement);
+        return 600L + operationsEnregistrees.size();
+    }
+
+    @Override
     public void publier(long idLigne) {
-        if (idLigne >= 500) {
+        if (idLigne >= 600) {
+            operationsPubliees.add(idLigne);
+        } else if (idLigne >= 500) {
             comptesPublies.add(idLigne);
         } else if (idLigne >= 400) {
             echeancesPubliees.add(idLigne);
@@ -626,6 +641,7 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         int outboxAvant = outbox.size();
         int decisionsAvant = decisions.size();
         int comptesModifiesAvant = comptesModifies.size();
+        int operationsEnregistreesAvant = operationsEnregistrees.size();
         Map<Long, Long> versionsAvant = new HashMap<>(versionsComptes);
         List<AlerteFraude> alertesAvant = new ArrayList<>(alertes);
         Map<Long, DecisionRevue> decisionsRevueAvant = new HashMap<>(decisionsRevue);
@@ -654,6 +670,9 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             }
             while (comptesModifies.size() > comptesModifiesAvant) {
                 comptesModifies.removeLast();
+            }
+            while (operationsEnregistrees.size() > operationsEnregistreesAvant) {
+                operationsEnregistrees.removeLast();
             }
             versionsComptes.clear();
             versionsComptes.putAll(versionsAvant);

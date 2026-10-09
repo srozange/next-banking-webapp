@@ -20,6 +20,7 @@ import fr.nextbanking.coeurbancaire.domain.IssueRevue;
 import fr.nextbanking.coeurbancaire.domain.TextesVirement;
 import fr.nextbanking.coeurbancaire.domain.Virement;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -100,12 +101,14 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
         }
         comptes.crediter(virement.compteDestinataireId(), virement.montant());
         Virement.Execution execution = virement.executerApresLiberation(source, destinataire, maintenant);
-        operations.enregistrer(execution.debit());
-        operations.enregistrer(execution.credit());
+        long idDebit = operations.enregistrer(execution.debit());
+        long idCredit = operations.enregistrer(execution.credit());
         transiter(virement, EtatVirement.EXECUTE, null);
-        // Un événement par compte modifié, source puis destinataire, dans la transaction du débit.
-        List<Long> lignesComptes = evenementsComptes.consigner(maintenant, virement.compteSourceId(),
-                virement.compteDestinataireId());
+        // Un événement par compte modifié puis un par opération, dans la transaction du débit.
+        List<Long> lignesComptes = new ArrayList<>(evenementsComptes.consigner(maintenant,
+                virement.compteSourceId(), virement.compteDestinataireId()));
+        lignesComptes.addAll(evenementsComptes.consignerOperations(maintenant, execution.debit(), idDebit,
+                execution.credit(), idCredit));
         return new Traitement(Issue.EXECUTE_APRES_LIBERATION, new Entree(Long.toString(virement.clientId()), null,
                 ActionAudit.TRANSFER_EXECUTED,
                 TextesVirement.detailExecution(virement.montant().texte(), virement.motif().texte())),

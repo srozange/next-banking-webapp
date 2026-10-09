@@ -32,6 +32,8 @@ public class GestionErreurs {
             case TYPE_MANQUANT -> reponse(HttpStatus.BAD_REQUEST, Textes.TYPE_MANQUANT);
             case TYPE_INCONNU -> reponse(HttpStatus.BAD_REQUEST, Textes.TYPE_INCONNU + refus.valeur());
             case COMPTE_ID_MANQUANT -> reponse(HttpStatus.BAD_REQUEST, Textes.COMPTE_ID_MANQUANT);
+            // Le corpus ne définit aucun texte pour annee et mois : le texte générique de requête invalide.
+            case PERIODE_INVALIDE -> reponse(HttpStatus.BAD_REQUEST, Textes.REQUETE_INVALIDE);
         };
     }
 

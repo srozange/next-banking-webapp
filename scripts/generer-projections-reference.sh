@@ -6,7 +6,9 @@
 # - les projections des clients et des comptes de documents (bloc « PROJECTIONS GENEREES » de
 #   services/documents/reference-data/reference-data.sql) sont dérivées de ce même fichier d'identite-clients et des
 #   comptes de services/coeur-bancaire/reference-data/reference-data.sql (identifiant, client, numéro, type, solde ;
-#   IBAN = numéro, BIC DEMOFR21XXX, version 1).
+#   IBAN = numéro, BIC DEMOFR21XXX, version 1) et des opérations éventuelles de ce même fichier de coeur-bancaire
+#   (table operations : identifiant, compte, type, montant, solde après, description, date ; version 1). Un fichier
+#   sans opération donne un bloc d'opérations vide.
 # Chaque client est en version 1, non supprimé ; date_creation est la date de référence posée à la migration
 # d'identite-clients pour les clients existants (2026-10-06), identique d'une génération à l'autre.
 # Aucun mot de passe n'est lu ni recopié. Les fichiers produits ne sont jamais écrits à la main.
@@ -24,7 +26,7 @@ import sys
 
 source, sortie, source_comptes, sortie_documents = sys.argv[1:5]
 DATE_CREATION = "2026-10-06"
-JETON = re.compile(r"'(?:[^']|'')*'|date\s+'[^']*'|[^,\s()]+")
+JETON = re.compile(r"'(?:[^']|'')*'|(?:date|timestamptz|timestamp)\s+'[^']*'|[^,\s()]+")
 INSERT = re.compile(
     r"insert into customers \(([^)]*)\)\s*values \((.*)\);\s*$", re.IGNORECASE | re.DOTALL)
 
@@ -74,6 +76,24 @@ for instruction in open(source_comptes, encoding="utf-8").read().splitlines():
 if not comptes:
     sys.exit("reference-data.sql de coeur-bancaire : aucun compte trouvé")
 
+# Opérations de coeur-bancaire : « insert into operations (colonnes) values (valeurs); » sur une ou deux lignes.
+OPERATION = re.compile(
+    r"insert into operations \(([^)]*)\)\s*values \((.*)\);\s*$", re.IGNORECASE | re.DOTALL)
+contenu_comptes = re.sub(r"\)\s*\nvalues", ") values", open(source_comptes, encoding="utf-8").read())
+operations = []
+for instruction in contenu_comptes.splitlines():
+    correspondance = OPERATION.match(instruction.strip())
+    if not correspondance:
+        continue
+    colonnes = [c.strip() for c in correspondance.group(1).split(",")]
+    valeurs = JETON.findall(correspondance.group(2))
+    if len(colonnes) != len(valeurs):
+        sys.exit("reference-data.sql de coeur-bancaire : colonnes et valeurs des opérations ne correspondent pas : "
+                 + instruction)
+    ligne = dict(zip(colonnes, valeurs))
+    operations.append((ligne["id"], ligne["compte_id"], ligne["date_operation"], ligne["description"], ligne["type"],
+                       ligne["montant"], ligne["solde_apres"]))
+
 bloc = "".join(
     "insert into clients (client_id, login, nom_complet, role, actif, conseiller_id, date_creation, supprime,"
     " version_agregat)\n"
@@ -83,6 +103,10 @@ bloc += "".join(
     "insert into comptes (compte_id, client_id, numero, type, iban, bic, solde, version_agregat)\n"
     f"values ({id_}, {client}, {numero}, {type_}, {numero}, 'DEMOFR21XXX', {solde}, 1);\n"
     for id_, numero, type_, solde, client in comptes)
+bloc += "".join(
+    "insert into operations (operation_id, compte_id, instant, libelle, type, montant, solde_apres, version_agregat)\n"
+    f"values ({id_}, {compte}, {instant}, {libelle}, {type_}, {montant}, {solde_apres}, 1);\n"
+    for id_, compte, instant, libelle, type_, montant, solde_apres in operations)
 DEBUT, FIN = "-- DEBUT PROJECTIONS GENEREES\n", "-- FIN PROJECTIONS GENEREES\n"
 existant = open(sortie_documents, encoding="utf-8").read()
 if DEBUT not in existant or FIN not in existant:
@@ -93,4 +117,4 @@ with open(sortie_documents, "w", encoding="utf-8") as fichier:
     fichier.write(avant + bloc + apres)
 PYTHON
 echo "Projection des clients de credits générée : $sortie"
-echo "Projections des clients et des comptes de documents générées : $sortie_documents"
+echo "Projections des clients, des comptes et des opérations de documents générées : $sortie_documents"

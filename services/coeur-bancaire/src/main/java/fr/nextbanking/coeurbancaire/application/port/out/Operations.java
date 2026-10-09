@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface Operations {
 
-    /** Enregistre l'opération. */
-    void enregistrer(Operation operation);
+    /** Enregistre l'opération et rend son identifiant généré. */
+    long enregistrer(Operation operation);
 
     /** Toutes les opérations du compte, sans limite, de la plus récente à la plus ancienne (date puis identifiant). */
     List<Operation> duCompte(long compteId);

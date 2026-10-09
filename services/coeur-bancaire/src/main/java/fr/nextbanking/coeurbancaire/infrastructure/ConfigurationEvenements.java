@@ -29,6 +29,14 @@ public class ConfigurationEvenements {
     /** État complet d'un compte modifié, clé compteId : consommé par le service documents. */
     static final String TOPIC_COMPTE_MODIFIE = "coeur-bancaire.compte-modifie.v1";
 
+    /** Une opération enregistrée par événement, clé compteId : consommé par le service documents. */
+    static final String TOPIC_OPERATION_ENREGISTREE = "coeur-bancaire.operation-enregistree.v1";
+
+    @Bean
+    NewTopic topicOperationEnregistree() {
+        return TopicBuilder.name(TOPIC_OPERATION_ENREGISTREE).partitions(3).replicas(1).build();
+    }
+
     @Bean
     NewTopic topicCompteModifie() {
         return TopicBuilder.name(TOPIC_COMPTE_MODIFIE).partitions(3).replicas(1).build();

@@ -40,12 +40,13 @@ public final class OutilsHttp {
     }
 
     /**
-     * Remet les tables {@code documents}, {@code comptes}, {@code clients} et {@code evenements_traites} aux données
+     * Remet les tables {@code documents}, {@code comptes}, {@code clients}, {@code operations} et
+     * {@code evenements_traites} aux données
      * de référence (le fichier fait reprendre la séquence des documents après le dernier identifiant).
      */
     public static void chargerDonnees(DataSource base) {
         try {
-            executer(base, "truncate table documents, comptes, clients, evenements_traites restart identity;\n"
+            executer(base, "truncate table documents, comptes, clients, operations, evenements_traites restart identity;\n"
                     + Files.readString(REFERENCE_DATA, StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -58,6 +59,14 @@ public final class OutilsHttp {
         executer(base, "insert into comptes (compte_id, client_id, numero, type, iban, bic, solde, version_agregat)"
                 + " values (" + compteId + ", " + clientId + ", '" + numero + "', '" + type + "', '" + numero
                 + "', 'DEMOFR21XXX', " + solde + ", 1)");
+    }
+
+    /** Ajoute une opération à la projection (en version 1) : instant ISO-8601 UTC, type CREDIT ou DEBIT. */
+    public static void insererOperation(DataSource base, long operationId, long compteId, String instantUtc,
+            String libelle, String type, String montant, String soldeApres) {
+        executer(base, "insert into operations (operation_id, compte_id, instant, libelle, type, montant, solde_apres,"
+                + " version_agregat) values (" + operationId + ", " + compteId + ", timestamptz '" + instantUtc
+                + "', '" + libelle.replace("'", "''") + "', '" + type + "', " + montant + ", " + soldeApres + ", 1)");
     }
 
     /** Exécute un script SQL de plusieurs instructions. */

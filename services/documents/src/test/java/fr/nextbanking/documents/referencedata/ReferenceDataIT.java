@@ -13,17 +13,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * Données de référence : le fichier committé se charge dans une base migrée par Flyway (5 lignes DOCUMENTS du legacy,
- * projections des sept clients et des deux comptes de user1 en version 1), et {@code
+ * projections des sept clients, des deux comptes de user1 et des opérations éventuelles de coeur-bancaire en version 1), et {@code
  * scripts/generer-projections-reference.sh} régénère le bloc des projections à l'identique depuis les
  * {@code reference-data.sql} d'identite-clients et de coeur-bancaire. Chaque test travaille dans un schéma neuf.
  */
 class ReferenceDataIT {
 
     private static final Path FICHIER = Path.of("reference-data/reference-data.sql");
+    private static final Path SOURCE_COEUR_BANCAIRE = Path.of("../coeur-bancaire/reference-data/reference-data.sql");
     private static final Path SCRIPT = Path.of("../../scripts/generer-projections-reference.sh");
 
     @Test
@@ -61,6 +63,27 @@ class ReferenceDataIT {
                     + " and solde = 2130.00")).isEqualTo(1);
             assertThat(entier(instruction, "select count(*) from comptes where compte_id = 2 and type = 'EPARGNE'"
                     + " and solde = 15200.00")).isEqualTo(1);
+        }
+    }
+
+    @Test
+    @Tag("FR-017-04")
+    void le_fichier_committe_charge_les_operations_generees_de_coeur_bancaire_et_la_table_se_remplit_ou_reste_vide()
+            throws Exception {
+        long attendues = Files.readAllLines(SOURCE_COEUR_BANCAIRE, StandardCharsets.UTF_8).stream()
+                .filter(ligne -> ligne.toLowerCase().startsWith("insert into operations")).count();
+        try (Connection connexion = connexion(schemaNeuf()); Statement instruction = connexion.createStatement()) {
+            instruction.execute(Files.readString(FICHIER, StandardCharsets.UTF_8));
+
+            assertThat(entier(instruction, "select count(*) from operations")).isEqualTo((int) attendues);
+            assertThat(entier(instruction, "select count(*) from operations where version_agregat <> 1"))
+                    .isZero();
+            // La table accepte une opération et refuse un doublon d'identifiant et un type inconnu.
+            instruction.execute("insert into operations (operation_id, compte_id, instant, libelle, type, montant,"
+                    + " solde_apres, version_agregat) values (999999, 1, timestamptz '2026-03-01 10:00:00+01',"
+                    + " 'Salaire', 'CREDIT', 10.00, 2140.00, 2)");
+            assertThat(entier(instruction, "select count(*) from operations where operation_id = 999999"))
+                    .isEqualTo(1);
         }
     }
 

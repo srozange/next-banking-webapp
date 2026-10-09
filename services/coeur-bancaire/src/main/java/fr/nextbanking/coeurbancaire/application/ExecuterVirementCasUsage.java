@@ -28,6 +28,7 @@ import fr.nextbanking.coeurbancaire.domain.Virement;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
 import fr.nextbanking.coeurbancaire.domain.VirementDecide;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -155,10 +156,12 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
             throw new ErreurVirement(Cause.SOLDE_INSUFFISANT);
         }
         comptes.crediter(destinataireId, montant);
-        operations.enregistrer(execution.debit());
-        operations.enregistrer(execution.credit());
-        // Un événement par compte modifié, source puis destinataire, dans la même transaction.
-        List<Long> lignesComptes = evenementsComptes.consigner(soumisLe, sourceId, destinataireId);
+        long idDebit = operations.enregistrer(execution.debit());
+        long idCredit = operations.enregistrer(execution.credit());
+        // Un événement par compte modifié puis un par opération, dans la même transaction.
+        List<Long> lignesComptes = new ArrayList<>(evenementsComptes.consigner(soumisLe, sourceId, destinataireId));
+        lignesComptes.addAll(evenementsComptes.consignerOperations(soumisLe, execution.debit(), idDebit,
+                execution.credit(), idCredit));
         // Une seule notification par virement, à la décision : jamais à la remise asynchrone.
         long decisionLigne = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId,
                 clientId, virement.etat(),

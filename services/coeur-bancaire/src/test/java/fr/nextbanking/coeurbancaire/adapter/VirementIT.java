@@ -133,9 +133,9 @@ class VirementIT {
                 "select count(*) from evenements_traites where id_evenement = :id").param("id", remise.get("id_evenement"))
                 .query(Long.class).single()).isEqualTo(1L));
         assertThat(solde(1)).isEqualByComparingTo("2030.00");
-        // La remise, la décision et un événement par compte modifié : une ligne chacun, la notification n'étant
-        // écrite qu'à la décision.
-        assertThat(count("outbox")).isEqualTo(4);
+        // La remise, la décision, un événement par compte modifié et un par opération : une ligne chacun, la
+        // notification n'étant écrite qu'à la décision.
+        assertThat(count("outbox")).isEqualTo(6);
         assertThat(jdbc.sql("select count(*) from outbox where topic = 'coeur-bancaire.virement-decide.v1'")
                 .query(Long.class).single()).isEqualTo(1L);
         List<String> comptesModifies = jdbc.sql(
@@ -151,6 +151,24 @@ class VirementIT {
         assertThat(destinataire.get("solde").asString()).isEqualTo("15300.00");
         assertThat(destinataire.get("versionAgregat").asLong()).isEqualTo(2);
         assertThat(jdbc.sql("select cle from outbox where topic = 'coeur-bancaire.compte-modifie.v1' order by id")
+                .query(String.class).list()).containsExactly("1", "2");
+        // Une opération par événement : débit du compte source puis crédit du compte destinataire.
+        List<String> operationsEvt = jdbc.sql(
+                "select charge from outbox where topic = 'coeur-bancaire.operation-enregistree.v1' order by id")
+                .query(String.class).list();
+        assertThat(operationsEvt).hasSize(2);
+        JsonNode debit = json.readTree(operationsEvt.get(0)).get("donnees");
+        JsonNode credit = json.readTree(operationsEvt.get(1)).get("donnees");
+        assertThat(debit.get("compteId").asLong()).isEqualTo(1);
+        assertThat(debit.get("type").asString()).isEqualTo("DEBIT");
+        assertThat(debit.get("montant").asString()).isEqualTo("100.00");
+        assertThat(debit.get("soldeApres").asString()).isEqualTo("2030.00");
+        assertThat(debit.get("versionAgregat").asLong()).isEqualTo(source.get("versionAgregat").asLong());
+        assertThat(credit.get("compteId").asLong()).isEqualTo(2);
+        assertThat(credit.get("type").asString()).isEqualTo("CREDIT");
+        assertThat(credit.get("soldeApres").asString()).isEqualTo("15300.00");
+        assertThat(debit.get("operationId").asLong()).isNotEqualTo(credit.get("operationId").asLong());
+        assertThat(jdbc.sql("select cle from outbox where topic = 'coeur-bancaire.operation-enregistree.v1' order by id")
                 .query(String.class).list()).containsExactly("1", "2");
     }
 

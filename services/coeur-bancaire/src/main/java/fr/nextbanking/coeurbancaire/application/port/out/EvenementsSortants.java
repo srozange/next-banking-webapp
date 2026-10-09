@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.application.port.out;
 
 import fr.nextbanking.coeurbancaire.domain.CompteModifie;
 import fr.nextbanking.coeurbancaire.domain.EcheanceNonExecutee;
+import fr.nextbanking.coeurbancaire.domain.OperationEnregistree;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
 import fr.nextbanking.coeurbancaire.domain.VirementDecide;
@@ -25,6 +26,9 @@ public interface EvenementsSortants {
 
     /** Consigne l'état d'un compte modifié (un événement par compte), dans la transaction courante ; rend la ligne. */
     long consigner(CompteModifie evenement);
+
+    /** Consigne une opération enregistrée (un événement par opération), dans la transaction courante ; rend la ligne. */
+    long consigner(OperationEnregistree evenement);
 
     /** Publie la ligne d'outbox après validation ; un échec la laisse au relais. */
     void publier(long idLigne);

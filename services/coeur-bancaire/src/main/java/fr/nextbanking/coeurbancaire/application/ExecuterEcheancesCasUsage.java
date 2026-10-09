@@ -190,11 +190,14 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
             throw new ErreurVirement(Cause.SOLDE_INSUFFISANT);
         }
         comptes.crediter(new CompteId(destinataireId), due.montant());
-        operations.enregistrer(execution.debit());
-        operations.enregistrer(execution.credit());
-        // Un événement par compte modifié, source puis destinataire, dans la transaction de l'échéance.
-        return new Resultat(execution, null, evenementsComptes.consigner(executeLe, new CompteId(sourceId),
+        long idDebit = operations.enregistrer(execution.debit());
+        long idCredit = operations.enregistrer(execution.credit());
+        // Un événement par compte modifié puis un par opération, dans la transaction de l'échéance.
+        List<Long> lignesComptes = new ArrayList<>(evenementsComptes.consigner(executeLe, new CompteId(sourceId),
                 new CompteId(destinataireId)));
+        lignesComptes.addAll(evenementsComptes.consignerOperations(executeLe, execution.debit(), idDebit,
+                execution.credit(), idCredit));
+        return new Resultat(execution, null, lignesComptes);
     }
 
     /**

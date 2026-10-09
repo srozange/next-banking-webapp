@@ -3,6 +3,7 @@ package fr.nextbanking.coeurbancaire.adapter.out.evenements;
 import fr.nextbanking.coeurbancaire.application.port.out.EvenementsSortants;
 import fr.nextbanking.coeurbancaire.domain.CompteModifie;
 import fr.nextbanking.coeurbancaire.domain.EcheanceNonExecutee;
+import fr.nextbanking.coeurbancaire.domain.OperationEnregistree;
 import fr.nextbanking.coeurbancaire.domain.TemoinEcrit;
 import fr.nextbanking.coeurbancaire.domain.VirementATraiter;
 import fr.nextbanking.coeurbancaire.domain.VirementDecide;
@@ -67,6 +68,12 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
                 Long.toString(evenement.etat().compte().id()), enJson(evenement));
     }
 
+    @Override
+    public long consigner(OperationEnregistree evenement) {
+        return inserer(evenement.idEvenement(), EnveloppeOperationEnregistree.TOPIC,
+                Long.toString(evenement.operation().compteId()), enJson(evenement));
+    }
+
     private long inserer(UUID idEvenement, String topic, String cle, String charge) {
         return jdbc.sql("""
                 insert into outbox (id_evenement, topic, cle, charge)
@@ -106,6 +113,10 @@ public class EvenementsSortantsKafka implements EvenementsSortants {
 
     String enJson(CompteModifie evenement) {
         return json.writeValueAsString(EnveloppeCompteModifie.de(evenement));
+    }
+
+    String enJson(OperationEnregistree evenement) {
+        return json.writeValueAsString(EnveloppeOperationEnregistree.de(evenement));
     }
 
     List<LigneOutbox> nonPubliees() {

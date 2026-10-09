@@ -1,19 +1,24 @@
 package fr.nextbanking.documents.adapter.out.pdf;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import fr.nextbanking.documents.adapter.PdfTexte;
 import fr.nextbanking.documents.domain.DocumentPdf;
 import fr.nextbanking.documents.domain.DonneesDocument;
+import fr.nextbanking.documents.domain.Ifu;
+import fr.nextbanking.documents.domain.LigneReleve;
+import fr.nextbanking.documents.domain.Releve;
+import fr.nextbanking.documents.domain.TypeCompte;
 import fr.nextbanking.documents.domain.TypeDocument;
+import fr.nextbanking.documents.domain.TypeOperation;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-/** Contenu des PDF du RIB et de l'attestation, relu par PDFBox : textes du legacy, date et solde fournis. */
+/** Contenu des PDF du RIB, de l'attestation, du relevé et de l'IFU, relu par PDFBox : textes du legacy, date et solde fournis. */
 class GenerateurPdfOpenPdfTest {
 
     private static final String PIED = "Demo Bank SA — Capital 500 000 000 EUR — RCS Paris 123 456 789 00012"
@@ -65,13 +70,62 @@ class GenerateurPdfOpenPdfTest {
                 PIED);
     }
 
+    private static DonneesDocument donneesReleve(Releve releve) {
+        return new DonneesDocument(1L, "Jean Dupont", 1L, "FR76-0001-0001", "FR76-0001-0001",
+                new BigDecimal("2130.00"), LocalDate.of(2026, 10, 10), releve, null);
+    }
+
     @Test
-    void le_releve_et_l_ifu_ne_sont_pas_encore_generes() {
-        for (TypeDocument type : new TypeDocument[] {TypeDocument.RELEVE, TypeDocument.IFU}) {
-            assertThatThrownBy(() -> generateur.generer(type, donnees))
-                    .isInstanceOf(UnsupportedOperationException.class)
-                    .hasMessageContaining(type.name());
-        }
+    @Tag("FR-017-07")
+    @Tag("FR-008-07")
+    void le_releve_liste_ses_operations_avec_les_signes_les_types_et_les_textes_du_legacy() {
+        DocumentPdf releve = generateur.generer(TypeDocument.RELEVE, donneesReleve(new Releve(TypeCompte.COURANT,
+                2026, 3, List.of(
+                        new LigneReleve(LocalDate.of(2026, 3, 1), "Salaire", TypeOperation.CREDIT,
+                                new BigDecimal("1500"), new BigDecimal("3630.00")),
+                        new LigneReleve(LocalDate.of(2026, 3, 31), "Loyer", TypeOperation.DEBIT,
+                                new BigDecimal("100.50"), new BigDecimal("3529.50"))))));
+
+        assertThat(releve.nomFichier()).isEqualTo("releve_1_2026_03.pdf");
+        String texte = PdfTexte.extraire(releve.contenu());
+        assertThat(texte).contains("Demo Bank — Releve de compte", "Compte FR76-0001-0001 (COURANT)",
+                "Titulaire Jean Dupont", "Periode Mars 2026", "Solde actuel 2130.00 EUR",
+                "Date Description Type Montant Solde apres",
+                "01/03/2026 Salaire CREDIT +1500.00 EUR 3630.00 EUR",
+                "31/03/2026 Loyer DEBIT -100.50 EUR 3529.50 EUR", PIED);
+        assertThat(texte.indexOf("Salaire")).isLessThan(texte.indexOf("Loyer"));
+        assertThat(texte).doesNotContain("Aucune operation");
+    }
+
+    @Test
+    @Tag("FR-017-07")
+    @Tag("FR-008-07")
+    void un_releve_sans_operation_affiche_le_message_du_legacy_sans_tableau() {
+        DocumentPdf releve = generateur.generer(TypeDocument.RELEVE,
+                donneesReleve(new Releve(TypeCompte.EPARGNE, 2026, 12, List.of())));
+
+        assertThat(releve.nomFichier()).isEqualTo("releve_1_2026_12.pdf");
+        assertThat(PdfTexte.extraire(releve.contenu())).contains("Compte FR76-0001-0001 (EPARGNE)",
+                "Periode Décembre 2026", "Aucune operation sur cette periode.", PIED)
+                .doesNotContain("Solde apres");
+    }
+
+    @Test
+    @Tag("FR-017-04")
+    @Tag("FR-008-10")
+    void l_ifu_porte_les_textes_du_legacy_le_total_des_interets_et_le_pfu() {
+        DocumentPdf ifu = generateur.generer(TypeDocument.IFU, new DonneesDocument(1L, "Jean Dupont", null, null, null,
+                null, LocalDate.of(2026, 10, 10), null, Ifu.de(2025, new BigDecimal("12.35"))));
+
+        assertThat(ifu.nomFichier()).isEqualTo("ifu_1_2025.pdf");
+        assertThat(PdfTexte.extraire(ifu.contenu())).contains("Demo Bank — Imprime Fiscal Unique (IFU) 2025",
+                "Etablissement Demo Bank SA", "SIREN 123 456 789 00012", "Titulaire Jean Dupont",
+                "Adresse 1 rue de la Paix, 75001 Paris", "Annee fiscale 2025",
+                "Nature des revenus Montant brut", "Interets et produits de placement 12.35 EUR",
+                "Prelevement Forfaitaire Unique (30%) 3.71 EUR",
+                "Ce document est fourni a titre informatif. Il recense les revenus de capitaux mobiliers soumis au PFU"
+                        + " pour l annee 2025.",
+                "Genere le 10/10/2026", PIED);
     }
 
     @Test
