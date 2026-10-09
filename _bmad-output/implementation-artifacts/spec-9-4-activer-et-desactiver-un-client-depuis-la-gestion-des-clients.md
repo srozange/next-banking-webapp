@@ -2,7 +2,7 @@
 title: 'Activer et désactiver un client depuis la gestion des clients'
 type: 'feature'
 created: '2026-10-09'
-status: 'in-review'
+status: 'done'
 baseline_revision: '58459ad234fe8174949286bede2888e68a4e4db4'
 review_loop_iteration: 0
 followup_review_recommended: false
@@ -90,6 +90,17 @@ deferred: []
 
 ## Review Triage Log
 
+### 2026-10-09 — Review pass
+- verdicts: 7 findings — high 0, medium 0, low 1, false 6, maybe-false 0
+- findings:
+  - `[false]` `[reject]` Les tests s'arrêtent aux faux (port simulé, `fetch` simulé) : rien ne prouve que l'action fonctionne de bout en bout — chemins et verbe identiques aux `@PostMapping` de `PointEntreeClients.java` l.33 et l.42 (204) ; proxy `identite-clients` (8081) déjà utilisé par les lectures de la même classe ; audit, IP et refus de connexion prouvés par `ActivationClientIT`, non modifié et vert dans `build.sh`.
+  - `[false]` `[reject]` 401 renvoie vers `/login` (`ROUTE_CONNEXION`) et non vers le `/connexion` littéral du tableau — la règle Always impose le motif d'`EcranAdministration`, qui utilise `ROUTE_CONNEXION` ; c'est la vraie route de connexion. Corriger le tableau reviendrait à éditer la spec.
+  - `[low]` `[reject]` Deux clients basculés en même temps : le message affiché est celui de la dernière réponse arrivée, pas de la dernière action lancée — les badges restent justes client par client ; cas rare (deux clics rapides sur des lignes différentes avec réponses inversées) ; la correction demande un compteur de séquence, plus qu'une correction directe.
+  - `[false]` `[reject]` Un message de la section des prêts reste affiché à côté de celui de « Gestion des clients » — l'intention borne le message à la section « Gestion des clients » ; comportement de la section des prêts antérieur à la story.
+  - `[false]` `[reject]` Certains tests cherchent `admin-message-succes` dans toute la page — `findByTestId` échoue bruyamment s'il trouve deux éléments : aucun faux vert possible.
+  - `[false]` `[reject]` La resynchronisation de l'état local quand `partie` change n'a pas de test dédié — `partie` n'est pas rechargée pendant ces actions ; les seuils de couverture sont tenus (`build.sh` code 0).
+  - `[false]` `[reject]` `BoutonFantome` n'a pas de fichier de test propre — la prop `occupe` est couverte par les tests de la section, l'usage par défaut par `EcranConseiller` ; seuils de couverture tenus (`build.sh` code 0).
+
 ## Design Notes
 
 - Bascule locale plutôt que relecture : l'API renvoie 204 sans corps ; relire les quatre points ferait clignoter la page et pourrait masquer le message. Le serveur reste juge (rôle, existence) ; le badge ne change qu'après sa réponse 2xx. Les indicateurs (« n actifs ») ne sont pas recalculés avant la prochaine ouverture de la page, comme les indicateurs de prêts en 9.3.
@@ -118,3 +129,30 @@ Status: in-review
 - `scripts/gates/build.sh`, `check-gates-exist.sh` (aucun KO), `trace-smoke.sh`, `golden-master.sh` : code 0. Golden master non rejoué.
 
 **Points à surveiller :** `data-testid` `admin-panneau-statut` présent deux fois dans le panneau de détail (défaut antérieur à la story) ; indicateurs « n actifs » non recalculés avant le prochain chargement (choix de la spec).
+
+### Revue (reprise du 2026-10-09)
+
+**Résumé :** la section « Gestion des clients » de `/administration` affiche « Desactiver » / « Activer » sur chaque ligne ; l'action appelle l'API ADMIN existante d'`identite-clients` (`POST …/clients/{id}/desactivation|activation`) et le statut ne bascule, avec « Client désactivé » / « Client activé », qu'après la réponse 2xx. Front seulement.
+
+**Fichiers modifiés (commit `9091676122906e1c6e23a5da575032ab29ba177b`) :**
+- `frontend/src/application/consulterAdministration.ts` (+ test) — méthode `changerEtatClient` du port et cas d'usage (effectué, erreur, déconnecté).
+- `frontend/src/adapters/http/ClientAdministrationHttp.ts` (+ test) — chemins d'activation et de désactivation, `POST` sans corps, traduction des statuts.
+- `frontend/src/adapters/ecrans/administration/SectionGestionClients.tsx` — bouton d'état, verrou par client, bascule locale, messages.
+- `frontend/src/adapters/ecrans/administration/EcranAdministration.tsx` (+ `.css`, + test) — câblage client, session, déconnexion ; tests `[FR-016-11]`.
+- `frontend/src/adapters/ui/BoutonFantome.tsx` (+ `.css`) — prop optionnelle `occupe` (`aria-disabled`, clic ignoré).
+- `frontend/src/adapters/textes.ts` — quatre textes legacy (MSG-016-130/131).
+- `frontend/src/adapters/test/rendreApplication.tsx`, `frontend/src/adapters/accessibilite.test.tsx` — faux par défaut, cas axe après désactivation.
+
+**Revue :** une seule couche active (alignement sur l'intention). 7 constats : 0 correctif, 0 report, 7 rejetés (6 faux, 1 mineur) — raisons dans le Review Triage Log. Revue complémentaire recommandée : non (aucun correctif appliqué : 0 high, 0 medium).
+
+**Vérification refaite pendant la revue :**
+- `cd frontend && npx vitest run -t 'FR-016-11'` : 18 verts, code 0.
+- `npx vitest run --coverage` : 1 945 tests verts, seuils tenus.
+- `scripts/gates/build.sh` : code 0 (back et front, couverture tenue).
+- `scripts/gates/check-gates-exist.sh` : code 0, aucun KO.
+- `scripts/gates/trace-smoke.sh` : code 0.
+- `scripts/gates/golden-master.sh` : code 0 (statique, aucun rejeu).
+
+**Risques résiduels :** message de la dernière réponse arrivée si deux clients sont basculés en même temps ; indicateurs « n actifs » non recalculés avant le prochain chargement (choix de la spec) ; `data-testid` `admin-panneau-statut` en double dans le panneau de détail (antérieur à la story).
+
+Status: done

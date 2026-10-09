@@ -126,7 +126,7 @@ development_status:
   9-1-exposer-le-portefeuille-du-conseiller-décidé-côté-serveur: done
   9-2-afficher-l-espace-conseiller-portefeuille-cartes-et-détail-d: done
   9-3-afficher-les-indicateurs-la-gestion-des-clients-et-tous-les: done
-  9-4-activer-et-désactiver-un-client-depuis-la-gestion-des-client: backlog
+  9-4-activer-et-désactiver-un-client-depuis-la-gestion-des-client: done
   9-5-revoir-les-alertes-de-fraude-sans-toucher-au-virement-suspen: done
   9-6-afficher-le-journal-des-traitements-et-le-catalogue-des-prod: optional
   epic-9-retrospective: optional
