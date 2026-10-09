@@ -1,6 +1,8 @@
 package fr.nextbanking.coeurbancaire.application;
 
 import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.CompteModifie;
+import fr.nextbanking.coeurbancaire.domain.EtatCompte;
 import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.Plafond;
 import fr.nextbanking.coeurbancaire.application.port.out.AlertesFraude;
@@ -70,6 +72,11 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     final List<VirementDecide> decisions = new ArrayList<>();
     final List<Long> decisionsPubliees = new ArrayList<>();
     final List<Long> echeancesPubliees = new ArrayList<>();
+    /** Événements compte-modifie consignés (lignes 500 et suivantes), et lignes publiées. */
+    final List<CompteModifie> comptesModifies = new ArrayList<>();
+    final List<Long> comptesPublies = new ArrayList<>();
+    /** Version d'agrégat des comptes écrits (1 tant qu'aucun débit ni crédit). */
+    final Map<Long, Long> versionsComptes = new HashMap<>();
     final List<Long> publies = new ArrayList<>();
     final List<EntreeAudit> outboxAudit = new ArrayList<>();
     final List<Long> auditPublie = new ArrayList<>();
@@ -257,6 +264,7 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         }
         comptes.put(compteId.valeur(), new Compte(compteId.valeur(), compte.clientId(), compte.numero(), compte.type(),
                 compte.solde().soustraire(montant)));
+        versionsComptes.merge(compteId.valeur(), 2L, (ancienne, ignoree) -> ancienne + 1);
         return true;
     }
 
@@ -266,6 +274,12 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         Compte compte = comptes.get(compteId.valeur());
         comptes.put(compteId.valeur(), new Compte(compteId.valeur(), compte.clientId(), compte.numero(), compte.type(),
                 compte.solde().ajouter(montant)));
+        versionsComptes.merge(compteId.valeur(), 2L, (ancienne, ignoree) -> ancienne + 1);
+    }
+
+    @Override
+    public EtatCompte etat(CompteId compteId) {
+        return new EtatCompte(comptes.get(compteId.valeur()), versionsComptes.getOrDefault(compteId.valeur(), 1L));
     }
 
     @Override
@@ -566,8 +580,19 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
     }
 
     @Override
+    public long consigner(CompteModifie evenement) {
+        if (outboxRefusee) {
+            throw new IllegalStateException("outbox refusée");
+        }
+        comptesModifies.add(evenement);
+        return 500L + comptesModifies.size();
+    }
+
+    @Override
     public void publier(long idLigne) {
-        if (idLigne >= 400) {
+        if (idLigne >= 500) {
+            comptesPublies.add(idLigne);
+        } else if (idLigne >= 400) {
             echeancesPubliees.add(idLigne);
         } else if (idLigne >= 300) {
             decisionsPubliees.add(idLigne);
@@ -600,6 +625,8 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
         Map<String, Long> clesAvant = new HashMap<>(cles);
         int outboxAvant = outbox.size();
         int decisionsAvant = decisions.size();
+        int comptesModifiesAvant = comptesModifies.size();
+        Map<Long, Long> versionsAvant = new HashMap<>(versionsComptes);
         List<AlerteFraude> alertesAvant = new ArrayList<>(alertes);
         Map<Long, DecisionRevue> decisionsRevueAvant = new HashMap<>(decisionsRevue);
         Set<UUID> traitesAvant = new HashSet<>(traites);
@@ -625,6 +652,11 @@ class MemoireCoeurBancaire implements Comptes, Operations, DepotVirements, Evene
             while (decisions.size() > decisionsAvant) {
                 decisions.removeLast();
             }
+            while (comptesModifies.size() > comptesModifiesAvant) {
+                comptesModifies.removeLast();
+            }
+            versionsComptes.clear();
+            versionsComptes.putAll(versionsAvant);
             alertes.clear();
             alertes.addAll(alertesAvant);
             decisionsRevue.clear();

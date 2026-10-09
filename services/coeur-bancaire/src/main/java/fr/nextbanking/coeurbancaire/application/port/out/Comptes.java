@@ -2,6 +2,7 @@ package fr.nextbanking.coeurbancaire.application.port.out;
 
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.EtatCompte;
 import fr.nextbanking.coeurbancaire.domain.Montant;
 import java.util.List;
 import java.util.Optional;
@@ -31,4 +32,10 @@ public interface Comptes {
 
     /** Crédite le compte. */
     void crediter(CompteId compteId, Montant montant);
+
+    /**
+     * Relit un compte existant, avec sa version d'agrégat (incrémentée à chaque débit et crédit), dans la transaction
+     * courante : appelée après une écriture sur un compte verrouillé.
+     */
+    EtatCompte etat(CompteId compteId);
 }

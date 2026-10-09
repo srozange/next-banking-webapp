@@ -4,6 +4,7 @@ import fr.nextbanking.coeurbancaire.application.EcritureAudit.Entree;
 import fr.nextbanking.coeurbancaire.application.port.in.TraiterVirementATraiter;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.application.port.out.DepotVirements;
+import fr.nextbanking.coeurbancaire.application.port.out.EvenementsSortants;
 import fr.nextbanking.coeurbancaire.application.port.out.EvenementsTraites;
 import fr.nextbanking.coeurbancaire.application.port.out.Horloge;
 import fr.nextbanking.coeurbancaire.application.port.out.JournalAudit;
@@ -39,11 +40,13 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
     private final Horloge horloge;
     private final Comptes comptes;
     private final Operations operations;
+    private final EvenementsSortants evenements;
     private final EcritureAudit audit;
+    private final EvenementsComptes evenementsComptes;
 
     public TraiterVirementATraiterCasUsage(DepotVirements virements, EvenementsTraites evenementsTraites,
             Transaction transaction, Horloge horloge, Comptes comptes, Operations operations,
-            JournalAudit audit) {
+            JournalAudit audit, EvenementsSortants evenements) {
         this.virements = virements;
         this.evenementsTraites = evenementsTraites;
         this.transaction = transaction;
@@ -51,6 +54,8 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
         this.comptes = comptes;
         this.operations = operations;
         this.audit = new EcritureAudit(audit, transaction);
+        this.evenements = evenements;
+        this.evenementsComptes = new EvenementsComptes(comptes, evenements);
     }
 
     @Override
@@ -60,6 +65,7 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
         }
         Instant maintenant = horloge.instant();
         Traitement traitement = transaction.executer(() -> traiterLeVirement(idEvenement, virementId, maintenant));
+        traitement.lignesComptes().forEach(evenements::publier);
         if (traitement.audit() != null) {
             audit.ecrire(virementId, maintenant, List.of(traitement.audit()));
         }
@@ -68,18 +74,18 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
 
     private Traitement traiterLeVirement(UUID idEvenement, long virementId, Instant maintenant) {
         if (!evenementsTraites.marquerTraite(idEvenement, maintenant)) {
-            return new Traitement(Issue.DEJA_TRAITE, null);
+            return Traitement.sans(Issue.DEJA_TRAITE);
         }
         Optional<Virement> lu = virements.parId(virementId);
         if (lu.isEmpty()) {
-            return new Traitement(Issue.VIREMENT_INCONNU, null);
+            return Traitement.sans(Issue.VIREMENT_INCONNU);
         }
         Virement virement = lu.get();
         if (virement.etat() == EtatVirement.EXECUTE) {
-            return new Traitement(Issue.DEJA_EXECUTE, null);
+            return Traitement.sans(Issue.DEJA_EXECUTE);
         }
         if (virement.etat() != EtatVirement.LIBERE) {
-            return new Traitement(Issue.ETAT_INATTENDU, null);
+            return Traitement.sans(Issue.ETAT_INATTENDU);
         }
         List<Compte> verrouilles = comptes.verrouiller(virement.compteSourceId().valeur(),
                 virement.compteDestinataireId().valeur());
@@ -89,16 +95,21 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
             transiter(virement, EtatVirement.REJETE,
                     new DecisionRevue(IssueRevue.REJETE_SOLDE_AU_DEBIT, DecisionRevue.SYSTEME, null, maintenant));
             return new Traitement(Issue.REJETE_SOLDE_INSUFFISANT, new Entree(DecisionRevue.SYSTEME, null,
-                    ActionAudit.TRANSFER_REJECT_INSUFFICIENT_FUNDS, TextesVirement.detailRejetSoldeAuDebit(virementId)));
+                    ActionAudit.TRANSFER_REJECT_INSUFFICIENT_FUNDS, TextesVirement.detailRejetSoldeAuDebit(virementId)),
+                    List.of());
         }
         comptes.crediter(virement.compteDestinataireId(), virement.montant());
         Virement.Execution execution = virement.executerApresLiberation(source, destinataire, maintenant);
         operations.enregistrer(execution.debit());
         operations.enregistrer(execution.credit());
         transiter(virement, EtatVirement.EXECUTE, null);
+        // Un événement par compte modifié, source puis destinataire, dans la transaction du débit.
+        List<Long> lignesComptes = evenementsComptes.consigner(maintenant, virement.compteSourceId(),
+                virement.compteDestinataireId());
         return new Traitement(Issue.EXECUTE_APRES_LIBERATION, new Entree(Long.toString(virement.clientId()), null,
                 ActionAudit.TRANSFER_EXECUTED,
-                TextesVirement.detailExecution(virement.montant().texte(), virement.motif().texte())));
+                TextesVirement.detailExecution(virement.montant().texte(), virement.motif().texte())),
+                lignesComptes);
     }
 
     /** Un autre traitement a décidé entre-temps : la transaction est annulée, le message sera rejoué. */
@@ -113,6 +124,11 @@ public class TraiterVirementATraiterCasUsage implements TraiterVirementATraiter 
                 .orElseThrow(() -> new ErreurVirement(Cause.COMPTE_INTROUVABLE));
     }
 
-    private record Traitement(Issue issue, Entree audit) {
+    /** Issue du traitement, entrée d'audit à écrire après validation et lignes d'outbox des comptes à publier. */
+    private record Traitement(Issue issue, Entree audit, List<Long> lignesComptes) {
+
+        static Traitement sans(Issue issue) {
+            return new Traitement(issue, null, List.of());
+        }
     }
 }

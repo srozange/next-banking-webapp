@@ -79,9 +79,9 @@ public class AssemblageVirement {
     @Bean
     TraiterVirementATraiter traiterVirementATraiter(DepotVirements depotVirements,
             EvenementsTraites evenementsTraites, Transaction transaction, Horloge horloge, Comptes comptes,
-            Operations operations, JournalAudit journalAudit) {
+            Operations operations, JournalAudit journalAudit, EvenementsSortants evenementsSortants) {
         return new TraiterVirementATraiterCasUsage(depotVirements, evenementsTraites, transaction, horloge, comptes,
-                operations, journalAudit);
+                operations, journalAudit, evenementsSortants);
     }
 
     @Bean

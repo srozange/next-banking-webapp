@@ -18,6 +18,7 @@ COPY services/audit/pom.xml services/audit/
 COPY services/credits/pom.xml services/credits/
 COPY services/bourse/pom.xml services/bourse/
 COPY services/open-banking-conseiller/pom.xml services/open-banking-conseiller/
+COPY services/documents/pom.xml services/documents/
 COPY services/open-banking-conseiller/src services/open-banking-conseiller/src
 # Les tests (Testcontainers) tournent dans scripts/gates/build.sh, pas dans l'image.
 RUN --mount=type=cache,target=/root/.m2 \

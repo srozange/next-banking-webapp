@@ -133,10 +133,25 @@ class VirementIT {
                 "select count(*) from evenements_traites where id_evenement = :id").param("id", remise.get("id_evenement"))
                 .query(Long.class).single()).isEqualTo(1L));
         assertThat(solde(1)).isEqualByComparingTo("2030.00");
-        // La remise et la décision : une ligne chacune, la notification n'étant écrite qu'à la décision.
-        assertThat(count("outbox")).isEqualTo(2);
+        // La remise, la décision et un événement par compte modifié : une ligne chacun, la notification n'étant
+        // écrite qu'à la décision.
+        assertThat(count("outbox")).isEqualTo(4);
         assertThat(jdbc.sql("select count(*) from outbox where topic = 'coeur-bancaire.virement-decide.v1'")
                 .query(Long.class).single()).isEqualTo(1L);
+        List<String> comptesModifies = jdbc.sql(
+                "select charge from outbox where topic = 'coeur-bancaire.compte-modifie.v1' order by id")
+                .query(String.class).list();
+        assertThat(comptesModifies).hasSize(2);
+        JsonNode source = json.readTree(comptesModifies.get(0)).get("donnees");
+        JsonNode destinataire = json.readTree(comptesModifies.get(1)).get("donnees");
+        assertThat(source.get("compteId").asLong()).isEqualTo(1);
+        assertThat(source.get("solde").asString()).isEqualTo("2030.00");
+        assertThat(source.get("versionAgregat").asLong()).isEqualTo(2);
+        assertThat(destinataire.get("compteId").asLong()).isEqualTo(2);
+        assertThat(destinataire.get("solde").asString()).isEqualTo("15300.00");
+        assertThat(destinataire.get("versionAgregat").asLong()).isEqualTo(2);
+        assertThat(jdbc.sql("select cle from outbox where topic = 'coeur-bancaire.compte-modifie.v1' order by id")
+                .query(String.class).list()).containsExactly("1", "2");
     }
 
     @Test

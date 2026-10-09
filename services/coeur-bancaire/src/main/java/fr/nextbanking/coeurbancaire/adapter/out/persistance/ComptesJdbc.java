@@ -3,6 +3,7 @@ package fr.nextbanking.coeurbancaire.adapter.out.persistance;
 import fr.nextbanking.coeurbancaire.application.port.out.Comptes;
 import fr.nextbanking.coeurbancaire.domain.Compte;
 import fr.nextbanking.coeurbancaire.domain.CompteId;
+import fr.nextbanking.coeurbancaire.domain.EtatCompte;
 import fr.nextbanking.coeurbancaire.domain.Montant;
 import fr.nextbanking.coeurbancaire.domain.TypeCompte;
 import java.sql.ResultSet;
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Adaptateur sortant : table {@code comptes}. Le débit est une mise à jour conditionnelle
- * ({@code solde >= montant}) : un solde ne devient jamais négatif, même en concurrence.
+ * ({@code solde >= montant}) : un solde ne devient jamais négatif, même en concurrence. Chaque débit et chaque
+ * crédit incrémente {@code version_agregat}, la version portée par l'événement {@code compte-modifie}.
  */
 @Component
 public class ComptesJdbc implements Comptes {
@@ -62,7 +64,8 @@ public class ComptesJdbc implements Comptes {
 
     @Override
     public boolean debiter(CompteId compteId, Montant montant) {
-        return jdbc.sql("update comptes set solde = solde - :montant where id = :id and solde >= :montant")
+        return jdbc.sql("update comptes set solde = solde - :montant, version_agregat = version_agregat + 1"
+                + " where id = :id and solde >= :montant")
                 .param("montant", montant.valeur())
                 .param("id", compteId.valeur())
                 .update() == 1;
@@ -70,10 +73,19 @@ public class ComptesJdbc implements Comptes {
 
     @Override
     public void crediter(CompteId compteId, Montant montant) {
-        jdbc.sql("update comptes set solde = solde + :montant where id = :id")
+        jdbc.sql("update comptes set solde = solde + :montant, version_agregat = version_agregat + 1 where id = :id")
                 .param("montant", montant.valeur())
                 .param("id", compteId.valeur())
                 .update();
+    }
+
+    @Override
+    public EtatCompte etat(CompteId compteId) {
+        return jdbc.sql("""
+                select id, client_id, numero, type, solde, version_agregat from comptes where id = :id""")
+                .param("id", compteId.valeur())
+                .query((ligne, numero) -> new EtatCompte(compte(ligne, numero), ligne.getLong("version_agregat")))
+                .single();
     }
 
     private static Compte compte(ResultSet ligne, int numero) throws SQLException {

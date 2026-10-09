@@ -60,6 +60,7 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
     private final Horloge horloge;
     private final SeuilsFraude seuils;
     private final ControleFraudeCasUsage controle;
+    private final EvenementsComptes evenementsComptes;
 
     public ExecuterVirementCasUsage(Comptes comptes, Operations operations, DepotVirements virements,
             EvenementsSortants evenements, JournalAudit audit, Transaction transaction, Horloge horloge,
@@ -73,6 +74,7 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         this.horloge = horloge;
         this.seuils = seuils;
         this.controle = controle;
+        this.evenementsComptes = new EvenementsComptes(comptes, evenements);
     }
 
     @Override
@@ -105,6 +107,7 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
             throw new ErreurVirement(Cause.REMISE_IMPOSSIBLE, echec);
         }
         evenements.publier(ecriture.ligneDecision());
+        ecriture.lignesComptes().forEach(evenements::publier);
         String montantTexte = demande.montant().texte();
         if (ecriture.virement().etat() == EtatVirement.SUSPENDU) {
             auditer(commande, virementId, soumisLe, ActionAudit.VIREMENT,
@@ -142,7 +145,7 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
                     clientId, suspendu.etat(),
                     NotificationVirement.pourSuspension(suspendu, destinataire.numero(), horloge.fuseau()),
                     soumisLe));
-            return new Ecriture(suspendu, ligne, 0);
+            return new Ecriture(suspendu, ligne, 0, List.of());
         }
         Virement.Execution execution = Virement.executer(soumission, source, destinataire, seuils);
         Virement virement = execution.virement();
@@ -154,13 +157,15 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
         comptes.crediter(destinataireId, montant);
         operations.enregistrer(execution.debit());
         operations.enregistrer(execution.credit());
+        // Un événement par compte modifié, source puis destinataire, dans la même transaction.
+        List<Long> lignesComptes = evenementsComptes.consigner(soumisLe, sourceId, destinataireId);
         // Une seule notification par virement, à la décision : jamais à la remise asynchrone.
         long decisionLigne = evenements.consigner(new VirementDecide(UUID.randomUUID(), virementId,
                 clientId, virement.etat(),
                 NotificationVirement.pourExecution(virement, destinataire.numero(), seuils), soumisLe));
         long remise = evenements.consigner(new VirementATraiter(UUID.randomUUID(), virementId, montant,
                 clientId, destinataireId, virement.motif(), soumisLe));
-        return new Ecriture(virement, decisionLigne, remise);
+        return new Ecriture(virement, decisionLigne, remise, lignesComptes);
     }
 
     /**
@@ -210,7 +215,10 @@ public class ExecuterVirementCasUsage implements ExecuterVirement {
                 virement.motif().texte());
     }
 
-    /** {@code ligneRemise} vaut 0 pour un virement suspendu : aucune remise. */
-    private record Ecriture(Virement virement, long ligneDecision, long ligneRemise) {
+    /**
+     * {@code ligneRemise} vaut 0 pour un virement suspendu : aucune remise ; {@code lignesComptes} est alors vide
+     * (aucun compte modifié).
+     */
+    private record Ecriture(Virement virement, long ligneDecision, long ligneRemise, List<Long> lignesComptes) {
     }
 }

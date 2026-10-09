@@ -21,7 +21,7 @@ class TraiterVirementATraiterCasUsageTest {
 
     private final MemoireCoeurBancaire memoire = new MemoireCoeurBancaire();
     private final TraiterVirementATraiterCasUsage cas =
-            new TraiterVirementATraiterCasUsage(memoire, memoire, memoire, memoire, memoire, memoire, memoire);
+            new TraiterVirementATraiterCasUsage(memoire, memoire, memoire, memoire, memoire, memoire, memoire, memoire);
 
     @Test
     @Tag("FR-023-03")

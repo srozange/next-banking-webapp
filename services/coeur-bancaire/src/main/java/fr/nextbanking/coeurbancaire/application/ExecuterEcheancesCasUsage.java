@@ -66,6 +66,7 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
     private final Horloge horloge;
     private final SeuilsFraude seuils;
     private final ControleFraudeCasUsage controle;
+    private final EvenementsComptes evenementsComptes;
 
     public ExecuterEcheancesCasUsage(VirementsProgrammes echeances, Comptes comptes, Operations operations,
             DepotVirements virements, JournalAudit audit, JournalBatch journalBatch, Transaction transaction,
@@ -81,6 +82,7 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         this.horloge = horloge;
         this.seuils = seuils;
         this.controle = controle;
+        this.evenementsComptes = new EvenementsComptes(comptes, evenements);
     }
 
     @Override
@@ -137,6 +139,7 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         if (resultat.ligne() != null) {
             evenements.publier(resultat.ligne());
         }
+        resultat.lignesComptes().forEach(evenements::publier);
         if (resultat.execution() == null) {
             return false;
         }
@@ -189,7 +192,9 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         comptes.crediter(new CompteId(destinataireId), due.montant());
         operations.enregistrer(execution.debit());
         operations.enregistrer(execution.credit());
-        return new Resultat(execution, null);
+        // Un événement par compte modifié, source puis destinataire, dans la transaction de l'échéance.
+        return new Resultat(execution, null, evenementsComptes.consigner(executeLe, new CompteId(sourceId),
+                new CompteId(destinataireId)));
     }
 
     /**
@@ -203,7 +208,7 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
         }
         Long ligne = consignerNotification(due,
                 NotificationVirement.pourEcheanceCompteIntrouvable(due.clientId(), due.libelleBeneficiaire()));
-        return new Resultat(null, ligne);
+        return new Resultat(null, ligne, List.of());
     }
 
     /**
@@ -246,8 +251,8 @@ public class ExecuterEcheancesCasUsage implements ExecuterEcheances {
     }
 
     /** Issue de l'écriture d'une échéance : virement exécuté, et ligne d'outbox à publier après validation. */
-    private record Resultat(Execution execution, Long ligne) {
-        static final Resultat AUCUN = new Resultat(null, null);
+    private record Resultat(Execution execution, Long ligne, List<Long> lignesComptes) {
+        static final Resultat AUCUN = new Resultat(null, null, List.of());
     }
 
     /** Échéance non exécutée (suspendue par le contrôle de fraude) : annule la transaction, sans échec compté. */

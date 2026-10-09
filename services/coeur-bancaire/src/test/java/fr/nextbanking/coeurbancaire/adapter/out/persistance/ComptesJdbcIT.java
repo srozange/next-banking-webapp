@@ -68,6 +68,20 @@ class ComptesJdbcIT {
     }
 
     @Test
+    void chaque_debit_et_credit_incremente_la_version_d_agregat_et_un_debit_refuse_la_laisse_intacte() {
+        assertThat(comptes.etat(new CompteId(1)).versionAgregat()).isEqualTo(1L);
+
+        assertThat(comptes.debiter(new CompteId(1), Montant.lire("9999.00"))).isFalse();
+        assertThat(comptes.etat(new CompteId(1)).versionAgregat()).isEqualTo(1L);
+
+        assertThat(comptes.debiter(new CompteId(1), Montant.lire("10.00"))).isTrue();
+        comptes.crediter(new CompteId(1), Montant.lire("5.00"));
+        assertThat(comptes.etat(new CompteId(1)).versionAgregat()).isEqualTo(3L);
+        assertThat(comptes.etat(new CompteId(1)).compte().solde().texte()).isEqualTo("2125.00");
+        assertThat(comptes.etat(new CompteId(2)).versionAgregat()).isEqualTo(1L);
+    }
+
+    @Test
     void le_credit_ajoute_au_solde() {
         comptes.crediter(new CompteId(2), Montant.lire("0.50"));
 

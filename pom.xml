@@ -25,6 +25,7 @@
         <module>services/credits</module>
         <module>services/bourse</module>
         <module>services/open-banking-conseiller</module>
+        <module>services/documents</module>
     </modules>
 
     <properties>
@@ -36,6 +37,9 @@
         <datasource-micrometer.version>2.3.0</datasource-micrometer.version>
         <!-- Coupe-circuit des fournisseurs externes (AR-102, story 7.2) : Java pur, sans Spring. -->
         <resilience4j.version>2.4.0</resilience4j.version>
+        <!-- Génération des PDF du service documents (story 6.1), confinée à adapter.out ; PDFBox lit les PDF en test seulement. -->
+        <openpdf.version>2.4.0</openpdf.version>
+        <pdfbox.version>3.0.5</pdfbox.version>
         <!-- Correctifs de sécurité au-dessus du BOM Boot 4.1.1 (cve.sh, story 1.6) : retirer quand Boot les embarque. -->
         <tomcat.version>11.0.25</tomcat.version>
         <jackson-bom.version>3.1.7</jackson-bom.version>
@@ -58,6 +62,16 @@
                 <groupId>io.github.resilience4j</groupId>
                 <artifactId>resilience4j-circuitbreaker</artifactId>
                 <version>${resilience4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.librepdf</groupId>
+                <artifactId>openpdf</artifactId>
+                <version>${openpdf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

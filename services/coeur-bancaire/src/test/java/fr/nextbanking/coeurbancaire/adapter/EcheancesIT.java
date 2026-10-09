@@ -107,7 +107,9 @@ class EcheancesIT {
                 .single().toInstant()).isEqualTo(Instant.parse("2026-02-15T07:00:00Z"));
         assertThat(jdbc.sql("select derniere_execution from virements_programmes").query(java.sql.Timestamp.class)
                 .single().toInstant()).isEqualTo(Instant.parse("2026-01-15T07:04:00Z"));
-        assertThat(jdbc.sql("select count(*) from outbox").query(Long.class).single()).isZero();
+        // Aucune notification : seuls les deux événements compte-modifie (source puis destinataire) sont consignés.
+        assertThat(jdbc.sql("select topic || ':' || cle from outbox order by id").query(String.class).list())
+                .containsExactly("coeur-bancaire.compte-modifie.v1:1", "coeur-bancaire.compte-modifie.v1:2");
         assertThat(jdbc.sql("select count(*) from alertes_fraude").query(Long.class).single()).isZero();
     }
 

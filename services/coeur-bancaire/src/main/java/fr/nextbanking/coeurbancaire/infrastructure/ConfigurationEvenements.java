@@ -26,6 +26,14 @@ public class ConfigurationEvenements {
     /** Échéance de virement programmé non exécutée et notification rendue : consommé par notifications. */
     static final String TOPIC_ECHEANCE_NON_EXECUTEE = "coeur-bancaire.echeance-non-executee.v1";
 
+    /** État complet d'un compte modifié, clé compteId : consommé par le service documents. */
+    static final String TOPIC_COMPTE_MODIFIE = "coeur-bancaire.compte-modifie.v1";
+
+    @Bean
+    NewTopic topicCompteModifie() {
+        return TopicBuilder.name(TOPIC_COMPTE_MODIFIE).partitions(3).replicas(1).build();
+    }
+
     @Bean
     NewTopic topicTemoinEcrit() {
         return TopicBuilder.name(TOPIC_TEMOIN_ECRIT).partitions(3).replicas(1).build();
