@@ -266,3 +266,19 @@ source_spec: `spec-9-4-activer-et-desactiver-un-client-depuis-la-gestion-des-cli
 severity: low
 reason: SectionGestionClients.tsx pose data-testid={`admin-panneau-${cle}`} sur chaque <dd> (l.242) et data-testid="admin-panneau-statut" sur l'Etiquette du statut (l.222) ; déjà présent à 58459ad (story 9.3). Les tests doivent prendre getAllByTestId(...)[0].
 status: open
+
+### DW-32: 29 FR du PRD n'ont aucun test tagué : le critère « liste des FR sans test vide » de la story 10.3 n'est pas atteint.
+origin: spec-deferred 0c7408779b71
+location: _bmad-output/planning-artifacts/prds/prd-next-banking-webapp-2026-10-05/prd.md
+source_spec: `spec-10-3-rejouer-le-golden-master-en-entier-et-mesurer-le-critere-de-bascule.md`
+severity: medium
+reason: Recherche des @Tag("FR-…") dans services/*/src/test et des [FR-…] dans frontend/src, comparée aux FR de prd.md : FR-003-28, FR-016-17, FR-016-18, FR-018-01..05, FR-019-01..06, FR-020-01..04, FR-022-01..06, FR-024-09, FR-025-03, FR-025-08, FR-027-11, FR-027-18. Toutes relèvent des stories 3.5, 3.6, 3.10, 4.5, 4.9, 4.10, 4.11, 5.4 et 9.6, marquées optionnelles et non livrées ; antérieur à cette story.
+status: open
+
+### DW-33: Prérequis « aucune story en cours » non tenu : la story 9.4 est encore en revue.
+origin: spec-deferred 5dc677701625
+location: _bmad-output/implementation-artifacts/spec-9-4-activer-et-desactiver-un-client-depuis-la-gestion-des-clients.md
+source_spec: `spec-10-3-rejouer-le-golden-master-en-entier-et-mesurer-le-critere-de-bascule.md`
+severity: low
+reason: spec-9-4-activer-et-desactiver-un-client-depuis-la-gestion-des-clients.md porte status in-review ; son code (commit 9091676) est inclus dans le rejeu, qui passe SC-016-01 et SC-016-02.
+status: open

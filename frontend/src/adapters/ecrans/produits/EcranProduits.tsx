@@ -107,6 +107,7 @@ interface ProprietesCatalogue {
 function SectionCatalogue({ catalogue, onRafraichir }: ProprietesCatalogue) {
   return (
     <section className="ecran-produits__section" aria-labelledby="produits-titre-catalogue" data-testid="produits-catalogue">
+      <p className="ecran-produits__separateur">{T.catalogue}</p>
       <div className="ecran-produits__entete">
         <h2 id="produits-titre-catalogue" className="ecran-produits__titre">
           {T.catalogue}

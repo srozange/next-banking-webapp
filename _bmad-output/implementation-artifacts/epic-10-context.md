@@ -70,7 +70,8 @@ Clore la réécriture par la preuve de parité. D'abord, corriger BUG-009 : un v
   3. pour chaque scénario `writes: true`, lu dans les `scenario.json` dérivés et jamais recopié dans une liste, lancer `reset-data` puis `--grep "<SC>"` ;
   4. fusionner les rapports avec `merge-reports --reporter=html,json`.
 
-  Le script s'arrête en code non nul dès qu'une étape échoue, en la nommant. `blob-report/` est ignoré par git.
+  Le script s'arrête en code non nul dès qu'une étape échoue, en la nommant. `blob-report/` est ignoré par git. Les tests générés restent intouchés : la remise à zéro par scénario vit uniquement dans ce script.
+- **Date de référence vérifiée** : `scripts/golden-master/verifier-date-reference.sh` contrôle, sur les données chargées, que toutes les dates sont antérieures à `HORLOGE_DEPART`, hors dates planifiées (`loans.date_fin`, `loan_repayments.date_echeance`, `virements_programmes.prochaine_execution`, `virements.heure_butoir`). Il contrôle aussi que `user1` a au plus 8 opérations ce jour-là (0 avec l'import). En cas d'écart, il sort en code non nul en nommant base, table, colonne et date.
 - **Écarts voulus** : ils sont adaptés en `map` dans `replay-mapping.json` :
   - SC-001-02 : 401 sur `GET /api/coeur-bancaire/tableau-de-bord` ;
   - SC-017-01 : 401 sur `GET /api/documents/telechargement?type=RIB&compteId=1` ;
@@ -100,6 +101,6 @@ Clore la réécriture par la preuve de parité. D'abord, corriger BUG-009 : un v
   - les simulateurs Powens, AlphaVantage et Azure OpenAI (epics 7 et 8) ;
   - les variables `RETRO_*_PASSWORD` fournies par l'humain.
 
-  Elle prouve le déterminisme de SC-003-04 par trois rejeux verts, puis par une contre-épreuve à 23:30 qui doit échouer (UNUSUAL_HOURS). Elle règle les points ouverts sur la date de référence, la remise à zéro par scénario et le fuseau/la locale, ce qui permet de passer `golden-master-architecture.md` en `status: final`.
-- **10.3** dépend de 10.2, d'un développement terminé (aucune story en cours) et des `RETRO_*_PASSWORD`. C'est le seul rejeu complet.
+  Elle prouve le déterminisme de SC-003-04 par trois rejeux verts, puis par une contre-épreuve à 23:30 qui doit échouer (UNUSUAL_HOURS). Elle est livrée : les points ouverts du rejeu (date de référence, remise à zéro avant chaque scénario qui écrit, fuseau et locale du navigateur) sont désormais réglés dans `golden-master-architecture.md`. Ce document porte encore `status: draft` dans son en-tête.
+- **10.3** dépend de 10.2, d'un développement terminé (aucune story en cours) et des `RETRO_*_PASSWORD`. C'est le seul rejeu complet, lancé par `make rejeu-up` puis `make rejeu-golden-master`. Le rapport JSON fusionné doit indiquer 31 réussis, `stats.unexpected` = 0 et un tableau `errors` vide ; les 2 scénarios non rejoués sont annotés « Non rejoué » avec leur raison. Une contre-épreuve retire volontairement un texte attendu de l'écran d'administration (« Gestion des clients ») : SC-016-01 doit échouer, puis repasser une fois la violation retirée. Le skill `corpus-bmad-golden-master` lit ensuite le rapport final.
 - Chaque story se termine avec `scripts/gates/build.sh`, `check-gates-exist.sh`, `trace-smoke.sh` et `golden-master.sh` en code 0.

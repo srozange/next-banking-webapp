@@ -85,6 +85,11 @@ describe('écran Produits : accès', () => {
 
     expect(routeur.state.location.pathname).toBe('/produits');
     expect(screen.getByRole('heading', { name: 'Catalogue des produits' })).toBeTruthy();
+    const catalogue = screen.getByTestId('produits-catalogue');
+    const separateur = catalogue.querySelector('.ecran-produits__separateur');
+    expect(separateur?.textContent).toBe('Catalogue des produits');
+    expect(catalogue.firstElementChild).toBe(separateur);
+    expect(separateur?.compareDocumentPosition(screen.getByRole('heading', { name: 'Catalogue des produits' })) ?? 0).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(screen.getByRole('heading', { name: 'Historique des traitements nocturnes' })).toBeTruthy();
     expect(screen.getByTestId('produits-contenu').querySelectorAll('input, select, textarea')).toHaveLength(0);
     expect(screen.getByTestId('produits-rafraichir').textContent).toBe('Rafraichir');

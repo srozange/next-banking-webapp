@@ -1,0 +1,10 @@
+{
+  "actions": [
+    "Trancher le sort des 29 FR du PRD sans test : soit faire livrer les stories optionnelles 3.5 (cumul glissant), 3.6 (reprise apr\u00e8s refus), 3.10 (alerte apr\u00e8s \u00e9checs de connexion), 4.5 (journal des traitements), 4.9 (int\u00e9r\u00eats mensuels), 4.10 (d\u00e9compte nocturne), 4.11 (solde faible), 5.4 (d\u00e9cision de pr\u00eat notifi\u00e9e) et 9.6 (journal et catalogue sur l'administration), soit acter l'\u00e9cart dans le PRD, puis relancer le calcul de la liste des FR sans test.",
+    "Faire la revue humaine de la story 9.4 (activer et d\u00e9sactiver un client depuis la gestion des clients, commit 9091676, spec en in-review), pr\u00e9requis \u00ab aucune story en cours \u00bb de la story 10.3."
+  ],
+  "parked_at": "2026-10-09",
+  "run_id": "20261009-141636-ec3a",
+  "spec_file": "_bmad-output/implementation-artifacts/spec-10-3-rejouer-le-golden-master-en-entier-et-mesurer-le-critere-de-bascule.md",
+  "story_key": "10-3-rejouer-le-golden-master-en-entier-et-mesurer-le-crit\u00e8re-de"
+}

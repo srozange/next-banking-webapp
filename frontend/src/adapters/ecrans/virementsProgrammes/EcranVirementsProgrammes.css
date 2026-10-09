@@ -24,6 +24,12 @@
   text-transform: uppercase;
 }
 
+/* Libellés des champs texte en capitales, comme le legacy (virement-programme.xhtml :
+   .form-group label { text-transform: uppercase }). Réglé à l'échelle de la page : ChampTexte est partagé. */
+.ecran-virements-programmes .champ-texte__libelle {
+  text-transform: uppercase;
+}
+
 .ecran-virements-programmes__formulaire {
   display: flex;
   flex-direction: column;
